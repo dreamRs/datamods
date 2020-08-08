@@ -8,6 +8,13 @@
 #'  if there's no \code{data.frame} in user's environment.
 #'
 #' @return
+#'  * UI: HTML tags that can be included in shiny's UI
+#'  * Server: a \code{list} with two slots:
+#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
+#'    + **name**: a \code{reactive} function the name of the selected data as \code{character}.
+#'
+#'
+#'
 #' @export
 #'
 #' @name import-globalenv
@@ -16,7 +23,7 @@
 #' @importFrom shiny NS actionButton icon textInput
 #' @importFrom shinyWidgets pickerInput alert
 #'
-#' @examples
+#' @example examples/globalenv-default.R
 import_globalenv_ui <- function(id, default_choices = NULL) {
 
   ns <- NS(id)
@@ -104,7 +111,7 @@ import_globalenv_server <- function(id,
 }
 
 
-#' @importFrom shiny reactiveValues observeEvent reactive
+#' @importFrom shiny reactiveValues observeEvent reactive removeUI
 #' @importFrom htmltools tags
 import_globalenv <- function(input, output, session,
                              default_data = NULL,
@@ -209,6 +216,8 @@ import_globalenv <- function(input, output, session,
 #' @return a \code{character} vector or \code{NULL}.
 #' @export
 #'
+#' @importFrom utils data
+#'
 #' @examples
 #'
 #' list_pkg_data("ggplot2")
@@ -222,7 +231,7 @@ list_pkg_data <- function(pkg) {
   }
 }
 
-
+#' @importFrom utils data
 get_env_data <- function(obj, env = globalenv()) {
   if (obj %in% ls(name = env)) {
     get(x = obj, envir = env)

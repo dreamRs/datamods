@@ -1,5 +1,6 @@
 
 #' @importFrom htmltools htmlDependency
+#' @importFrom utils packageVersion
 html_dependency_datamods <- function() {
   htmlDependency(
     name = "datamods",
@@ -35,6 +36,9 @@ toggle_widget <- function(inputId,
 #'
 #' @return No value.
 #' @noRd
+#'
+#' @importFrom shiny removeUI insertUI
+#' @importFrom shinyWidgets alert
 #'
 insert_alert <- function(selector, ...) {
   removeUI(selector = paste0("#", selector, "-result"))
