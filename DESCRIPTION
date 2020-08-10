@@ -8,7 +8,8 @@ Authors@R:
              email = "victor.perrier@dreamrs.fr"),
       person(given = "Zauad Shahreer",
              family = "Abeer",
-             role = "aut"))
+             role = "aut",
+             email = "shahreyar.abeer@gmail.com"))
 Description: What the package does (one paragraph).
 License: GPL-3
 Encoding: UTF-8
