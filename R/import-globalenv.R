@@ -4,8 +4,6 @@
 #' @description Let the user select a dataset from its own environment.
 #'
 #' @param id Module's ID.
-#' @param default_choices Character vector of choices to use
-#'  if there's no \code{data.frame} in user's environment.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,15 +22,12 @@
 #' @importFrom shinyWidgets pickerInput alert
 #'
 #' @example examples/globalenv-default.R
-import_globalenv_ui <- function(id, default_choices = NULL) {
+import_globalenv_ui <- function(id) {
 
   ns <- NS(id)
 
   # List data.frames from environment
   choices_df <- search_obj(what = "data.frame")
-  if (is.null(choices_df)) {
-    choices_df <- default_choices
-  }
 
   dataframes_dims <- get_dimensions(choices_df)
 
@@ -47,17 +42,6 @@ import_globalenv_ui <- function(id, default_choices = NULL) {
       choicesOpt = list(subtext = dataframes_dims),
       width = "100%"
     ),
-
-    if (!is.null(attr(choices_df, "package"))) {
-      tags$div(
-        style = "display: none;",
-        textInput(
-          inputId = ns("package"),
-          value = attr(choices_df, "package"),
-          label = NULL
-        )
-      )
-    },
 
     tags$div(
       id = ns("import-placeholder"),
@@ -88,6 +72,9 @@ import_globalenv_ui <- function(id, default_choices = NULL) {
 
 #' @param default_data Default \code{data.frame} to use.
 #' @param default_name Default name to use.
+#' @param default_choices Character vector or \code{reactive} function
+#'  returning character vector of choices to use
+#'  if there's no \code{data.frame} in user's environment.
 #' @param update_data When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"always"} (each time user select a dataset in the list).
@@ -100,22 +87,26 @@ import_globalenv_ui <- function(id, default_choices = NULL) {
 import_globalenv_server <- function(id,
                                     default_data = NULL,
                                     default_name = NULL,
+                                    default_choices = NULL,
                                     update_data = c("button", "always")) {
   callModule(
     module = import_globalenv,
     id = id,
     default_data = default_data,
     default_name = default_name,
+    default_choices = default_choices,
     update_data = update_data
   )
 }
 
 
-#' @importFrom shiny reactiveValues observeEvent reactive removeUI
+#' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive
 #' @importFrom htmltools tags
+#' @importFrom shinyWidgets updatePickerInput
 import_globalenv <- function(input, output, session,
                              default_data = NULL,
                              default_name = NULL,
+                             default_choices = NULL,
                              update_data = c("button", "always")) {
 
   update_data <- match.arg(update_data)
@@ -123,6 +114,32 @@ import_globalenv <- function(input, output, session,
   temporary_data <- reactiveValues(data = default_data, name = default_name)
 
   ns <- session$ns
+
+  if (is.reactive(default_choices)) {
+    observeEvent(default_choices(), {
+      updatePickerInput(
+        session = session,
+        inputId = "data",
+        choices = default_choices(),
+        selected = temporary_data$name,
+        choicesOpt = list(
+          subtext = get_dimensions(default_choices())
+        )
+      )
+      temporary_data$package <- attr(default_choices(), "package")
+    })
+  } else {
+    updatePickerInput(
+      session = session,
+      inputId = "data",
+      choices = default_choices,
+      selected = default_name,
+      choicesOpt = list(
+        subtext = get_dimensions(default_choices)
+      )
+    )
+    temporary_data$package <- attr(default_choices, "package")
+  }
 
 
   if (identical(update_data, "always")) {
@@ -134,8 +151,8 @@ import_globalenv <- function(input, output, session,
 
     name_df <- input$data
 
-    if (!is.null(input$package)) {
-      attr(name_df, "package") <- input$package
+    if (!is.null(temporary_data$package)) {
+      attr(name_df, "package") <- temporary_data$package
     }
 
     imported <- try(get_env_data(name_df), silent = TRUE)
@@ -244,6 +261,8 @@ get_env_data <- function(obj, env = globalenv()) {
 
 
 get_dimensions <- function(objs) {
+  if (is.null(objs))
+    return(NULL)
   dataframes_dims <- Map(
     f = function(name, pkg) {
       attr(name, "package") <- pkg

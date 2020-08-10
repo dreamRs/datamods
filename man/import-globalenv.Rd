@@ -6,24 +6,26 @@
 \alias{import_globalenv_server}
 \title{Import data from Global Environment}
 \usage{
-import_globalenv_ui(id, default_choices = NULL)
+import_globalenv_ui(id)
 
 import_globalenv_server(
   id,
   default_data = NULL,
   default_name = NULL,
+  default_choices = NULL,
   update_data = c("button", "always")
 )
 }
 \arguments{
 \item{id}{Module's ID.}
 
-\item{default_choices}{Character vector of choices to use
-if there's no \code{data.frame} in user's environment.}
-
 \item{default_data}{Default \code{data.frame} to use.}
 
 \item{default_name}{Default name to use.}
+
+\item{default_choices}{Character vector or \code{reactive} function
+returning character vector of choices to use
+if there's no \code{data.frame} in user's environment.}
 
 \item{update_data}{When to update selected data:
 \code{"button"} (when user click on button) or

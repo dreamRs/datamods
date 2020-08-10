@@ -11,10 +11,7 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 4,
-      import_globalenv_ui(
-        id = "myid",
-        default_choices = list_pkg_data("ggplot2")
-      )
+      import_globalenv_ui(id = "myid")
     ),
     column(
       width = 8,
@@ -26,7 +23,10 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  imported <- import_globalenv_server("myid")
+  imported <- import_globalenv_server(
+    id = "myid",
+    default_choices = list_pkg_data("ggplot2")
+  )
 
   output$result <- renderPrint({
     imported$data()
