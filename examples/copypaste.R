@@ -4,7 +4,7 @@ library(shiny)
 # Application
 
 ui <- fluidPage(
-  tags$h3("Import data from Global Environment"),
+  tags$h3("Import data by Pasting"),
   fluidRow(
     column(
       width = 4,
