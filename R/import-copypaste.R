@@ -1,16 +1,26 @@
 
-#' import-copypaste UI Function
+#' @title Import data with copy & paste
 #'
-#' @description A shiny Module.
+#' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id Module's ID.
 #'
-#' @noRd 
+#' @return
+#'  * UI: HTML tags that can be included in shiny's UI
+#'  * Server: a \code{list} with one slot:
+#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
 #'
-#' @importFrom shiny NS tagList textAreaInput
-#' @importFrom data.table fread
-mod_import_copypaste_ui <- function(id){
+#' @export
+#'
+#' @name import-copypaste
+#'
+#' @importFrom shiny NS tagList icon textAreaInput actionButton
+#'
+#' @example examples/copypaste.R
+import_copypaste_ui <- function(id) {
+
   ns <- NS(id)
+
   tagList(
     html_dependency_datamods(),
     textAreaInput(
@@ -18,7 +28,6 @@ mod_import_copypaste_ui <- function(id){
       label = "Paste Code",
       height = "500px"
     ),
-    
     tags$div(
       id = ns("import-placeholder"),
       alert(
@@ -29,7 +38,6 @@ mod_import_copypaste_ui <- function(id){
         dismissible = TRUE
       )
     ),
-    
     tags$div(
       id = ns("validate-button"),
       style = "margin-top: 20px;",
@@ -42,44 +50,64 @@ mod_import_copypaste_ui <- function(id){
         class = "btn-primary"
       )
     )
-    
-    
-    
   )
 }
 
-#' import-copypaste Server Function
+
+#' @param default_data Default \code{data.frame} to use.
+#' @param update_data When to update selected data:
+#'  \code{"button"} (when user click on button) or
+#'  \code{"always"} (each time user select a dataset in the list).
 #'
-#' @noRd 
-mod_import_copypaste_server <- function(input, output, session,
-                                        default_data = NULL,
-                                        update_data = c("button", "always")){
-  
+#' @export
+#'
+#' @importFrom shiny callModule
+#'
+#' @rdname import-copypaste
+import_copypaste_server <- function(id,
+                                    default_data = NULL,
+                                    update_data = c("button", "always")) {
+  callModule(
+    module = import_copypaste,
+    id = id,
+    default_data = default_data,
+    update_data = update_data
+  )
+}
+
+
+#' @importFrom data.table fread
+#' @importFrom shiny reactiveValues observeEvent
+#' @importFrom htmltools tags
+import_copypaste <- function(input, output, session,
+                             default_data = NULL,
+                             update_data = c("button", "always")) {
+
   ns <- session$ns
   update_data <- match.arg(update_data)
+
   imported_data <- reactiveValues(data = default_data)
   temporary_data <- reactiveValues(data = default_data)
-  
+
+
   observeEvent(input$data_pasted, {
-    
-    
+
     imported <- try(data.table::fread(input = input$data_pasted), silent = TRUE)
-    
-    
+
     if (inherits(imported, "try-error") || NROW(imported) < 1) {
-      
+
       toggle_widget(inputId = ns("validate"), enable = FALSE)
-      
+
       insert_alert(
         selector = ns("import"),
         status = "danger",
         tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
       )
-      
+
     } else {
-      
+
       toggle_widget(inputId = ns("validate"), enable = TRUE)
-      
+
       if (identical(update_data, "button")) {
         success_message <- tagList(
           tags$b(icon("check"), "Data ready to be imported!"),
@@ -97,24 +125,23 @@ mod_import_copypaste_server <- function(input, output, session,
           )
         )
       }
-      
+
       insert_alert(
         selector = ns("import"),
         status = "success",
         success_message
       )
-      
+
       temporary_data$data <- imported
     }
-    
-    
   }, ignoreInit = TRUE)
-  
+
+
   observeEvent(input$validate, {
     imported_data$data <- temporary_data$data
   })
-  
-  
+
+
   if (identical(update_data, "button")) {
     return(list(
       data = reactive(imported_data$data)
