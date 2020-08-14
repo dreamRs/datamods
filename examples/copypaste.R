@@ -3,7 +3,7 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data by Pasting"),
+  tags$h3("Import data with copy & paste"),
   fluidRow(
     column(
       width = 4,

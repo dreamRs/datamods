@@ -14,7 +14,8 @@
 #'
 #' @name import-copypaste
 #'
-#' @importFrom shiny NS tagList icon textAreaInput actionButton
+#' @importFrom shiny NS icon textAreaInput actionButton
+#' @importFrom htmltools tagList tags tagAppendAttributes
 #'
 #' @example examples/copypaste.R
 import_copypaste_ui <- function(id) {
@@ -23,10 +24,16 @@ import_copypaste_ui <- function(id) {
 
   tagList(
     html_dependency_datamods(),
-    textAreaInput(
-      inputId = ns("data_pasted"),
-      label = "Paste Code",
-      height = "500px"
+    tags$h2("Copy & paste data"),
+    tagAppendAttributes(
+      textAreaInput(
+        inputId = ns("data_pasted"),
+        label = "Paste data here:",
+        height = "300px",
+        width = "100%",
+        resize = "none"
+      ),
+      class = "shiny-input-container-inline"
     ),
     tags$div(
       id = ns("import-placeholder"),
@@ -34,7 +41,7 @@ import_copypaste_ui <- function(id) {
         id = ns("import-result"),
         status = "info",
         tags$b("Nothing pasted yet!"),
-        "Please copy and paste some data in the above dialogue box.",
+        "Please copy and paste some data in the dialog box above.",
         dismissible = TRUE
       )
     ),
@@ -43,7 +50,7 @@ import_copypaste_ui <- function(id) {
       style = "margin-top: 20px;",
       actionButton(
         inputId = ns("validate"),
-        label = "Import selected data",
+        label = "Import data",
         icon = icon("arrow-circle-right"),
         width = "100%",
         disabled = "disabled",
@@ -77,7 +84,7 @@ import_copypaste_server <- function(id,
 
 
 #' @importFrom data.table fread
-#' @importFrom shiny reactiveValues observeEvent
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive
 #' @importFrom htmltools tags
 import_copypaste <- function(input, output, session,
                              default_data = NULL,
@@ -85,10 +92,12 @@ import_copypaste <- function(input, output, session,
 
   ns <- session$ns
   update_data <- match.arg(update_data)
-
   imported_data <- reactiveValues(data = default_data)
   temporary_data <- reactiveValues(data = default_data)
 
+  if (identical(update_data, "always")) {
+    removeUI(selector = paste0("#", ns("validate-button")))
+  }
 
   observeEvent(input$data_pasted, {
 
