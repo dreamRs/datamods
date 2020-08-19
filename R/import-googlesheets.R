@@ -22,7 +22,7 @@ import_googlesheets_ui <- function(id){
   tagList(
     html_dependency_datamods(),
     tags$h2("GoogleSheets"),
-    p("If you have a shareable link, paste it directl in the box below"),
+    p("If you have a shareable link, paste it directly in the box below"),
     p(
       "Otherwise",
       actionLink(
