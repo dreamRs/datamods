@@ -22,10 +22,12 @@ import_googlesheets_ui <- function(id){
   tagList(
     html_dependency_datamods(),
     tags$h2("GoogleSheets"),
-    actionButton(
+    p("If you have a shareable link, paste it directl in the box below"),
+    p("Otherwise, ",
+    actionLink(
       inputId = ns("sign_in"),
-      label = "Sign-in to Google",
-    ), 
+      label = "sign-in to Google",
+    )), 
     br(),
     tags$div(
       id = ns("signin-placeholder"),
@@ -98,15 +100,11 @@ import_googlesheets <- function(input, output, session,
   imported_data <- reactiveValues(data = default_data)
   temporary_data <- reactiveValues(data = default_data)
   
-  token <- eventReactive(input$sign_in, {
-    #req(!googlesheets4::gs4_has_token())
-    googlesheets4::gs4_auth(cache = FALSE)
-    googlesheets4::gs4_has_token()
-  })
+  options(gargle_oauth_cache = FALSE)
   
-  
-  observeEvent(token(),{
-    #print(class(token()))
+  observeEvent(input$sign_in, {
+    googlesheets4::gs4_auth()
+
     if(googlesheets4::gs4_has_token()){
       insert_alert(
         selector = ns("signin"),
@@ -125,11 +123,16 @@ import_googlesheets <- function(input, output, session,
   })
   
   
+  
+  
   if (identical(update_data, "always")) {
     removeUI(selector = paste0("#", ns("validate-button")))
   }
   
   observeEvent(input$link, {
+    
+    if(isFALSE(googlesheets4::gs4_has_token())) googlesheets4::gs4_deauth()
+    
     imported <- try(googlesheets4::range_read(input$link), silent = TRUE)
     
     if (inherits(imported, "try-error") || NROW(imported) < 1) {
@@ -188,10 +191,3 @@ import_googlesheets <- function(input, output, session,
     ))
   }
 }
-
-## To be copied in the UI
-# mod_import_googlesheets_ui("import_googlesheets_ui_1")
-
-## To be copied in the server
-# callModule(mod_import_googlesheets_server, "import_googlesheets_ui_1")
-
