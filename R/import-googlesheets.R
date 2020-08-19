@@ -23,11 +23,13 @@ import_googlesheets_ui <- function(id){
     html_dependency_datamods(),
     tags$h2("GoogleSheets"),
     p("If you have a shareable link, paste it directl in the box below"),
-    p("Otherwise, ",
-    actionLink(
-      inputId = ns("sign_in"),
-      label = "sign-in to Google",
-    )), 
+    p(
+      "Otherwise",
+      actionLink(
+        inputId = ns("sign_in"),
+        label = "sign-in to Google",
+      )
+    ),
     br(),
     tags$div(
       id = ns("signin-placeholder"),
