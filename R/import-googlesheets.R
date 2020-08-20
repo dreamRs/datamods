@@ -1,5 +1,5 @@
 
-#' @title import data with a googlesheet link
+#' @title Import data with a googlesheet link
 #'
 #' @description Let user paste link to a Google sheet then import the data.
 #'
@@ -13,7 +13,7 @@
 #' @export
 #' @name import-googlesheets
 #'
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList actionLink
 #' @importFrom shinyWidgets textInputIcon
 #'
 #' @example examples/googlesheets.R
@@ -42,7 +42,7 @@ import_googlesheets_ui <- function(id){
         dismissible = TRUE
       )
     ),
-    textInputIcon(
+    shinyWidgets::textInputIcon(
       inputId = ns("link"),
       label = "Enter a URL to a Google Sheet:",
       icon = icon("link"),
@@ -73,8 +73,16 @@ import_googlesheets_ui <- function(id){
   )
 }
 
+#' @param default_data Default \code{data.frame} to use.
+#' @param update_data When to update selected data:
+#'  \code{"button"} (when user click on button) or
+#'  \code{"always"} (each time user select a dataset in the list).
+#'
+#' @export
+#'
 #' @importFrom shiny callModule
 #'
+#' @rdname import-googlesheets
 
 import_googlesheets_server <- function(id,
                                        default_data = NULL,

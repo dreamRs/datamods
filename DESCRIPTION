@@ -20,4 +20,5 @@ Imports:
     htmltools,
     shiny (>= 1.5.0),
     shinyWidgets (>= 0.5.3),
-    data.table
+    data.table,
+    googlesheets4

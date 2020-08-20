@@ -3,12 +3,25 @@
 \name{import-googlesheets}
 \alias{import-googlesheets}
 \alias{import_googlesheets_ui}
-\title{import data with a googlesheet link}
+\alias{import_googlesheets_server}
+\title{Import data with a googlesheet link}
 \usage{
 import_googlesheets_ui(id)
+
+import_googlesheets_server(
+  id,
+  default_data = NULL,
+  update_data = c("button", "always")
+)
 }
 \arguments{
 \item{id}{Module's ID}
+
+\item{default_data}{Default \code{data.frame} to use.}
+
+\item{update_data}{When to update selected data:
+\code{"button"} (when user click on button) or
+\code{"always"} (each time user select a dataset in the list).}
 }
 \value{
 \itemize{
@@ -21,4 +34,37 @@ import_googlesheets_ui(id)
 }
 \description{
 Let user paste link to a Google sheet then import the data.
+}
+\examples{
+
+library(shiny)
+library(datamods)
+
+ui <- fluidPage(
+  tags$h3("Import data with googlesheets"),
+  fluidRow(
+    column(
+      width = 4,
+      import_googlesheets_ui("myid")
+    ),
+    column(
+      width = 8,
+      tags$b("Imported data:"),
+      verbatimTextOutput(outputId = "result")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  imported <- import_googlesheets_server("myid")
+  
+  output$result <- renderPrint({
+    imported$data()
+  })
+  
+}
+
+if (interactive())
+  shinyApp(ui, server)
 }
