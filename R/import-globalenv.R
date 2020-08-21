@@ -100,7 +100,7 @@ import_globalenv_server <- function(id,
 }
 
 
-#' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive
+#' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
 #' @importFrom htmltools tags
 #' @importFrom shinyWidgets updatePickerInput
 import_globalenv <- function(input, output, session,
@@ -109,11 +109,11 @@ import_globalenv <- function(input, output, session,
                              default_choices = NULL,
                              update_data = c("button", "always")) {
 
+  ns <- session$ns
   update_data <- match.arg(update_data)
   imported_data <- reactiveValues(data = default_data, name = default_name)
   temporary_data <- reactiveValues(data = default_data, name = default_name)
 
-  ns <- session$ns
 
   if (is.reactive(default_choices)) {
     observeEvent(default_choices(), {
@@ -188,7 +188,15 @@ import_globalenv <- function(input, output, session,
           )
         )
       }
-
+      success_message <- tagList(
+        success_message,
+        tags$br(),
+        actionLink(
+          inputId = ns("see_data"),
+          label = "click to see data",
+          icon = icon("hand-o-right")
+        )
+      )
       insert_alert(
         selector = ns("import"),
         status = "success",
@@ -200,6 +208,10 @@ import_globalenv <- function(input, output, session,
     }
   }, ignoreInit = TRUE)
 
+
+  observeEvent(input$see_data, {
+    show_data(temporary_data$data)
+  })
 
   observeEvent(input$validate, {
     imported_data$data <- temporary_data$data

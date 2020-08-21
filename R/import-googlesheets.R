@@ -87,7 +87,6 @@ import_googlesheets_ui <- function(id){
 import_googlesheets_server <- function(id,
                                        default_data = NULL,
                                        update_data = c("button", "always")) {
-
   callModule(
     module = import_googlesheets,
     id = id,
@@ -98,10 +97,12 @@ import_googlesheets_server <- function(id,
 
 
 #' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
-
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive
+#' @importFrom htmltools tags
 import_googlesheets <- function(input, output, session,
                                 default_data = NULL,
                                 update_data = c("button", "always")) {
+
   ns <- session$ns
   update_data <- match.arg(update_data)
   imported_data <- reactiveValues(data = default_data)
