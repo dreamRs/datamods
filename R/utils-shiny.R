@@ -7,7 +7,8 @@ html_dependency_datamods <- function() {
     version = packageVersion("datamods"),
     src = list(href = "datamods", file = "assets"),
     package = "datamods",
-    script = "js/datamods.js"
+    script = "js/datamods.js",
+    stylesheet = "css/datamods.css"
   )
 }
 
@@ -55,7 +56,19 @@ insert_alert <- function(selector, ...) {
 
 
 
+showUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactiveDomain()) {
+  session$sendCustomMessage(
+    type = "datamods-showUI",
+    message = list(selector = selector, inline = inline)
+  )
+}
 
+hideUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactiveDomain()) {
+  session$sendCustomMessage(
+    type = "datamods-hideUI",
+    message = list(selector = selector, inline = inline)
+  )
+}
 
 
 

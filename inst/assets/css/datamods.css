@@ -1,0 +1,22 @@
+/*!
+ * Copyright (c) 2020 dreamRs
+ *
+ * datamods, CSS styles
+ * https://github.com/dreamRs/datamods
+ *
+ * @version 0.0.1
+ */
+
+.show {
+  display: block !important;
+}
+.show-inline {
+  display: inline !important;
+}
+.hidden {
+  display: none !important;
+}
+.invisible {
+  visibility: hidden;
+}
+
