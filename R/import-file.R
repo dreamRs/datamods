@@ -8,7 +8,7 @@
 #'
 #' @importFrom shiny NS fileInput
 #' @importFrom htmltools tagList tags
-#' @importFrom shinyWidgets pickerInput
+#' @importFrom shinyWidgets pickerInput numericInputIcon
 import_file_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -27,6 +27,16 @@ import_file_ui <- function(id){
         inputId = ns("sheet"),
         label = "Select sheet to import:",
         choices = NULL,
+        width = "100%"
+      )
+    ),
+    tags$div(
+      id = ns("skip-rows"),
+      numericInputIcon(
+        inputId = ns("skip_rows"),
+        label = "Skip Rows?",
+        value = 0,
+        min = 0,
         width = "100%"
       )
     ),
@@ -99,14 +109,15 @@ import_file <- function(input, output, session,
 
   observeEvent(list(
     input$file,
-    input$sheet
+    input$sheet,
+    input$skip_rows
   ), {
 
     if (is_excel(input$file$datapath)) {
       req(input$sheet)
-      imported <- try(rio::import(file = input$file$datapath, which = input$sheet), silent = TRUE)
+      imported <- try(rio::import(file = input$file$datapath, which = input$sheet, skip = input$skip_rows), silent = TRUE)
     } else {
-      imported <- try(rio::import(file = input$file$datapath), silent = TRUE)
+      imported <- try(rio::import(file = input$file$datapath, skip = input$skip_rows), silent = TRUE)
     }
 
     if (inherits(imported, "try-error") || NROW(imported) < 1) {
@@ -120,6 +131,8 @@ import_file <- function(input, output, session,
       )
 
     } else {
+      
+      
 
       toggle_widget(inputId = ns("validate"), enable = TRUE)
 
