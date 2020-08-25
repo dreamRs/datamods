@@ -30,15 +30,13 @@ import_file_ui <- function(id){
         width = "100%"
       )
     ),
-    tags$div(
-      id = ns("skip-rows"),
-      numericInputIcon(
-        inputId = ns("skip_rows"),
-        label = "Skip Rows?",
-        value = 0,
-        min = 0,
-        width = "100%"
-      )
+    numericInputIcon(
+      inputId = ns("skip_rows"),
+      label = "Number of rows to skip before reading data:",
+      value = 0,
+      min = 0,
+      width = "100%",
+      icon = list("n =")
     ),
     tags$div(
       id = ns("import-placeholder"),
@@ -78,7 +76,7 @@ import_file_server <- function(id,
   )
 }
 
-#' @importFrom shiny reactiveValues reactive observeEvent removeUI
+#' @importFrom shiny reactiveValues reactive observeEvent removeUI req
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 import_file <- function(input, output, session,
@@ -112,7 +110,8 @@ import_file <- function(input, output, session,
     input$sheet,
     input$skip_rows
   ), {
-
+    req(input$file)
+    req(input$skip_rows)
     if (is_excel(input$file$datapath)) {
       req(input$sheet)
       imported <- try(rio::import(file = input$file$datapath, which = input$sheet, skip = input$skip_rows), silent = TRUE)
@@ -131,8 +130,8 @@ import_file <- function(input, output, session,
       )
 
     } else {
-      
-      
+
+
 
       toggle_widget(inputId = ns("validate"), enable = TRUE)
 
@@ -184,6 +183,6 @@ import_file <- function(input, output, session,
 
 
 is_excel <- function(path) {
-  tools::file_ext(path) %in% c("xls", "xlsx")
+  isTRUE(tools::file_ext(path) %in% c("xls", "xlsx"))
 }
 
