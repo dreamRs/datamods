@@ -1,14 +1,24 @@
 
-#' import-file UI Function
+#' @title Import data from a file
 #'
-#' @description A shiny Module.
+#' @description Let user upload a file and import data
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id Module's id
+#' 
+#' @return
+#'  * UI: HTML tags that can be included in shiny's UI
+#'  * Server: a \code{list} with one slot:
+#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
+#'
+#' @export
+#' @name import-file
 #'
 #'
 #' @importFrom shiny NS fileInput
 #' @importFrom htmltools tagList tags
 #' @importFrom shinyWidgets pickerInput numericInputIcon
+#' 
+#' @example example/from-file.R
 import_file_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -62,9 +72,16 @@ import_file_ui <- function(id){
   )
 }
 
-#' import-file Server Function
+#' @param default_data Default \code{data.frame} to use.
+#' @param update_data When to update selected data:
+#'  \code{"button"} (when user click on button) or
+#'  \code{"always"} (each time user select a dataset in the list).
 #'
-
+#' @export
+#'
+#' @importFrom shiny callModule
+#'
+#' @rdname import-file
 import_file_server <- function(id,
                                default_data = NULL,
                                update_data = c("button", "always")) {
@@ -79,6 +96,8 @@ import_file_server <- function(id,
 #' @importFrom shiny reactiveValues reactive observeEvent removeUI req
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
+#' @importFrom rio import
+#' @importFrom tools file_ext
 import_file <- function(input, output, session,
                         default_data = NULL,
                         update_data = c("button", "always")) {
