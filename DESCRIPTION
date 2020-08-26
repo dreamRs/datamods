@@ -24,4 +24,5 @@ Imports:
     data.table,
     googlesheets4,
     readxl,
-    rio
+    rio,
+    tools
