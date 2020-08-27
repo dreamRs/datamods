@@ -4,7 +4,7 @@
 #' @description Let user upload a file and import data
 #'
 #' @param id Module's id
-#' 
+#'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
 #'  * Server: a \code{list} with one slot:
@@ -17,8 +17,8 @@
 #' @importFrom shiny NS fileInput
 #' @importFrom htmltools tagList tags
 #' @importFrom shinyWidgets pickerInput numericInputIcon
-#' 
-#' @example example/from-file.R
+#'
+#' @example examples/from-file.R
 import_file_ui <- function(id){
   ns <- NS(id)
   tagList(
