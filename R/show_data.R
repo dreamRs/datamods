@@ -8,7 +8,7 @@
 #' @return No value.
 #' @export
 #'
-#' @importFrom shinyWidgets show_alert panel
+#' @importFrom shinyWidgets show_alert
 #' @importFrom htmltools tags
 #' @importFrom DT datatable
 #'
@@ -16,8 +16,9 @@
 show_data <- function(data, title = "Imported data", width = "80%") {
   show_alert(
     title = NULL,
-    text = panel(
-      heading = tags$b(title),
+    text = tags$div(
+      tags$h3(title),
+      tags$hr(),
       style = "color: #000 !important;",
       tags$style(".dataTables_length {text-align: left;}"),
       tags$style(".dataTables_info {text-align: left;}"),
@@ -27,7 +28,10 @@ show_data <- function(data, title = "Imported data", width = "80%") {
         selection = "none",
         class = "display dt-responsive",
         style = "bootstrap",
-        width = "100%"
+        width = "100%",
+        options = list(
+          scrollX = TRUE
+        )
       )
     ),
     showCloseButton = TRUE,

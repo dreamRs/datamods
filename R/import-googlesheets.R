@@ -174,6 +174,15 @@ import_googlesheets <- function(input, output, session,
           )
         )
       }
+      success_message <- tagList(
+        success_message,
+        tags$br(),
+        actionLink(
+          inputId = ns("see_data"),
+          label = "click to see data",
+          icon = icon("hand-o-right")
+        )
+      )
 
       insert_alert(
         selector = ns("import"),
@@ -184,6 +193,10 @@ import_googlesheets <- function(input, output, session,
       temporary_data$data <- imported
     }
   }, ignoreInit = TRUE)
+
+  observeEvent(input$see_data, {
+    show_data(temporary_data$data)
+  })
 
   observeEvent(input$validate, {
     imported_data$data <- temporary_data$data
