@@ -1,17 +1,92 @@
 
-
-
-
+#' Select, rename and convert variables
+#'
+#' @param id Module's ID.
+#'
+#' @return
+#' @export
+#'
+#' @name update-variables
+#'
+#' @importFrom shiny uiOutput actionButton icon
+#' @importFrom htmltools tagList tags
+#' @importFrom DT DTOutput
+#' @importFrom shinyWidgets html_dependency_pretty
+#'
+#' @examples
 update_variables_ui <- function(id) {
   ns <- NS(id)
   tagList(
-
+    html_dependency_pretty(),
+    tags$h3("Update variables"),
+    uiOutput(outputId = ns("data_info")),
+    DTOutput(outputId = ns("table")),
+    tags$br(),
+    tags$div(
+      id = ns("update-placeholder"),
+      alert(
+        id = ns("update-result"),
+        status = "info",
+        icon("info"), "Select, rename and convert variables"
+      )
+    ),
+    actionButton(
+      inputId = ns("validate"),
+      label = "Apply changes",
+      icon = icon("arrow-circle-right"),
+      width = "100%",
+      class = "btn-primary"
+    )
   )
 }
 
-update_variables_server <- function(input, output, session) {
+#' @export
+#'
+#' @rdname update-variables
+#'
+#' @importFrom shiny callModule
+update_variables_server <- function(id, data) {
+  callModule(
+    module = update_variables,
+    id = id,
+    data = data
+  )
+}
+
+#' @importFrom shiny reactiveValues reactive renderUI
+#' @importFrom DT renderDT
+update_variables <- function(input, output, session,
+                             data) {
+  ns <- session$ns
+  updated_data <- reactiveValues(x = NULL)
+
+  output$data_info <- renderUI({
+    if (is.reactive(data)) {
+      data <- data()
+    }
+    sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
+  })
+
+  variables <- reactive({
+    if (is.reactive(data)) {
+      updated_data$x <- NULL
+      summary_vars(data())
+    } else {
+      summary_vars(data)
+    }
+  })
+
+  output$table <- renderDT({
+    req(variables())
+    variables <- variables()
+    variables <- set_checkbox(variables)
+    variables <- set_text_input(variables, "name", ns("name"))
+    variables <- set_class_input(variables, "class", ns("class_to_set"))
+    update_variables_datatable(variables)
+  })
 
 }
+
 
 
 
@@ -50,7 +125,13 @@ get_class <- function(data) {
 #'
 #' @examples
 get_n_unique <- function(data) {
-  u <- lapply(data, uniqueN)
+  u <- lapply(data, FUN = function(x) {
+    if (is.atomic(x)) {
+      uniqueN(x)
+    } else {
+      NA_integer_
+    }
+  })
   unlist(u, use.names = FALSE)
 }
 
@@ -109,13 +190,14 @@ summary_vars <- function(data) {
 #'
 #' @param data a \code{data.frame}
 #' @param variable name of the variable to replace by text inputs
-#' @param id a common id to use for text inputs, will be suffixed by row number.
+#' @param id a common id to use for text inputs, will be suffixed by row number
+#' @param width width of input
 #'
 #' @return a \code{data.frame}
 #' @noRd
 #' @importFrom htmltools doRenderTags
 #' @importFrom shiny textInput
-set_text_input <- function(data, variable, id = "variable") {
+set_text_input <- function(data, variable, id = "variable", width = "100%") {
   values <- data[[variable]]
   text_input <- mapply(
     FUN = function(inputId, value) {
@@ -123,10 +205,10 @@ set_text_input <- function(data, variable, id = "variable") {
         inputId = inputId,
         label = NULL,
         value = value,
-        width = "100%"
+        width = width
       ))
     },
-    inputId = paste(id, pad(seq_along(values)), sep = "-"),
+    inputId = paste(id, pad0(seq_along(values)), sep = "-"),
     value = values,
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
@@ -141,7 +223,7 @@ set_text_input <- function(data, variable, id = "variable") {
 #' Convert rownames to checkboxes
 #'
 #' @param data a \code{data.frame}
-#' @param id a common id to use for text inputs, will be suffixed by row number.
+#' @param id a common id to use for text inputs, will be suffixed by row number
 #'
 #' @return a \code{data.frame}
 #' @noRd
@@ -166,7 +248,7 @@ set_checkbox <- function(data, id = "selection") {
       tag <- tagAppendAttributes(tag, style = "margin-top: 5px;")
       doRenderTags(tag)
     },
-    X = pad(seq_len(nrow(data)))
+    X = pad0(seq_len(nrow(data)))
   )
   rownames(data) <- unlist(checkboxes, use.names = FALSE)
   data
@@ -181,14 +263,15 @@ set_checkbox <- function(data, id = "selection") {
 #'
 #' @param data a \code{data.frame}
 #' @param variable name of the variable containing variable's class
-#' @param id a common id to use for text inputs, will be suffixed by row number.
+#' @param id a common id to use for text inputs, will be suffixed by row number
+#' @param width width of input
 #'
 #' @return a \code{data.frame}
 #' @noRd
 #'
 #' @importFrom htmltools doRenderTags
 #' @importFrom shiny selectInput
-set_class_input <- function(data, variable, id = "classes") {
+set_class_input <- function(data, variable, id = "classes", width = "120px") {
   classes <- data[[variable]]
   classes_up <- c("character", "factor", "numeric", "date", "datetime")
   class_input <- mapply(
@@ -199,14 +282,14 @@ set_class_input <- function(data, variable, id = "classes") {
           label = NULL,
           choices = classes_up,
           selected = class,
-          width = "100%",
+          width = width,
           selectize = FALSE
         ))
       } else {
         ""
       }
     },
-    inputId = paste(id, pad(seq_len(nrow(data))), sep = "-"),
+    inputId = paste(id, pad0(seq_len(nrow(data))), sep = "-"),
     class = classes,
     SIMPLIFY = FALSE,
     USE.NAMES = FALSE
@@ -236,21 +319,31 @@ update_variables_datatable <- function(data) {
   dt <- datatable(
     data = data,
     rownames = TRUE,
-    colnames = c("Name", "Class", "Class to set", "Number of missing value", "% of complete observations", "Number of unique values"),
+    colnames = c("Name", "Class", "Class to set",
+                 "Missing value",
+                 "Complete observations",
+                 "Unique values"),
     selection = "none",
     escape = FALSE,
     style = "bootstrap",
+    class = "display dt-responsive",
     options = list(
+      scrollY = "400px",
+      scrollX = TRUE,
       lengthChange = FALSE,
       paging = FALSE,
       info = FALSE,
       searching = FALSE,
       drawCallback = JS("function() {Shiny.bindAll(this.api().table().node());}"),
       columnDefs = list(
-        list(width = "100px", targets = 1),
-        list(width = "100px", targets = 2),
-        list(width = "100px", targets = 3)
+        list(width = "100px", targets = list(1))
       )
+      # columns = list(
+      #   list(width = "100px"),
+      #   list(width = "100px"),
+      #   list(width = "100px"),
+      #   NULL, NULL, NULL
+      # )
     )
   )
   formatPercentage(dt, "p_complete")
