@@ -15,13 +15,16 @@
 #'
 #'
 #' @importFrom shiny NS fileInput
-#' @importFrom htmltools tagList tags
+#' @importFrom htmltools tags
 #' @importFrom shinyWidgets pickerInput numericInputIcon
 #'
 #' @example examples/from-file.R
-import_file_ui <- function(id){
+import_file_ui <- function(id) {
+
   ns <- NS(id)
-  tagList(
+
+  tags$div(
+    class = "datamods-import",
     html_dependency_datamods(),
     tags$h2("Import a file"),
     fileInput(
@@ -93,6 +96,7 @@ import_file_server <- function(id,
   )
 }
 
+#' @importFrom htmltools tags tagList
 #' @importFrom shiny reactiveValues reactive observeEvent removeUI req
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets

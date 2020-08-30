@@ -15,14 +15,15 @@
 #' @name import-copypaste
 #'
 #' @importFrom shiny NS icon textAreaInput actionButton
-#' @importFrom htmltools tagList tags tagAppendAttributes
+#' @importFrom htmltools tags tagAppendAttributes
 #'
 #' @example examples/copypaste.R
 import_copypaste_ui <- function(id) {
 
   ns <- NS(id)
 
-  tagList(
+  tags$div(
+    class = "datamods-import",
     html_dependency_datamods(),
     tags$h2("Copy & paste data"),
     tagAppendAttributes(
@@ -85,7 +86,7 @@ import_copypaste_server <- function(id,
 
 #' @importFrom data.table fread
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive
-#' @importFrom htmltools tags
+#' @importFrom htmltools tags tagList
 import_copypaste <- function(input, output, session,
                              default_data = NULL,
                              update_data = c("button", "always")) {

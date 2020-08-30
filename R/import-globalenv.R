@@ -17,7 +17,7 @@
 #'
 #' @name import-globalenv
 #'
-#' @importFrom htmltools tagList tags
+#' @importFrom htmltools tags
 #' @importFrom shiny NS actionButton icon textInput
 #' @importFrom shinyWidgets pickerInput alert
 #'
@@ -31,7 +31,8 @@ import_globalenv_ui <- function(id) {
 
   dataframes_dims <- get_dimensions(choices_df)
 
-  tagList(
+  tags$div(
+    class = "datamods-import",
     html_dependency_datamods(),
     tags$h2("Import a dataset"),
     pickerInput(
@@ -53,7 +54,6 @@ import_globalenv_ui <- function(id) {
         dismissible = TRUE
       )
     ),
-
     tags$div(
       id = ns("validate-button"),
       style = "margin-top: 20px;",
@@ -101,7 +101,7 @@ import_globalenv_server <- function(id,
 
 
 #' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
-#' @importFrom htmltools tags
+#' @importFrom htmltools tags tagList
 #' @importFrom shinyWidgets updatePickerInput
 import_globalenv <- function(input, output, session,
                              default_data = NULL,

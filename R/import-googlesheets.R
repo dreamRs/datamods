@@ -13,14 +13,17 @@
 #' @export
 #' @name import-googlesheets
 #'
-#' @importFrom shiny NS tagList actionLink
+#' @importFrom shiny NS actionLink
 #' @importFrom shinyWidgets textInputIcon
+#' @importFrom htmltools tags
 #'
 #' @example examples/googlesheets.R
-import_googlesheets_ui <- function(id){
+import_googlesheets_ui <- function(id) {
+
   ns <- NS(id)
 
-  tagList(
+  tags$div(
+    class = "datamods-import",
     html_dependency_datamods(),
     tags$h2("Import Google Spreadsheet"),
     tags$p("If you have a shareable link, paste it directly in the field below"),
@@ -98,7 +101,7 @@ import_googlesheets_server <- function(id,
 
 #' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive
-#' @importFrom htmltools tags
+#' @importFrom htmltools tags tagList
 import_googlesheets <- function(input, output, session,
                                 default_data = NULL,
                                 update_data = c("button", "always")) {
