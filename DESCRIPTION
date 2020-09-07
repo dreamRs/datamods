@@ -26,3 +26,5 @@ Imports:
     readxl,
     rio,
     tools
+Suggests: 
+    testthat
