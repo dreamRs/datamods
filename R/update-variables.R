@@ -41,7 +41,10 @@ update_variables_ui <- function(id) {
 }
 
 #' @export
-#'
+#' 
+#' @param id Module's ID
+#' @param data a \code{data.frame}
+#' 
 #' @rdname update-variables
 #'
 #' @importFrom shiny callModule
@@ -79,10 +82,46 @@ update_variables <- function(input, output, session,
   output$table <- renderDT({
     req(variables())
     variables <- variables()
-    variables <- set_checkbox(variables)
+    variables <- set_checkbox(variables, ns("selection"))
     variables <- set_text_input(variables, "name", ns("name"))
     variables <- set_class_input(variables, "class", ns("class_to_set"))
     update_variables_datatable(variables)
+  })
+  
+  observeEvent(input$validate, {
+    if (is.reactive(data)) {
+      data <- data()
+    }
+    inputs <- sort(names(reactiveValuesToList(input)))
+    print(inputs)
+    ## getting the inputs
+    input_names <- grep("name", inputs, value = TRUE)
+    input_classes <- grep("class", inputs, value = TRUE)
+    input_selections <- grep("selection", inputs, value = TRUE)
+    
+    ## getting the input values
+    changed_names <- sapply(input_names, function(x) input[[x]])
+    changed_classes <- sapply(input_classes, function(x) input[[x]])
+    changed_selections <- sapply(input_selections, function(x) input[[x]])
+    
+    set_class <- function(col, fun) {
+      cat(names(col), sep = "-")
+      cat(fun, sep = "\n")
+      if (fun %in% c("character", "factor", "numeric", "date", "datetime"))
+        sapply(col, paste0("as.", fun))
+      else col
+    }
+    
+    ## apply changes
+    n <- length(input_classes)
+    print(input_classes)
+    
+    names(data) <- changed_names
+    data <- data[, changed_selections]
+    
+    data <- data.frame(lapply(1:n, function(i) set_class(data[, i], changed_classes[i])))
+
+    tibble::glimpse(data)
   })
 
 }
@@ -286,7 +325,14 @@ set_class_input <- function(data, variable, id = "classes", width = "120px") {
           selectize = FALSE
         ))
       } else {
-        ""
+        doRenderTags(selectInput(
+          inputId = inputId,
+          label = NULL,
+          choices = "Not applicable",
+          selected = class,
+          width = width,
+          selectize = FALSE
+        ))
       }
     },
     inputId = paste(id, pad0(seq_len(nrow(data))), sep = "-"),
