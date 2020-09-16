@@ -56,7 +56,7 @@ update_variables_server <- function(id, data) {
   )
 }
 
-#' @importFrom shiny reactiveValues reactive renderUI
+#' @importFrom shiny reactiveValues reactive renderUI reactiveValuesToList
 #' @importFrom DT renderDT
 update_variables <- function(input, output, session,
                              data) {
