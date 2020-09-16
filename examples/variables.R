@@ -22,8 +22,15 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  update_variables_server("vars", data = reactive(dplyr::starwars))
+  updated_data <- update_variables_server(
+    id = "vars",
+    data = reactive(dplyr::starwars)
+  )
 
+
+  output$result <- renderPrint({
+    updated_data()
+  })
 }
 
 shinyApp(ui, server)

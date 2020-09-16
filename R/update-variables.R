@@ -27,7 +27,7 @@ update_variables_ui <- function(id) {
       alert(
         id = ns("update-result"),
         status = "info",
-        icon("info"), "Select, rename and convert variables"
+        icon("info"), "Select, rename and convert variables in table above, then apply changes by clicking button below."
       )
     ),
     actionButton(
@@ -41,10 +41,10 @@ update_variables_ui <- function(id) {
 }
 
 #' @export
-#' 
+#'
 #' @param id Module's ID
 #' @param data a \code{data.frame}
-#' 
+#'
 #' @rdname update-variables
 #'
 #' @importFrom shiny callModule
@@ -87,43 +87,39 @@ update_variables <- function(input, output, session,
     variables <- set_class_input(variables, "class", ns("class_to_set"))
     update_variables_datatable(variables)
   })
-  
+
   observeEvent(input$validate, {
     if (is.reactive(data)) {
       data <- data()
     }
-    inputs <- sort(names(reactiveValuesToList(input)))
-    print(inputs)
-    ## getting the inputs
-    input_names <- grep("name", inputs, value = TRUE)
-    input_classes <- grep("class", inputs, value = TRUE)
-    input_selections <- grep("selection", inputs, value = TRUE)
-    
-    ## getting the input values
-    changed_names <- sapply(input_names, function(x) input[[x]])
-    changed_classes <- sapply(input_classes, function(x) input[[x]])
-    changed_selections <- sapply(input_selections, function(x) input[[x]])
-    
-    set_class <- function(col, fun) {
-      cat(names(col), sep = "-")
-      cat(fun, sep = "\n")
-      if (fun %in% c("character", "factor", "numeric", "date", "datetime"))
-        sapply(col, paste0("as.", fun))
-      else col
-    }
-    
-    ## apply changes
-    n <- length(input_classes)
-    print(input_classes)
-    
-    names(data) <- changed_names
-    data <- data[, changed_selections]
-    
-    data <- data.frame(lapply(1:n, function(i) set_class(data[, i], changed_classes[i])))
 
-    tibble::glimpse(data)
+    # getting the input values
+    new_names <- get_inputs("name")
+    new_classes <- get_inputs("class_to_set")
+    new_selections <- get_inputs("selection")
+
+    # set_class <- function(col, fun) {
+    #   cat(names(col), sep = "-")
+    #   cat(fun, sep = "\n")
+    #   if (fun %in% c("character", "factor", "numeric", "date", "datetime"))
+    #     sapply(col, paste0("as.", fun))
+    #   else col
+    # }
+
+    ## apply changes
+    # n <- length(input_classes)
+    # print(input_classes)
+
+    names(data) <- unlist(new_names, use.names = FALSE)
+
+    # data <- data.frame(lapply(1:n, function(i) set_class(data[, i], new_classes[i])))
+
+    data <- data[, unlist(new_selections, use.names = FALSE)]
+
+    updated_data$x <- data
   })
 
+  return(reactive(updated_data$x))
 }
 
 
@@ -397,3 +393,83 @@ update_variables_datatable <- function(data) {
 
 
 
+
+
+#' Retrieve all inputs according to pattern
+#'
+#' @param pattern Pattern to search for
+#' @param session Shiny session
+#'
+#' @return a list
+#' @noRd
+#'
+#' @importFrom shiny getDefaultReactiveDomain isolate
+#'
+get_inputs <- function(pattern, session = shiny::getDefaultReactiveDomain()) {
+  all_inputs <- isolate(reactiveValuesToList(session$input))
+  filtered <- sort(names(all_inputs))
+  filtered <- grep(pattern = pattern, x = filtered, value = TRUE)
+  all_inputs[filtered]
+}
+
+
+
+#' Convert a variable to specific new class
+#'
+#' @param data A \code{data.frame}
+#' @param variable Name of the variable to convert
+#' @param new_class Class to set
+#' @param ... Other arguments passed on to methods.
+#'
+#' @return A \code{data.frame}
+#' @noRd
+#'
+#' @examples
+#' dat <- data.frame(
+#'   v1 = month.name,
+#'   v2 = month.abb,
+#'   v3 = 1:12,
+#'   v4 = as.numeric(Sys.Date() + 0:11),
+#'   v5 = as.character(Sys.Date() + 0:11),
+#'   v6 = as.factor(c("a", "a", "b", "a", "b", "a", "a", "b", "a", "b", "b", "a")),
+#'   v7 = as.character(11:22),
+#'   stringsAsFactors = FALSE
+#' )
+#'
+#' str(dat)
+#'
+#' str(convert_to(dat, "v3", "character"))
+#' str(convert_to(dat, "v6", "character"))
+#' str(convert_to(dat, "v7", "numeric"))
+#' str(convert_to(dat, "v4", "date", origin = "1970-01-01"))
+#' str(convert_to(dat, "v5", "date"))
+#'
+#' str(convert_to(dat, c("v1", "v3"), c("factor", "character")))
+#'
+#' str(convert_to(dat, c("v1", "v3", "v4"), c("factor", "character", "date"), origin = "1970-01-01"))
+#'
+convert_to <- function(data,
+                       variable,
+                       new_class = c("character", "factor", "numeric", "date", "datetime"),
+                       ...) {
+  new_class <- match.arg(new_class, several.ok = TRUE)
+  stopifnot(length(new_class) == length(variable))
+  if (length(variable) > 1) {
+    for (i in seq_along(variable)) {
+      data <- convert_to(data, variable[i], new_class[i], ...)
+    }
+    return(data)
+  }
+  if (identical(new_class, "character")) {
+    data[[variable]] <- as.character(x = data[[variable]], ...)
+  } else if (identical(new_class, "factor")) {
+    data[[variable]] <- as.factor(x = data[[variable]])
+  } else if (identical(new_class, "numeric")) {
+    data[[variable]] <- as.numeric(x = data[[variable]], ...)
+  } else if (identical(new_class, "date")) {
+    data[[variable]] <- as.Date(x = data[[variable]], ...)
+  } else if (identical(new_class, "datetime")) {
+    data[[variable]] <- as.POSIXct(x = data[[variable]], ...)
+  }
+  return(data)
+}
