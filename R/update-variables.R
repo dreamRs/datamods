@@ -97,6 +97,24 @@ update_variables <- function(input, output, session,
     new_names <- get_inputs("name")
     new_classes <- get_inputs("class_to_set")
     new_selections <- get_inputs("selection")
+    
+    data_sv <- summary_vars(data)
+    classes_df <- data.frame(
+      id = pad0(1:nrow(data_sv)),
+      name = data_sv[["name"]],
+      class = data_sv[["class"]],
+      class_to_set = unlist(new_classes)
+    )
+    
+    #print(classes_df)
+    
+    get_vars_to_change <- function(classes_df) {
+      classes_df <- with(classes_df, classes_df[class_to_set != "Not applicable",])
+      to_change <- with(classes_df, classes_df[class != class_to_set,])
+    }
+    
+    vars_to_change <- get_vars_to_change(classes_df)
+    print(vars_to_change)
 
     # set_class <- function(col, fun) {
     #   cat(names(col), sep = "-")
