@@ -63,25 +63,28 @@ update_variables <- function(input, output, session,
   ns <- session$ns
   updated_data <- reactiveValues(x = NULL)
 
-  output$data_info <- renderUI({
+  data_r <- reactive({
     if (is.reactive(data)) {
-      data <- data()
+      data()
+    } else {
+      data
     }
+  })
+
+  output$data_info <- renderUI({
+    data <- data_r()
     sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
   })
 
-  variables <- reactive({
-    if (is.reactive(data)) {
-      updated_data$x <- NULL
-      summary_vars(data())
-    } else {
-      summary_vars(data)
-    }
+  variables_r <- reactive({
+    data <- data_r()
+    updated_data$x <- NULL
+    summary_vars(data)
   })
 
   output$table <- renderDT({
-    req(variables())
-    variables <- variables()
+    req(variables_r())
+    variables <- variables_r()
     variables <- set_checkbox(variables, ns("selection"))
     variables <- set_text_input(variables, "name", ns("name"))
     variables <- set_class_input(variables, "class", ns("class_to_set"))
@@ -89,49 +92,29 @@ update_variables <- function(input, output, session,
   })
 
   observeEvent(input$validate, {
-    if (is.reactive(data)) {
-      data <- data()
-    }
+    data <- data_r()
 
     # getting the input values
     new_names <- get_inputs("name")
     new_classes <- get_inputs("class_to_set")
     new_selections <- get_inputs("selection")
-    
-    data_sv <- summary_vars(data)
-    classes_df <- data.frame(
-      id = pad0(1:nrow(data_sv)),
-      name = data_sv[["name"]],
-      class = data_sv[["class"]],
-      class_to_set = unlist(new_classes)
-    )
-    
-    #print(classes_df)
-    
-    get_vars_to_change <- function(classes_df) {
-      classes_df <- with(classes_df, classes_df[class_to_set != "Not applicable",])
-      to_change <- with(classes_df, classes_df[class != class_to_set,])
-    }
-    
-    vars_to_change <- get_vars_to_change(classes_df)
-    print(vars_to_change)
 
-    # set_class <- function(col, fun) {
-    #   cat(names(col), sep = "-")
-    #   cat(fun, sep = "\n")
-    #   if (fun %in% c("character", "factor", "numeric", "date", "datetime"))
-    #     sapply(col, paste0("as.", fun))
-    #   else col
-    # }
+    data_sv <- variables_r()
+    vars_to_change <- get_vars_to_convert(data_sv, new_classes)
 
-    ## apply changes
-    # n <- length(input_classes)
-    # print(input_classes)
-
+    # rename
     names(data) <- unlist(new_names, use.names = FALSE)
 
-    # data <- data.frame(lapply(1:n, function(i) set_class(data[, i], new_classes[i])))
+    # convert
+    if (nrow(vars_to_change) > 0) {
+      data <- convert_to(
+        data = data,
+        variable = vars_to_change$name,
+        new_class = vars_to_change$class_to_set
+      )
+    }
 
+    # select
     data <- data[, unlist(new_selections, use.names = FALSE)]
 
     updated_data$x <- data
@@ -155,8 +138,8 @@ update_variables <- function(input, output, session,
 #'
 #' @examples
 #'
-#' get_class(mtcars)
-get_class <- function(data) {
+#' get_classes(mtcars)
+get_classes <- function(data) {
   classes <- lapply(
     X = data,
     FUN = function(x) {
@@ -225,7 +208,7 @@ summary_vars <- function(data) {
   data <- as.data.frame(data)
   datsum <- data.frame(
     name = names(data),
-    class = get_class(data),
+    class = get_classes(data),
     n_missing = unname(colSums(is.na(data))),
     stringsAsFactors = FALSE
   )
@@ -326,7 +309,7 @@ set_checkbox <- function(data, id = "selection") {
 #' @importFrom shiny selectInput
 set_class_input <- function(data, variable, id = "classes", width = "120px") {
   classes <- data[[variable]]
-  classes_up <- c("character", "factor", "numeric", "date", "datetime")
+  classes_up <- c("character", "factor", "numeric", "integer", "date", "datetime")
   class_input <- mapply(
     FUN = function(inputId, class) {
       if (class %in% classes_up) {
@@ -339,14 +322,7 @@ set_class_input <- function(data, variable, id = "classes", width = "120px") {
           selectize = FALSE
         ))
       } else {
-        doRenderTags(selectInput(
-          inputId = inputId,
-          label = NULL,
-          choices = "Not applicable",
-          selected = class,
-          width = width,
-          selectize = FALSE
-        ))
+        ""
       }
     },
     inputId = paste(id, pad0(seq_len(nrow(data))), sep = "-"),
@@ -468,7 +444,7 @@ get_inputs <- function(pattern, session = shiny::getDefaultReactiveDomain()) {
 #'
 convert_to <- function(data,
                        variable,
-                       new_class = c("character", "factor", "numeric", "date", "datetime"),
+                       new_class = c("character", "factor", "numeric", "integer", "date", "datetime"),
                        ...) {
   new_class <- match.arg(new_class, several.ok = TRUE)
   stopifnot(length(new_class) == length(variable))
@@ -484,6 +460,8 @@ convert_to <- function(data,
     data[[variable]] <- as.factor(x = data[[variable]])
   } else if (identical(new_class, "numeric")) {
     data[[variable]] <- as.numeric(x = data[[variable]], ...)
+  } else if (identical(new_class, "integer")) {
+    data[[variable]] <- as.integer(x = data[[variable]], ...)
   } else if (identical(new_class, "date")) {
     data[[variable]] <- as.Date(x = data[[variable]], ...)
   } else if (identical(new_class, "datetime")) {
@@ -491,3 +469,105 @@ convert_to <- function(data,
   }
   return(data)
 }
+
+
+
+
+#' Extract variable ID from input names
+#'
+#' @param x Character vector
+#'
+#' @return a character vector
+#' @noRd
+#'
+#' @examples
+#' extract_id(c("class_to_set-01", "class_to_set-02",
+#'              "class_to_set-03", "class_to_set-04",
+#'              "class_to_set-05", "no-id-there"))
+extract_id <- function(x) {
+  match_reg <- regexec(pattern = "(?<=-)\\d+$", text = x, perl = TRUE)
+  result <- regmatches(x = x, m = match_reg)
+  result <- lapply(
+    X = result,
+    FUN = function(x) {
+      if (length(x) < 1) {
+        NA_character_
+      } else {
+        x
+      }
+    }
+  )
+  unlist(result)
+}
+
+
+
+
+
+
+
+#' Get variable(s) to convert
+#'
+#' @param vars Output of \code{summary_vars}
+#' @param classes_input List of inputs containing new classes
+#'
+#' @return a \code{data.frame}.
+#' @noRd
+#'
+#' @examples
+#' # 2 variables to convert
+#' new_classes <- list(
+#'   "class_to_set-1" = "numeric",
+#'   "class_to_set-2" = "numeric",
+#'   "class_to_set-3" = "character",
+#'   "class_to_set-4" = "numeric",
+#'   "class_to_set-5" = "character"
+#' )
+#' get_vars_to_convert(summary_vars(iris), new_classes)
+#'
+#'
+#' # No changes
+#' new_classes <- list(
+#'   "class_to_set-1" = "numeric",
+#'   "class_to_set-2" = "numeric",
+#'   "class_to_set-3" = "numeric",
+#'   "class_to_set-4" = "numeric",
+#'   "class_to_set-5" = "factor"
+#' )
+#' get_vars_to_convert(summary_vars(iris), new_classes)
+#'
+#'
+#' new_classes <- list(
+#'   "class_to_set-01" = "character",
+#'   "class_to_set-02" = "numeric",
+#'   "class_to_set-03" = "character",
+#'   "class_to_set-04" = "numeric",
+#'   "class_to_set-05" = "character",
+#'   "class_to_set-06" = "character",
+#'   "class_to_set-07" = "numeric",
+#'   "class_to_set-08" = "character",
+#'   "class_to_set-09" = "numeric",
+#'   "class_to_set-10" = "character",
+#'   "class_to_set-11" = "integer"
+#' )
+#' get_vars_to_convert(summary_vars(mtcars), new_classes)
+get_vars_to_convert <- function(vars, classes_input) {
+  classes_input <- data.frame(
+    id = names(classes_input),
+    class_to_set = unlist(classes_input, use.names = FALSE),
+    stringsAsFactors = FALSE
+  )
+  classes_input$id <- extract_id(classes_input$id)
+  vars$id <- pad0(seq_len(nrow(vars)))
+  classes_df <- merge(x = vars, y = classes_input, by = "id")
+  classes_df <- classes_df[!is.na(classes_df$class_to_set), ]
+  with(classes_df, classes_df[class != class_to_set, ])
+}
+
+
+
+
+
+
+
+
