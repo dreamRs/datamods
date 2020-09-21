@@ -69,7 +69,7 @@ import_copypaste_ui <- function(id) {
 #'
 #' @export
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer
 #'
 #' @rdname import-copypaste
 import_copypaste_server <- function(id,
