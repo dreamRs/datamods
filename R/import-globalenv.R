@@ -81,7 +81,7 @@ import_globalenv_ui <- function(id) {
 #'
 #' @export
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
@@ -89,13 +89,9 @@ import_globalenv_server <- function(id,
                                     default_name = NULL,
                                     default_choices = NULL,
                                     update_data = c("button", "always")) {
-  callModule(
-    module = import_globalenv,
+  moduleServer(
     id = id,
-    default_data = default_data,
-    default_name = default_name,
-    default_choices = default_choices,
-    update_data = update_data
+    module = import_globalenv
   )
 }
 
