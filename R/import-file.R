@@ -56,7 +56,7 @@ import_file_ui <- function(id) {
       alert(
         id = ns("import-result"),
         status = "info",
-        tags$b("No file selected:"), "You can mport .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...",
+        tags$b("No file selected:"), "You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...",
         dismissible = TRUE
       )
     ),
@@ -82,17 +82,15 @@ import_file_ui <- function(id) {
 #'
 #' @export
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer
 #'
 #' @rdname import-file
 import_file_server <- function(id,
                                default_data = NULL,
                                update_data = c("button", "always")) {
-  callModule(
-    module = import_file,
+  moduleServer(
     id = id,
-    default_data = default_data,
-    update_data = update_data
+    module = import_file
   )
 }
 
