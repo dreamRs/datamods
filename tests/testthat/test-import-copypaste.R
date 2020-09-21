@@ -3,7 +3,7 @@ test_that("import_copypaste_ui works", {
 })
 
 test_that("import_copypaste_server works", {
-  testServer(import_copypaste_server, {
+  shiny::testServer(import_copypaste_server, {
     session$setInputs(data_pasted = 0) #to bypass ignoreInit = TRUE
     session$setInputs(
       data_pasted = 
@@ -12,5 +12,6 @@ test_that("import_copypaste_server works", {
       validate = 0
     )
     expect_is(imported_data$data, "data.table")
+    expect_is(session$getReturned()$data(), "data.table")
   })
 })
