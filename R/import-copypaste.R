@@ -75,11 +75,9 @@ import_copypaste_ui <- function(id) {
 import_copypaste_server <- function(id,
                                     default_data = NULL,
                                     update_data = c("button", "always")) {
-  callModule(
-    module = import_copypaste,
+  moduleServer(
     id = id,
-    default_data = default_data,
-    update_data = update_data
+    module = import_copypaste
   )
 }
 
