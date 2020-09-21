@@ -83,18 +83,16 @@ import_googlesheets_ui <- function(id) {
 #'
 #' @export
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer
 #'
 #' @rdname import-googlesheets
 
 import_googlesheets_server <- function(id,
                                        default_data = NULL,
                                        update_data = c("button", "always")) {
-  callModule(
-    module = import_googlesheets,
+  moduleServer(
     id = id,
-    default_data = default_data,
-    update_data = update_data
+    module = import_googlesheets
   )
 }
 
