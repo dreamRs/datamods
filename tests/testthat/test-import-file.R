@@ -7,7 +7,7 @@ test_that("import_file_server works", {
     session$setInputs(sheet = 0) #to bypass ignoreInit = TRUE
     session$setInputs(
       file = data.frame(
-        datapath = system.file("inst", "extdata", "mtcars.csv", package = "datamods")
+        datapath = system.file("extdata", "mtcars.csv", package = "datamods")
       ),
       sheet = 0,
       skip_rows = 0,
