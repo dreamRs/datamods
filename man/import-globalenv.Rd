@@ -12,7 +12,8 @@ import_globalenv_server(
   id,
   choices = NULL,
   selected = NULL,
-  trigger_return = c("button", "change")
+  trigger_return = c("button", "change"),
+  return_class = c("data.frame", "data.table", "tbl_df")
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ if there's no \code{data.frame} in user's environment.}
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
 \code{"change"} (each time user select a dataset in the list).}
+
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 }
 \value{
 \itemize{

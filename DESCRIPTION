@@ -25,6 +25,7 @@ Imports:
     googlesheets4,
     readxl,
     rio,
+    tibble,
     tools
 Suggests: 
     testthat,

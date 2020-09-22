@@ -65,6 +65,7 @@ import_copypaste_ui <- function(id) {
 #' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"change"} (each time user select a dataset in the list).
+#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
 #'
 #' @export
 #'
@@ -72,7 +73,8 @@ import_copypaste_ui <- function(id) {
 #'
 #' @rdname import-copypaste
 import_copypaste_server <- function(id,
-                                    trigger_return = c("button", "change")) {
+                                    trigger_return = c("button", "change"),
+                                    return_class = c("data.frame", "data.table", "tbl_df")) {
   moduleServer(
     id = id,
     module = import_copypaste
@@ -84,7 +86,8 @@ import_copypaste_server <- function(id,
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive
 #' @importFrom htmltools tags tagList
 import_copypaste <- function(input, output, session,
-                             trigger_return = c("button", "change")) {
+                             trigger_return = c("button", "change"),
+                             return_class = c("data.frame", "data.table", "tbl_df")) {
 
   ns <- session$ns
   trigger_return <- match.arg(trigger_return)
@@ -161,11 +164,11 @@ import_copypaste <- function(input, output, session,
 
   if (identical(trigger_return, "button")) {
     return(list(
-      data = reactive(imported_rv$data)
+      data = reactive(as_out(imported_rv$data, return_class))
     ))
   } else {
     return(list(
-      data = reactive(temporary_rv$data)
+      data = reactive(as_out(temporary_rv$data, return_class))
     ))
   }
 }

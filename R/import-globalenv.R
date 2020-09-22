@@ -78,6 +78,7 @@ import_globalenv_ui <- function(id) {
 #' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"change"} (each time user select a dataset in the list).
+#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
 #'
 #' @export
 #'
@@ -89,7 +90,8 @@ import_globalenv_ui <- function(id) {
 import_globalenv_server <- function(id,
                                     choices = NULL,
                                     selected = NULL,
-                                    trigger_return = c("button", "change")) {
+                                    trigger_return = c("button", "change"),
+                                    return_class = c("data.frame", "data.table", "tbl_df")) {
 
   trigger_return <- match.arg(trigger_return)
 
@@ -207,12 +209,12 @@ import_globalenv_server <- function(id,
 
     if (identical(trigger_return, "button")) {
       return(list(
-        data = reactive(imported_rv$data),
+        data = reactive(as_out(imported_rv$data, return_class)),
         name = reactive(imported_rv$name)
       ))
     } else {
       return(list(
-        data = reactive(temporary_rv$data),
+        data = reactive(as_out(temporary_rv$data, return_class)),
         name = reactive(temporary_rv$name)
       ))
     }
