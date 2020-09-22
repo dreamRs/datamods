@@ -14,7 +14,7 @@ test_that("import_file_server works", {
       skip_rows = 0,
       validate = 0
     )
-    expect_is(imported_data$data, "data.frame")
+    expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")
   })
 })

@@ -8,16 +8,10 @@
 \usage{
 import_googlesheets_ui(id)
 
-import_googlesheets_server(
-  id,
-  default_data = NULL,
-  update_data = c("button", "always")
-)
+import_googlesheets_server(id, update_data = c("button", "always"))
 }
 \arguments{
 \item{id}{Module's ID}
-
-\item{default_data}{Default \code{data.frame} to use.}
 
 \item{update_data}{When to update selected data:
 \code{"button"} (when user click on button) or

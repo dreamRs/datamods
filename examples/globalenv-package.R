@@ -25,7 +25,7 @@ server <- function(input, output, session) {
 
   imported <- import_globalenv_server(
     id = "myid",
-    default_choices = list_pkg_data("ggplot2")
+    choices = list_pkg_data("ggplot2")
   )
 
   output$result <- renderPrint({

@@ -70,11 +70,11 @@ import_globalenv_ui <- function(id) {
 }
 
 
-#' @param default_data Default \code{data.frame} to use.
-#' @param default_name Default name to use.
-#' @param default_choices Character vector or \code{reactive} function
+
+#' @param choices Character vector or \code{reactive} function
 #'  returning character vector of choices to use
 #'  if there's no \code{data.frame} in user's environment.
+#' @param selected Default selected value, if any and if \code{choices} is provided.
 #' @param update_data When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"always"} (each time user select a dataset in the list).
@@ -87,9 +87,8 @@ import_globalenv_ui <- function(id) {
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
-                                    default_data = NULL,
-                                    default_name = NULL,
-                                    default_choices = NULL,
+                                    choices = NULL,
+                                    selected = NULL,
                                     update_data = c("button", "always")) {
 
   update_data <- match.arg(update_data)
@@ -98,34 +97,34 @@ import_globalenv_server <- function(id,
 
     ns <- session$ns
 
-    imported_data <- reactiveValues(data = default_data, name = default_name)
-    temporary_data <- reactiveValues(data = default_data, name = default_name)
+    imported_rv <- reactiveValues(data = NULL, name = NULL)
+    temporary_rv <- reactiveValues(data = NULL, name = NULL)
 
 
-    if (is.reactive(default_choices)) {
-      observeEvent(default_choices(), {
+    if (is.reactive(choices)) {
+      observeEvent(choices(), {
         updatePickerInput(
           session = session,
           inputId = "data",
-          choices = default_choices(),
-          selected = temporary_data$name,
+          choices = choices(),
+          selected = temporary_rv$name,
           choicesOpt = list(
-            subtext = get_dimensions(default_choices())
+            subtext = get_dimensions(choices())
           )
         )
-        temporary_data$package <- attr(default_choices(), "package")
+        temporary_rv$package <- attr(choices(), "package")
       })
     } else {
       updatePickerInput(
         session = session,
         inputId = "data",
-        choices = default_choices,
-        selected = default_name,
+        choices = choices,
+        selected = selected,
         choicesOpt = list(
-          subtext = get_dimensions(default_choices)
+          subtext = get_dimensions(choices)
         )
       )
-      temporary_data$package <- attr(default_choices, "package")
+      temporary_rv$package <- attr(choices, "package")
     }
 
 
@@ -138,8 +137,8 @@ import_globalenv_server <- function(id,
 
       name_df <- input$data
 
-      if (!is.null(temporary_data$package)) {
-        attr(name_df, "package") <- temporary_data$package
+      if (!is.null(temporary_rv$package)) {
+        attr(name_df, "package") <- temporary_rv$package
       }
 
       imported <- try(get_env_data(name_df), silent = TRUE)
@@ -190,31 +189,31 @@ import_globalenv_server <- function(id,
           success_message
         )
 
-        temporary_data$data <- imported
-        temporary_data$name <- input$data
+        temporary_rv$data <- imported
+        temporary_rv$name <- input$data
       }
     }, ignoreInit = TRUE)
 
 
     observeEvent(input$see_data, {
-      show_data(temporary_data$data)
+      show_data(temporary_rv$data)
     })
 
     observeEvent(input$validate, {
-      imported_data$data <- temporary_data$data
-      imported_data$name <- temporary_data$name
+      imported_rv$data <- temporary_rv$data
+      imported_rv$name <- temporary_rv$name
     })
 
 
     if (identical(update_data, "button")) {
       return(list(
-        data = reactive(imported_data$data),
-        name = reactive(imported_data$name)
+        data = reactive(imported_rv$data),
+        name = reactive(imported_rv$name)
       ))
     } else {
       return(list(
-        data = reactive(temporary_data$data),
-        name = reactive(temporary_data$name)
+        data = reactive(temporary_rv$data),
+        name = reactive(temporary_rv$name)
       ))
     }
   }

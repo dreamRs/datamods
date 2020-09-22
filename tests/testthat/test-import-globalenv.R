@@ -10,9 +10,9 @@ test_that("import_globalenv_server works", {
       data = "mtcars",
       validate = 0
     )
-    expect_equal(imported_data$name, input$data)
+    expect_equal(imported_rv$name, input$data)
     expect_equal(session$getReturned()$name(), input$data)
-    expect_is(imported_data$data, "data.frame")
+    expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")
   })
 })

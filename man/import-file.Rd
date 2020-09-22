@@ -8,16 +8,10 @@
 \usage{
 import_file_ui(id)
 
-import_file_server(
-  id,
-  default_data = NULL,
-  update_data = c("button", "always")
-)
+import_file_server(id, update_data = c("button", "always"))
 }
 \arguments{
 \item{id}{Module's id}
-
-\item{default_data}{Default \code{data.frame} to use.}
 
 \item{update_data}{When to update selected data:
 \code{"button"} (when user click on button) or

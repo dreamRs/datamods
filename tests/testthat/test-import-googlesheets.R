@@ -8,8 +8,8 @@ test_that("import_googlesheets_server works", {
     session$setInputs(
       link = "https://docs.google.com/spreadsheets/d/1U6Cf_qEOhiR9AZqTqS3mbMF3zt2db48ZP5v3rkrAEJY/edit?usp=sharing",
       validate = 0
-    ) 
-    expect_is(imported_data$data, "data.frame")
+    )
+    expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")
   })
 })

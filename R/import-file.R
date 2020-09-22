@@ -75,7 +75,6 @@ import_file_ui <- function(id) {
   )
 }
 
-#' @param default_data Default \code{data.frame} to use.
 #' @param update_data When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"always"} (each time user select a dataset in the list).
@@ -86,7 +85,6 @@ import_file_ui <- function(id) {
 #'
 #' @rdname import-file
 import_file_server <- function(id,
-                               default_data = NULL,
                                update_data = c("button", "always")) {
   moduleServer(
     id = id,
@@ -101,13 +99,12 @@ import_file_server <- function(id,
 #' @importFrom rio import
 #' @importFrom tools file_ext
 import_file <- function(input, output, session,
-                        default_data = NULL,
                         update_data = c("button", "always")) {
 
   ns <- session$ns
   update_data <- match.arg(update_data)
-  imported_data <- reactiveValues(data = default_data)
-  temporary_data <- reactiveValues(data = default_data)
+  imported_rv <- reactiveValues(data = NULL)
+  temporary_rv <- reactiveValues(data = NULL)
 
   if (identical(update_data, "always")) {
     removeUI(selector = paste0("#", ns("validate-button")))
@@ -189,26 +186,26 @@ import_file <- function(input, output, session,
         success_message
       )
 
-      temporary_data$data <- imported
+      temporary_rv$data <- imported
     }
   }, ignoreInit = TRUE)
 
   observeEvent(input$see_data, {
-    show_data(temporary_data$data)
+    show_data(temporary_rv$data)
   })
 
   observeEvent(input$validate, {
-    imported_data$data <- temporary_data$data
+    imported_rv$data <- temporary_rv$data
   })
 
 
   if (identical(update_data, "button")) {
     return(list(
-      data = reactive(imported_data$data)
+      data = reactive(imported_rv$data)
     ))
   } else {
     return(list(
-      data = reactive(temporary_data$data)
+      data = reactive(temporary_rv$data)
     ))
   }
 
