@@ -89,6 +89,132 @@ import_globalenv_server <- function(id,
                                     default_name = NULL,
                                     default_choices = NULL,
                                     update_data = c("button", "always")) {
+  
+  import_globalenv <- function(input, output, session) {
+    
+    ns <- session$ns
+    update_data <- match.arg(update_data)
+    imported_data <- reactiveValues(data = default_data, name = default_name)
+    temporary_data <- reactiveValues(data = default_data, name = default_name)
+    
+    
+    if (is.reactive(default_choices)) {
+      observeEvent(default_choices(), {
+        updatePickerInput(
+          session = session,
+          inputId = "data",
+          choices = default_choices(),
+          selected = temporary_data$name,
+          choicesOpt = list(
+            subtext = get_dimensions(default_choices())
+          )
+        )
+        temporary_data$package <- attr(default_choices(), "package")
+      })
+    } else {
+      updatePickerInput(
+        session = session,
+        inputId = "data",
+        choices = default_choices,
+        selected = default_name,
+        choicesOpt = list(
+          subtext = get_dimensions(default_choices)
+        )
+      )
+      temporary_data$package <- attr(default_choices, "package")
+    }
+    
+    
+    if (identical(update_data, "always")) {
+      removeUI(selector = paste0("#", ns("validate-button")))
+    }
+    
+    
+    observeEvent(input$data, {
+      
+      name_df <- input$data
+      
+      if (!is.null(temporary_data$package)) {
+        attr(name_df, "package") <- temporary_data$package
+      }
+      
+      imported <- try(get_env_data(name_df), silent = TRUE)
+      
+      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+        
+        toggle_widget(inputId = ns("validate"), enable = FALSE)
+        
+        insert_alert(
+          selector = ns("import"),
+          status = "danger",
+          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
+        )
+        
+      } else {
+        
+        toggle_widget(inputId = ns("validate"), enable = TRUE)
+        
+        if (identical(update_data, "button")) {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data ready to be imported!"),
+            sprintf(
+              "%s: %s obs. of %s variables imported",
+              input$data, nrow(imported), ncol(imported)
+            )
+          )
+        } else {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data successfully imported!"),
+            sprintf(
+              "%s: %s obs. of %s variables imported",
+              input$data, nrow(imported), ncol(imported)
+            )
+          )
+        }
+        success_message <- tagList(
+          success_message,
+          tags$br(),
+          actionLink(
+            inputId = ns("see_data"),
+            label = "click to see data",
+            icon = icon("hand-o-right")
+          )
+        )
+        insert_alert(
+          selector = ns("import"),
+          status = "success",
+          success_message
+        )
+        
+        temporary_data$data <- imported
+        temporary_data$name <- input$data
+      }
+    }, ignoreInit = TRUE)
+    
+    
+    observeEvent(input$see_data, {
+      show_data(temporary_data$data)
+    })
+    
+    observeEvent(input$validate, {
+      imported_data$data <- temporary_data$data
+      imported_data$name <- temporary_data$name
+    })
+    
+    
+    if (identical(update_data, "button")) {
+      return(list(
+        data = reactive(imported_data$data),
+        name = reactive(imported_data$name)
+      ))
+    } else {
+      return(list(
+        data = reactive(temporary_data$data),
+        name = reactive(temporary_data$name)
+      ))
+    }
+  }
+  
   moduleServer(
     id = id,
     module = import_globalenv
@@ -99,134 +225,6 @@ import_globalenv_server <- function(id,
 #' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
 #' @importFrom htmltools tags tagList
 #' @importFrom shinyWidgets updatePickerInput
-import_globalenv <- function(input, output, session,
-                             default_data = NULL,
-                             default_name = NULL,
-                             default_choices = NULL,
-                             update_data = c("button", "always")) {
-
-  ns <- session$ns
-  update_data <- match.arg(update_data)
-  imported_data <- reactiveValues(data = default_data, name = default_name)
-  temporary_data <- reactiveValues(data = default_data, name = default_name)
-
-
-  if (is.reactive(default_choices)) {
-    observeEvent(default_choices(), {
-      updatePickerInput(
-        session = session,
-        inputId = "data",
-        choices = default_choices(),
-        selected = temporary_data$name,
-        choicesOpt = list(
-          subtext = get_dimensions(default_choices())
-        )
-      )
-      temporary_data$package <- attr(default_choices(), "package")
-    })
-  } else {
-    updatePickerInput(
-      session = session,
-      inputId = "data",
-      choices = default_choices,
-      selected = default_name,
-      choicesOpt = list(
-        subtext = get_dimensions(default_choices)
-      )
-    )
-    temporary_data$package <- attr(default_choices, "package")
-  }
-
-
-  if (identical(update_data, "always")) {
-    removeUI(selector = paste0("#", ns("validate-button")))
-  }
-
-
-  observeEvent(input$data, {
-
-    name_df <- input$data
-
-    if (!is.null(temporary_data$package)) {
-      attr(name_df, "package") <- temporary_data$package
-    }
-
-    imported <- try(get_env_data(name_df), silent = TRUE)
-
-    if (inherits(imported, "try-error") || NROW(imported) < 1) {
-
-      toggle_widget(inputId = ns("validate"), enable = FALSE)
-
-      insert_alert(
-        selector = ns("import"),
-        status = "danger",
-        tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-      )
-
-    } else {
-
-      toggle_widget(inputId = ns("validate"), enable = TRUE)
-
-      if (identical(update_data, "button")) {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data ready to be imported!"),
-          sprintf(
-            "%s: %s obs. of %s variables imported",
-            input$data, nrow(imported), ncol(imported)
-          )
-        )
-      } else {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data successfully imported!"),
-          sprintf(
-            "%s: %s obs. of %s variables imported",
-            input$data, nrow(imported), ncol(imported)
-          )
-        )
-      }
-      success_message <- tagList(
-        success_message,
-        tags$br(),
-        actionLink(
-          inputId = ns("see_data"),
-          label = "click to see data",
-          icon = icon("hand-o-right")
-        )
-      )
-      insert_alert(
-        selector = ns("import"),
-        status = "success",
-        success_message
-      )
-
-      temporary_data$data <- imported
-      temporary_data$name <- input$data
-    }
-  }, ignoreInit = TRUE)
-
-
-  observeEvent(input$see_data, {
-    show_data(temporary_data$data)
-  })
-
-  observeEvent(input$validate, {
-    imported_data$data <- temporary_data$data
-    imported_data$name <- temporary_data$name
-  })
-
-
-  if (identical(update_data, "button")) {
-    return(list(
-      data = reactive(imported_data$data),
-      name = reactive(imported_data$name)
-    ))
-  } else {
-    return(list(
-      data = reactive(temporary_data$data),
-      name = reactive(temporary_data$name)
-    ))
-  }
-}
 
 
 
