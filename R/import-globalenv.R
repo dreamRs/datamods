@@ -81,7 +81,9 @@ import_globalenv_ui <- function(id) {
 #'
 #' @export
 #'
-#' @importFrom shiny moduleServer
+#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
+#' @importFrom htmltools tags tagList
+#' @importFrom shinyWidgets updatePickerInput
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
@@ -89,15 +91,17 @@ import_globalenv_server <- function(id,
                                     default_name = NULL,
                                     default_choices = NULL,
                                     update_data = c("button", "always")) {
-  
-  import_globalenv <- function(input, output, session) {
-    
+
+  update_data <- match.arg(update_data)
+
+  module <- function(input, output, session) {
+
     ns <- session$ns
-    update_data <- match.arg(update_data)
+
     imported_data <- reactiveValues(data = default_data, name = default_name)
     temporary_data <- reactiveValues(data = default_data, name = default_name)
-    
-    
+
+
     if (is.reactive(default_choices)) {
       observeEvent(default_choices(), {
         updatePickerInput(
@@ -123,37 +127,37 @@ import_globalenv_server <- function(id,
       )
       temporary_data$package <- attr(default_choices, "package")
     }
-    
-    
+
+
     if (identical(update_data, "always")) {
       removeUI(selector = paste0("#", ns("validate-button")))
     }
-    
-    
+
+
     observeEvent(input$data, {
-      
+
       name_df <- input$data
-      
+
       if (!is.null(temporary_data$package)) {
         attr(name_df, "package") <- temporary_data$package
       }
-      
+
       imported <- try(get_env_data(name_df), silent = TRUE)
-      
+
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-        
+
         toggle_widget(inputId = ns("validate"), enable = FALSE)
-        
+
         insert_alert(
           selector = ns("import"),
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
-        
+
       } else {
-        
+
         toggle_widget(inputId = ns("validate"), enable = TRUE)
-        
+
         if (identical(update_data, "button")) {
           success_message <- tagList(
             tags$b(icon("check"), "Data ready to be imported!"),
@@ -185,23 +189,23 @@ import_globalenv_server <- function(id,
           status = "success",
           success_message
         )
-        
+
         temporary_data$data <- imported
         temporary_data$name <- input$data
       }
     }, ignoreInit = TRUE)
-    
-    
+
+
     observeEvent(input$see_data, {
       show_data(temporary_data$data)
     })
-    
+
     observeEvent(input$validate, {
       imported_data$data <- temporary_data$data
       imported_data$name <- temporary_data$name
     })
-    
-    
+
+
     if (identical(update_data, "button")) {
       return(list(
         data = reactive(imported_data$data),
@@ -214,17 +218,14 @@ import_globalenv_server <- function(id,
       ))
     }
   }
-  
+
   moduleServer(
     id = id,
-    module = import_globalenv
+    module = module
   )
 }
 
 
-#' @importFrom shiny reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
-#' @importFrom htmltools tags tagList
-#' @importFrom shinyWidgets updatePickerInput
 
 
 
