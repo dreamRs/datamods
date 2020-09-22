@@ -7,6 +7,11 @@
  * @version 0.0.1
  */
 
+/*jshint
+  jquery:true
+*/
+/*global Shiny */
+
 // Block or unblock an input widget
 Shiny.addCustomMessageHandler("datamods-toggleWidget", function(data) {
   $("#" + data.id).prop("disabled", !data.enable);
