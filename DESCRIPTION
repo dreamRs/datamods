@@ -27,4 +27,7 @@ Imports:
     rio,
     tools
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
