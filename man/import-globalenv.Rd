@@ -12,7 +12,7 @@ import_globalenv_server(
   id,
   choices = NULL,
   selected = NULL,
-  update_data = c("button", "always")
+  trigger_return = c("button", "change")
 )
 }
 \arguments{
@@ -24,9 +24,9 @@ if there's no \code{data.frame} in user's environment.}
 
 \item{selected}{Default selected value, if any and if \code{choices} is provided.}
 
-\item{update_data}{When to update selected data:
+\item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
-\code{"always"} (each time user select a dataset in the list).}
+\code{"change"} (each time user select a dataset in the list).}
 }
 \value{
 \itemize{

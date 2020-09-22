@@ -62,9 +62,9 @@ import_copypaste_ui <- function(id) {
 }
 
 
-#' @param update_data When to update selected data:
+#' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
-#'  \code{"always"} (each time user select a dataset in the list).
+#'  \code{"change"} (each time user select a dataset in the list).
 #'
 #' @export
 #'
@@ -72,7 +72,7 @@ import_copypaste_ui <- function(id) {
 #'
 #' @rdname import-copypaste
 import_copypaste_server <- function(id,
-                                    update_data = c("button", "always")) {
+                                    trigger_return = c("button", "change")) {
   moduleServer(
     id = id,
     module = import_copypaste
@@ -84,14 +84,14 @@ import_copypaste_server <- function(id,
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive
 #' @importFrom htmltools tags tagList
 import_copypaste <- function(input, output, session,
-                             update_data = c("button", "always")) {
+                             trigger_return = c("button", "change")) {
 
   ns <- session$ns
-  update_data <- match.arg(update_data)
+  trigger_return <- match.arg(trigger_return)
   imported_rv <- reactiveValues(data = NULL)
   temporary_rv <- reactiveValues(data = NULL)
 
-  if (identical(update_data, "always")) {
+  if (identical(trigger_return, "change")) {
     removeUI(selector = paste0("#", ns("validate-button")))
   }
 
@@ -113,7 +113,7 @@ import_copypaste <- function(input, output, session,
 
       toggle_widget(inputId = ns("validate"), enable = TRUE)
 
-      if (identical(update_data, "button")) {
+      if (identical(trigger_return, "button")) {
         success_message <- tagList(
           tags$b(icon("check"), "Data ready to be imported!"),
           sprintf(
@@ -159,7 +159,7 @@ import_copypaste <- function(input, output, session,
   })
 
 
-  if (identical(update_data, "button")) {
+  if (identical(trigger_return, "button")) {
     return(list(
       data = reactive(imported_rv$data)
     ))

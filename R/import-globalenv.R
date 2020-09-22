@@ -75,9 +75,9 @@ import_globalenv_ui <- function(id) {
 #'  returning character vector of choices to use
 #'  if there's no \code{data.frame} in user's environment.
 #' @param selected Default selected value, if any and if \code{choices} is provided.
-#' @param update_data When to update selected data:
+#' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
-#'  \code{"always"} (each time user select a dataset in the list).
+#'  \code{"change"} (each time user select a dataset in the list).
 #'
 #' @export
 #'
@@ -89,9 +89,9 @@ import_globalenv_ui <- function(id) {
 import_globalenv_server <- function(id,
                                     choices = NULL,
                                     selected = NULL,
-                                    update_data = c("button", "always")) {
+                                    trigger_return = c("button", "change")) {
 
-  update_data <- match.arg(update_data)
+  trigger_return <- match.arg(trigger_return)
 
   module <- function(input, output, session) {
 
@@ -128,7 +128,7 @@ import_globalenv_server <- function(id,
     }
 
 
-    if (identical(update_data, "always")) {
+    if (identical(trigger_return, "change")) {
       removeUI(selector = paste0("#", ns("validate-button")))
     }
 
@@ -157,7 +157,7 @@ import_globalenv_server <- function(id,
 
         toggle_widget(inputId = ns("validate"), enable = TRUE)
 
-        if (identical(update_data, "button")) {
+        if (identical(trigger_return, "button")) {
           success_message <- tagList(
             tags$b(icon("check"), "Data ready to be imported!"),
             sprintf(
@@ -205,7 +205,7 @@ import_globalenv_server <- function(id,
     })
 
 
-    if (identical(update_data, "button")) {
+    if (identical(trigger_return, "button")) {
       return(list(
         data = reactive(imported_rv$data),
         name = reactive(imported_rv$name)

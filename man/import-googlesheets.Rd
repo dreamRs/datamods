@@ -8,14 +8,14 @@
 \usage{
 import_googlesheets_ui(id)
 
-import_googlesheets_server(id, update_data = c("button", "always"))
+import_googlesheets_server(id, trigger_return = c("button", "change"))
 }
 \arguments{
 \item{id}{Module's ID}
 
-\item{update_data}{When to update selected data:
+\item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
-\code{"always"} (each time user select a dataset in the list).}
+\code{"change"} (each time user select a dataset in the list).}
 }
 \value{
 \itemize{
