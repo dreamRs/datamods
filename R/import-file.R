@@ -83,137 +83,137 @@ import_file_ui <- function(id) {
 #' @export
 #'
 #' @importFrom shiny moduleServer
-#'
-#' @rdname import-file
-import_file_server <- function(id,
-                               trigger_return = c("button", "change"),
-                               return_class = c("data.frame", "data.table", "tbl_df")) {
-  moduleServer(
-    id = id,
-    module = import_file
-  )
-}
-
 #' @importFrom htmltools tags tagList
 #' @importFrom shiny reactiveValues reactive observeEvent removeUI req
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
 #' @importFrom tools file_ext
-import_file <- function(input, output, session,
-                        trigger_return = c("button", "change"),
-                        return_class = c("data.frame", "data.table", "tbl_df")) {
-
-  ns <- session$ns
+#'
+#' @rdname import-file
+import_file_server <- function(id,
+                               trigger_return = c("button", "change"),
+                               return_class = c("data.frame", "data.table", "tbl_df")) {
+  
   trigger_return <- match.arg(trigger_return)
-  imported_rv <- reactiveValues(data = NULL)
-  temporary_rv <- reactiveValues(data = NULL)
-
-  if (identical(trigger_return, "change")) {
-    removeUI(selector = paste0("#", ns("validate-button")))
-  }
-
-  observeEvent(input$file, {
-    if (isTRUE(is_excel(input$file$datapath))) {
-      updatePickerInput(
-        session = session,
-        inputId = "sheet",
-        choices = readxl::excel_sheets(input$file$datapath)
-      )
-      showUI(paste0("#", ns("sheet-container")))
-    } else {
-      hideUI(paste0("#", ns("sheet-container")))
+  
+  module <- function(input, output, session) {
+    
+    ns <- session$ns
+    imported_rv <- reactiveValues(data = NULL)
+    temporary_rv <- reactiveValues(data = NULL)
+    
+    if (identical(trigger_return, "change")) {
+      removeUI(selector = paste0("#", ns("validate-button")))
     }
-  })
-
-  observeEvent(list(
-    input$file,
-    input$sheet,
-    input$skip_rows
-  ), {
-    req(input$file)
-    req(input$skip_rows)
-    if (is_excel(input$file$datapath)) {
-      req(input$sheet)
-      imported <- try(rio::import(file = input$file$datapath, which = input$sheet, skip = input$skip_rows), silent = TRUE)
-    } else {
-      imported <- try(rio::import(file = input$file$datapath, skip = input$skip_rows), silent = TRUE)
-    }
-
-    if (inherits(imported, "try-error") || NROW(imported) < 1) {
-
-      toggle_widget(inputId = ns("validate"), enable = FALSE)
-
-      insert_alert(
-        selector = ns("import"),
-        status = "danger",
-        tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-      )
-
-    } else {
-
-
-
-      toggle_widget(inputId = ns("validate"), enable = TRUE)
-
-      if (identical(trigger_return, "button")) {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data ready to be imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
-          )
+    
+    observeEvent(input$file, {
+      if (isTRUE(is_excel(input$file$datapath))) {
+        updatePickerInput(
+          session = session,
+          inputId = "sheet",
+          choices = readxl::excel_sheets(input$file$datapath)
         )
+        showUI(paste0("#", ns("sheet-container")))
       } else {
+        hideUI(paste0("#", ns("sheet-container")))
+      }
+    })
+    
+    observeEvent(list(
+      input$file,
+      input$sheet,
+      input$skip_rows
+    ), {
+      req(input$file)
+      req(input$skip_rows)
+      if (is_excel(input$file$datapath)) {
+        req(input$sheet)
+        imported <- try(rio::import(file = input$file$datapath, which = input$sheet, skip = input$skip_rows), silent = TRUE)
+      } else {
+        imported <- try(rio::import(file = input$file$datapath, skip = input$skip_rows), silent = TRUE)
+      }
+      
+      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+        
+        toggle_widget(inputId = ns("validate"), enable = FALSE)
+        
+        insert_alert(
+          selector = ns("import"),
+          status = "danger",
+          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
+        )
+        
+      } else {
+        
+        
+        
+        toggle_widget(inputId = ns("validate"), enable = TRUE)
+        
+        if (identical(trigger_return, "button")) {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data ready to be imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        } else {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data successfully imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        }
         success_message <- tagList(
-          tags$b(icon("check"), "Data successfully imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
+          success_message,
+          tags$br(),
+          actionLink(
+            inputId = ns("see_data"),
+            label = "click to see data",
+            icon = icon("hand-o-right")
           )
         )
-      }
-      success_message <- tagList(
-        success_message,
-        tags$br(),
-        actionLink(
-          inputId = ns("see_data"),
-          label = "click to see data",
-          icon = icon("hand-o-right")
+        
+        insert_alert(
+          selector = ns("import"),
+          status = "success",
+          success_message
         )
-      )
-
-      insert_alert(
-        selector = ns("import"),
-        status = "success",
-        success_message
-      )
-
-      temporary_rv$data <- imported
+        
+        temporary_rv$data <- imported
+      }
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input$see_data, {
+      show_data(temporary_rv$data)
+    })
+    
+    observeEvent(input$validate, {
+      imported_rv$data <- temporary_rv$data
+    })
+    
+    
+    if (identical(trigger_return, "button")) {
+      return(list(
+        data = reactive(as_out(imported_rv$data, return_class))
+      ))
+    } else {
+      return(list(
+        data = reactive(as_out(temporary_rv$data, return_class))
+      ))
     }
-  }, ignoreInit = TRUE)
-
-  observeEvent(input$see_data, {
-    show_data(temporary_rv$data)
-  })
-
-  observeEvent(input$validate, {
-    imported_rv$data <- temporary_rv$data
-  })
-
-
-  if (identical(trigger_return, "button")) {
-    return(list(
-      data = reactive(as_out(imported_rv$data, return_class))
-    ))
-  } else {
-    return(list(
-      data = reactive(as_out(temporary_rv$data, return_class))
-    ))
   }
+  
+  moduleServer(
+    id = id,
+    module = module
+  )
 }
 
-
+# utils -------------------------------------------------------------------
 
 is_excel <- function(path) {
   isTRUE(tools::file_ext(path) %in% c("xls", "xlsx"))
