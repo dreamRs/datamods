@@ -84,132 +84,134 @@ import_googlesheets_ui <- function(id) {
 #' @export
 #'
 #' @importFrom shiny moduleServer
+#' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive
+#' @importFrom htmltools tags tagList
 #'
 #' @rdname import-googlesheets
 
 import_googlesheets_server <- function(id,
                                        trigger_return = c("button", "change"),
                                        return_class = c("data.frame", "data.table", "tbl_df")) {
+  
+  trigger_return <- match.arg(trigger_return)
+  
+  module <- function(input, output, session) {
+    ns <- session$ns
+    
+    imported_rv <- reactiveValues(data = NULL)
+    temporary_rv <- reactiveValues(data = NULL)
+    
+    options(gargle_oauth_cache = FALSE)
+    
+    observeEvent(input$sign_in, {
+      googlesheets4::gs4_auth()
+      
+      if (googlesheets4::gs4_has_token()) {
+        insert_alert(
+          selector = ns("signin"),
+          status = "success",
+          tags$b("Status:"),
+          "Signed in!"
+        )
+      } else {
+        insert_alert(
+          selector = ns("signin"),
+          status = "info",
+          tags$b("Status:"),
+          "Not signed in."
+        )
+      }
+    })
+    
+    
+    if (identical(trigger_return, "change")) {
+      removeUI(selector = paste0("#", ns("validate-button")))
+    }
+    
+    
+    observeEvent(input$link, {
+      
+      if (isFALSE(googlesheets4::gs4_has_token())) {
+        googlesheets4::gs4_deauth()
+      }
+      
+      imported <- try(googlesheets4::range_read(input$link), silent = TRUE)
+      
+      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+        
+        toggle_widget(inputId = ns("validate"), enable = FALSE)
+        insert_alert(
+          selector = ns("import"),
+          status = "danger",
+          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
+        )
+        
+      } else {
+        
+        toggle_widget(inputId = ns("validate"), enable = TRUE)
+        
+        if (identical(trigger_return, "button")) {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data ready to be imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        } else {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data successfully imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        }
+        success_message <- tagList(
+          success_message,
+          tags$br(),
+          actionLink(
+            inputId = ns("see_data"),
+            label = "click to see data",
+            icon = icon("hand-o-right")
+          )
+        )
+        
+        insert_alert(
+          selector = ns("import"),
+          status = "success",
+          success_message
+        )
+        
+        temporary_rv$data <- imported
+      }
+    }, ignoreInit = TRUE)
+    
+    observeEvent(input$see_data, {
+      show_data(temporary_rv$data)
+    })
+    
+    observeEvent(input$validate, {
+      imported_rv$data <- temporary_rv$data
+    })
+    
+    if (identical(trigger_return, "button")) {
+      return(list(
+        data = reactive(as_out(imported_rv$data, return_class))
+      ))
+    } else {
+      return(list(
+        data = reactive(as_out(temporary_rv$data, return_class))
+      ))
+    }
+  }
+  
   moduleServer(
     id = id,
-    module = import_googlesheets
+    module = module
   )
 }
 
 
-#' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
-#' @importFrom shiny reactiveValues observeEvent removeUI reactive
-#' @importFrom htmltools tags tagList
-import_googlesheets <- function(input, output, session,
-                                trigger_return = c("button", "change"),
-                                return_class = c("data.frame", "data.table", "tbl_df")) {
 
-  ns <- session$ns
-  trigger_return <- match.arg(trigger_return)
-  imported_rv <- reactiveValues(data = NULL)
-  temporary_rv <- reactiveValues(data = NULL)
-
-  options(gargle_oauth_cache = FALSE)
-
-  observeEvent(input$sign_in, {
-    googlesheets4::gs4_auth()
-
-    if (googlesheets4::gs4_has_token()) {
-      insert_alert(
-        selector = ns("signin"),
-        status = "success",
-        tags$b("Status:"),
-        "Signed in!"
-      )
-    } else {
-      insert_alert(
-        selector = ns("signin"),
-        status = "info",
-        tags$b("Status:"),
-        "Not signed in."
-      )
-    }
-  })
-
-
-  if (identical(trigger_return, "change")) {
-    removeUI(selector = paste0("#", ns("validate-button")))
-  }
-
-
-  observeEvent(input$link, {
-
-    if (isFALSE(googlesheets4::gs4_has_token())) {
-      googlesheets4::gs4_deauth()
-    }
-
-    imported <- try(googlesheets4::range_read(input$link), silent = TRUE)
-
-    if (inherits(imported, "try-error") || NROW(imported) < 1) {
-
-      toggle_widget(inputId = ns("validate"), enable = FALSE)
-      insert_alert(
-        selector = ns("import"),
-        status = "danger",
-        tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-      )
-
-    } else {
-
-      toggle_widget(inputId = ns("validate"), enable = TRUE)
-
-      if (identical(trigger_return, "button")) {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data ready to be imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
-          )
-        )
-      } else {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data successfully imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
-          )
-        )
-      }
-      success_message <- tagList(
-        success_message,
-        tags$br(),
-        actionLink(
-          inputId = ns("see_data"),
-          label = "click to see data",
-          icon = icon("hand-o-right")
-        )
-      )
-
-      insert_alert(
-        selector = ns("import"),
-        status = "success",
-        success_message
-      )
-
-      temporary_rv$data <- imported
-    }
-  }, ignoreInit = TRUE)
-
-  observeEvent(input$see_data, {
-    show_data(temporary_rv$data)
-  })
-
-  observeEvent(input$validate, {
-    imported_rv$data <- temporary_rv$data
-  })
-
-  if (identical(trigger_return, "button")) {
-    return(list(
-      data = reactive(as_out(imported_rv$data, return_class))
-    ))
-  } else {
-    return(list(
-      data = reactive(as_out(temporary_rv$data, return_class))
-    ))
-  }
-}
