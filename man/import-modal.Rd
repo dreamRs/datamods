@@ -6,12 +6,9 @@
 \alias{import_server}
 \title{Get all import functions in a Modal}
 \usage{
-import_ui(id, from)
+import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
 
-import_server(
-  id,
-  from = c("env", "file", "copypaste", "googlesheets", "database")
-)
+import_server(id)
 }
 \arguments{
 \item{id}{Module's id}
@@ -39,7 +36,14 @@ library(datamods)
 ui <- fluidPage(
   fluidRow(
     column(
-      width = 12,
+      width = 4,
+      checkboxGroupInput(inputId = "from",
+                         label = "From",
+                         choices = c("env", "file", "copypaste", "googlesheets")),
+      actionButton("launch_modal", "Launch Modal(s)")
+    ),
+    column(
+      width = 8,
       tags$b("Imported data:"),
       verbatimTextOutput(outputId = "result")
     )
@@ -48,10 +52,16 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  imported <- import_server("myid", "env")
+  observeEvent(input$launch_modal, {
+    req(input$from)
+    import_modal("myid", from = input$from)
+  })
+  
+  imported <- import_server("myid")
+  
   output$result <- renderPrint({
-    req(imported$data())
-    imported$data()
+    req(imported())
+    imported()
   })
 }
 
