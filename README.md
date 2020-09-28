@@ -102,4 +102,11 @@ Copy and paste data from anywhere and it will be read as a `data.table` with
 
 ### import-googlesheets
 
-Just paste the link to to a googlesheets file and it will be read
+Just paste the link to to a googlesheets file and it will be read.  
+
+
+#### Final Notes :
+
+ - Please find example apps of each of the modules in the `/examples` folder.
+ - For a detailed description, please see the vignette.
+ - Read more about shiny modules [here](https://shiny.rstudio.com/articles/modules.html)
