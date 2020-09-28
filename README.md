@@ -87,19 +87,19 @@ if (interactive())
   - [import-copypaste](#import-copypaste)
   - [import-googlesheets](#import-googlesheets)
 
-### `import-globalenv`  
+### import-globalenv  
 
 This module imports data from the global environment or from a package specified.
 
-### `import-file`
+### import-file
 
 One can upload files of format supported by `rio::import()`
 
-### `import-copypaste`
+### import-copypaste
 
 Copy and paste data from anywhere and it will be read as a `data.table` with 
 `data.table::fread()`
 
-### `import-googlesheets`
+### import-googlesheets
 
 Just paste the link to to a googlesheets file and it will be read
