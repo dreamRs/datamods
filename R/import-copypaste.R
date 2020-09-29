@@ -78,37 +78,37 @@ import_copypaste_ui <- function(id) {
 import_copypaste_server <- function(id,
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df")) {
-  
+
   trigger_return <- match.arg(trigger_return)
-  
+
   module <- function(input, output, session) {
-    
+
     ns <- session$ns
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
-    
+
     if (identical(trigger_return, "change")) {
       removeUI(selector = paste0("#", ns("validate-button")))
     }
-    
+
     observeEvent(input$data_pasted, {
-      
+      req(input$data_pasted)
       imported <- try(data.table::fread(input = input$data_pasted), silent = TRUE)
-      
+
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-        
+
         toggle_widget(inputId = ns("validate"), enable = FALSE)
-        
+
         insert_alert(
           selector = ns("import"),
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
-        
+
       } else {
-        
+
         toggle_widget(inputId = ns("validate"), enable = TRUE)
-        
+
         if (identical(trigger_return, "button")) {
           success_message <- tagList(
             tags$b(icon("check"), "Data ready to be imported!"),
@@ -135,26 +135,26 @@ import_copypaste_server <- function(id,
             icon = icon("hand-o-right")
           )
         )
-        
+
         insert_alert(
           selector = ns("import"),
           status = "success",
           success_message
         )
-        
+
         temporary_rv$data <- imported
       }
     }, ignoreInit = TRUE)
-    
+
     observeEvent(input$see_data, {
       show_data(temporary_rv$data)
     })
-    
+
     observeEvent(input$validate, {
       imported_rv$data <- temporary_rv$data
     })
-    
-    
+
+
     if (identical(trigger_return, "button")) {
       return(list(
         data = reactive(as_out(imported_rv$data, return_class))
@@ -165,7 +165,7 @@ import_copypaste_server <- function(id,
       ))
     }
   }
-  
+
   moduleServer(
     id = id,
     module = module
