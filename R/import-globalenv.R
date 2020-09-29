@@ -136,7 +136,7 @@ import_globalenv_server <- function(id,
 
 
     observeEvent(input$data, {
-
+      req(input$data)
       name_df <- input$data
 
       if (!is.null(temporary_rv$package)) {
