@@ -14,6 +14,7 @@
 #'
 #' @example examples/show_data.R
 show_data <- function(data, title = "Imported data", width = "80%") {
+  data <- as.data.frame(data)
   show_alert(
     title = NULL,
     text = tags$div(

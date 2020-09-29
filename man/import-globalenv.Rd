@@ -6,12 +6,10 @@
 \alias{import_globalenv_server}
 \title{Import data from Global Environment}
 \usage{
-import_globalenv_ui(id)
+import_globalenv_ui(id, globalenv = TRUE, packages = get_data_packages())
 
 import_globalenv_server(
   id,
-  choices = NULL,
-  selected = NULL,
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df")
 )
@@ -19,11 +17,9 @@ import_globalenv_server(
 \arguments{
 \item{id}{Module's ID.}
 
-\item{choices}{Character vector or \code{reactive} function
-returning character vector of choices to use
-if there's no \code{data.frame} in user's environment.}
+\item{globalenv}{Search for data in Global environment.}
 
-\item{selected}{Default selected value, if any and if \code{choices} is provided.}
+\item{packages}{Name of packages in which to search data.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or

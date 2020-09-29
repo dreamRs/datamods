@@ -4,6 +4,8 @@
 #' @description Let the user select a dataset from its own environment.
 #'
 #' @param id Module's ID.
+#' @param globalenv Search for data in Global environment.
+#' @param packages Name of packages in which to search data.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -22,14 +24,23 @@
 #' @importFrom shinyWidgets pickerInput alert
 #'
 #' @example examples/globalenv-default.R
-import_globalenv_ui <- function(id) {
+import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packages()) {
 
   ns <- NS(id)
 
-  # List data.frames from environment
-  choices_df <- search_obj(what = "data.frame")
+  choices <- list()
+  if (isTRUE(globalenv)) {
+    choices <- append(choices, "Global Environment")
+  }
+  if (!is.null(packages)) {
+    choices <- append(choices, list(Packages = as.character(packages)))
+  }
 
-  dataframes_dims <- get_dimensions(choices_df)
+  if (isTRUE(globalenv)) {
+    selected <- "Global Environment"
+  } else {
+    selected <- packages[1]
+  }
 
   tags$div(
     class = "datamods-import",
@@ -37,11 +48,22 @@ import_globalenv_ui <- function(id) {
     tags$h2("Import a dataset"),
     pickerInput(
       inputId = ns("data"),
-      label = "Select a data.frame :",
-      choices = choices_df,
+      label = "Select a data.frame:",
+      choices = NULL,
       options = list(title = "List of data.frame..."),
-      choicesOpt = list(subtext = dataframes_dims),
       width = "100%"
+    ),
+    pickerInput(
+      inputId = ns("env"),
+      label = "Select an environment in which to search:",
+      choices = choices,
+      selected = selected,
+      width = "100%",
+      options = list(
+        "title" = "Select environment",
+        "live-search" = TRUE,
+        "size" = 10
+      )
     ),
 
     tags$div(
@@ -71,10 +93,7 @@ import_globalenv_ui <- function(id) {
 
 
 
-#' @param choices Character vector or \code{reactive} function
-#'  returning character vector of choices to use
-#'  if there's no \code{data.frame} in user's environment.
-#' @param selected Default selected value, if any and if \code{choices} is provided.
+
 #' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"change"} (each time user select a dataset in the list).
@@ -88,8 +107,6 @@ import_globalenv_ui <- function(id) {
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
-                                    choices = NULL,
-                                    selected = NULL,
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df")) {
 
@@ -103,31 +120,55 @@ import_globalenv_server <- function(id,
     temporary_rv <- reactiveValues(data = NULL, name = NULL)
 
 
-    if (is.reactive(choices)) {
-      observeEvent(choices(), {
-        updatePickerInput(
-          session = session,
-          inputId = "data",
-          choices = choices(),
-          selected = temporary_rv$name,
-          choicesOpt = list(
-            subtext = get_dimensions(choices())
-          )
+    observeEvent(input$env, {
+      if (identical(input$env, "Global Environment")) {
+        choices <- search_obj("data.frame")
+      } else {
+        choices <- list_pkg_data(input$env)
+      }
+      if (is.null(choices)) {
+        choices <- "No data.frame here..."
+        choicesOpt <- list(disabled = TRUE)
+      } else {
+        choicesOpt <- list(
+          subtext = get_dimensions(choices)
         )
-        temporary_rv$package <- attr(choices(), "package")
-      })
-    } else {
+      }
+      temporary_rv$package <- attr(choices, "package")
       updatePickerInput(
         session = session,
         inputId = "data",
         choices = choices,
-        selected = selected,
-        choicesOpt = list(
-          subtext = get_dimensions(choices)
-        )
+        choicesOpt = choicesOpt
       )
-      temporary_rv$package <- attr(choices, "package")
-    }
+    })
+
+
+    # if (is.reactive(choices)) {
+    #   observeEvent(choices(), {
+        # updatePickerInput(
+        #   session = session,
+        #   inputId = "data",
+        #   choices = choices(),
+        #   selected = temporary_rv$name,
+        #   choicesOpt = list(
+        #     subtext = get_dimensions(choices())
+        #   )
+        # )
+    #     temporary_rv$package <- attr(choices(), "package")
+    #   })
+    # } else {
+    #   updatePickerInput(
+    #     session = session,
+    #     inputId = "data",
+    #     choices = choices,
+    #     selected = selected,
+    #     choicesOpt = list(
+    #       subtext = get_dimensions(choices)
+    #     )
+    #   )
+    #   temporary_rv$package <- attr(choices, "package")
+    # }
 
 
     if (identical(trigger_return, "change")) {
@@ -234,7 +275,25 @@ import_globalenv_server <- function(id,
 
 # utils -------------------------------------------------------------------
 
-#' List dateset contained in a package
+
+#' Get packages containing datasets
+#'
+#' @return a character vector of packages names
+#' @export
+#'
+#' @importFrom utils data
+#'
+#' @examples
+#' get_data_packages()
+get_data_packages <- function() {
+  suppressWarnings({
+    pkgs <- data(package = .packages(all.available = TRUE))
+  })
+  unique(pkgs$results[, 1])
+}
+
+
+#' List dataset contained in a package
 #'
 #' @param pkg Name of the package, must be installed.
 #'
@@ -250,7 +309,11 @@ list_pkg_data <- function(pkg) {
   if (isTRUE(requireNamespace(pkg, quietly = TRUE))) {
     list_data <- data(package = pkg, envir = environment())$results[, "Item"]
     attr(list_data, "package") <- pkg
-    list_data
+    if (length(list_data) < 1) {
+      NULL
+    } else {
+      unname(list_data)
+    }
   } else {
     NULL
   }
@@ -258,6 +321,7 @@ list_pkg_data <- function(pkg) {
 
 #' @importFrom utils data
 get_env_data <- function(obj, env = globalenv()) {
+  obj <- gsub(pattern = "\\s.*", replacement = "", x = obj)
   if (obj %in% ls(name = env)) {
     get(x = obj, envir = env)
   } else if (!is.null(attr(obj, "package")) && !identical(attr(obj, "package"), "")) {
@@ -274,8 +338,12 @@ get_dimensions <- function(objs) {
   dataframes_dims <- Map(
     f = function(name, pkg) {
       attr(name, "package") <- pkg
-      tmp <- get_env_data(name)
-      sprintf("%d obs. of  %d variables", nrow(tmp), ncol(tmp))
+      tmp <- suppressWarnings(get_env_data(name))
+      if (is.data.frame(tmp)) {
+        sprintf("%d obs. of  %d variables", nrow(tmp), ncol(tmp))
+      }else {
+        "Not a data.frame"
+      }
     },
     name = objs,
     pkg = if (!is.null(attr(objs, "package"))) {

@@ -23,10 +23,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  imported <- import_globalenv_server(
-    id = "myid",
-    choices = list_pkg_data("ggplot2")
-  )
+  imported <- import_globalenv_server(id = "myid")
 
   output$result <- renderPrint({
     imported$data()
