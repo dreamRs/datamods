@@ -4,11 +4,14 @@
 \alias{import-modal}
 \alias{import_ui}
 \alias{import_server}
+\alias{import_modal}
 \title{Get all import functions in a Modal}
 \usage{
 import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
 
 import_server(id)
+
+import_modal(id, from)
 }
 \arguments{
 \item{id}{Module's id}

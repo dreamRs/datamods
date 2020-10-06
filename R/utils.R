@@ -1,4 +1,8 @@
 
+dropNulls <- function(x) {
+  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
+
 #' Search for object with specific class in an environment
 #'
 #' @param what a class to look for

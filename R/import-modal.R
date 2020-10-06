@@ -42,10 +42,8 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 
 
 #' @export
-#'
-#' @importFrom shiny moduleServer reactiveValues observeEvent reactive
-#'
 #' @rdname import-modal
+#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeModal
 import_server <- function(id) {
 
   moduleServer(
@@ -61,18 +59,23 @@ import_server <- function(id) {
       #from_database <- import_database_server("database")
 
       observeEvent(from_env$data(), {
+        removeModal()
         data_rv$x <- from_env$data()
       })
       observeEvent(from_file$data(), {
+        removeModal()
         data_rv$x <- from_file$data()
       })
       observeEvent(from_copypaste$data(), {
+        removeModal()
         data_rv$x <- from_copypaste$data()
       })
       observeEvent(from_googlesheets$data(), {
+        removeModal()
         data_rv$x <- from_googlesheets$data()
       })
       # observeEvent(from_database$data(), {
+      #   removeModal()
       #   data_rv$x <- from_database$data()
       # })
 
@@ -82,8 +85,8 @@ import_server <- function(id) {
 }
 
 
-# utils -------------------------------------------------------------------
-
+#' @export
+#' @rdname import-modal
 #' @importFrom shiny modalDialog showModal
 import_modal <- function(id, from) {
   showModal(modalDialog(
@@ -102,6 +105,4 @@ import_modal <- function(id, from) {
   ))
 }
 
-dropNulls <- function(x) {
-  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
-}
+
