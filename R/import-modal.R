@@ -33,7 +33,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
     tabPanel("Googlesheets", import_googlesheets_ui(ns("googlesheets")))
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
   tagList(
-    do.call(tabsetPanel, dropNulls(list(env, file, copypaste, googlesheets, id = ns("tabs-import")))),
+    do.call(tabsetPanel, dropNulls(list(env, file, copypaste, googlesheets, id = ns("tabs-import"), type = "pills"))),
     tags$script(
       sprintf("$('#%s').addClass('nav-justified');", ns("tabs-import"))
     )
