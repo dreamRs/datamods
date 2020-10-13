@@ -3,6 +3,7 @@
 #'
 #' @param data a data object (either a \code{matrix} or a \code{data.frame}).
 #' @param title Title to be displayed in window.
+#' @param options Options passed to \link[DT]{datatable}'s options argument.
 #' @param width Width of the window.
 #'
 #' @return No value.
@@ -13,7 +14,7 @@
 #' @importFrom DT datatable
 #'
 #' @example examples/show_data.R
-show_data <- function(data, title = "Imported data", width = "80%") {
+show_data <- function(data, title = "Imported data", options = NULL, width = "80%") {
   data <- as.data.frame(data)
   show_alert(
     title = NULL,
@@ -30,13 +31,14 @@ show_data <- function(data, title = "Imported data", width = "80%") {
         class = "display dt-responsive",
         style = "bootstrap",
         width = "100%",
-        options = list(
+        options = c(list(
           scrollX = TRUE
-        )
+        ), options)
       )
     ),
+    closeOnClickOutside = TRUE,
     showCloseButton = TRUE,
-    btn_labels = "Close window",
+    btn_labels = NA,
     html = TRUE,
     width = width
   )

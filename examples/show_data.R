@@ -1,6 +1,6 @@
 
 library(shiny)
-library(shinyWidgets)
+library(datamods)
 
 ui <- fluidPage(
   actionButton(
@@ -12,7 +12,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observeEvent(input$show, {
-    show_data(mtcars)
+    show_data(mtcars, title = "My data")
   })
 }
 
