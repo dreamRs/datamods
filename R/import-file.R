@@ -26,7 +26,7 @@ import_file_ui <- function(id) {
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h2("Import a file"),
+    tags$h3("Import a file"),
     fileInput(
       inputId = ns("file"),
       label = "Upload a file:",
@@ -94,19 +94,19 @@ import_file_ui <- function(id) {
 import_file_server <- function(id,
                                trigger_return = c("button", "change"),
                                return_class = c("data.frame", "data.table", "tbl_df")) {
-  
+
   trigger_return <- match.arg(trigger_return)
-  
+
   module <- function(input, output, session) {
-    
+
     ns <- session$ns
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
-    
+
     if (identical(trigger_return, "change")) {
       removeUI(selector = paste0("#", ns("validate-button")))
     }
-    
+
     observeEvent(input$file, {
       if (isTRUE(is_excel(input$file$datapath))) {
         updatePickerInput(
@@ -119,7 +119,7 @@ import_file_server <- function(id,
         hideUI(paste0("#", ns("sheet-container")))
       }
     })
-    
+
     observeEvent(list(
       input$file,
       input$sheet,
@@ -133,23 +133,23 @@ import_file_server <- function(id,
       } else {
         imported <- try(rio::import(file = input$file$datapath, skip = input$skip_rows), silent = TRUE)
       }
-      
+
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-        
+
         toggle_widget(inputId = ns("validate"), enable = FALSE)
-        
+
         insert_alert(
           selector = ns("import"),
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
-        
+
       } else {
-        
-        
-        
+
+
+
         toggle_widget(inputId = ns("validate"), enable = TRUE)
-        
+
         if (identical(trigger_return, "button")) {
           success_message <- tagList(
             tags$b(icon("check"), "Data ready to be imported!"),
@@ -176,26 +176,26 @@ import_file_server <- function(id,
             icon = icon("hand-o-right")
           )
         )
-        
+
         insert_alert(
           selector = ns("import"),
           status = "success",
           success_message
         )
-        
+
         temporary_rv$data <- imported
       }
     }, ignoreInit = TRUE)
-    
+
     observeEvent(input$see_data, {
       show_data(temporary_rv$data)
     })
-    
+
     observeEvent(input$validate, {
       imported_rv$data <- temporary_rv$data
     })
-    
-    
+
+
     if (identical(trigger_return, "button")) {
       return(list(
         data = reactive(as_out(imported_rv$data, return_class))
@@ -206,7 +206,7 @@ import_file_server <- function(id,
       ))
     }
   }
-  
+
   moduleServer(
     id = id,
     module = module

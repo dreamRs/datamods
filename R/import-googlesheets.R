@@ -25,7 +25,7 @@ import_googlesheets_ui <- function(id) {
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h2("Import Google Spreadsheet"),
+    tags$h3("Import Google Spreadsheet"),
     tags$p("If you have a shareable link, paste it directly in the field below"),
     tags$p(
       "Otherwise",
@@ -93,20 +93,20 @@ import_googlesheets_ui <- function(id) {
 import_googlesheets_server <- function(id,
                                        trigger_return = c("button", "change"),
                                        return_class = c("data.frame", "data.table", "tbl_df")) {
-  
+
   trigger_return <- match.arg(trigger_return)
-  
+
   module <- function(input, output, session) {
     ns <- session$ns
-    
+
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
-    
+
     options(gargle_oauth_cache = FALSE)
-    
+
     observeEvent(input$sign_in, {
       googlesheets4::gs4_auth()
-      
+
       if (googlesheets4::gs4_has_token()) {
         insert_alert(
           selector = ns("signin"),
@@ -123,34 +123,34 @@ import_googlesheets_server <- function(id,
         )
       }
     })
-    
-    
+
+
     if (identical(trigger_return, "change")) {
       removeUI(selector = paste0("#", ns("validate-button")))
     }
-    
-    
+
+
     observeEvent(input$link, {
-      
+
       if (isFALSE(googlesheets4::gs4_has_token())) {
         googlesheets4::gs4_deauth()
       }
-      
+
       imported <- try(googlesheets4::range_read(input$link), silent = TRUE)
-      
+
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-        
+
         toggle_widget(inputId = ns("validate"), enable = FALSE)
         insert_alert(
           selector = ns("import"),
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
-        
+
       } else {
-        
+
         toggle_widget(inputId = ns("validate"), enable = TRUE)
-        
+
         if (identical(trigger_return, "button")) {
           success_message <- tagList(
             tags$b(icon("check"), "Data ready to be imported!"),
@@ -177,25 +177,25 @@ import_googlesheets_server <- function(id,
             icon = icon("hand-o-right")
           )
         )
-        
+
         insert_alert(
           selector = ns("import"),
           status = "success",
           success_message
         )
-        
+
         temporary_rv$data <- imported
       }
     }, ignoreInit = TRUE)
-    
+
     observeEvent(input$see_data, {
       show_data(temporary_rv$data)
     })
-    
+
     observeEvent(input$validate, {
       imported_rv$data <- temporary_rv$data
     })
-    
+
     if (identical(trigger_return, "button")) {
       return(list(
         data = reactive(as_out(imported_rv$data, return_class))
@@ -206,7 +206,7 @@ import_googlesheets_server <- function(id,
       ))
     }
   }
-  
+
   moduleServer(
     id = id,
     module = module

@@ -25,7 +25,7 @@ import_copypaste_ui <- function(id) {
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h2("Copy & paste data"),
+    tags$h3("Copy & paste data"),
     tagAppendAttributes(
       textAreaInput(
         inputId = ns("data_pasted"),
