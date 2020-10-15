@@ -2,6 +2,7 @@
 #' Select, rename and convert variables
 #'
 #' @param id Module's ID.
+#' @param title Text to be used as title.
 #'
 #' @return
 #' @export
@@ -11,15 +12,41 @@
 #' @importFrom shiny uiOutput actionButton icon
 #' @importFrom htmltools tagList tags
 #' @importFrom DT DTOutput
-#' @importFrom shinyWidgets html_dependency_pretty
+#' @importFrom shinyWidgets html_dependency_pretty textInputIcon dropMenu
 #'
 #' @examples
-update_variables_ui <- function(id) {
+update_variables_ui <- function(id, title = "Update & select variables") {
   ns <- NS(id)
   tagList(
     html_dependency_pretty(),
-    tags$h3("Update variables"),
-    uiOutput(outputId = ns("data_info")),
+    if (!is.null(title)) tags$h3(title, class = "datamods-title"),
+    tags$div(
+      uiOutput(outputId = ns("data_info"), inline = TRUE),
+      tagAppendAttributes(
+        dropMenu(
+          placement = "bottom-end",
+          actionButton(
+            inputId = ns("settings"),
+            label = NULL,
+            icon = icon("gear"),
+            class = "pull-right"
+          ),
+          textInputIcon(
+            inputId = ns("format"),
+            label = "Date format:",
+            value = "%Y-%m-%d",
+            icon = icon("clock-o")
+          ),
+          textInputIcon(
+            inputId = ns("origin"),
+            label = "Date to use as origin to convert date/datetime:",
+            value = "1970-01-01",
+            icon = icon("calendar")
+          )
+        ),
+        style = "display: inline;"
+      )
+    ),
     DTOutput(outputId = ns("table")),
     tags$br(),
     tags$div(
@@ -109,7 +136,9 @@ update_variables <- function(input, output, session,
       data <- convert_to(
         data = data,
         variable = vars_to_change$name,
-        new_class = vars_to_change$class_to_set
+        new_class = vars_to_change$class_to_set,
+        origin = input$origin,
+        format = input$format
       )
     }
     # rename
