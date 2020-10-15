@@ -27,7 +27,9 @@ update_variables_ui <- function(id) {
       alert(
         id = ns("update-result"),
         status = "info",
-        icon("info"), "Select, rename and convert variables in table above, then apply changes by clicking button below."
+        icon("info"),
+        "Select, rename and convert variables in table above,",
+        "then apply changes by clicking button below."
       )
     ),
     actionButton(
@@ -102,9 +104,6 @@ update_variables <- function(input, output, session,
     data_sv <- variables_r()
     vars_to_change <- get_vars_to_convert(data_sv, new_classes)
 
-    # rename
-    names(data) <- unlist(new_names, use.names = FALSE)
-
     # convert
     if (nrow(vars_to_change) > 0) {
       data <- convert_to(
@@ -113,7 +112,8 @@ update_variables <- function(input, output, session,
         new_class = vars_to_change$class_to_set
       )
     }
-
+    # rename
+    names(data) <- unlist(new_names, use.names = FALSE)
     # select
     data <- data[, unlist(new_selections, use.names = FALSE)]
 
@@ -307,7 +307,7 @@ set_checkbox <- function(data, id = "selection") {
 #'
 #' @importFrom htmltools doRenderTags
 #' @importFrom shiny selectInput
-set_class_input <- function(data, variable, id = "classes", width = "120px") {
+set_class_input <- function(data, variable, id = "classes", width = "100%") {
   classes <- data[[variable]]
   classes_up <- c("character", "factor", "numeric", "integer", "date", "datetime")
   class_input <- mapply(
@@ -356,30 +356,41 @@ update_variables_datatable <- function(data) {
     data = data,
     rownames = TRUE,
     colnames = c("Name", "Class", "Class to set",
-                 "Missing value",
-                 "Complete observations",
+                 "Missing values",
+                 "Complete obs.",
                  "Unique values"),
     selection = "none",
     escape = FALSE,
     style = "bootstrap",
     class = "display dt-responsive",
+    fillContainer = FALSE,
     options = list(
       scrollY = "400px",
-      scrollX = TRUE,
+      scrollX = FALSE,
       lengthChange = FALSE,
       paging = FALSE,
       info = FALSE,
       searching = FALSE,
+      autoWidth = TRUE,
       drawCallback = JS("function() {Shiny.bindAll(this.api().table().node());}"),
       columnDefs = list(
-        list(width = "100px", targets = list(1))
+        list(width = "5%", targets = 0),
+        list(width = "25%", targets = 1),
+        list(width = "20%", targets = 2),
+        list(width = "20%", targets = 3),
+        list(width = "10%", targets = 4),
+        list(width = "10%", targets = 5),
+        list(width = "10%", targets = 6)
+      ),
+      columns = list(
+        list(width = "5%"),
+        list(width = "25%"),
+        list(width = "20%"),
+        list(width = "20%"),
+        list(width = "10%"),
+        list(width = "10%"),
+        list(width = "10%")
       )
-      # columns = list(
-      #   list(width = "100px"),
-      #   list(width = "100px"),
-      #   list(width = "100px"),
-      #   NULL, NULL, NULL
-      # )
     )
   )
   formatPercentage(dt, "p_complete")
