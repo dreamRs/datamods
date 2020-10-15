@@ -9,12 +9,12 @@ ui <- fluidPage(
   tags$h3("Select, rename and convert variables"),
   fluidRow(
     column(
-      width = 5,
+      width = 6,
       # radioButtons()
       update_variables_ui("vars")
     ),
     column(
-      width = 7,
+      width = 6,
       verbatimTextOutput("result")
     )
   )

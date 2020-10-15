@@ -306,8 +306,9 @@ set_checkbox <- function(data, id = "selection") {
         label = NULL,
         value = TRUE,
         status = "primary",
-        plain = TRUE,
-        icon = shiny::icon("check"),
+        thick = TRUE,
+        outline = TRUE,
+        shape = "curve",
         width = "100%"
       )
       tag <- tagAppendAttributes(tag, style = "margin-top: 5px;")
