@@ -4,7 +4,7 @@
 #' @param id Module's ID.
 #' @param title Text to be used as title.
 #'
-#' @return
+#' @return A \code{reactive} function returning the updated data.
 #' @export
 #'
 #' @name update-variables
@@ -14,7 +14,7 @@
 #' @importFrom DT DTOutput
 #' @importFrom shinyWidgets html_dependency_pretty textInputIcon dropMenu
 #'
-#' @examples
+#' @example examples/variables.R
 update_variables_ui <- function(id, title = "Update & select variables") {
   ns <- NS(id)
   tagList(
@@ -76,81 +76,79 @@ update_variables_ui <- function(id, title = "Update & select variables") {
 #'
 #' @rdname update-variables
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList
+#' @importFrom DT renderDT
 update_variables_server <- function(id, data) {
-  callModule(
-    module = update_variables,
+  moduleServer(
     id = id,
-    data = data
+    module = function(input, output, session) {
+
+      ns <- session$ns
+      updated_data <- reactiveValues(x = NULL)
+
+      data_r <- reactive({
+        if (is.reactive(data)) {
+          data()
+        } else {
+          data
+        }
+      })
+
+      output$data_info <- renderUI({
+        data <- data_r()
+        sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
+      })
+
+      variables_r <- reactive({
+        data <- data_r()
+        updated_data$x <- NULL
+        summary_vars(data)
+      })
+
+      output$table <- renderDT({
+        req(variables_r())
+        variables <- variables_r()
+        variables <- set_checkbox(variables, ns("selection"))
+        variables <- set_text_input(variables, "name", ns("name"))
+        variables <- set_class_input(variables, "class", ns("class_to_set"))
+        update_variables_datatable(variables)
+      })
+
+      observeEvent(input$validate, {
+        data <- data_r()
+
+        # getting the input values
+        new_names <- get_inputs("name")
+        new_classes <- get_inputs("class_to_set")
+        new_selections <- get_inputs("selection")
+
+        data_sv <- variables_r()
+        vars_to_change <- get_vars_to_convert(data_sv, new_classes)
+
+        # convert
+        if (nrow(vars_to_change) > 0) {
+          data <- convert_to(
+            data = data,
+            variable = vars_to_change$name,
+            new_class = vars_to_change$class_to_set,
+            origin = input$origin,
+            format = input$format
+          )
+        }
+        # rename
+        names(data) <- unlist(new_names, use.names = FALSE)
+        # select
+        data <- data[, unlist(new_selections, use.names = FALSE)]
+
+        updated_data$x <- data
+      })
+
+      return(reactive(updated_data$x))
+    }
   )
 }
 
-#' @importFrom shiny reactiveValues reactive renderUI reactiveValuesToList
-#' @importFrom DT renderDT
-update_variables <- function(input, output, session,
-                             data) {
-  ns <- session$ns
-  updated_data <- reactiveValues(x = NULL)
 
-  data_r <- reactive({
-    if (is.reactive(data)) {
-      data()
-    } else {
-      data
-    }
-  })
-
-  output$data_info <- renderUI({
-    data <- data_r()
-    sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
-  })
-
-  variables_r <- reactive({
-    data <- data_r()
-    updated_data$x <- NULL
-    summary_vars(data)
-  })
-
-  output$table <- renderDT({
-    req(variables_r())
-    variables <- variables_r()
-    variables <- set_checkbox(variables, ns("selection"))
-    variables <- set_text_input(variables, "name", ns("name"))
-    variables <- set_class_input(variables, "class", ns("class_to_set"))
-    update_variables_datatable(variables)
-  })
-
-  observeEvent(input$validate, {
-    data <- data_r()
-
-    # getting the input values
-    new_names <- get_inputs("name")
-    new_classes <- get_inputs("class_to_set")
-    new_selections <- get_inputs("selection")
-
-    data_sv <- variables_r()
-    vars_to_change <- get_vars_to_convert(data_sv, new_classes)
-
-    # convert
-    if (nrow(vars_to_change) > 0) {
-      data <- convert_to(
-        data = data,
-        variable = vars_to_change$name,
-        new_class = vars_to_change$class_to_set,
-        origin = input$origin,
-        format = input$format
-      )
-    }
-    # rename
-    names(data) <- unlist(new_names, use.names = FALSE)
-    # select
-    data <- data[, unlist(new_selections, use.names = FALSE)]
-
-    updated_data$x <- data
-  })
-
-  return(reactive(updated_data$x))
-}
 
 
 
@@ -189,6 +187,7 @@ get_classes <- function(data) {
 #' @importFrom data.table uniqueN
 #'
 #' @examples
+#' get_n_unique(mtcars)
 get_n_unique <- function(data) {
   u <- lapply(data, FUN = function(x) {
     if (is.atomic(x)) {
