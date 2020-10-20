@@ -146,8 +146,6 @@ import_file_server <- function(id,
 
       } else {
 
-
-
         toggle_widget(inputId = ns("validate"), enable = TRUE)
 
         if (identical(trigger_return, "button")) {
@@ -194,7 +192,6 @@ import_file_server <- function(id,
     observeEvent(input$validate, {
       imported_rv$data <- temporary_rv$data
     })
-
 
     if (identical(trigger_return, "button")) {
       return(list(
