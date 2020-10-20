@@ -10,18 +10,18 @@ import_googlesheets_ui(id)
 
 import_googlesheets_server(
   id,
-  default_data = NULL,
-  update_data = c("button", "always")
+  trigger_return = c("button", "change"),
+  return_class = c("data.frame", "data.table", "tbl_df")
 )
 }
 \arguments{
 \item{id}{Module's ID}
 
-\item{default_data}{Default \code{data.frame} to use.}
-
-\item{update_data}{When to update selected data:
+\item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
-\code{"always"} (each time user select a dataset in the list).}
+\code{"change"} (each time user select a dataset in the list).}
+
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 }
 \value{
 \itemize{

@@ -6,30 +6,26 @@
 \alias{import_globalenv_server}
 \title{Import data from Global Environment}
 \usage{
-import_globalenv_ui(id)
+import_globalenv_ui(id, globalenv = TRUE, packages = get_data_packages())
 
 import_globalenv_server(
   id,
-  default_data = NULL,
-  default_name = NULL,
-  default_choices = NULL,
-  update_data = c("button", "always")
+  trigger_return = c("button", "change"),
+  return_class = c("data.frame", "data.table", "tbl_df")
 )
 }
 \arguments{
 \item{id}{Module's ID.}
 
-\item{default_data}{Default \code{data.frame} to use.}
+\item{globalenv}{Search for data in Global environment.}
 
-\item{default_name}{Default name to use.}
+\item{packages}{Name of packages in which to search data.}
 
-\item{default_choices}{Character vector or \code{reactive} function
-returning character vector of choices to use
-if there's no \code{data.frame} in user's environment.}
-
-\item{update_data}{When to update selected data:
+\item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
-\code{"always"} (each time user select a dataset in the list).}
+\code{"change"} (each time user select a dataset in the list).}
+
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 }
 \value{
 \itemize{

@@ -4,12 +4,14 @@
 \alias{show_data}
 \title{Display a table in a window}
 \usage{
-show_data(data, title = "Imported data", width = "80\%")
+show_data(data, title = "Imported data", options = NULL, width = "80\%")
 }
 \arguments{
 \item{data}{a data object (either a \code{matrix} or a \code{data.frame}).}
 
 \item{title}{Title to be displayed in window.}
+
+\item{options}{Options passed to \link[DT]{datatable}'s options argument.}
 
 \item{width}{Width of the window.}
 }
@@ -22,7 +24,7 @@ Display a table in a window
 \examples{
 
 library(shiny)
-library(shinyWidgets)
+library(datamods)
 
 ui <- fluidPage(
   actionButton(
@@ -34,7 +36,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observeEvent(input$show, {
-    show_data(mtcars)
+    show_data(mtcars, title = "My data")
   })
 }
 

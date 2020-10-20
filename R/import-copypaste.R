@@ -15,16 +15,17 @@
 #' @name import-copypaste
 #'
 #' @importFrom shiny NS icon textAreaInput actionButton
-#' @importFrom htmltools tagList tags tagAppendAttributes
+#' @importFrom htmltools tags tagAppendAttributes
 #'
 #' @example examples/copypaste.R
 import_copypaste_ui <- function(id) {
 
   ns <- NS(id)
 
-  tagList(
+  tags$div(
+    class = "datamods-import",
     html_dependency_datamods(),
-    tags$h2("Copy & paste data"),
+    tags$h3("Copy & paste data"),
     tagAppendAttributes(
       textAreaInput(
         inputId = ns("data_pasted"),
@@ -61,115 +62,115 @@ import_copypaste_ui <- function(id) {
 }
 
 
-#' @param default_data Default \code{data.frame} to use.
-#' @param update_data When to update selected data:
+#' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
-#'  \code{"always"} (each time user select a dataset in the list).
+#'  \code{"change"} (each time user select a dataset in the list).
+#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
 #'
 #' @export
 #'
-#' @importFrom shiny callModule
+#' @importFrom shiny moduleServer
+#' @importFrom data.table fread
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive
+#' @importFrom htmltools tags tagList
 #'
 #' @rdname import-copypaste
 import_copypaste_server <- function(id,
-                                    default_data = NULL,
-                                    update_data = c("button", "always")) {
-  callModule(
-    module = import_copypaste,
+                                    trigger_return = c("button", "change"),
+                                    return_class = c("data.frame", "data.table", "tbl_df")) {
+
+  trigger_return <- match.arg(trigger_return)
+
+  module <- function(input, output, session) {
+
+    ns <- session$ns
+    imported_rv <- reactiveValues(data = NULL)
+    temporary_rv <- reactiveValues(data = NULL)
+
+    if (identical(trigger_return, "change")) {
+      removeUI(selector = paste0("#", ns("validate-button")))
+    }
+
+    observeEvent(input$data_pasted, {
+      req(input$data_pasted)
+      imported <- try(data.table::fread(input = input$data_pasted), silent = TRUE)
+
+      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+
+        toggle_widget(inputId = ns("validate"), enable = FALSE)
+
+        insert_alert(
+          selector = ns("import"),
+          status = "danger",
+          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
+        )
+
+      } else {
+
+        toggle_widget(inputId = ns("validate"), enable = TRUE)
+
+        if (identical(trigger_return, "button")) {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data ready to be imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        } else {
+          success_message <- tagList(
+            tags$b(icon("check"), "Data successfully imported!"),
+            sprintf(
+              "%s obs. of %s variables imported",
+              nrow(imported), ncol(imported)
+            )
+          )
+        }
+        success_message <- tagList(
+          success_message,
+          tags$br(),
+          actionLink(
+            inputId = ns("see_data"),
+            label = "click to see data",
+            icon = icon("hand-o-right")
+          )
+        )
+
+        insert_alert(
+          selector = ns("import"),
+          status = "success",
+          success_message
+        )
+
+        temporary_rv$data <- imported
+      }
+    }, ignoreInit = TRUE)
+
+    observeEvent(input$see_data, {
+      show_data(temporary_rv$data)
+    })
+
+    observeEvent(input$validate, {
+      imported_rv$data <- temporary_rv$data
+    })
+
+
+    if (identical(trigger_return, "button")) {
+      return(list(
+        data = reactive(as_out(imported_rv$data, return_class))
+      ))
+    } else {
+      return(list(
+        data = reactive(as_out(temporary_rv$data, return_class))
+      ))
+    }
+  }
+
+  moduleServer(
     id = id,
-    default_data = default_data,
-    update_data = update_data
+    module = module
   )
 }
 
 
-#' @importFrom data.table fread
-#' @importFrom shiny reactiveValues observeEvent removeUI reactive
-#' @importFrom htmltools tags
-import_copypaste <- function(input, output, session,
-                             default_data = NULL,
-                             update_data = c("button", "always")) {
 
-  ns <- session$ns
-  update_data <- match.arg(update_data)
-  imported_data <- reactiveValues(data = default_data)
-  temporary_data <- reactiveValues(data = default_data)
-
-  if (identical(update_data, "always")) {
-    removeUI(selector = paste0("#", ns("validate-button")))
-  }
-
-  observeEvent(input$data_pasted, {
-
-    imported <- try(data.table::fread(input = input$data_pasted), silent = TRUE)
-
-    if (inherits(imported, "try-error") || NROW(imported) < 1) {
-
-      toggle_widget(inputId = ns("validate"), enable = FALSE)
-
-      insert_alert(
-        selector = ns("import"),
-        status = "danger",
-        tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-      )
-
-    } else {
-
-      toggle_widget(inputId = ns("validate"), enable = TRUE)
-
-      if (identical(update_data, "button")) {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data ready to be imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
-          )
-        )
-      } else {
-        success_message <- tagList(
-          tags$b(icon("check"), "Data successfully imported!"),
-          sprintf(
-            "%s obs. of %s variables imported",
-            nrow(imported), ncol(imported)
-          )
-        )
-      }
-      success_message <- tagList(
-        success_message,
-        tags$br(),
-        actionLink(
-          inputId = ns("see_data"),
-          label = "click to see data",
-          icon = icon("hand-o-right")
-        )
-      )
-
-      insert_alert(
-        selector = ns("import"),
-        status = "success",
-        success_message
-      )
-
-      temporary_data$data <- imported
-    }
-  }, ignoreInit = TRUE)
-
-  observeEvent(input$see_data, {
-    show_data(temporary_data$data)
-  })
-
-  observeEvent(input$validate, {
-    imported_data$data <- temporary_data$data
-  })
-
-
-  if (identical(update_data, "button")) {
-    return(list(
-      data = reactive(imported_data$data)
-    ))
-  } else {
-    return(list(
-      data = reactive(temporary_data$data)
-    ))
-  }
-}

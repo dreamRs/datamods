@@ -2,7 +2,7 @@
 % Please edit documentation in R/import-globalenv.R
 \name{list_pkg_data}
 \alias{list_pkg_data}
-\title{List dateset contained in a package}
+\title{List dataset contained in a package}
 \usage{
 list_pkg_data(pkg)
 }
@@ -13,7 +13,7 @@ list_pkg_data(pkg)
 a \code{character} vector or \code{NULL}.
 }
 \description{
-List dateset contained in a package
+List dataset contained in a package
 }
 \examples{
 

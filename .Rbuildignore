@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^examples$
+^doc$
+^Meta$
+^\.github$

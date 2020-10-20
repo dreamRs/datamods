@@ -1,4 +1,8 @@
 
+dropNulls <- function(x) {
+  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
+
 #' Search for object with specific class in an environment
 #'
 #' @param what a class to look for
@@ -39,3 +43,30 @@ search_obj <- function(what = "data.frame", env = globalenv()) {
     objs
   }
 }
+
+
+
+
+#' @importFrom data.table as.data.table
+#' @importFrom tibble as_tibble
+as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
+  if (is.null(x))
+    return(NULL)
+  return_class <- match.arg(return_class)
+  if (identical(return_class, "data.frame")) {
+    as.data.frame(x)
+  } else if (identical(return_class, "data.table")) {
+    as.data.table(x)
+  } else {
+    as_tibble(x)
+  }
+}
+
+
+
+
+
+
+
+
+

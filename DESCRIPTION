@@ -1,5 +1,5 @@
 Package: datamods
-Title: What the Package Does (One Line, Title Case)
+Title: Modules to Import and Manipulate Data in 'Shiny'
 Version: 0.0.1.9000
 Authors@R: 
     c(person(given = "Victor",
@@ -10,7 +10,8 @@ Authors@R:
              family = "Abeer",
              role = "aut",
              email = "shahreyar.abeer@gmail.com"))
-Description: What the package does (one paragraph).
+Description: 'Shiny' modules to import data into an application or 'addin'
+    from various sources, and to manipulate them after that.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -25,4 +26,10 @@ Imports:
     googlesheets4,
     readxl,
     rio,
+    tibble,
     tools
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
