@@ -171,9 +171,11 @@ import_globalenv_server <- function(id,
     # }
 
 
-    if (identical(trigger_return, "change")) {
-      removeUI(selector = paste0("#", ns("validate-button")))
-    }
+    observeEvent(input$trigger, {
+      if (identical(trigger_return, "change")) {
+        hideUI(selector = paste0("#", ns("validate-button")))
+      }
+    })
 
 
     observeEvent(input$data, {

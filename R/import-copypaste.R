@@ -57,7 +57,8 @@ import_copypaste_ui <- function(id) {
         disabled = "disabled",
         class = "btn-primary"
       )
-    )
+    ),
+    trigger_input(ns("trigger"))
   )
 }
 
@@ -87,9 +88,11 @@ import_copypaste_server <- function(id,
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
 
-    if (identical(trigger_return, "change")) {
-      removeUI(selector = paste0("#", ns("validate-button")))
-    }
+    observeEvent(input$trigger, {
+      if (identical(trigger_return, "change")) {
+        hideUI(selector = paste0("#", ns("validate-button")))
+      }
+    })
 
     observeEvent(input$data_pasted, {
       req(input$data_pasted)

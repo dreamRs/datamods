@@ -71,7 +71,8 @@ import_file_ui <- function(id) {
         disabled = "disabled",
         class = "btn-primary"
       )
-    )
+    ),
+    trigger_input(ns("trigger"))
   )
 }
 
@@ -103,9 +104,11 @@ import_file_server <- function(id,
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
 
-    if (identical(trigger_return, "change")) {
-      removeUI(selector = paste0("#", ns("validate-button")))
-    }
+    observeEvent(input$trigger, {
+      if (identical(trigger_return, "change")) {
+        hideUI(selector = paste0("#", ns("validate-button")))
+      }
+    })
 
     observeEvent(input$file, {
       if (isTRUE(is_excel(input$file$datapath))) {

@@ -70,7 +70,14 @@ hideUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactive
   )
 }
 
-
+#' @importFrom shiny textInput
+#' @importFrom htmltools tagAppendAttributes
+trigger_input <- function(inputId) {
+  tagAppendAttributes(
+    textInput(inputId = inputId, label = NULL, value = Sys.time()),
+    style = "display: none;"
+  )
+}
 
 
 
