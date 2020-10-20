@@ -23,19 +23,51 @@
 import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "database")) {
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
+
   env <- if("env" %in% from)
-    tabPanel("Env", import_globalenv_ui(ns("env")))
+    tabPanel("Env", import_globalenv_ui(id = ns("env")))
+
   file <- if("file" %in% from)
-    tabPanel("File", import_file_ui(ns("file")))
+    tabPanel("File", import_file_ui(id = ns("file")))
+
   copypaste <- if("copypaste" %in% from)
-    tabPanel("Copy/Paste", import_copypaste_ui(ns("copypaste")))
+    tabPanel("Copy/Paste", import_copypaste_ui(id = ns("copypaste")))
+
   googlesheets <- if("googlesheets" %in% from)
-    tabPanel("Googlesheets", import_googlesheets_ui(ns("googlesheets")))
+    tabPanel("Googlesheets", import_googlesheets_ui(id = ns("googlesheets")))
+
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
+
   tagList(
+    html_dependency_datamods(),
     do.call(tabsetPanel, dropNulls(list(env, file, copypaste, googlesheets, id = ns("tabs-import"), type = "pills"))),
     tags$script(
       sprintf("$('#%s').addClass('nav-justified');", ns("tabs-import"))
+    ),
+    tags$div(
+      id = ns("validate-button"),
+      style = "margin-top: 20px;",
+      actionButton(
+        inputId = ns("go_update"),
+        label = "Select, rename and update data",
+        icon = icon("gears"),
+        width = "100%",
+        disabled = "disabled",
+        class = "btn-link"
+      ),
+      tags$div(
+        class = "container-rule",
+        tags$hr(class = "horizontal-rule"),
+        tags$span("or", class = "label-rule")
+      ),
+      actionButton(
+        inputId = ns("validate"),
+        label = "Import data",
+        icon = icon("arrow-circle-right"),
+        width = "100%",
+        disabled = "disabled",
+        class = "btn-primary"
+      )
     )
   )
 }
@@ -48,38 +80,63 @@ import_server <- function(id) {
 
   moduleServer(
     id,
-    function(input, output, session){
+    function(input, output, session) {
+
+      ns <- session$ns
 
       data_rv <- reactiveValues(x = NULL)
+      imported_rv <- reactiveValues(data = NULL)
 
-      from_env <- import_globalenv_server("env")
-      from_file <- import_file_server("file")
-      from_copypaste <- import_copypaste_server("copypaste")
-      from_googlesheets <- import_googlesheets_server("googlesheets")
+      from_env <- import_globalenv_server(
+        id = "env",
+        trigger_return = "change"
+      )
+      from_file <- import_file_server(
+        id = "file",
+        trigger_return = "change"
+      )
+      from_copypaste <- import_copypaste_server(
+        id = "copypaste",
+        trigger_return = "change"
+      )
+      from_googlesheets <- import_googlesheets_server(
+        id = "googlesheets",
+        trigger_return = "change"
+      )
       #from_database <- import_database_server("database")
 
       observeEvent(from_env$data(), {
-        removeModal()
         data_rv$x <- from_env$data()
       })
       observeEvent(from_file$data(), {
-        removeModal()
         data_rv$x <- from_file$data()
       })
       observeEvent(from_copypaste$data(), {
-        removeModal()
         data_rv$x <- from_copypaste$data()
       })
       observeEvent(from_googlesheets$data(), {
-        removeModal()
         data_rv$x <- from_googlesheets$data()
       })
       # observeEvent(from_database$data(), {
-      #   removeModal()
       #   data_rv$x <- from_database$data()
       # })
 
-      return(reactive(data_rv$x))
+      observeEvent(data_rv$x, {
+        if (is.data.frame(data_rv$x)) {
+          toggle_widget(inputId = "validate", enable = TRUE)
+          toggle_widget(inputId = "go_update", enable = TRUE)
+        } else {
+          toggle_widget(inputId = "validate", enable = FALSE)
+          toggle_widget(inputId = "go_update", enable = FALSE)
+        }
+      })
+
+      observeEvent(input$validate, {
+        removeModal()
+        imported_rv$data <- data_rv$x
+      })
+
+      return(reactive(imported_rv$data))
     }
   )
 }

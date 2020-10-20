@@ -20,3 +20,30 @@
   visibility: hidden;
 }
 
+.container-rule {
+  position: relative;
+  text-align: center;
+  height: 25px;
+  margin-bottom: 5px;
+}
+
+.horizontal-rule {
+  position: absolute;
+  top: 11px;
+  right: 0;
+  left: 0;
+  background-color: #d0cfcf;
+  height: 1px;
+  z-index: 100;
+  margin: 0;
+  border: none;
+}
+
+.label-rule {
+  background: #FFF;
+  opacity: 1;
+  z-index: 101;
+  background-color: #FFF;
+  position: relative;
+  padding: 0 10px 0 10px;
+}
