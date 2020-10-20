@@ -25,7 +25,7 @@ toggle_widget <- function(inputId,
                         session = shiny::getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-toggleWidget",
-    message = list(id = inputId, enable = enable)
+    message = list(id = session$ns(inputId), enable = enable)
   )
 }
 

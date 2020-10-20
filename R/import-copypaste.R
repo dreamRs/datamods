@@ -97,7 +97,7 @@ import_copypaste_server <- function(id,
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
-        toggle_widget(inputId = ns("validate"), enable = FALSE)
+        toggle_widget(inputId = "validate", enable = FALSE)
 
         insert_alert(
           selector = ns("import"),
@@ -107,7 +107,7 @@ import_copypaste_server <- function(id,
 
       } else {
 
-        toggle_widget(inputId = ns("validate"), enable = TRUE)
+        toggle_widget(inputId = "validate", enable = TRUE)
 
         if (identical(trigger_return, "button")) {
           success_message <- tagList(
