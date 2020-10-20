@@ -93,7 +93,7 @@ import_copypaste_server <- function(id,
 
     observeEvent(input$data_pasted, {
       req(input$data_pasted)
-      imported <- try(data.table::fread(input = input$data_pasted), silent = TRUE)
+      imported <- try(data.table::fread(text = input$data_pasted), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
