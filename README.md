@@ -48,7 +48,7 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      tableOutput(outputId = "result")
     )
   )
 )
@@ -62,7 +62,7 @@ server <- function(input, output, session) {
   
   imported <- import_file_server("myid") ## <---
   
-  output$result <- renderPrint({
+  output$result <- renderTable({
     imported$data()
   })
   
