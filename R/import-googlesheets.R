@@ -61,17 +61,9 @@ import_googlesheets_ui <- function(id) {
         dismissible = TRUE
       )
     ),
-    tags$div(
-      id = ns("validate-button"),
-      style = "margin-top: 20px;",
-      actionButton(
-        inputId = ns("validate"),
-        label = "Import data",
-        icon = icon("arrow-circle-right"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-primary"
-      )
+    uiOutput(
+      outputId = "container_valid_btn",
+      style = "margin-top: 20px;"
     )
   )
 }
@@ -97,10 +89,23 @@ import_googlesheets_server <- function(id,
   trigger_return <- match.arg(trigger_return)
 
   module <- function(input, output, session) {
-    ns <- session$ns
 
+    ns <- session$ns
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
+
+    output$container_valid_btn <- renderUI({
+      if (identical(trigger_return, "button")) {
+        actionButton(
+          inputId = ns("validate"),
+          label = "Import data",
+          icon = icon("arrow-circle-right"),
+          width = "100%",
+          disabled = "disabled",
+          class = "btn-primary"
+        )
+      }
+    })
 
     options(gargle_oauth_cache = FALSE)
 

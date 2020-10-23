@@ -76,17 +76,9 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
         dismissible = TRUE
       )
     ),
-    tags$div(
-      id = ns("validate-button"),
-      style = "margin-top: 20px;",
-      actionButton(
-        inputId = ns("validate"),
-        label = "Import selected data",
-        icon = icon("arrow-circle-right"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-primary"
-      )
+    uiOutput(
+      outputId = "container_valid_btn",
+      style = "margin-top: 20px;"
     )
   )
 }
@@ -115,10 +107,21 @@ import_globalenv_server <- function(id,
   module <- function(input, output, session) {
 
     ns <- session$ns
-
     imported_rv <- reactiveValues(data = NULL, name = NULL)
     temporary_rv <- reactiveValues(data = NULL, name = NULL)
 
+    output$container_valid_btn <- renderUI({
+      if (identical(trigger_return, "button")) {
+        actionButton(
+          inputId = ns("validate"),
+          label = "Import data",
+          icon = icon("arrow-circle-right"),
+          width = "100%",
+          disabled = "disabled",
+          class = "btn-primary"
+        )
+      }
+    })
 
     observeEvent(input$env, {
       if (identical(input$env, "Global Environment")) {

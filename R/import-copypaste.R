@@ -46,19 +46,10 @@ import_copypaste_ui <- function(id) {
         dismissible = TRUE
       )
     ),
-    tags$div(
-      id = ns("validate-button"),
-      style = "margin-top: 20px;",
-      actionButton(
-        inputId = ns("validate"),
-        label = "Import data",
-        icon = icon("arrow-circle-right"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-primary"
-      )
-    ),
-    trigger_input(ns("trigger"))
+    uiOutput(
+      outputId = "container_valid_btn",
+      style = "margin-top: 20px;"
+    )
   )
 }
 
@@ -88,9 +79,16 @@ import_copypaste_server <- function(id,
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
 
-    observeEvent(input$trigger, {
-      if (identical(trigger_return, "change")) {
-        hideUI(selector = paste0("#", ns("validate-button")))
+    output$container_valid_btn <- renderUI({
+      if (identical(trigger_return, "button")) {
+        actionButton(
+          inputId = ns("validate"),
+          label = "Import data",
+          icon = icon("arrow-circle-right"),
+          width = "100%",
+          disabled = "disabled",
+          class = "btn-primary"
+        )
       }
     })
 
