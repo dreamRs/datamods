@@ -31,6 +31,7 @@ show_data <- function(data, title = "Imported data", options = NULL, width = "80
         class = "display dt-responsive",
         style = "bootstrap",
         width = "100%",
+        autoHideNavigation = TRUE,
         options = c(list(
           scrollX = TRUE
         ), options)

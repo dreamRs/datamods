@@ -38,36 +38,56 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
+  tabsetPanelArgs <- dropNulls(list(
+    env, file, copypaste, googlesheets,
+    id = ns("tabs-import"),
+    type = "pills"
+  ))
+
   tagList(
     html_dependency_datamods(),
-    do.call(tabsetPanel, dropNulls(list(env, file, copypaste, googlesheets, id = ns("tabs-import"), type = "pills"))),
+    tabsetPanel(
+      type = "hidden",
+      id = ns("tabs-mode"),
+      tabPanel(
+        title = "import",
+        do.call(
+          what = tabsetPanel,
+          args = tabsetPanelArgs
+        ),
+        tags$div(
+          id = ns("validate-button"),
+          style = "margin-top: 20px;",
+          actionButton(
+            inputId = ns("go_update"),
+            label = "Select, rename and update data",
+            icon = icon("gears"),
+            width = "100%",
+            disabled = "disabled",
+            class = "btn-link"
+          ),
+          tags$div(
+            class = "container-rule",
+            tags$hr(class = "horizontal-rule"),
+            tags$span("or", class = "label-rule")
+          ),
+          actionButton(
+            inputId = ns("validate"),
+            label = "Import data",
+            icon = icon("arrow-circle-right"),
+            width = "100%",
+            disabled = "disabled",
+            class = "btn-primary"
+          )
+        )
+      ),
+      tabPanel(
+        title = "update",
+        update_variables_ui(id = ns("update"))
+      )
+    ),
     tags$script(
       sprintf("$('#%s').addClass('nav-justified');", ns("tabs-import"))
-    ),
-    tags$div(
-      id = ns("validate-button"),
-      style = "margin-top: 20px;",
-      actionButton(
-        inputId = ns("go_update"),
-        label = "Select, rename and update data",
-        icon = icon("gears"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-link"
-      ),
-      tags$div(
-        class = "container-rule",
-        tags$hr(class = "horizontal-rule"),
-        tags$span("or", class = "label-rule")
-      ),
-      actionButton(
-        inputId = ns("validate"),
-        label = "Import data",
-        icon = icon("arrow-circle-right"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-primary"
-      )
     )
   )
 }
@@ -75,7 +95,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 
 #' @export
 #' @rdname import-modal
-#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeModal
+#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeModal updateTabsetPanel
 import_server <- function(id) {
 
   moduleServer(
@@ -129,6 +149,25 @@ import_server <- function(id) {
           toggle_widget(inputId = "validate", enable = FALSE)
           toggle_widget(inputId = "go_update", enable = FALSE)
         }
+      })
+
+
+      observeEvent(input$go_update, {
+        updateTabsetPanel(
+          session = session,
+          inputId = "tabs-mode",
+          selected = "update"
+        )
+      })
+
+      updated_data <- update_variables_server(
+        id = "update",
+        data = reactive(data_rv$x)
+      )
+
+      observeEvent(updated_data(), {
+        removeModal()
+        imported_rv$data <- updated_data()
       })
 
       observeEvent(input$validate, {
