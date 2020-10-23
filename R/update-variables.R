@@ -22,6 +22,11 @@ update_variables_ui <- function(id, title = "Update & select variables") {
     if (!is.null(title)) tags$h3(title, class = "datamods-title"),
     tags$div(
       uiOutput(outputId = ns("data_info"), inline = TRUE),
+      actionLink(
+        inputId = ns("see_data"),
+        label = "view data",
+        icon = icon("table")
+      ),
       tagAppendAttributes(
         dropMenu(
           placement = "bottom-end",
@@ -85,9 +90,11 @@ update_variables_server <- function(id, data) {
 
       ns <- session$ns
       updated_data <- reactiveValues(x = NULL)
+      token <- reactiveValues(x = paste(sample(c(letters, 0:9), 15, TRUE), collapse = ""))
 
       data_r <- reactive({
         if (is.reactive(data)) {
+          token$x <- paste(sample(c(letters, 0:9), 15, TRUE), collapse = "")
           data()
         } else {
           data
@@ -99,6 +106,10 @@ update_variables_server <- function(id, data) {
         sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
       })
 
+      observeEvent(input$see_data, {
+        show_data(data = data_r(), title = "Data")
+      })
+
       variables_r <- reactive({
         data <- data_r()
         updated_data$x <- NULL
@@ -107,20 +118,21 @@ update_variables_server <- function(id, data) {
 
       output$table <- renderDT({
         req(variables_r())
+        tok <- isolate(token$x)
         variables <- variables_r()
-        variables <- set_checkbox(variables, ns("selection"))
-        variables <- set_text_input(variables, "name", ns("name"))
-        variables <- set_class_input(variables, "class", ns("class_to_set"))
+        variables <- set_checkbox(variables, ns(paste("selection", tok, sep = "-")))
+        variables <- set_text_input(variables, "name", ns(paste("name", tok, sep = "-")))
+        variables <- set_class_input(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
         update_variables_datatable(variables)
       })
 
       observeEvent(input$validate, {
         data <- data_r()
-
+        tok <- isolate(token$x)
         # getting the input values
-        new_names <- get_inputs("name")
-        new_classes <- get_inputs("class_to_set")
-        new_selections <- get_inputs("selection")
+        new_selections <- get_inputs(paste("selection", tok, sep = "-"))
+        new_names <- get_inputs(paste("name", tok, sep = "-"))
+        new_classes <- get_inputs(paste("class_to_set", tok, sep = "-"))
 
         data_sv <- variables_r()
         vars_to_change <- get_vars_to_convert(data_sv, new_classes)
