@@ -77,7 +77,7 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
       )
     ),
     uiOutput(
-      outputId = "container_valid_btn",
+      outputId = ns("container_valid_btn"),
       style = "margin-top: 20px;"
     )
   )

@@ -61,7 +61,7 @@ import_file_ui <- function(id) {
       )
     ),
     uiOutput(
-      outputId = "container_valid_btn",
+      outputId = ns("container_valid_btn"),
       style = "margin-top: 20px;"
     )
   )
