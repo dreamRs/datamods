@@ -28,7 +28,7 @@ import_file_server(
 \item UI: HTML tags that can be included in shiny's UI
 \item Server: a \code{list} with one slot:
 \itemize{
-\item \strong{data}: a \code{reactive} function returning the selected \code{data.frame}.
+\item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
 }
 }
 }

@@ -1,6 +1,4 @@
 
-# Import data from Global Environment -------------------------------------
-
 library(shiny)
 library(datamods)
 
@@ -17,8 +15,6 @@ results_analysis <- data.frame(
   response = sample(1:100, 20, TRUE)
 )
 
-data(mtcars)
-
 
 # Application
 
@@ -32,7 +28,8 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      verbatimTextOutput(outputId = "name"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
@@ -41,7 +38,11 @@ server <- function(input, output, session) {
 
   imported <- import_globalenv_server("myid")
 
-  output$result <- renderPrint({
+  output$name <- renderPrint({
+    imported$name()
+  })
+
+  output$data <- renderPrint({
     imported$data()
   })
 

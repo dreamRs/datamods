@@ -4,7 +4,7 @@
 \alias{import-globalenv}
 \alias{import_globalenv_ui}
 \alias{import_globalenv_server}
-\title{Import data from Global Environment}
+\title{Import data from an Environment}
 \usage{
 import_globalenv_ui(id, globalenv = TRUE, packages = get_data_packages())
 
@@ -32,17 +32,15 @@ import_globalenv_server(
 \item UI: HTML tags that can be included in shiny's UI
 \item Server: a \code{list} with two slots:
 \itemize{
-\item \strong{data}: a \code{reactive} function returning the selected \code{data.frame}.
-\item \strong{name}: a \code{reactive} function the name of the selected data as \code{character}.
+\item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
+\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character}.
 }
 }
 }
 \description{
-Let the user select a dataset from its own environment.
+Let the user select a dataset from its own environment or from a package's environment.
 }
 \examples{
-
-# Import data from Global Environment -------------------------------------
 
 library(shiny)
 library(datamods)
@@ -60,8 +58,6 @@ results_analysis <- data.frame(
   response = sample(1:100, 20, TRUE)
 )
 
-data(mtcars)
-
 
 # Application
 
@@ -75,7 +71,8 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      verbatimTextOutput(outputId = "name"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
@@ -84,7 +81,11 @@ server <- function(input, output, session) {
 
   imported <- import_globalenv_server("myid")
 
-  output$result <- renderPrint({
+  output$name <- renderPrint({
+    imported$name()
+  })
+
+  output$data <- renderPrint({
     imported$data()
   })
 

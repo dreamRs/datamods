@@ -8,7 +8,7 @@
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
 #'  * Server: a \code{list} with one slot:
-#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
+#'    + **data**: a \code{reactive} function returning the imported \code{data.frame}.
 #'
 #' @export
 #' @name import-googlesheets

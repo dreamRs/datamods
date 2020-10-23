@@ -11,20 +11,25 @@ import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
 
 import_server(id)
 
-import_modal(id, from)
+import_modal(id, from, title = "Import data", size = "l")
 }
 \arguments{
 \item{id}{Module's id}
 
 \item{from}{The import_ui & server to use, i.e. the method.
 There are 5 options to choose from. ("env", "file", "copypaste", "googlsheets" & "database")}
+
+\item{title}{Modal window title.}
+
+\item{size}{Modal window size, default to \code{"l"} (large).}
 }
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with one slot:
+\item Server: a \code{list} with two slots:
 \itemize{
-\item \strong{data}: a \code{reactive} function returning the selected \code{data.frame}.
+\item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
+\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character} (if applicable).
 }
 }
 }
@@ -51,7 +56,8 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      verbatimTextOutput(outputId = "name"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
@@ -65,9 +71,14 @@ server <- function(input, output, session) {
 
   imported <- import_server("myid")
 
-  output$result <- renderPrint({
-    req(imported())
-    imported()
+  output$name <- renderPrint({
+    req(imported$name())
+    imported$name()
+  })
+
+  output$data <- renderPrint({
+    req(imported$data())
+    imported$data()
   })
 }
 

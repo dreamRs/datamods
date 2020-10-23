@@ -10,8 +10,9 @@
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
-#'  * Server: a \code{list} with one slot:
-#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
+#'  * Server: a \code{list} with two slots:
+#'    + **data**: a \code{reactive} function returning the imported \code{data.frame}.
+#'    + **name**: a \code{reactive} function returning the name of the imported data as \code{character} (if applicable).
 #'
 #' @export
 #' @name import-modal
@@ -104,7 +105,7 @@ import_server <- function(id) {
 
       ns <- session$ns
 
-      data_rv <- reactiveValues(x = NULL)
+      data_rv <- reactiveValues(data = NULL)
       imported_rv <- reactiveValues(data = NULL)
 
       from_env <- import_globalenv_server(
@@ -126,23 +127,27 @@ import_server <- function(id) {
       #from_database <- import_database_server("database")
 
       observeEvent(from_env$data(), {
-        data_rv$x <- from_env$data()
+        data_rv$data <- from_env$data()
+        data_rv$name <- from_env$name()
       })
       observeEvent(from_file$data(), {
-        data_rv$x <- from_file$data()
+        data_rv$data <- from_file$data()
+        data_rv$name <- NULL
       })
       observeEvent(from_copypaste$data(), {
-        data_rv$x <- from_copypaste$data()
+        data_rv$data <- from_copypaste$data()
+        data_rv$name <- NULL
       })
       observeEvent(from_googlesheets$data(), {
-        data_rv$x <- from_googlesheets$data()
+        data_rv$data <- from_googlesheets$data()
+        data_rv$name <- NULL
       })
       # observeEvent(from_database$data(), {
-      #   data_rv$x <- from_database$data()
+      #   data_rv$data <- from_database$data()
       # })
 
-      observeEvent(data_rv$x, {
-        if (is.data.frame(data_rv$x)) {
+      observeEvent(data_rv$data, {
+        if (is.data.frame(data_rv$data)) {
           toggle_widget(inputId = "validate", enable = TRUE)
           toggle_widget(inputId = "go_update", enable = TRUE)
         } else {
@@ -162,29 +167,37 @@ import_server <- function(id) {
 
       updated_data <- update_variables_server(
         id = "update",
-        data = reactive(data_rv$x)
+        data = reactive(data_rv$data)
       )
 
       observeEvent(updated_data(), {
         removeModal()
         imported_rv$data <- updated_data()
+        imported_rv$name <- data_rv$name %||% "imported_data"
       })
 
       observeEvent(input$validate, {
         removeModal()
-        imported_rv$data <- data_rv$x
+        imported_rv$data <- data_rv$data
+        imported_rv$name <- data_rv$name %||% "imported_data"
       })
 
-      return(reactive(imported_rv$data))
+      return(list(
+        data = reactive(imported_rv$data),
+        name = reactive(imported_rv$name)
+      ))
     }
   )
 }
 
 
+#' @param title Modal window title.
+#' @param size Modal window size, default to \code{"l"} (large).
+#'
 #' @export
 #' @rdname import-modal
 #' @importFrom shiny modalDialog showModal
-import_modal <- function(id, from) {
+import_modal <- function(id, from, title = "Import data", size = "l") {
   showModal(modalDialog(
     title = tagList(
       tags$button(
@@ -193,10 +206,10 @@ import_modal <- function(id, from) {
         style = "border: 0 none;",
         `data-dismiss` = "modal"
       ),
-      "Import data"
+      title
     ),
     import_ui(id, from),
-    size = "l",
+    size = size,
     footer = NULL
   ))
 }

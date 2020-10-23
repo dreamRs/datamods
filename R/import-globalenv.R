@@ -1,7 +1,7 @@
 
-#' @title Import data from Global Environment
+#' @title Import data from an Environment
 #'
-#' @description Let the user select a dataset from its own environment.
+#' @description Let the user select a dataset from its own environment or from a package's environment.
 #'
 #' @param id Module's ID.
 #' @param globalenv Search for data in Global environment.
@@ -10,8 +10,8 @@
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
 #'  * Server: a \code{list} with two slots:
-#'    + **data**: a \code{reactive} function returning the selected \code{data.frame}.
-#'    + **name**: a \code{reactive} function the name of the selected data as \code{character}.
+#'    + **data**: a \code{reactive} function returning the imported \code{data.frame}.
+#'    + **name**: a \code{reactive} function returning the name of the imported data as \code{character}.
 #'
 #'
 #'
