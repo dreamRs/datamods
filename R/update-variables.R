@@ -17,7 +17,8 @@
 #' @example examples/variables.R
 update_variables_ui <- function(id, title = "Update & select variables") {
   ns <- NS(id)
-  tagList(
+  tags$div(
+    class = "datamods-update",
     html_dependency_pretty(),
     if (!is.null(title)) tags$h3(title, class = "datamods-title"),
     tags$div(
@@ -120,9 +121,9 @@ update_variables_server <- function(id, data) {
         req(variables_r())
         tok <- isolate(token$x)
         variables <- variables_r()
-        variables <- set_checkbox(variables, ns(paste("selection", tok, sep = "-")))
-        variables <- set_text_input(variables, "name", ns(paste("name", tok, sep = "-")))
-        variables <- set_class_input(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
+        variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
+        variables <- set_input_text(variables, "name", ns(paste("name", tok, sep = "-")))
+        variables <- set_input_class(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
         update_variables_datatable(variables)
       })
 
@@ -150,7 +151,7 @@ update_variables_server <- function(id, data) {
         # rename
         names(data) <- unlist(new_names, use.names = FALSE)
         # select
-        data <- data[, unlist(new_selections, use.names = FALSE)]
+        data <- data[, unlist(new_selections, use.names = FALSE), drop = FALSE]
 
         updated_data$x <- data
       })
@@ -273,7 +274,7 @@ summary_vars <- function(data) {
 #' @noRd
 #' @importFrom htmltools doRenderTags
 #' @importFrom shiny textInput
-set_text_input <- function(data, variable, id = "variable", width = "100%") {
+set_input_text <- function(data, variable, id = "variable", width = "100%") {
   values <- data[[variable]]
   text_input <- mapply(
     FUN = function(inputId, value) {
@@ -309,7 +310,7 @@ set_text_input <- function(data, variable, id = "variable", width = "100%") {
 #'
 #' @note
 #' \code{shinyWidgets::prettyCheckbox} HTML dependency need to be included manually.
-set_checkbox <- function(data, id = "selection") {
+set_input_checkbox <- function(data, id = "selection") {
   checkboxes <- lapply(
     FUN = function(i) {
       tag <- prettyCheckbox(
@@ -348,7 +349,7 @@ set_checkbox <- function(data, id = "selection") {
 #'
 #' @importFrom htmltools doRenderTags
 #' @importFrom shiny selectInput
-set_class_input <- function(data, variable, id = "classes", width = "100%") {
+set_input_class <- function(data, variable, id = "classes", width = "100%") {
   classes <- data[[variable]]
   classes_up <- c("character", "factor", "numeric", "integer", "date", "datetime")
   class_input <- mapply(

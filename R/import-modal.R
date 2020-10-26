@@ -59,7 +59,8 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
     )
   }
 
-  tagList(
+  tags$div(
+    class = "datamods-imports",
     html_dependency_datamods(),
     tabsetPanel(
       type = "hidden",
