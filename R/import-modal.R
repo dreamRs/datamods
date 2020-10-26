@@ -94,10 +94,13 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 }
 
 
+#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
+#'
 #' @export
 #' @rdname import-modal
 #' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeModal updateTabsetPanel
-import_server <- function(id) {
+import_server <- function(id,
+                          return_class = c("data.frame", "data.table", "tbl_df")) {
 
   moduleServer(
     id,
@@ -183,7 +186,7 @@ import_server <- function(id) {
       })
 
       return(list(
-        data = reactive(imported_rv$data),
+        data = reactive(as_out(imported_rv$data, return_class)),
         name = reactive(imported_rv$name)
       ))
     }

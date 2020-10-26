@@ -9,7 +9,7 @@
 \usage{
 import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
 
-import_server(id)
+import_server(id, return_class = c("data.frame", "data.table", "tbl_df"))
 
 import_modal(id, from, title = "Import data", size = "l")
 }
@@ -18,6 +18,8 @@ import_modal(id, from, title = "Import data", size = "l")
 
 \item{from}{The import_ui & server to use, i.e. the method.
 There are 5 options to choose from. ("env", "file", "copypaste", "googlsheets" & "database")}
+
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 
 \item{title}{Modal window title.}
 
@@ -69,7 +71,7 @@ server <- function(input, output, session) {
     import_modal("myid", from = input$from)
   })
 
-  imported <- import_server("myid")
+  imported <- import_server("myid", return_class = "tbl_df")
 
   output$name <- renderPrint({
     req(imported$name())

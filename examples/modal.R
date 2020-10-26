@@ -30,7 +30,7 @@ server <- function(input, output, session) {
     import_modal("myid", from = input$from)
   })
 
-  imported <- import_server("myid")
+  imported <- import_server("myid", return_class = "tbl_df")
 
   output$name <- renderPrint({
     req(imported$name())
