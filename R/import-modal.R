@@ -25,25 +25,39 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
 
-  env <- if("env" %in% from)
+  env <- if ("env" %in% from)
     tabPanel("Env", import_globalenv_ui(id = ns("env")))
 
-  file <- if("file" %in% from)
+  file <- if ("file" %in% from)
     tabPanel("File", import_file_ui(id = ns("file")))
 
-  copypaste <- if("copypaste" %in% from)
+  copypaste <- if ("copypaste" %in% from)
     tabPanel("Copy/Paste", import_copypaste_ui(id = ns("copypaste")))
 
-  googlesheets <- if("googlesheets" %in% from)
+  googlesheets <- if ("googlesheets" %in% from)
     tabPanel("Googlesheets", import_googlesheets_ui(id = ns("googlesheets")))
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
-  tabsetPanelArgs <- dropNulls(list(
-    env, file, copypaste, googlesheets,
-    id = ns("tabs-import"),
-    type = "pills"
-  ))
+  if (identical(length(from), 1L)) {
+    importTab <- switch(
+      from,
+      "env" = import_globalenv_ui(id = ns("env")),
+      "file" = import_file_ui(id = ns("file")),
+      "copypaste" = import_copypaste_ui(id = ns("copypaste")),
+      "googlesheets" = import_googlesheets_ui(id = ns("googlesheets"))
+    )
+  } else {
+    tabsetPanelArgs <- dropNulls(list(
+      env, file, copypaste, googlesheets,
+      id = ns("tabs-import"),
+      type = "pills"
+    ))
+    importTab <- do.call(
+      what = tabsetPanel,
+      args = tabsetPanelArgs
+    )
+  }
 
   tagList(
     html_dependency_datamods(),
@@ -52,10 +66,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       id = ns("tabs-mode"),
       tabPanel(
         title = "import",
-        do.call(
-          what = tabsetPanel,
-          args = tabsetPanelArgs
-        ),
+        importTab,
         tags$div(
           id = ns("validate-button"),
           style = "margin-top: 20px;",

@@ -45,7 +45,7 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h3("Import a dataset"),
+    tags$h3("Import a dataset from an environment"),
     pickerInput(
       inputId = ns("data"),
       label = "Select a data.frame:",

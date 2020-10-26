@@ -27,7 +27,11 @@ server <- function(input, output, session) {
 
   observeEvent(input$launch_modal, {
     req(input$from)
-    import_modal("myid", from = input$from)
+    import_modal(
+      id = "myid",
+      from = input$from,
+      title = "Import data to be used in application"
+    )
   })
 
   imported <- import_server("myid", return_class = "tbl_df")
