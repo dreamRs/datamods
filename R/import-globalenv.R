@@ -346,7 +346,7 @@ get_dimensions <- function(objs) {
       tmp <- suppressWarnings(get_env_data(name))
       if (is.data.frame(tmp)) {
         sprintf("%d obs. of  %d variables", nrow(tmp), ncol(tmp))
-      }else {
+      } else {
         "Not a data.frame"
       }
     },

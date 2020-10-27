@@ -14,7 +14,7 @@
 #' @importFrom DT datatable
 #'
 #' @example examples/show_data.R
-show_data <- function(data, title = "Imported data", options = NULL, width = "80%") {
+show_data <- function(data, title = "Imported data", options = NULL, width = "80%") { # nocov start
   data <- as.data.frame(data)
   show_alert(
     title = NULL,
@@ -43,6 +43,6 @@ show_data <- function(data, title = "Imported data", options = NULL, width = "80
     html = TRUE,
     width = width
   )
-}
+} # nocov end
 
 
