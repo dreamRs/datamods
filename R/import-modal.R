@@ -17,7 +17,7 @@
 #' @export
 #' @name import-modal
 #'
-#' @importFrom shiny NS tabsetPanel tabPanel
+#' @importFrom shiny NS tabsetPanel tabPanel icon
 #'
 #' @example examples/modal.R
 #'
@@ -26,16 +26,16 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   from <- match.arg(from, several.ok = TRUE)
 
   env <- if ("env" %in% from)
-    tabPanel("Env", import_globalenv_ui(id = ns("env")))
+    tabPanel("Env", import_globalenv_ui(id = ns("env")), icon = icon("code"))
 
   file <- if ("file" %in% from)
-    tabPanel("File", import_file_ui(id = ns("file")))
+    tabPanel("File", import_file_ui(id = ns("file")), icon = icon("file-import"))
 
   copypaste <- if ("copypaste" %in% from)
-    tabPanel("Copy/Paste", import_copypaste_ui(id = ns("copypaste")))
+    tabPanel("Copy/Paste", import_copypaste_ui(id = ns("copypaste")), icon = icon("copy"))
 
   googlesheets <- if ("googlesheets" %in% from)
-    tabPanel("Googlesheets", import_googlesheets_ui(id = ns("googlesheets")))
+    tabPanel("Googlesheets", import_googlesheets_ui(id = ns("googlesheets")), icon = icon("cloud-download"))
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
