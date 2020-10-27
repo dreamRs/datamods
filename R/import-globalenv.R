@@ -72,7 +72,7 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
         id = ns("import-result"),
         status = "info",
         tags$b("No data selected!"),
-        "Use a data.frame from user environment",
+        "Use a data.frame from your environment or from the environment of a package.",
         dismissible = TRUE
       )
     ),
