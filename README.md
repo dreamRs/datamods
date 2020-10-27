@@ -1,4 +1,3 @@
-
 # datamods
 
 > Shiny modules to import and manipulate data into an application or addin.
@@ -14,7 +13,7 @@
 
 This package provides custom shiny modules to import data from various sources and
 update variables in the dataset.  
-The modules can be used in any standard shiny app.
+The modules can be used in any standard shiny application or RStudio add-in.
 
 
 ### Installation
@@ -74,7 +73,7 @@ server <- function(input, output, session) {
 }
 ```
 
-3. The call to server returns a `reactiveValues` object, so we assign it in a variable `imported`  
+3. The call to server returns a `list` with a `reactive` function, so we assign it in a variable `imported`  
 We can now call `imported$data()` to access the data returned.
 
 4. Run the app!
@@ -86,12 +85,7 @@ if (interactive())
 
 
 
-## Modules available :
-
-  - [import-globalenv](#import-globalenv)
-  - [import-file](#import-file)
-  - [import-copypaste](#import-copypaste)
-  - [import-googlesheets](#import-googlesheets)
+## Modules available
 
 
 ### Import from Environment
@@ -114,8 +108,9 @@ Copy and paste data from anywhere and it will be read as a `data.frame`.
 Just paste the link to a GoogleSheet file and it will be read.  
 
 
-#### Final Notes :
+
+## Final Notes :
 
  - Please find example apps of each of the modules in the `/examples` folder.
  - For a detailed description, please see the vignette.
- - Read more about shiny modules [here](https://shiny.rstudio.com/articles/modules.html)
+ - Read more about shiny modules [here](https://shiny.rstudio.com/articles/modules.html) and how to test them [here](https://mastering-shiny.org/scaling-testing.html)
