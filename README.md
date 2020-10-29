@@ -25,13 +25,30 @@ remotes::install_github("dreamRs/datamods")
 ```
 
 
+### Overview
+
+Import data through various sources with dedicated Shiny modules:
+
+![](man/figures/datamods-imports.png)
+
+
+All modules are available in a modal gathering them all:
+
+![](man/figures/datamods-modal.png)
+
+
+It's also possible to select, rename and change classes of imported data:
+
+![](man/figures/datamods-update.png)
+
+
+
 ### Usage
 
 There are two functions associated with each module, `import_*_ui` and `import_*_server`  
 Just plug them in the correct place with an `id` and they should be up and running.  
 
 Let us take the `import-file` module as an example.  
-
 
 
 #### Steps:  
