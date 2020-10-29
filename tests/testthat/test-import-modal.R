@@ -7,9 +7,9 @@ test_that("import_server works", {
     data(mtcars)
     session$env$data_rv$data = mtcars
     session$env$data_rv$name = "mtcars"
-    
+
     session$setInputs(validate = 1)
-    
+
     expect_is(session$getReturned()$data(), "data.table")
     expect_equal(session$getReturned()$name(), "mtcars")
   })
