@@ -414,6 +414,7 @@ update_variables_datatable <- function(data) {
       info = FALSE,
       searching = FALSE,
       autoWidth = TRUE,
+      preDrawCallback = JS("function() {Shiny.unbindAll(this.api().table().node());}"),
       drawCallback = JS("function() {Shiny.bindAll(this.api().table().node());}"),
       columnDefs = list(
         list(width = "5%", targets = 0),
