@@ -26,10 +26,12 @@ Imports:
     googlesheets4,
     readxl,
     rio,
+    rlang,
     tibble,
     tools
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    validate
 VignetteBuilder: knitr

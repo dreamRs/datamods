@@ -1,0 +1,258 @@
+
+#' @title Validation module
+#'
+#' @description Check that a dataset respect some validation expectations.
+#'
+#' @param id Module's ID.
+#' @param ... Arguments passed to \code{actionButton}, you cannot use \code{inputId}, \code{label} or \code{icon}.
+#'
+#' @return
+#'  * UI: HTML tags that can be included in shiny's UI
+#'  * Server: a \code{list} with two slots:
+#'    + **status**: a \code{reactive} function returning the best status available.
+#'    + **details**: a \code{reactive} function returning a \code{list} with validation details.
+#' @export
+#'
+#' @importFrom shiny NS actionButton icon uiOutput
+#' @importFrom htmltools tagList
+#' @importFrom shinyWidgets dropMenu
+#'
+#' @rdname validation
+#'
+#' @example examples/validation.R
+validation_ui <- function(id, ...) {
+  ns <- NS(id)
+  tagList(
+    dropMenu(
+      actionButton(
+        inputId = ns("menu"),
+        label = "Validation:",
+        ...,
+        icon = icon("caret-down")
+      ),
+      uiOutput(outputId = ns("results"), style = "width: 300px;")
+    )
+  )
+}
+
+#' @export
+#'
+#' @param id Module's ID
+#' @param data a \code{reactive} function returning a \code{data.frame}.
+#' @param n_row,n_col A one-sided formula to check number of rows and columns respectively, see below for examples.
+#' @param n_row_label,n_col_label Text to be displayed with the result of the check for number of rows/columns.
+#' @param btn_label Label for the dropdown button, will be followed by validation result.
+#' @param rules An object of class \code{validator} created with \code{validate::validator}.
+#'
+#' @rdname validation
+#'
+#' @importFrom shiny moduleServer reactiveValues observeEvent updateActionButton renderUI reactive
+#' @importFrom htmltools doRenderTags tags tagList
+validation_server <- function(id,
+                              data,
+                              n_row = NULL,
+                              n_col = NULL,
+                              n_row_label = "Valid number of rows",
+                              n_col_label = "Valid number of columns",
+                              btn_label = "Dataset validation:",
+                              rules = NULL) {
+  moduleServer(
+    id = id,
+    module = function(input, output, session) {
+
+      valid_ui <- reactiveValues(x = NULL)
+
+      valid_rv <- reactiveValues(status = NULL, details = NULL)
+
+      observeEvent(data(), {
+        to_validate <- data()
+        valid_dims <- check_data(to_validate, n_row = n_row, n_col = n_col)
+
+        if (all(c(valid_dims$nrows, valid_dims$ncols))) {
+          valid_status <- "OK"
+        } else {
+          valid_status <- "Failed"
+        }
+
+        valid_results <- lapply(
+          X = c("nrows", "ncols"),
+          FUN = function(x) {
+            if (is.null(valid_dims[[x]]))
+              return(NULL)
+            label <- switch(
+              x,
+              "nrows" = n_row_label,
+              "ncols" = n_col_label
+            )
+            list(
+              status = ifelse(valid_dims[[x]], "OK", "Failed"),
+              label = label
+            )
+          }
+        )
+
+        if (!is.null(rules) && inherits(rules, "validator")) {
+          validate_results <- validate::confront(to_validate, rules)
+          validate_results <- validate::summary(validate_results)
+          # validate_results <- format_validate(validate_results)
+          if (any(validate_results$error)) {
+            valid_status <- "Error"
+          } else if (any(validate_results$fails > 0)) {
+            valid_status <- "Failed"
+          }
+          valid_results <- c(
+            valid_results,
+            format_validate(validate_results)
+          )
+        }
+
+        if (identical(valid_status, "OK")) {
+          label <- doRenderTags(tagList(
+            btn_label,
+            tags$span(
+              class = "label label-success",
+              icon("check"), "OK"
+            )
+          ))
+        } else if (identical(valid_status, "Failed")) {
+          label <- doRenderTags(tagList(
+            btn_label,
+            tags$span(
+              class = "label label-warning",
+              icon("warning"), "Failed"
+            )
+          ))
+        } else if (identical(valid_status, "Error")) {
+          label <- doRenderTags(tagList(
+            btn_label,
+            tags$span(
+              class = "label label-danger",
+              icon("times"), "Error"
+            )
+          ))
+        }
+        updateActionButton(session = session, inputId = "menu", label = label)
+
+        valid_results <- dropNulls(valid_results)
+
+        total <- unlist(lapply(valid_results, `[[`, "status"))
+
+        header <- tags$div(
+          style = "display: grid; grid-template-columns: repeat(3, 1fr);grid-template-rows: 1fr;",
+          style = "height: 50px; line-height: 50px;",
+          tags$div(
+            class = "text-success",
+            style = "font-weight: bold; text-align: center; border-right: 1px solid #e6e6e6;",
+            sum(total == "OK"), "OK"
+          ),
+          tags$div(
+            class = "text-warning",
+            style = "font-weight: bold; text-align: center; border-right: 1px solid #e6e6e6;",
+            sum(total == "Failed"), "Failed"
+          ),
+          tags$div(
+            class = "text-danger",
+            style = "font-weight: bold; text-align: center;",
+            sum(total == "Error"), "Error"
+          )
+        )
+
+        valid_ui$x <- tagList(
+          header,
+          tags$br(),
+          make_validation_alerts(valid_results)
+        )
+
+        valid_rv$status <- valid_status
+        valid_rv$details <- valid_results
+      })
+
+      output$results <- renderUI({
+        valid_ui$x
+      })
+
+      return(list(
+        status = reactive(valid_rv$status),
+        details = reactive(valid_rv$details)
+      ))
+    }
+  )
+}
+
+#' @importFrom rlang as_label as_function enquo
+check_fun <- function(fun, what) {
+  label <- as_label(enquo(what))
+  if (inherits(fun, "formula")) {
+    fun <- as_function(fun)
+    result <- try(fun(what))
+    if (inherits(result, "try-error") | !is.logical(result)) {
+      warning("Checking ", label, " must return a logical", call. = FALSE)
+      return(FALSE)
+    }
+  } else {
+    result <- NULL
+  }
+  return(result)
+}
+
+check_data <- function(data, n_row = NULL, n_col = NULL) {
+  list(
+    nrows = check_fun(n_row, nrow(data)),
+    ncols = check_fun(n_col, ncol(data))
+  )
+}
+
+
+#' @importFrom shiny icon
+#' @importFrom shinyWidgets alert
+make_validation_alerts <- function(.list) {
+  lapply(
+    X = .list,
+    FUN = function(x) {
+      icon <- switch(
+        x$status,
+        "OK" = icon("check"),
+        "Failed" = icon("warning"),
+        "Error" = icon("times")
+      )
+      status <- switch(
+        x$status,
+        "OK" = "success",
+        "Failed" = "warning",
+        "Error" = "danger",
+        "info"
+      )
+      alert(
+        icon, x$label,
+        status = status,
+        style = "margin-bottom: 10px; padding: 10px;"
+      )
+    }
+  )
+}
+
+
+format_validate <- function(data) {
+  lapply(
+    X = seq_len(nrow(data)),
+    FUN = function(i) {
+      res <- data[i, ]
+      if (isTRUE(res$error)) {
+        status <- "Error"
+      } else {
+        if (res$fails > 0) {
+          status <- "Failed"
+        } else {
+          status <- "OK"
+        }
+      }
+      list(
+        status = status,
+        label = res$label %||% res$name,
+        summary = res
+      )
+    }
+  )
+}
+
+
