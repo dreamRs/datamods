@@ -36,6 +36,8 @@ server <- function(input, output, session) {
     n_row = ~ . > 20, # more than 20 rows
     n_col = ~ . >= 3, # at least 3 columns
     rules = validator(
+      "disp exist" = !is.null(disp),
+      is.numeric(disp),
       "mpg positive" = mpg > 0 # check that variable mpg is positive
     )
   )

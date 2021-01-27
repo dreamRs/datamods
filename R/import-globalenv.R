@@ -85,7 +85,7 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
 
 
 
-
+#' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
 #' @param trigger_return When to update selected data:
 #'  \code{"button"} (when user click on button) or
 #'  \code{"change"} (each time user select a dataset in the list).
@@ -99,6 +99,7 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
+                                    btn_show_data = TRUE,
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df")) {
 
@@ -147,33 +148,6 @@ import_globalenv_server <- function(id,
     })
 
 
-    # if (is.reactive(choices)) {
-    #   observeEvent(choices(), {
-        # updatePickerInput(
-        #   session = session,
-        #   inputId = "data",
-        #   choices = choices(),
-        #   selected = temporary_rv$name,
-        #   choicesOpt = list(
-        #     subtext = get_dimensions(choices())
-        #   )
-        # )
-    #     temporary_rv$package <- attr(choices(), "package")
-    #   })
-    # } else {
-    #   updatePickerInput(
-    #     session = session,
-    #     inputId = "data",
-    #     choices = choices,
-    #     selected = selected,
-    #     choicesOpt = list(
-    #       subtext = get_dimensions(choices)
-    #     )
-    #   )
-    #   temporary_rv$package <- attr(choices, "package")
-    # }
-
-
     observeEvent(input$trigger, {
       if (identical(trigger_return, "change")) {
         hideUI(selector = paste0("#", ns("validate-button")))
@@ -205,36 +179,14 @@ import_globalenv_server <- function(id,
 
         toggle_widget(inputId = "validate", enable = TRUE)
 
-        if (identical(trigger_return, "button")) {
-          success_message <- tagList(
-            tags$b(icon("check"), "Data ready to be imported!"),
-            sprintf(
-              "%s: %s obs. of %s variables imported",
-              input$data, nrow(imported), ncol(imported)
-            )
-          )
-        } else {
-          success_message <- tagList(
-            tags$b(icon("check"), "Data successfully imported!"),
-            sprintf(
-              "%s: %s obs. of %s variables imported",
-              input$data, nrow(imported), ncol(imported)
-            )
-          )
-        }
-        success_message <- tagList(
-          success_message,
-          tags$br(),
-          actionLink(
-            inputId = ns("see_data"),
-            label = "click to see data",
-            icon = icon("hand-o-right")
-          )
-        )
         insert_alert(
           selector = ns("import"),
           status = "success",
-          success_message
+          make_success_alert(
+            imported,
+            trigger_return = trigger_return,
+            btn_show_data = btn_show_data
+          )
         )
 
         temporary_rv$data <- imported

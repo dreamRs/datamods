@@ -10,6 +10,7 @@ import_globalenv_ui(id, globalenv = TRUE, packages = get_data_packages())
 
 import_globalenv_server(
   id,
+  btn_show_data = TRUE,
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df")
 )
@@ -20,6 +21,8 @@ import_globalenv_server(
 \item{globalenv}{Search for data in Global environment.}
 
 \item{packages}{Name of packages in which to search data.}
+
+\item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
@@ -62,7 +65,6 @@ results_analysis <- data.frame(
 # Application
 
 ui <- fluidPage(
-  tags$h3("Import data from Global Environment"),
   fluidRow(
     column(
       width = 4,

@@ -10,12 +10,15 @@ import_file_ui(id)
 
 import_file_server(
   id,
+  btn_show_data = TRUE,
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df")
 )
 }
 \arguments{
 \item{id}{Module's id}
+
+\item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or

@@ -19,7 +19,6 @@ results_analysis <- data.frame(
 # Application
 
 ui <- fluidPage(
-  tags$h3("Import data from Global Environment"),
   fluidRow(
     column(
       width = 4,
