@@ -6,7 +6,12 @@
 \alias{import_globalenv_server}
 \title{Import data from an Environment}
 \usage{
-import_globalenv_ui(id, globalenv = TRUE, packages = get_data_packages())
+import_globalenv_ui(
+  id,
+  globalenv = TRUE,
+  packages = get_data_packages(),
+  title = TRUE
+)
 
 import_globalenv_server(
   id,
@@ -21,6 +26,8 @@ import_globalenv_server(
 \item{globalenv}{Search for data in Global environment.}
 
 \item{packages}{Name of packages in which to search data.}
+
+\item{title}{Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 

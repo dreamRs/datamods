@@ -6,7 +6,7 @@
 \alias{import_googlesheets_server}
 \title{Import data with a googlesheet link}
 \usage{
-import_googlesheets_ui(id)
+import_googlesheets_ui(id, title = TRUE)
 
 import_googlesheets_server(
   id,
@@ -17,6 +17,8 @@ import_googlesheets_server(
 }
 \arguments{
 \item{id}{Module's ID}
+
+\item{title}{Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 

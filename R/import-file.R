@@ -3,7 +3,8 @@
 #'
 #' @description Let user upload a file and import data
 #'
-#' @param id Module's id
+#' @param id Module's ID.
+#' @param title Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -19,14 +20,18 @@
 #' @importFrom shinyWidgets pickerInput numericInputIcon
 #'
 #' @example examples/from-file.R
-import_file_ui <- function(id) {
+import_file_ui <- function(id, title = TRUE) {
 
   ns <- NS(id)
+
+  if (isTRUE(title)) {
+    title <- tags$h4("Import a file")
+  }
 
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h3("Import a file"),
+    title,
     fileInput(
       inputId = ns("file"),
       label = "Upload a file:",

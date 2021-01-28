@@ -6,6 +6,7 @@
 #' @param id Module's ID.
 #' @param globalenv Search for data in Global environment.
 #' @param packages Name of packages in which to search data.
+#' @param title Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,7 +25,10 @@
 #' @importFrom shinyWidgets pickerInput alert
 #'
 #' @example examples/globalenv-default.R
-import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packages()) {
+import_globalenv_ui <- function(id,
+                                globalenv = TRUE,
+                                packages = get_data_packages(),
+                                title = TRUE) {
 
   ns <- NS(id)
 
@@ -42,10 +46,14 @@ import_globalenv_ui <- function(id, globalenv = TRUE, packages = get_data_packag
     selected <- packages[1]
   }
 
+  if (isTRUE(title)) {
+    title <- tags$h4("Import a dataset from an environment")
+  }
+
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
-    tags$h3("Import a dataset from an environment"),
+    title,
     pickerInput(
       inputId = ns("data"),
       label = "Select a data.frame:",
