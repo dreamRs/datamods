@@ -12,7 +12,7 @@ ui <- fluidPage(
         choices = c("env", "file", "copypaste", "googlesheets"),
         selected = c("file", "copypaste")
       ),
-      actionButton("launch_modal", "Launch Modal(s)")
+      actionButton("launch_modal", "Launch modal window")
     ),
     column(
       width = 8,

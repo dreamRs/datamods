@@ -9,7 +9,12 @@
 \usage{
 import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
 
-import_server(id, return_class = c("data.frame", "data.table", "tbl_df"))
+import_server(
+  id,
+  validation_opts = NULL,
+  allowed_status = c("OK", "Failed", "Error"),
+  return_class = c("data.frame", "data.table", "tbl_df")
+)
 
 import_modal(id, from, title = "Import data", size = "l")
 }
@@ -18,6 +23,11 @@ import_modal(id, from, title = "Import data", size = "l")
 
 \item{from}{The import_ui & server to use, i.e. the method.
 There are 5 options to choose from. ("env", "file", "copypaste", "googlsheets" & "database")}
+
+\item{validation_opts}{\code{list} of arguments passed to \code{\link{validation_server}}.}
+
+\item{allowed_status}{Vector of statuses allowed to confirm dataset imported,
+if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.}
 
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 
@@ -53,7 +63,7 @@ ui <- fluidPage(
         choices = c("env", "file", "copypaste", "googlesheets"),
         selected = c("file", "copypaste")
       ),
-      actionButton("launch_modal", "Launch Modal(s)")
+      actionButton("launch_modal", "Launch modal window")
     ),
     column(
       width = 8,

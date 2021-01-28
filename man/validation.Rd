@@ -5,7 +5,7 @@
 \alias{validation_server}
 \title{Validation module}
 \usage{
-validation_ui(id, display = c("dropdown", "plain"), ...)
+validation_ui(id, display = c("dropdown", "inline"), ...)
 
 validation_server(
   id,

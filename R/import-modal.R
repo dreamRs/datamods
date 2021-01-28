@@ -26,18 +26,26 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   from <- match.arg(from, several.ok = TRUE)
 
   env <- if ("env" %in% from)
-    tabPanel("Env", import_globalenv_ui(id = ns("env")), icon = icon("code"))
+    tabPanel("env", import_globalenv_ui(id = ns("env")), icon = icon("code"))
 
   file <- if ("file" %in% from)
-    tabPanel("File", import_file_ui(id = ns("file")), icon = icon("file-import"))
+    tabPanel("file", import_file_ui(id = ns("file")), icon = icon("file-import"))
 
   copypaste <- if ("copypaste" %in% from)
-    tabPanel("Copy/Paste", import_copypaste_ui(id = ns("copypaste")), icon = icon("copy"))
+    tabPanel("copypaste", import_copypaste_ui(id = ns("copypaste")), icon = icon("copy"))
 
   googlesheets <- if ("googlesheets" %in% from)
-    tabPanel("Googlesheets", import_googlesheets_ui(id = ns("googlesheets")), icon = icon("cloud-download"))
+    tabPanel("googlesheets", import_googlesheets_ui(id = ns("googlesheets")), icon = icon("cloud-download"))
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
+
+  labsImport <- c(
+    "env" = "Environment",
+    "file" = "External file",
+    "copypaste" = "Copy / Paste",
+    "googlesheets" = "Googlesheets"
+  )
+
 
   if (identical(length(from), 1L)) {
     importTab <- switch(
@@ -51,7 +59,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
     tabsetPanelArgs <- dropNulls(list(
       env, file, copypaste, googlesheets,
       id = ns("tabs-import"),
-      type = "pills"
+      type = "hidden"
     ))
     importTab <- do.call(
       what = tabsetPanel,
@@ -63,57 +71,76 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
     class = "datamods-imports",
     html_dependency_datamods(),
     tabsetPanel(
-      type = "hidden",
+      type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = "import",
-        importTab,
-        tags$div(
-          id = ns("validate-button"),
-          style = "margin-top: 20px;",
-          actionButton(
-            inputId = ns("go_update"),
-            label = "Select, rename and update data",
-            icon = icon("gears"),
-            width = "100%",
-            disabled = "disabled",
-            class = "btn-link"
-          ),
-          tags$div(
-            class = "container-rule",
-            tags$hr(class = "horizontal-rule"),
-            tags$span("or", class = "label-rule")
-          ),
-          actionButton(
-            inputId = ns("validate"),
-            label = "Import data",
-            icon = icon("arrow-circle-right"),
-            width = "100%",
-            disabled = "disabled",
-            class = "btn-primary"
+        title = "Import",
+        if (length(from) > 1) {
+          tagList(
+            tags$br(),
+            shinyWidgets::prettyRadioButtons(
+              inputId = ns("from"),
+              label = "How to import data?",
+              choiceValues = from,
+              choiceNames = unname(labsImport[from]),
+              inline = TRUE
+            )
           )
-        )
+        },
+        importTab
       ),
       tabPanel(
-        title = "update",
+        title = "View",
+        tags$br(),
+        DT::DTOutput(outputId = ns("view"))
+      ),
+      tabPanel(
+        title = "Update",
         update_variables_ui(id = ns("update"))
+      ),
+      tabPanel(
+        title = "Validate",
+        tags$br(),
+        validation_ui(id = ns("validation"), display = "inline")
+      )
+    ),
+    tags$div(
+      id = ns("confirm-button"),
+      style = "margin-top: 20px;",
+      actionButton(
+        inputId = ns("confirm"),
+        label = "Import data",
+        icon = icon("arrow-circle-right"),
+        width = "100%",
+        disabled = "disabled",
+        class = "btn-primary"
       )
     ),
     tags$script(
-      sprintf("$('#%s').addClass('nav-justified');", ns("tabs-import"))
+      sprintf("$('#%s').addClass('nav-justified');", ns("tabs-mode")),
+      sprintf("fadeTab({id: '%s'});", ns("tabs-mode")),
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "View"),
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "Update"),
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "Validate")
     )
   )
 }
 
 
+#' @param validation_opts \code{list} of arguments passed to \code{\link{validation_server}}.
+#' @param allowed_status Vector of statuses allowed to confirm dataset imported,
+#'  if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.
 #' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
 #'
 #' @export
 #' @rdname import-modal
-#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeModal updateTabsetPanel
+#' @importFrom shiny moduleServer reactiveValues observeEvent
+#'  reactive removeModal updateTabsetPanel hideTab observe
 import_server <- function(id,
+                          validation_opts = NULL,
+                          allowed_status = c("OK", "Failed", "Error"),
                           return_class = c("data.frame", "data.table", "tbl_df")) {
-
+  allowed_status <- match.arg(allowed_status, several.ok = TRUE)
   moduleServer(
     id,
     function(input, output, session) {
@@ -123,21 +150,39 @@ import_server <- function(id,
       data_rv <- reactiveValues(data = NULL)
       imported_rv <- reactiveValues(data = NULL)
 
+      observeEvent(input[["tabs-mode"]], {
+        if (length(validation_opts) < 1) {
+          hideTab(inputId = "tabs-mode", target = "Validate")
+        }
+      })
+
+      observeEvent(input$from, {
+        updateTabsetPanel(
+          session = session,
+          inputId = "tabs-import",
+          selected = input$from
+        )
+      })
+
       from_env <- import_globalenv_server(
         id = "env",
-        trigger_return = "change"
+        trigger_return = "change",
+        btn_show_data = FALSE
       )
       from_file <- import_file_server(
         id = "file",
-        trigger_return = "change"
+        trigger_return = "change",
+        btn_show_data = FALSE
       )
       from_copypaste <- import_copypaste_server(
         id = "copypaste",
-        trigger_return = "change"
+        trigger_return = "change",
+        btn_show_data = FALSE
       )
       from_googlesheets <- import_googlesheets_server(
         id = "googlesheets",
-        trigger_return = "change"
+        trigger_return = "change",
+        btn_show_data = FALSE
       )
       #from_database <- import_database_server("database")
 
@@ -161,22 +206,41 @@ import_server <- function(id,
       #   data_rv$data <- from_database$data()
       # })
 
-      observeEvent(data_rv$data, {
+      observe({
+        req(data_rv$data)
         if (is.data.frame(data_rv$data)) {
-          toggle_widget(inputId = "validate", enable = TRUE)
-          toggle_widget(inputId = "go_update", enable = TRUE)
+          if (length(validation_opts) < 1) {
+            toggle_widget(inputId = "confirm", enable = TRUE)
+          } else {
+            status <- validation_results$status()
+            req(status)
+            if (status %in% allowed_status) {
+              toggle_widget(inputId = "confirm", enable = TRUE)
+            } else {
+              toggle_widget(inputId = "confirm", enable = FALSE)
+            }
+          }
+          enable_tab("tabs-mode", "View")
+          enable_tab("tabs-mode", "Update")
+          enable_tab("tabs-mode", "Validate")
         } else {
-          toggle_widget(inputId = "validate", enable = FALSE)
-          toggle_widget(inputId = "go_update", enable = FALSE)
+          toggle_widget(inputId = "confirm", enable = FALSE)
         }
       })
 
-
-      observeEvent(input$go_update, {
-        updateTabsetPanel(
-          session = session,
-          inputId = "tabs-mode",
-          selected = "update"
+      output$view <- DT::renderDT({
+        req(data_rv$data)
+        DT::datatable(
+          data = data_rv$data,
+          rownames = FALSE,
+          selection = "none",
+          class = "display dt-responsive",
+          style = "bootstrap",
+          width = "100%",
+          options = list(
+            scrollX = TRUE,
+            pageLength = min(c(10, nrow(data_rv$data)))
+          )
         )
       })
 
@@ -185,13 +249,48 @@ import_server <- function(id,
         data = reactive(data_rv$data)
       )
 
+      validation_results <- validation_server(
+        id = "validation",
+        data = reactive({
+          if (is.null(imported_rv$data)) {
+            data_rv$data
+          } else {
+            imported_rv$data
+          }
+        }),
+        n_row = validation_opts$n_row,
+        n_col = validation_opts$n_col,
+        n_row_label = validation_opts$n_row_label %||% "Valid number of rows",
+        n_col_label = validation_opts$n_col_label %||% "Valid number of columns",
+        btn_label = validation_opts$btn_label,
+        rules = validation_opts$rules
+      )
+
+      observeEvent(validation_results$status(), {
+        status <- validation_results$status()
+        req(status)
+        if (status %in% c("Error", "Failed")) {
+          update_tab_label("tabs-mode", "Validate", tagList(
+            tags$span(
+              style = "color: firebrick;", icon("exclamation-circle")
+            ), "Validate"
+          ))
+        } else {
+          update_tab_label("tabs-mode", "Validate", "Validate")
+        }
+        if (status %in% allowed_status) {
+          toggle_widget(inputId = "confirm", enable = TRUE)
+        } else {
+          toggle_widget(inputId = "confirm", enable = FALSE)
+        }
+      })
+
       observeEvent(updated_data(), {
-        removeModal()
         imported_rv$data <- updated_data()
         imported_rv$name <- data_rv$name %||% "imported_data"
       })
 
-      observeEvent(input$validate, {
+      observeEvent(input$confirm, {
         removeModal()
         imported_rv$data <- data_rv$data
         imported_rv$name <- data_rv$name %||% "imported_data"

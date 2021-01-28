@@ -39,3 +39,44 @@ Shiny.addCustomMessageHandler("datamods-hideUI", function(data) {
     $(data.selector).removeClass("show");
   }
 });
+
+
+function fadeTab(data) {
+  var tabId = $("#" + data.id).attr("data-tabsetid");
+  $("#" + data.id)
+    .parent()
+    .find(".tab-pane")
+    .each(function(index) {
+      if ($(this).parent().attr("data-tabsetid") == tabId) {
+        $( this ).addClass("fade");
+        if (index < 1) {
+          $( this ).addClass("in");
+        }
+      }
+    });
+}
+
+function updateTabLabel(data) {
+  var el = $("#" + data.id).find("[data-value='" + data.value + "']");
+  if (typeof el[0] != "undefined") {
+    $(el[0]).html(data.label);
+  }
+}
+Shiny.addCustomMessageHandler("datamods-updateTabLabel", updateTabLabel);
+
+function disableTab(data) {
+  var el = $("#" + data.id).find("[data-value='" + data.value + "']");
+  if (typeof el[0] != "undefined") {
+    $(el[0]).removeAttr("data-toggle");
+    $(el[0]).parent().addClass("disabled");
+  }
+}
+Shiny.addCustomMessageHandler("datamods-disableTab", disableTab);
+Shiny.addCustomMessageHandler("datamods-enableTab", function(data) {
+  var el = $("#" + data.id).find("[data-value='" + data.value + "']");
+  if (typeof el[0] != "undefined") {
+    $(el[0]).attr("data-toggle", "tab");
+    $(el[0]).parent().removeClass("disabled");
+  }
+});
+

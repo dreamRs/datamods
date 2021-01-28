@@ -71,6 +71,29 @@ hideUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactive
 }
 
 
+enable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
+  session$sendCustomMessage(
+    type = "datamods-enableTab",
+    message = list(id = session$ns(id), value = value)
+  )
+}
+
+disable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
+  session$sendCustomMessage(
+    type = "datamods-disableTab",
+    message = list(id = session$ns(id), value = value)
+  )
+}
+
+#' @importFrom htmltools doRenderTags
+update_tab_label <- function(id, value, label, session = shiny::getDefaultReactiveDomain()) {
+  session$sendCustomMessage(
+    type = "datamods-updateTabLabel",
+    message = list(id = session$ns(id), value = value, label = doRenderTags(label))
+  )
+}
+
+
 #' @importFrom htmltools tagList tags
 #' @importFrom shiny icon getDefaultReactiveDomain
 make_success_alert <- function(data,
