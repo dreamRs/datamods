@@ -2,7 +2,8 @@
 #' Select, rename and convert variables
 #'
 #' @param id Module's ID.
-#' @param title Text to be used as title.
+#' @param title Module's title, if \code{TRUE} use the default title,
+#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
 #' @return A \code{reactive} function returning the updated data.
 #' @export
@@ -15,19 +16,17 @@
 #' @importFrom shinyWidgets html_dependency_pretty textInputIcon dropMenu
 #'
 #' @example examples/variables.R
-update_variables_ui <- function(id, title = "Update & select variables") {
+update_variables_ui <- function(id, title = TRUE) {
   ns <- NS(id)
+  if (isTRUE(title)) {
+    title <- tags$h4("Update & select variables", class = "datamods-title")
+  }
   tags$div(
     class = "datamods-update",
     html_dependency_pretty(),
-    if (!is.null(title)) tags$h3(title, class = "datamods-title"),
+    title,
     tags$div(
       uiOutput(outputId = ns("data_info"), inline = TRUE),
-      actionLink(
-        inputId = ns("see_data"),
-        label = "view data",
-        icon = icon("table")
-      ),
       tagAppendAttributes(
         dropMenu(
           placement = "bottom-end",
@@ -69,8 +68,7 @@ update_variables_ui <- function(id, title = "Update & select variables") {
       inputId = ns("validate"),
       label = "Apply changes",
       icon = icon("arrow-circle-right"),
-      width = "100%",
-      class = "btn-primary"
+      width = "100%"
     )
   )
 }
@@ -95,6 +93,7 @@ update_variables_server <- function(id, data) {
 
       data_r <- reactive({
         if (is.reactive(data)) {
+          req(data())
           token$x <- paste(sample(c(letters, 0:9), 15, TRUE), collapse = "")
           data()
         } else {
@@ -105,10 +104,6 @@ update_variables_server <- function(id, data) {
       output$data_info <- renderUI({
         data <- data_r()
         sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
-      })
-
-      observeEvent(input$see_data, {
-        show_data(data = data_r(), title = "Data")
       })
 
       variables_r <- reactive({
@@ -138,22 +133,38 @@ update_variables_server <- function(id, data) {
         data_sv <- variables_r()
         vars_to_change <- get_vars_to_convert(data_sv, new_classes)
 
-        # convert
-        if (nrow(vars_to_change) > 0) {
-          data <- convert_to(
-            data = data,
-            variable = vars_to_change$name,
-            new_class = vars_to_change$class_to_set,
-            origin = input$origin,
-            format = input$format
-          )
-        }
-        # rename
-        names(data) <- unlist(new_names, use.names = FALSE)
-        # select
-        data <- data[, unlist(new_selections, use.names = FALSE), drop = FALSE]
+        res_update <- try({
+          # convert
+          if (nrow(vars_to_change) > 0) {
+            data <- convert_to(
+              data = data,
+              variable = vars_to_change$name,
+              new_class = vars_to_change$class_to_set,
+              origin = input$origin,
+              format = input$format
+            )
+          }
+          # rename
+          names(data) <- unlist(new_names, use.names = FALSE)
+          # select
+          data <- data[, unlist(new_selections, use.names = FALSE), drop = FALSE]
+        }, silent = TRUE)
 
-        updated_data$x <- data
+        if (inherits(res_update, "try-error")) {
+          insert_alert(
+            selector = ns("update"),
+            status = "danger",
+            tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
+          )
+        } else {
+          insert_alert(
+            selector = ns("update"),
+            status = "success",
+            tags$b(icon("check"), "Data successfully updated!")
+          )
+          updated_data$x <- data
+        }
+
       })
 
       return(reactive(updated_data$x))
@@ -407,7 +418,7 @@ update_variables_datatable <- function(data) {
     class = "display dt-responsive",
     fillContainer = FALSE,
     options = list(
-      scrollY = "400px",
+      scrollY = if (nrow(data) > 8) "400px",
       scrollX = FALSE,
       lengthChange = FALSE,
       paging = FALSE,

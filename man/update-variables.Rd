@@ -6,14 +6,15 @@
 \alias{update_variables_server}
 \title{Select, rename and convert variables}
 \usage{
-update_variables_ui(id, title = "Update & select variables")
+update_variables_ui(id, title = TRUE)
 
 update_variables_server(id, data)
 }
 \arguments{
 \item{id}{Module's ID}
 
-\item{title}{Text to be used as title.}
+\item{title}{Module's title, if \code{TRUE} use the default title,
+use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{data}{a \code{data.frame}}
 }
@@ -49,8 +50,12 @@ ui <- fluidPage(
     ),
     column(
       width = 6,
-      verbatimTextOutput("result"),
-      verbatimTextOutput("str")
+      tags$b("original data:"),
+      verbatimTextOutput("original"),
+      verbatimTextOutput("original_str"),
+      tags$b("Modified data:"),
+      verbatimTextOutput("modified"),
+      verbatimTextOutput("modified_str")
     )
   )
 )
@@ -62,10 +67,17 @@ server <- function(input, output, session) {
     data = reactive(testdata)
   )
 
-  output$result <- renderPrint({
+  output$original <- renderPrint({
+    testdata
+  })
+  output$original_str <- renderPrint({
+    str(testdata)
+  })
+
+  output$modified <- renderPrint({
     updated_data()
   })
-  output$str <- renderPrint({
+  output$modified_str <- renderPrint({
     str(updated_data())
   })
 }
