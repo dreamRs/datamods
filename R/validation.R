@@ -4,7 +4,10 @@
 #' @description Check that a dataset respect some validation expectations.
 #'
 #' @param id Module's ID.
-#' @param ... Arguments passed to \code{actionButton}, you cannot use \code{inputId}, \code{label} or \code{icon}.
+#' @param display Display validation results in a dropdown menu
+#'  by clicking on a button or display results directly in interface.
+#' @param ... Arguments passed to \code{actionButton} or \code{uiOutput} depending on display mode,
+#'  you cannot use \code{inputId}/\code{outputId}, \code{label} or \code{icon} (button only).
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -20,24 +23,28 @@
 #' @rdname validation
 #'
 #' @example examples/validation.R
-validation_ui <- function(id, ...) {
+validation_ui <- function(id, display = c("dropdown", "inline"), ...) {
   ns <- NS(id)
-  tagList(
-    dropMenu(
-      actionButton(
-        inputId = ns("menu"),
-        label = "Validation:",
-        ...,
-        icon = icon("caret-down")
-      ),
-      uiOutput(outputId = ns("results"), style = "width: 300px;")
+  display <- match.arg(display)
+  if (identical(display, "dropdown")) {
+    tagList(
+      dropMenu(
+        actionButton(
+          inputId = ns("menu"),
+          label = "Validation:",
+          ...,
+          icon = icon("caret-down")
+        ),
+        uiOutput(outputId = ns("results"), style = "width: 300px;")
+      )
     )
-  )
+  } else {
+    uiOutput(outputId = ns("results"), ...)
+  }
 }
 
 #' @export
 #'
-#' @param id Module's ID
 #' @param data a \code{reactive} function returning a \code{data.frame}.
 #' @param n_row,n_col A one-sided formula to check number of rows and columns respectively, see below for examples.
 #' @param n_row_label,n_col_label Text to be displayed with the result of the check for number of rows/columns.
@@ -94,6 +101,11 @@ validation_server <- function(id,
         if (!is.null(rules) && inherits(rules, "validator")) {
           validate_results <- validate::confront(to_validate, rules)
           validate_results <- validate::summary(validate_results)
+          validate_results <- merge(
+            x = validate_results,
+            y = validate::as.data.frame(rules),
+            by = "name"
+          )
           # validate_results <- format_validate(validate_results)
           if (any(validate_results$error)) {
             valid_status <- "Error"
@@ -205,6 +217,7 @@ check_data <- function(data, n_row = NULL, n_col = NULL) {
 
 #' @importFrom shiny icon
 #' @importFrom shinyWidgets alert
+#' @importFrom htmltools HTML
 make_validation_alerts <- function(.list) {
   lapply(
     X = .list,
@@ -223,7 +236,7 @@ make_validation_alerts <- function(.list) {
         "info"
       )
       alert(
-        icon, x$label,
+        icon, HTML(x$label),
         status = status,
         style = "margin-bottom: 10px; padding: 10px;"
       )
@@ -246,9 +259,20 @@ format_validate <- function(data) {
           status <- "OK"
         }
       }
+      if (!is.null(res$label)) {
+        label <- res$label
+        if (!is.null(res$description)) {
+          label <- paste0("<b>", label, ":</b> ", res$description)
+        }
+      } else {
+        label <- res$name
+      }
+      if (identical(status, "Failed")) {
+        label <- paste0(label, "| failed: ", res$fails, " / ", res$items)
+      }
       list(
         status = status,
-        label = res$label %||% res$name,
+        label = label,
         summary = res
       )
     }

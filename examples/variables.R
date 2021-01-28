@@ -23,8 +23,12 @@ ui <- fluidPage(
     ),
     column(
       width = 6,
-      verbatimTextOutput("result"),
-      verbatimTextOutput("str")
+      tags$b("original data:"),
+      verbatimTextOutput("original"),
+      verbatimTextOutput("original_str"),
+      tags$b("Modified data:"),
+      verbatimTextOutput("modified"),
+      verbatimTextOutput("modified_str")
     )
   )
 )
@@ -36,10 +40,17 @@ server <- function(input, output, session) {
     data = reactive(testdata)
   )
 
-  output$result <- renderPrint({
+  output$original <- renderPrint({
+    testdata
+  })
+  output$original_str <- renderPrint({
+    str(testdata)
+  })
+
+  output$modified <- renderPrint({
     updated_data()
   })
-  output$str <- renderPrint({
+  output$modified_str <- renderPrint({
     str(updated_data())
   })
 }

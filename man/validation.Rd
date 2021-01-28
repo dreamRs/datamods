@@ -5,7 +5,7 @@
 \alias{validation_server}
 \title{Validation module}
 \usage{
-validation_ui(id, ...)
+validation_ui(id, display = c("dropdown", "plain"), ...)
 
 validation_server(
   id,
@@ -19,9 +19,13 @@ validation_server(
 )
 }
 \arguments{
-\item{id}{Module's ID}
+\item{id}{Module's ID.}
 
-\item{...}{Arguments passed to \code{actionButton}, you cannot use \code{inputId}, \code{label} or \code{icon}.}
+\item{display}{Display validation results in a dropdown menu
+by clicking on a button or display results directly in interface.}
+
+\item{...}{Arguments passed to \code{actionButton} or \code{uiOutput} depending on display mode,
+you cannot use \code{inputId}/\code{outputId}, \code{label} or \code{icon} (button only).}
 
 \item{data}{a \code{reactive} function returning a \code{data.frame}.}
 
