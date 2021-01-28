@@ -18,7 +18,8 @@ import_copypaste_server(
 \arguments{
 \item{id}{Module's ID.}
 
-\item{title}{Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.}
+\item{title}{Module's title, if \code{TRUE} use the default title,
+use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 

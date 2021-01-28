@@ -4,7 +4,8 @@
 #' @description Let user paste link to a Google sheet then import the data.
 #'
 #' @param id Module's ID
-#' @param title Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.
+#' @param title Module's title, if \code{TRUE} use the default title,
+#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,7 +25,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
   ns <- NS(id)
 
   if (isTRUE(title)) {
-    title <- tags$h4("Import Google Spreadsheet")
+    title <- tags$h4("Import Google Spreadsheet", class = "datamods-title")
   }
 
   tags$div(

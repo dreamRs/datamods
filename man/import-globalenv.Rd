@@ -27,7 +27,8 @@ import_globalenv_server(
 
 \item{packages}{Name of packages in which to search data.}
 
-\item{title}{Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.}
+\item{title}{Module's title, if \code{TRUE} use the default title,
+use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 

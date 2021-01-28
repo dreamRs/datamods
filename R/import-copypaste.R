@@ -4,7 +4,8 @@
 #' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
 #' @param id Module's ID.
-#' @param title Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.
+#' @param title Module's title, if \code{TRUE} use the default title,
+#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,7 +25,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
   ns <- NS(id)
 
   if (isTRUE(title)) {
-    title <- tags$h4("Copy & paste data")
+    title <- tags$h4("Copy & paste data", class = "datamods-title")
   }
 
   tags$div(

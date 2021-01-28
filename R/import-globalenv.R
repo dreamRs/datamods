@@ -6,7 +6,8 @@
 #' @param id Module's ID.
 #' @param globalenv Search for data in Global environment.
 #' @param packages Name of packages in which to search data.
-#' @param title Module's title, if \code{TRUE} use the default title, use \code{NULL} for no title or a \code{shiny.tag}.
+#' @param title Module's title, if \code{TRUE} use the default title,
+#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -47,7 +48,7 @@ import_globalenv_ui <- function(id,
   }
 
   if (isTRUE(title)) {
-    title <- tags$h4("Import a dataset from an environment")
+    title <- tags$h4("Import a dataset from an environment", class = "datamods-title")
   }
 
   tags$div(
