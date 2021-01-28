@@ -274,6 +274,7 @@ get_data_packages <- function() {
 list_pkg_data <- function(pkg) {
   if (isTRUE(requireNamespace(pkg, quietly = TRUE))) {
     list_data <- data(package = pkg, envir = environment())$results[, "Item"]
+    list_data <- sort(list_data)
     attr(list_data, "package") <- pkg
     if (length(list_data) < 1) {
       NULL
