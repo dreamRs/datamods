@@ -17,7 +17,9 @@
 #' @export
 #' @name import-modal
 #'
-#' @importFrom shiny NS tabsetPanel tabPanel icon
+#' @importFrom shiny NS tabsetPanel tabPanel icon fluidRow column
+#' @importFrom htmltools tags HTML
+#' @importFrom shinyWidgets radioGroupButtons
 #'
 #' @example examples/modal.R
 #'
@@ -26,16 +28,16 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   from <- match.arg(from, several.ok = TRUE)
 
   env <- if ("env" %in% from)
-    tabPanel("env", import_globalenv_ui(id = ns("env")), icon = icon("code"))
+    tabPanel("env", tags$br(), import_globalenv_ui(id = ns("env"), title = NULL), icon = icon("code"))
 
   file <- if ("file" %in% from)
-    tabPanel("file", import_file_ui(id = ns("file")), icon = icon("file-import"))
+    tabPanel("file", tags$br(), import_file_ui(id = ns("file"), title = NULL), icon = icon("file-import"))
 
   copypaste <- if ("copypaste" %in% from)
-    tabPanel("copypaste", import_copypaste_ui(id = ns("copypaste")), icon = icon("copy"))
+    tabPanel("copypaste", tags$br(), import_copypaste_ui(id = ns("copypaste"), title = NULL), icon = icon("copy"))
 
   googlesheets <- if ("googlesheets" %in% from)
-    tabPanel("googlesheets", import_googlesheets_ui(id = ns("googlesheets")), icon = icon("cloud-download"))
+    tabPanel("googlesheets", tags$br(), import_googlesheets_ui(id = ns("googlesheets"), title = NULL), icon = icon("cloud-download"))
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
@@ -65,6 +67,27 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       what = tabsetPanel,
       args = tabsetPanelArgs
     )
+    importTab <- fluidRow(
+      column(
+        width = 3,
+        tags$br(),
+        tags$style(
+          HTML(sprintf("#%s>.btn-group-vertical {width: 100%%;}", ns("from"))),
+          HTML(sprintf(".btn-group-vertical>.btn-group>.btn {text-align: left;}"))
+        ),
+        radioGroupButtons(
+          inputId = ns("from"),
+          label = "How to import data?",
+          choiceValues = from,
+          choiceNames = unname(labsImport[from]),
+          direction = "vertical",
+          width = "100%"
+        )
+      ),
+      column(
+        width = 9, importTab
+      )
+    )
   }
 
   tags$div(
@@ -74,20 +97,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = "Import",
-        if (length(from) > 1) {
-          tagList(
-            tags$br(),
-            shinyWidgets::prettyRadioButtons(
-              inputId = ns("from"),
-              label = "How to import data?",
-              choiceValues = from,
-              choiceNames = unname(labsImport[from]),
-              inline = TRUE
-            )
-          )
-        },
-        importTab
+        title = "Import", importTab
       ),
       tabPanel(
         title = "View",
@@ -96,7 +106,8 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       ),
       tabPanel(
         title = "Update",
-        update_variables_ui(id = ns("update"))
+        tags$br(),
+        update_variables_ui(id = ns("update"), title = NULL)
       ),
       tabPanel(
         title = "Validate",
