@@ -27,25 +27,55 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
 
-  env <- if ("env" %in% from)
-    tabPanel("env", tags$br(), import_globalenv_ui(id = ns("env"), title = NULL), icon = icon("code"))
+  env <- if ("env" %in% from) {
+    tabPanel(
+      title = "env",
+      tags$br(),
+      import_globalenv_ui(id = ns("env"), title = NULL),
+      icon = icon("code")
+    )
+  }
 
-  file <- if ("file" %in% from)
-    tabPanel("file", tags$br(), import_file_ui(id = ns("file"), title = NULL), icon = icon("file-import"))
+  file <- if ("file" %in% from) {
+    tabPanel(
+      title = "file",
+      tags$br(),
+      import_file_ui(id = ns("file"), title = NULL),
+      icon = icon("file-import")
+    )
+  }
 
-  copypaste <- if ("copypaste" %in% from)
-    tabPanel("copypaste", tags$br(), import_copypaste_ui(id = ns("copypaste"), title = NULL), icon = icon("copy"))
+  copypaste <- if ("copypaste" %in% from) {
+    tabPanel(
+      title = "copypaste",
+      tags$br(),
+      import_copypaste_ui(id = ns("copypaste"), title = NULL),
+      icon = icon("copy")
+    )
+  }
 
-  googlesheets <- if ("googlesheets" %in% from)
-    tabPanel("googlesheets", tags$br(), import_googlesheets_ui(id = ns("googlesheets"), title = NULL), icon = icon("cloud-download"))
+  googlesheets <- if ("googlesheets" %in% from) {
+    tabPanel(
+      title = "googlesheets",
+      tags$br(), import_googlesheets_ui(id = ns("googlesheets"), title = NULL),
+      icon = icon("cloud-download")
+    )
+  }
+
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
-  labsImport <- c(
+  labsImport <- list(
     "env" = "Environment",
     "file" = "External file",
     "copypaste" = "Copy / Paste",
     "googlesheets" = "Googlesheets"
+  )
+  iconsImport <- list(
+    "env" = icon("code"),
+    "file" = icon("file-import"),
+    "copypaste" = icon("copy"),
+    "googlesheets" = icon("cloud-download")
   )
 
 
@@ -79,7 +109,12 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
           inputId = ns("from"),
           label = "How to import data?",
           choiceValues = from,
-          choiceNames = unname(labsImport[from]),
+          choiceNames = lapply(
+            X = from,
+            FUN = function(x) {
+              tagList(iconsImport[[x]], labsImport[[x]])
+            }
+          ),
           direction = "vertical",
           width = "100%"
         )
@@ -127,6 +162,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
         class = "btn-primary"
       )
     ),
+    tags$div(
+      style = "display: none;",
+      textInput(inputId = ns("hidden"), label = NULL, value = genId())
+    ),
     tags$script(
       sprintf("$('#%s').addClass('nav-justified');", ns("tabs-mode")),
       sprintf("fadeTab({id: '%s'});", ns("tabs-mode")),
@@ -161,7 +200,7 @@ import_server <- function(id,
       data_rv <- reactiveValues(data = NULL)
       imported_rv <- reactiveValues(data = NULL)
 
-      observeEvent(input[["tabs-mode"]], {
+      observeEvent(input$hidden, {
         if (length(validation_opts) < 1) {
           hideTab(inputId = "tabs-mode", target = "Validate")
         }

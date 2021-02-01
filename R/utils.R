@@ -67,9 +67,9 @@ as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
 }
 
 
-
-
-
+genId <- function(bytes = 12) {
+  paste(format(as.hexmode(sample(256, bytes, replace = TRUE) - 1), width = 2), collapse = "")
+}
 
 
 
