@@ -42,7 +42,7 @@ you cannot use \code{inputId}/\code{outputId}, \code{label} or \code{icon} (butt
 \item UI: HTML tags that can be included in shiny's UI
 \item Server: a \code{list} with two slots:
 \itemize{
-\item \strong{status}: a \code{reactive} function returning the best status available.
+\item \strong{status}: a \code{reactive} function returning the best status available between \code{"OK"}, \code{"Failed"} or \code{"Error"}.
 \item \strong{details}: a \code{reactive} function returning a \code{list} with validation details.
 }
 }
@@ -54,6 +54,18 @@ Check that a dataset respect some validation expectations.
 library(datamods)
 library(shiny)
 library(validate)
+
+# Define some rules to be applied to data
+myrules <- validator(
+  !is.null(disp),
+  is.numeric(disp),
+  mpg > 0
+)
+# Add some labels
+label(myrules) <- c("Variable disp exist",
+                    "Variable disp must be numeric",
+                    "Variable disp must be strictly positive")
+# you can also add a description()
 
 ui <- fluidPage(
   tags$h2("Validation"),
@@ -88,11 +100,7 @@ server <- function(input, output, session) {
     data = dataset,
     n_row = ~ . > 20, # more than 20 rows
     n_col = ~ . >= 3, # at least 3 columns
-    rules = validator(
-      "disp exist" = !is.null(disp),
-      is.numeric(disp),
-      "mpg positive" = mpg > 0 # check that variable mpg is positive
-    )
+    rules = myrules
   )
 
   output$status <- renderPrint(results$status())

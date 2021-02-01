@@ -12,7 +12,7 @@
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
 #'  * Server: a \code{list} with two slots:
-#'    + **status**: a \code{reactive} function returning the best status available.
+#'    + **status**: a \code{reactive} function returning the best status available between \code{"OK"}, \code{"Failed"} or \code{"Error"}.
 #'    + **details**: a \code{reactive} function returning a \code{list} with validation details.
 #' @export
 #'
@@ -93,7 +93,7 @@ validation_server <- function(id,
             )
             list(
               status = ifelse(valid_dims[[x]], "OK", "Failed"),
-              label = label
+              label = paste0("<b>", label, "</b>")
             )
           }
         )
@@ -260,9 +260,9 @@ format_validate <- function(data) {
         }
       }
       if (!is.null(res$label)) {
-        label <- res$label
-        if (!is.null(res$description)) {
-          label <- paste0("<b>", label, ":</b> ", res$description)
+        label <- paste0("<b>", res$label, "</b>")
+        if (!is.null(res$description) && nzchar(res$description)) {
+          label <- paste(label, res$description, sep = ": ")
         }
       } else {
         label <- res$name
