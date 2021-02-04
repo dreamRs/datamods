@@ -17,7 +17,7 @@
 #'
 #' @importFrom shiny NS actionLink
 #' @importFrom shinyWidgets textInputIcon
-#' @importFrom htmltools tags
+#' @importFrom htmltools tags tagList
 #'
 #' @example examples/googlesheets.R
 import_googlesheets_ui <- function(id, title = TRUE) {
@@ -32,28 +32,23 @@ import_googlesheets_ui <- function(id, title = TRUE) {
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    tags$p("If you have a shareable link, paste it directly in the field below"),
-    tags$p(
-      "Otherwise",
-      actionLink(
-        inputId = ns("sign_in"),
-        label = "sign-in to Google",
-      )
-    ),
-    tags$br(),
     tags$div(
-      id = ns("signin-placeholder"),
-      alert(
-        id = ns("signin-result"),
-        status = "info",
-        tags$b("Status:"),
-        "Not signed in.",
-        dismissible = TRUE
-      )
+      class = "pull-right",
+      help_popup(tagList(
+        "You can either use:",
+        tags$ul(
+          tags$li(
+            "A shareable link, in that case first sheet will be read"
+          ),
+          tags$li(
+            "The URL that appear in your browser, in that case the current sheet will be read"
+          )
+        )
+      ))
     ),
     textInputIcon(
       inputId = ns("link"),
-      label = "Enter a URL to a Google Sheet:",
+      label = "Enter a shareable link to a GoogleSheet:",
       icon = icon("link"),
       width = "100%"
     ),
@@ -63,12 +58,12 @@ import_googlesheets_ui <- function(id, title = TRUE) {
         id = ns("import-result"),
         status = "info",
         tags$b("Nothing pasted yet!"),
-        "Please paste a valid googlesheets link in the dialog box above.",
+        "Please paste a valid GoogleSheet link in the dialog box above.",
         dismissible = TRUE
       )
     ),
     uiOutput(
-      outputId = ns("container_valid_btn"),
+      outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"
     )
   )
@@ -85,7 +80,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
 #'
 #' @importFrom shiny moduleServer
 #' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
-#' @importFrom shiny reactiveValues observeEvent removeUI reactive
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive req
 #' @importFrom htmltools tags tagList
 #'
 #' @rdname import-googlesheets
@@ -103,10 +98,10 @@ import_googlesheets_server <- function(id,
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
 
-    output$container_valid_btn <- renderUI({
+    output$container_confirm_btn <- renderUI({
       if (identical(trigger_return, "button")) {
         actionButton(
-          inputId = ns("validate"),
+          inputId = ns("confirm"),
           label = "Import data",
           icon = icon("arrow-circle-right"),
           width = "100%",
@@ -116,57 +111,24 @@ import_googlesheets_server <- function(id,
       }
     })
 
-    options(gargle_oauth_cache = FALSE)
-
-    observeEvent(input$sign_in, {
-      googlesheets4::gs4_auth()
-
-      if (googlesheets4::gs4_has_token()) {
-        insert_alert(
-          selector = ns("signin"),
-          status = "success",
-          tags$b("Status:"),
-          "Signed in!"
-        )
-      } else {
-        insert_alert(
-          selector = ns("signin"),
-          status = "info",
-          tags$b("Status:"),
-          "Not signed in."
-        )
-      }
-    })
-
-
     observeEvent(input$trigger, {
       if (identical(trigger_return, "change")) {
-        hideUI(selector = paste0("#", ns("validate-button")))
+        hideUI(selector = paste0("#", ns("confirm-button")))
       }
     })
 
-
     observeEvent(input$link, {
-
-      if (isFALSE(googlesheets4::gs4_has_token())) {
-        googlesheets4::gs4_deauth()
-      }
-
-      imported <- try(googlesheets4::range_read(input$link), silent = TRUE)
-
+      req(input$link)
+      imported <- try(read_gsheet(input$link), silent = TRUE)
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-
-        toggle_widget(inputId = "validate", enable = FALSE)
+        toggle_widget(inputId = "confirm", enable = FALSE)
         insert_alert(
           selector = ns("import"),
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
-
       } else {
-
-        toggle_widget(inputId = "validate", enable = TRUE)
-
+        toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
           selector = ns("import"),
           status = "success",
@@ -176,7 +138,6 @@ import_googlesheets_server <- function(id,
             btn_show_data = btn_show_data
           )
         )
-
         temporary_rv$data <- imported
       }
     }, ignoreInit = TRUE)
@@ -185,7 +146,7 @@ import_googlesheets_server <- function(id,
       show_data(temporary_rv$data)
     })
 
-    observeEvent(input$validate, {
+    observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
     })
 
@@ -207,4 +168,37 @@ import_googlesheets_server <- function(id,
 }
 
 
+
+# Utils -------------------------------------------------------------------
+
+get_id <- function(x) {
+  if (grepl("/d/", x)) {
+    x <- strsplit(x = x, split = "/")
+    x <- unlist(x)
+    x[which(x == "d") + 1]
+  } else if (grepl("id=", x)) {
+    x <- regmatches(x, gregexpr("id=[[:alnum:]_-]+", x))
+    gsub("^id=", "", x[[1]])
+  } else {
+    stop("Failed to retrieve Googlesheet ID")
+  }
+}
+
+#' @importFrom data.table fread .SD
+#' @importFrom utils type.convert
+read_gsheet <- function(url, dec = NULL) {
+  url_ <- sprintf(
+    "https://docs.google.com/spreadsheets/export?id=%s&format=csv",
+    get_id(url)
+  )
+  if (grepl("gid=", url)) {
+    gid <- regmatches(url, gregexpr("gid=[0-9]+", url))
+    url_ <- paste0(url_, "&", gid[[1]])
+  }
+  dt <- fread(input = url_)
+  if (!is.null(dec)) {
+    dt <- dt[, lapply(.SD, type.convert, dec = dec)]
+  }
+  return(dt)
+}
 

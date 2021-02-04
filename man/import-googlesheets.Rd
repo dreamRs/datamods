@@ -47,7 +47,7 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data with googlesheets"),
+  tags$h3("Import data from Googlesheets"),
   fluidRow(
     column(
       width = 4,
@@ -62,13 +62,13 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
   imported <- import_googlesheets_server("myid")
-  
+
   output$result <- renderPrint({
     imported$data()
   })
-  
+
 }
 
 if (interactive())

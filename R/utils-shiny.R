@@ -130,3 +130,24 @@ make_success_alert <- function(data,
   }
   return(success_message)
 }
+
+
+#' @importFrom htmltools tagList tags doRenderTags
+help_popup <- function(text) {
+  tagList(
+    tags$span(
+      icon("question"),
+      `data-toggle` = "popover",
+      `data-trigger` = "focus",
+      title = "Help",
+      `data-html` = "true",
+      `data-content` = htmltools::doRenderTags(text),
+      tabindex = "0",
+      role = "button"
+    ),
+    tags$script(
+      "$(function () { $(\'[data-toggle=\"popover\"]\').popover({container: 'body'}); })"
+    )
+  )
+}
+

@@ -23,7 +23,6 @@ Imports:
     shinyWidgets (>= 0.5.3),
     DT,
     data.table,
-    googlesheets4,
     readxl,
     rio,
     rlang,
