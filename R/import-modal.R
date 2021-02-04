@@ -284,11 +284,13 @@ import_server <- function(id,
           data = data_rv$data,
           rownames = FALSE,
           selection = "none",
-          class = "display dt-responsive",
+          class = "display dt-responsive cell-border",
           style = "bootstrap",
           width = "100%",
           options = list(
             scrollX = TRUE,
+            searching = FALSE,
+            lengthChange = FALSE,
             pageLength = min(c(10, nrow(data_rv$data)))
           )
         )
@@ -302,11 +304,7 @@ import_server <- function(id,
       validation_results <- validation_server(
         id = "validation",
         data = reactive({
-          if (is.null(imported_rv$data)) {
-            data_rv$data
-          } else {
-            imported_rv$data
-          }
+          data_rv$data
         }),
         n_row = validation_opts$n_row,
         n_col = validation_opts$n_col,
@@ -336,8 +334,7 @@ import_server <- function(id,
       })
 
       observeEvent(updated_data(), {
-        imported_rv$data <- updated_data()
-        imported_rv$name <- data_rv$name %||% "imported_data"
+        data_rv$data <- updated_data()
       })
 
       observeEvent(input$confirm, {
