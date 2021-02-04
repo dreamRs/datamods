@@ -79,7 +79,6 @@ import_googlesheets_ui <- function(id, title = TRUE) {
 #' @export
 #'
 #' @importFrom shiny moduleServer
-#' @importFrom googlesheets4 range_read gs4_auth gs4_deauth gs4_has_token
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive req
 #' @importFrom htmltools tags tagList
 #'
