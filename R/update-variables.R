@@ -47,6 +47,12 @@ update_variables_ui <- function(id, title = TRUE) {
             label = "Date to use as origin to convert date/datetime:",
             value = "1970-01-01",
             icon = icon("calendar")
+          ),
+          textInputIcon(
+            inputId = ns("dec"),
+            label = "Decimal separator:",
+            value = ".",
+            icon = list("0.00")
           )
         ),
         style = "display: inline;"
@@ -141,7 +147,8 @@ update_variables_server <- function(id, data) {
               variable = vars_to_change$name,
               new_class = vars_to_change$class_to_set,
               origin = input$origin,
-              format = input$format
+              format = input$format,
+              dec = input$dec
             )
           }
           # rename
@@ -483,6 +490,8 @@ get_inputs <- function(pattern, session = shiny::getDefaultReactiveDomain()) {
 #' @return A \code{data.frame}
 #' @noRd
 #'
+#' @importFrom utils type.convert
+#'
 #' @examples
 #' dat <- data.frame(
 #'   v1 = month.name,
@@ -524,7 +533,7 @@ convert_to <- function(data,
   } else if (identical(new_class, "factor")) {
     data[[variable]] <- as.factor(x = data[[variable]])
   } else if (identical(new_class, "numeric")) {
-    data[[variable]] <- as.numeric(x = data[[variable]], ...)
+    data[[variable]] <- as.numeric(type.convert(data[[variable]], as.is = TRUE, ...))
   } else if (identical(new_class, "integer")) {
     data[[variable]] <- as.integer(x = data[[variable]], ...)
   } else if (identical(new_class, "date")) {
