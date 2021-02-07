@@ -95,12 +95,12 @@ update_variables_server <- function(id, data) {
 
       ns <- session$ns
       updated_data <- reactiveValues(x = NULL)
-      token <- reactiveValues(x = paste(sample(c(letters, 0:9), 15, TRUE), collapse = ""))
+      token <- reactiveValues(x = genId())
 
       data_r <- reactive({
         if (is.reactive(data)) {
           req(data())
-          token$x <- paste(sample(c(letters, 0:9), 15, TRUE), collapse = "")
+          token$x <- genId()
           data()
         } else {
           data

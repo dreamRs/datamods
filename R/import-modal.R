@@ -284,14 +284,17 @@ import_server <- function(id,
           data = data_rv$data,
           rownames = FALSE,
           selection = "none",
-          class = "display dt-responsive cell-border",
+          class = "display dt-responsive cell-border compact",
           style = "bootstrap",
           width = "100%",
           options = list(
             scrollX = TRUE,
             searching = FALSE,
             lengthChange = FALSE,
-            pageLength = min(c(10, nrow(data_rv$data)))
+            pageLength = min(c(10, nrow(data_rv$data))),
+            columnDefs = list(
+              list(targets = "_all", className = "datamods-dt-nowrap")
+            )
           )
         )
       })

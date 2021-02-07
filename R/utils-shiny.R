@@ -99,22 +99,25 @@ update_tab_label <- function(id, value, label, session = shiny::getDefaultReacti
 make_success_alert <- function(data,
                                trigger_return,
                                btn_show_data,
+                               extra = NULL,
                                session = shiny::getDefaultReactiveDomain()) {
   if (identical(trigger_return, "button")) {
     success_message <- tagList(
       tags$b(icon("check"), "Data ready to be imported!"),
       sprintf(
-        "data has %s obs. of %s variables",
+        "data has %s obs. of %s variables.",
         nrow(data), ncol(data)
-      )
+      ),
+      extra
     )
   } else {
     success_message <- tagList(
       tags$b(icon("check"), "Data successfully imported!"),
       sprintf(
-        "data has %s obs. of %s variables",
+        "data has %s obs. of %s variables.",
         nrow(data), ncol(data)
-      )
+      ),
+      extra
     )
   }
   if (isTRUE(btn_show_data)) {

@@ -12,7 +12,9 @@ test_that("import_file_server works", {
       ),
       sheet = 0,
       skip_rows = 0,
-      validate = 0
+      confirm = 0,
+      dec = ".",
+      encoding = "UTF-8"
     )
     expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")

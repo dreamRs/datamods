@@ -16,9 +16,9 @@
 #' @name import-file
 #'
 #'
-#' @importFrom shiny NS fileInput
-#' @importFrom htmltools tags
-#' @importFrom shinyWidgets pickerInput numericInputIcon
+#' @importFrom shiny NS fileInput tableOutput actionButton icon
+#' @importFrom htmltools tags tagAppendAttributes
+#' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #'
 #' @example examples/from-file.R
 import_file_ui <- function(id, title = TRUE) {
@@ -33,11 +33,47 @@ import_file_ui <- function(id, title = TRUE) {
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    fileInput(
-      inputId = ns("file"),
-      label = "Upload a file:",
-      accept = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav"),
-      width = "100%"
+    tags$div(
+      class = "datamods-file-import",
+      tags$div(
+        fileInput(
+          inputId = ns("file"),
+          label = "Upload a file:",
+          accept = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav"),
+          width = "100%"
+        )
+      ),
+      tags$div(
+        dropMenu(
+          placement = "bottom-end",
+          actionButton(
+            inputId = ns("settings"),
+            label = NULL,
+            icon = icon("gear"),
+            class = "btn-block",
+            style = "margin-top: 25px;"
+          ),
+          numericInputIcon(
+            inputId = ns("skip_rows"),
+            label = "Number of rows to skip before reading data:",
+            value = 0,
+            min = 0,
+            icon = list("n =")
+          ),
+          textInputIcon(
+            inputId = ns("dec"),
+            label = "Decimal separator:",
+            value = ".",
+            icon = list("0.00")
+          ),
+          textInputIcon(
+            inputId = ns("encoding"),
+            label = "Encoding:",
+            value = "UTF-8",
+            icon = icon("font")
+          )
+        )
+      )
     ),
     tags$div(
       class = "hidden",
@@ -49,14 +85,6 @@ import_file_ui <- function(id, title = TRUE) {
         width = "100%"
       )
     ),
-    numericInputIcon(
-      inputId = ns("skip_rows"),
-      label = "Number of rows to skip before reading data:",
-      value = 0,
-      min = 0,
-      width = "100%",
-      icon = list("n =")
-    ),
     tags$div(
       id = ns("import-placeholder"),
       alert(
@@ -66,8 +94,12 @@ import_file_ui <- function(id, title = TRUE) {
         dismissible = TRUE
       )
     ),
+    tagAppendAttributes(
+      tableOutput(outputId = ns("table")),
+      class = "datamods-table-container"
+    ),
     uiOutput(
-      outputId = ns("container_valid_btn"),
+      outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"
     )
   )
@@ -84,11 +116,12 @@ import_file_ui <- function(id, title = TRUE) {
 #'
 #' @importFrom shiny moduleServer
 #' @importFrom htmltools tags tagList
-#' @importFrom shiny reactiveValues reactive observeEvent removeUI req
+#' @importFrom shiny reactiveValues reactive observeEvent removeUI req renderTable
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
 #' @importFrom tools file_ext
+#' @importFrom utils head
 #'
 #' @rdname import-file
 import_file_server <- function(id,
@@ -104,10 +137,10 @@ import_file_server <- function(id,
     imported_rv <- reactiveValues(data = NULL)
     temporary_rv <- reactiveValues(data = NULL)
 
-    output$container_valid_btn <- renderUI({
+    output$container_confirm_btn <- renderUI({
       if (identical(trigger_return, "button")) {
         actionButton(
-          inputId = ns("validate"),
+          inputId = ns("confirm"),
           label = "Import data",
           icon = icon("arrow-circle-right"),
           width = "100%",
@@ -133,20 +166,31 @@ import_file_server <- function(id,
     observeEvent(list(
       input$file,
       input$sheet,
-      input$skip_rows
+      input$skip_rows,
+      input$dec,
+      input$encoding
     ), {
       req(input$file)
       req(input$skip_rows)
       if (is_excel(input$file$datapath)) {
         req(input$sheet)
-        imported <- try(rio::import(file = input$file$datapath, which = input$sheet, skip = input$skip_rows), silent = TRUE)
+        imported <- try(rio::import(
+          file = input$file$datapath,
+          which = input$sheet,
+          skip = input$skip_rows
+        ), silent = TRUE)
       } else {
-        imported <- try(rio::import(file = input$file$datapath, skip = input$skip_rows), silent = TRUE)
+        imported <- try(rio::import(
+          file = input$file$datapath,
+          skip = input$skip_rows,
+          dec = input$dec,
+          encoding = input$encoding
+        ), silent = TRUE)
       }
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
-        toggle_widget(inputId = "validate", enable = FALSE)
+        toggle_widget(inputId = "confirm", enable = FALSE)
 
         insert_alert(
           selector = ns("import"),
@@ -154,9 +198,11 @@ import_file_server <- function(id,
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
 
+        temporary_rv$data <- NULL
+
       } else {
 
-        toggle_widget(inputId = "validate", enable = TRUE)
+        toggle_widget(inputId = "confirm", enable = TRUE)
 
         insert_alert(
           selector = ns("import"),
@@ -164,7 +210,8 @@ import_file_server <- function(id,
           make_success_alert(
             imported,
             trigger_return = trigger_return,
-            btn_show_data = btn_show_data
+            btn_show_data = btn_show_data,
+            extra = "First five rows are shown below:"
           )
         )
 
@@ -176,7 +223,16 @@ import_file_server <- function(id,
       show_data(temporary_rv$data)
     })
 
-    observeEvent(input$validate, {
+    output$table <- renderTable({
+      req(temporary_rv$data)
+      data <- head(temporary_rv$data, 5)
+      classes <- get_classes(data)
+      classes <- sprintf("<span style='font-style: italic; font-weight: normal; font-size: small;'>%s</span>", classes)
+      names(data) <- paste(names(data), classes, sep = "<br>")
+      data
+    }, striped = TRUE, bordered = TRUE, sanitize.colnames.function = identity, spacing = "xs")
+
+    observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
     })
 

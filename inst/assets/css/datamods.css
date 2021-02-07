@@ -47,3 +47,24 @@
   position: relative;
   padding: 0 10px 0 10px;
 }
+
+.datamods-table-container {
+  overflow: auto;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.datamods-table-container > .table {
+  margin-bottom: 0 !important;
+}
+
+.datamods-file-import {
+  display: grid;
+  grid-template-columns: auto 50px;
+  grid-column-gap: 10px;
+}
+
+.datamods-dt-nowrap {
+  word-break: keep-all;
+  white-space: nowrap;
+}
