@@ -280,13 +280,20 @@ import_server <- function(id,
 
       output$view <- DT::renderDT({
         req(data_rv$data)
+        data <- data_rv$data
+        classes <- get_classes(data)
+        classes <- sprintf("<span style='font-style: italic; font-weight: normal; font-size: small;'>%s</span>", classes)
+        container <- tags$table(
+          tableHeader(paste(names(data), classes, sep = "<br>"), escape = FALSE)
+        )
         DT::datatable(
-          data = data_rv$data,
+          data = data,
           rownames = FALSE,
           selection = "none",
           class = "display dt-responsive cell-border compact",
           style = "bootstrap",
           width = "100%",
+          container = container,
           options = list(
             scrollX = TRUE,
             searching = FALSE,
