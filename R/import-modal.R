@@ -20,6 +20,7 @@
 #' @importFrom shiny NS tabsetPanel tabPanel icon fluidRow column
 #' @importFrom htmltools tags HTML
 #' @importFrom shinyWidgets radioGroupButtons
+#' @importFrom DT DTOutput
 #'
 #' @example examples/modal.R
 #'
@@ -137,7 +138,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       tabPanel(
         title = "View",
         tags$br(),
-        DT::DTOutput(outputId = ns("view"))
+        DTOutput(outputId = ns("view"))
       ),
       tabPanel(
         title = "Update",
@@ -186,6 +187,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 #' @rdname import-modal
 #' @importFrom shiny moduleServer reactiveValues observeEvent
 #'  reactive removeModal updateTabsetPanel hideTab observe
+#' @importFrom DT tableHeader datatable renderDT
 import_server <- function(id,
                           validation_opts = NULL,
                           allowed_status = c("OK", "Failed", "Error"),
@@ -278,7 +280,7 @@ import_server <- function(id,
         }
       })
 
-      output$view <- DT::renderDT({
+      output$view <- renderDT({
         req(data_rv$data)
         data <- data_rv$data
         classes <- get_classes(data)
@@ -286,7 +288,7 @@ import_server <- function(id,
         container <- tags$table(
           tableHeader(paste(names(data), classes, sep = "<br>"), escape = FALSE)
         )
-        DT::datatable(
+        datatable(
           data = data,
           rownames = FALSE,
           selection = "none",
