@@ -82,13 +82,14 @@ update_variables_ui <- function(id, title = TRUE) {
 #' @export
 #'
 #' @param id Module's ID
-#' @param data a \code{data.frame}
+#' @param data a \code{data.frame} or a \code{reactive} function returning a \code{data.frame}.
+#' @param height Height for the table.
 #'
 #' @rdname update-variables
 #'
 #' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList
 #' @importFrom DT renderDT
-update_variables_server <- function(id, data) {
+update_variables_server <- function(id, data, height = NULL) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -125,7 +126,7 @@ update_variables_server <- function(id, data) {
         variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
         variables <- set_input_text(variables, "name", ns(paste("name", tok, sep = "-")))
         variables <- set_input_class(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
-        update_variables_datatable(variables)
+        update_variables_datatable(variables, height = height)
       })
 
       observeEvent(input$validate, {
@@ -410,8 +411,10 @@ set_input_class <- function(data, variable, id = "classes", width = "100%") {
 #' @noRd
 #'
 #' @importFrom DT datatable formatPercentage JS
-update_variables_datatable <- function(data) {
-
+update_variables_datatable <- function(data, height = NULL) {
+  if (is.null(height)) {
+    height <- if (nrow(data) > 8) "400px"
+  }
   dt <- datatable(
     data = data,
     rownames = TRUE,
@@ -425,7 +428,7 @@ update_variables_datatable <- function(data) {
     class = "display dt-responsive",
     fillContainer = FALSE,
     options = list(
-      scrollY = if (nrow(data) > 8) "400px",
+      scrollY = height,
       scrollX = FALSE,
       lengthChange = FALSE,
       paging = FALSE,

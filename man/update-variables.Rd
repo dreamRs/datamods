@@ -8,7 +8,7 @@
 \usage{
 update_variables_ui(id, title = TRUE)
 
-update_variables_server(id, data)
+update_variables_server(id, data, height = NULL)
 }
 \arguments{
 \item{id}{Module's ID}
@@ -16,7 +16,9 @@ update_variables_server(id, data)
 \item{title}{Module's title, if \code{TRUE} use the default title,
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
-\item{data}{a \code{data.frame}}
+\item{data}{a \code{data.frame} or a \code{reactive} function returning a \code{data.frame}.}
+
+\item{height}{Height for the table.}
 }
 \value{
 A \code{reactive} function returning the updated data.

@@ -314,7 +314,8 @@ import_server <- function(id,
 
       updated_data <- update_variables_server(
         id = "update",
-        data = reactive(data_rv$data)
+        data = reactive(data_rv$data),
+        height = "300px"
       )
 
       validation_results <- validation_server(
