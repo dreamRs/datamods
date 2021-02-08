@@ -148,7 +148,11 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       tabPanel(
         title = "Validate",
         tags$br(),
-        validation_ui(id = ns("validation"), display = "inline")
+        validation_ui(
+          id = ns("validation"),
+          display = "inline",
+          max_height = "400px"
+        )
       )
     ),
     tags$div(

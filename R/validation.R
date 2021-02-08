@@ -6,6 +6,7 @@
 #' @param id Module's ID.
 #' @param display Display validation results in a dropdown menu
 #'  by clicking on a button or display results directly in interface.
+#' @param max_height Maximum height for validation results element, useful if you have many rules.
 #' @param ... Arguments passed to \code{actionButton} or \code{uiOutput} depending on display mode,
 #'  you cannot use \code{inputId}/\code{outputId}, \code{label} or \code{icon} (button only).
 #'
@@ -17,30 +18,42 @@
 #' @export
 #'
 #' @importFrom shiny NS actionButton icon uiOutput
-#' @importFrom htmltools tagList
+#' @importFrom htmltools tagList validateCssUnit
 #' @importFrom shinyWidgets dropMenu
 #'
 #' @rdname validation
 #'
 #' @example examples/validation.R
-validation_ui <- function(id, display = c("dropdown", "inline"), ...) {
+validation_ui <- function(id, display = c("dropdown", "inline"), max_height = NULL, ...) {
   ns <- NS(id)
   display <- match.arg(display)
+  max_height <- if (!is.null(max_height)) {
+    paste0("overflow-y: auto; max-height:", validateCssUnit(max_height), ";")
+  }
   if (identical(display, "dropdown")) {
-    tagList(
-      dropMenu(
-        actionButton(
-          inputId = ns("menu"),
-          label = "Validation:",
-          ...,
-          icon = icon("caret-down")
-        ),
-        uiOutput(outputId = ns("results"), style = "width: 300px;")
+    ui <- dropMenu(
+      actionButton(
+        inputId = ns("menu"),
+        label = "Validation:",
+        ...,
+        icon = icon("caret-down")
+      ),
+      uiOutput(
+        outputId = ns("results"),
+        style = "width: 300px;",
+        style = max_height
       )
     )
   } else {
-    uiOutput(outputId = ns("results"), ...)
+    ui <- uiOutput(
+      outputId = ns("results"),
+      ...,
+      style = max_height
+    )
   }
+  tagList(
+    ui, html_dependency_datamods()
+  )
 }
 
 #' @export
@@ -150,22 +163,32 @@ validation_server <- function(id,
         total <- unlist(lapply(valid_results, `[[`, "status"))
 
         header <- tags$div(
-          style = "display: grid; grid-template-columns: repeat(3, 1fr);grid-template-rows: 1fr;",
-          style = "height: 50px; line-height: 50px;",
+          class = "datamods-validation-results",
           tags$div(
-            class = "text-success",
-            style = "font-weight: bold; text-align: center; border-right: 1px solid #e6e6e6;",
-            sum(total == "OK"), "OK"
+            class = "datamods-validation-summary",
+            style = "border-right: 1px solid #e6e6e6;",
+            tags$span(
+              class = "label label-success",
+              "OK:",
+              tags$span(sum(total == "OK"), class = "datamods-validation-item")
+            )
           ),
           tags$div(
-            class = "text-warning",
-            style = "font-weight: bold; text-align: center; border-right: 1px solid #e6e6e6;",
-            sum(total == "Failed"), "Failed"
+            class = "datamods-validation-summary",
+            style = "border-right: 1px solid #e6e6e6;",
+            tags$span(
+              class = "label label-warning",
+              "Failed:",
+              tags$span(sum(total == "Failed"), class = "datamods-validation-item")
+            )
           ),
           tags$div(
-            class = "text-danger",
-            style = "font-weight: bold; text-align: center;",
-            sum(total == "Error"), "Error"
+            class = "datamods-validation-summary",
+            tags$span(
+              class = "label label-danger",
+              "Error:",
+              tags$span(sum(total == "Error"), class = "datamods-validation-item")
+            )
           )
         )
 

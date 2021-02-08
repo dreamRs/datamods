@@ -68,3 +68,24 @@
   word-break: keep-all;
   white-space: nowrap;
 }
+
+
+
+/* validation */
+.datamods-validation-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  height: 50px;
+  line-height: 50px;
+  font-size: large;
+}
+
+.datamods-validation-summary {
+  font-weight: bold;
+  text-align: center;
+}
+
+.datamods-validation-item {
+  font-size: larger;
+}
