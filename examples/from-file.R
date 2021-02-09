@@ -13,19 +13,23 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      verbatimTextOutput(outputId = "status"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
 
 server <- function(input, output, session) {
-  
+
   imported <- import_file_server("myid")
-  
-  output$result <- renderPrint({
+
+  output$status <- renderPrint({
+    imported$status()
+  })
+  output$data <- renderPrint({
     imported$data()
   })
-  
+
 }
 
 if (interactive())

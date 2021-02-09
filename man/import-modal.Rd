@@ -7,7 +7,7 @@
 \alias{import_modal}
 \title{Get all import functions in a Modal}
 \usage{
-import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "database"))
+import_ui(id, from = c("env", "file", "copypaste", "googlesheets"))
 
 import_server(
   id,
@@ -22,7 +22,7 @@ import_modal(id, from, title = "Import data", size = "l")
 \item{id}{Module's id}
 
 \item{from}{The import_ui & server to use, i.e. the method.
-There are 5 options to choose from. ("env", "file", "copypaste", "googlsheets" & "database")}
+There are 4 options to choose from. ("env", "file", "copypaste", "googlsheets")}
 
 \item{validation_opts}{\code{list} of arguments passed to \code{\link{validation_server}}.}
 

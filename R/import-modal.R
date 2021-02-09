@@ -6,7 +6,7 @@
 #'
 #' @param id Module's id
 #' @param from The import_ui & server to use, i.e. the method.
-#'   There are 5 options to choose from. ("env", "file", "copypaste", "googlsheets" & "database")
+#'   There are 4 options to choose from. ("env", "file", "copypaste", "googlsheets")
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,7 +24,7 @@
 #'
 #' @example examples/modal.R
 #'
-import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "database")) {
+import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) {
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
 
@@ -58,11 +58,11 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
   googlesheets <- if ("googlesheets" %in% from) {
     tabPanel(
       title = "googlesheets",
-      tags$br(), import_googlesheets_ui(id = ns("googlesheets"), title = NULL),
+      tags$br(),
+      import_googlesheets_ui(id = ns("googlesheets"), title = NULL),
       icon = icon("cloud-download")
     )
   }
-
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
@@ -248,15 +248,15 @@ import_server <- function(id,
       })
       observeEvent(from_file$data(), {
         data_rv$data <- from_file$data()
-        data_rv$name <- NULL
+        data_rv$name <- from_file$name()
       })
       observeEvent(from_copypaste$data(), {
         data_rv$data <- from_copypaste$data()
-        data_rv$name <- NULL
+        data_rv$name <- from_file$name()
       })
       observeEvent(from_googlesheets$data(), {
         data_rv$data <- from_googlesheets$data()
-        data_rv$name <- NULL
+        data_rv$name <- from_file$name()
       })
       # observeEvent(from_database$data(), {
       #   data_rv$data <- from_database$data()

@@ -32,8 +32,10 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with one slot:
+\item Server: a \code{list} with three slots:
 \itemize{
+\item \strong{status}: a \code{reactive} function returning the status: \code{NULL}, \code{error} or \code{success}.
+\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character}.
 \item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
 }
 }
@@ -57,19 +59,23 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "result")
+      verbatimTextOutput(outputId = "status"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
 
 server <- function(input, output, session) {
-  
+
   imported <- import_file_server("myid")
-  
-  output$result <- renderPrint({
+
+  output$status <- renderPrint({
+    imported$status()
+  })
+  output$data <- renderPrint({
     imported$data()
   })
-  
+
 }
 
 if (interactive())

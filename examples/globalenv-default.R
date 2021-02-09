@@ -27,6 +27,7 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$b("Imported data:"),
+      verbatimTextOutput(outputId = "status"),
       verbatimTextOutput(outputId = "name"),
       verbatimTextOutput(outputId = "data")
     )
@@ -37,10 +38,12 @@ server <- function(input, output, session) {
 
   imported <- import_globalenv_server("myid")
 
+  output$status <- renderPrint({
+    imported$status()
+  })
   output$name <- renderPrint({
     imported$name()
   })
-
   output$data <- renderPrint({
     imported$data()
   })

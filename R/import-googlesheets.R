@@ -1,5 +1,5 @@
 
-#' @title Import data with a googlesheet link
+#' @title Import data from Googlesheet
 #'
 #' @description Let user paste link to a Google sheet then import the data.
 #'
@@ -7,10 +7,7 @@
 #' @param title Module's title, if \code{TRUE} use the default title,
 #'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
-#' @return
-#'  * UI: HTML tags that can be included in shiny's UI
-#'  * Server: a \code{list} with one slot:
-#'    + **data**: a \code{reactive} function returning the imported \code{data.frame}.
+#' @eval doc_return_import()
 #'
 #' @export
 #' @name import-googlesheets
@@ -94,8 +91,8 @@ import_googlesheets_server <- function(id,
   module <- function(input, output, session) {
 
     ns <- session$ns
-    imported_rv <- reactiveValues(data = NULL)
-    temporary_rv <- reactiveValues(data = NULL)
+    imported_rv <- reactiveValues(data = NULL, name = NULL)
+    temporary_rv <- reactiveValues(data = NULL, name = NULL, status = NULL)
 
     output$container_confirm_btn <- renderUI({
       if (identical(trigger_return, "button")) {
@@ -126,6 +123,8 @@ import_googlesheets_server <- function(id,
           status = "danger",
           tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
         )
+        temporary_rv$status <- "error"
+        temporary_rv$data <- NULL
       } else {
         toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
@@ -137,6 +136,7 @@ import_googlesheets_server <- function(id,
             btn_show_data = btn_show_data
           )
         )
+        temporary_rv$status <- "success"
         temporary_rv$data <- imported
       }
     }, ignoreInit = TRUE)
@@ -151,10 +151,14 @@ import_googlesheets_server <- function(id,
 
     if (identical(trigger_return, "button")) {
       return(list(
+        status = reactive(temporary_rv$status),
+        name = reactive(imported_rv$name),
         data = reactive(as_out(imported_rv$data, return_class))
       ))
     } else {
       return(list(
+        status = reactive(temporary_rv$status),
+        name = reactive(temporary_rv$name),
         data = reactive(as_out(temporary_rv$data, return_class))
       ))
     }
