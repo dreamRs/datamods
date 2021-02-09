@@ -158,14 +158,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tags$div(
       id = ns("confirm-button"),
       style = "margin-top: 20px;",
-      actionButton(
-        inputId = ns("confirm"),
-        label = "Import data",
-        icon = icon("arrow-circle-right"),
-        width = "100%",
-        disabled = "disabled",
-        class = "btn-primary"
-      )
+      button_import(list(ns = ns))
     ),
     tags$div(
       style = "display: none;",
@@ -382,7 +375,8 @@ import_modal <- function(id, from, title = "Import data", size = "l") {
         icon("close"),
         class = "btn btn-default pull-right",
         style = "border: 0 none;",
-        `data-dismiss` = "modal"
+        `data-dismiss` = "modal",
+        `aria-label` = "Close"
       ),
       title
     ),

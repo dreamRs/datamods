@@ -9,7 +9,7 @@ test_that("import_copypaste_server works", {
       data_pasted =
       "x y z
       1 2 3",
-      validate = 0
+      confirm = 0
     )
     expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")

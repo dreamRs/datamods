@@ -116,14 +116,7 @@ import_globalenv_server <- function(id,
 
     output$container_valid_btn <- renderUI({
       if (identical(trigger_return, "button")) {
-        actionButton(
-          inputId = ns("validate"),
-          label = "Import data",
-          icon = icon("arrow-circle-right"),
-          width = "100%",
-          disabled = "disabled",
-          class = "btn-primary"
-        )
+        button_import()
       }
     })
 
@@ -153,7 +146,7 @@ import_globalenv_server <- function(id,
 
     observeEvent(input$trigger, {
       if (identical(trigger_return, "change")) {
-        hideUI(selector = paste0("#", ns("validate-button")))
+        hideUI(selector = paste0("#", ns("container_valid_btn")))
       }
     })
 
@@ -169,7 +162,7 @@ import_globalenv_server <- function(id,
       imported <- try(get_env_data(name_df), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
-        toggle_widget(inputId = "validate", enable = FALSE)
+        toggle_widget(inputId = "confirm", enable = FALSE)
         insert_alert(
           selector = ns("import"),
           status = "danger",
@@ -178,7 +171,7 @@ import_globalenv_server <- function(id,
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {
-        toggle_widget(inputId = "validate", enable = TRUE)
+        toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
           selector = ns("import"),
           status = "success",
@@ -199,7 +192,7 @@ import_globalenv_server <- function(id,
       show_data(temporary_rv$data)
     })
 
-    observeEvent(input$validate, {
+    observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
       imported_rv$name <- temporary_rv$name
     })

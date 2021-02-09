@@ -8,7 +8,7 @@ test_that("import_globalenv_server works", {
     session$setInputs(data = 0) #to bypass ignoreInit = TRUE
     session$setInputs(
       data = "mtcars",
-      validate = 0
+      confirm = 0
     )
     expect_equal(imported_rv$name, input$data)
     expect_equal(session$getReturned()$name(), input$data)
@@ -16,7 +16,7 @@ test_that("import_globalenv_server works", {
     expect_is(session$getReturned()$data(), "data.frame")
 
     session$setInputs(env = "datasets")
-    session$setInputs(data = "faithful", validate = 1)
+    session$setInputs(data = "faithful", confirm = 1)
     expect_is(session$getReturned()$data(), "data.frame")
     expect_equivalent(session$getReturned()$data(), faithful)
   })

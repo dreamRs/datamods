@@ -96,14 +96,7 @@ import_googlesheets_server <- function(id,
 
     output$container_confirm_btn <- renderUI({
       if (identical(trigger_return, "button")) {
-        actionButton(
-          inputId = ns("confirm"),
-          label = "Import data",
-          icon = icon("arrow-circle-right"),
-          width = "100%",
-          disabled = "disabled",
-          class = "btn-primary"
-        )
+        button_import()
       }
     })
 

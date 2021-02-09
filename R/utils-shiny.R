@@ -154,3 +154,15 @@ help_popup <- function(text) {
   )
 }
 
+#' @importFrom shiny actionButton icon getDefaultReactiveDomain
+button_import <- function(session = shiny::getDefaultReactiveDomain()) {
+  actionButton(
+    inputId = session$ns("confirm"),
+    label = "Import data",
+    icon = icon("arrow-circle-right"),
+    width = "100%",
+    disabled = "disabled",
+    class = "btn-primary",
+    `aria-label` = "Import data"
+  )
+}
