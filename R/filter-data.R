@@ -6,22 +6,20 @@
 #'
 #' @param id Module id. See \code{\link[shiny]{callModule}}.
 #' @param show_nrow Show number of filtered rows and total.
+#' @param label_nrow Text to be displayed before number of rows.
+#' @param max_height Maximum height for filters panel, useful
+#'  if you have many variables to filter and limited space.
 #'
-#' @return A \code{list} with 2 elements :
-#'  \itemize{
-#'   \item \strong{data_filtered} : \code{\link[shiny]{reactive}} function returning data filtered.
-#'   \item \strong{code} : \code{\link[shiny]{reactiveValues}} with 2 slots :
-#'    \code{expr} (raw expression to filter data) and \code{dplyr} (code with dplyr pipeline).
-#'  }
+#' @eval doc_return_filter()
 #'
 #' @export
 #'
-#' @name flter-data
+#' @name filter-data
 #'
 #' @importFrom htmltools tagList singleton tags validateCssUnit
 #' @importFrom shiny NS uiOutput
 #'
-#' @example examples/filterDF.R
+#' @example examples/filter_data.R
 filter_data_ui <- function(id,
                            show_nrow = TRUE,
                            label_nrow = "Number of rows:",
@@ -43,17 +41,22 @@ filter_data_ui <- function(id,
   )
 }
 
-#' @param input,output,session standards \code{shiny} server arguments.
+
 #' @param data \code{\link[shiny]{reactive}} function returning a
 #'  \code{data.frame} to filter.
 #' @param vars \code{\link[shiny]{reactive}} function returning a
-#'  \code{character} vector of variable to use for filters.
-#' @param data_name \code{\link[shiny]{reactive}} function returning a
-#'  \code{character} string representing \code{data} name.
-#' @param label_nrow Text to display before the number of rows of filtered data / source data.
-#' @param drop_ids Drop columns containing more than 90\% of unique values, or than 50 distinct values.
-#' @param picker Use  \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
-#'  instead of  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).
+#'  `character` vector of variables for which to add a filter.
+#'  If a named `list`, names are used as labels.
+#' @param name \code{\link[shiny]{reactive}} function returning a
+#'  `character` string representing `data` name, only used for code generated.
+#' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
+#' @param widget_char Widget to use for `character` variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
+#'  or  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).
+#' @param widget_num Widget to use for `numeric` variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput}}
+#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
+#' @param widget_date Widget to use for `date/time` variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput}}
+#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
+#' @param label_na Label for missing value widget.
 #'
 #'
 #' @rdname filter-data
@@ -135,8 +138,9 @@ filter_data_server <- function(id,
       })
 
       return(list(
-        data_filtered = data_filtered,
-        code = rv_code
+        filtered = data_filtered,
+        code = reactive(rv_code$dplyr),
+        expr = reactive(rv_code$expr)
       ))
     }
   )

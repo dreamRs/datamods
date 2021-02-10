@@ -1,12 +1,12 @@
 library(shiny)
 library(shinyWidgets)
-library(ggplot2)
-library(esquisse)
+library(datamods)
+library(MASS)
 
 # Add some NAs to mpg
-mpg_na <- mpg
-mpg_na[] <- lapply(
-  X = mpg_na,
+mtcars_na <- mtcars
+mtcars_na[] <- lapply(
+  X = mtcars_na,
   FUN = function(x) {
     x[sample.int(n = length(x), size = sample(15:30, 1))] <- NA
     x
@@ -20,9 +20,10 @@ ui <- fluidPage(
     inputId = "dataset",
     label = "Data:",
     choices = c(
-      "iris", "mtcars", "economics",
-      "midwest", "mpg", "mpg_na", "msleep", "diamonds",
-      "faithfuld", "txhousing"
+      "iris",
+      "mtcars",
+      "mtcars_na",
+      "Cars93"
     ),
     inline = TRUE
   ),
@@ -39,11 +40,11 @@ ui <- fluidPage(
         total = 100, display_pct = TRUE
       ),
       DT::dataTableOutput(outputId = "table"),
-      tags$p("Code dplyr:"),
+      tags$b("Code dplyr:"),
       verbatimTextOutput(outputId = "code_dplyr"),
-      tags$p("Expression:"),
+      tags$b("Expression:"),
       verbatimTextOutput(outputId = "code"),
-      tags$p("Filtered data:"),
+      tags$b("Filtered data:"),
       verbatimTextOutput(outputId = "res_str")
     )
   )
@@ -87,15 +88,15 @@ server <- function(input, output, session) {
   })
 
   output$table <- DT::renderDT({
-    res_filter$data_filtered()
+    res_filter$filtered()
   }, options = list(pageLength = 5))
 
 
   output$code_dplyr <- renderPrint({
-    res_filter$code$dplyr
+    res_filter$code()
   })
   output$code <- renderPrint({
-    res_filter$code$expr
+    res_filter$expr()
   })
 
   output$res_str <- renderPrint({
@@ -104,4 +105,5 @@ server <- function(input, output, session) {
 
 }
 
-shinyApp(ui, server)
+if (interactive())
+  shinyApp(ui, server)
