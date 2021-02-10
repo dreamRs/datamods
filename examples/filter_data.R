@@ -80,10 +80,10 @@ server <- function(input, output, session) {
     label_na = "Missing"
   )
 
-  observeEvent(res_filter$data_filtered(), {
+  observeEvent(res_filter$filtered(), {
     updateProgressBar(
       session = session, id = "pbar",
-      value = nrow(res_filter$data_filtered()), total = nrow(data())
+      value = nrow(res_filter$filtered()), total = nrow(data())
     )
   })
 
@@ -100,7 +100,7 @@ server <- function(input, output, session) {
   })
 
   output$res_str <- renderPrint({
-    str(res_filter$data_filtered())
+    str(res_filter$filtered())
   })
 
 }
