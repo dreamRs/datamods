@@ -18,14 +18,18 @@
 #'
 #' @name flter-data
 #'
-#' @importFrom htmltools tagList singleton tags
+#' @importFrom htmltools tagList singleton tags validateCssUnit
 #' @importFrom shiny NS uiOutput
 #'
 #' @example examples/filterDF.R
 filter_data_ui <- function(id,
                            show_nrow = TRUE,
-                           label_nrow = "Number of rows:") {
+                           label_nrow = "Number of rows:",
+                           max_height = NULL) {
   ns <- NS(id)
+  max_height <- if (!is.null(max_height)) {
+    paste0("overflow-y: auto; overflow-x: hidden; max-height:", validateCssUnit(max_height), ";")
+  }
   tagList(
     singleton(
       tags$style(
@@ -35,7 +39,7 @@ filter_data_ui <- function(id,
     if (isTRUE(show_nrow)) {
       tags$span(label_nrow, uiOutput(outputId = ns("nrow"), inline = TRUE))
     },
-    tags$div(id = ns("placeholder-filters"))
+    uiOutput(outputId = ns("placeholder_filters"), style = max_height)
   )
 }
 
@@ -65,7 +69,8 @@ filter_data_server <- function(id,
                                drop_ids = TRUE,
                                widget_char = c("select", "picker"),
                                widget_num = c("slider", "range"),
-                               widget_date = c("slider", "range")) {
+                               widget_date = c("slider", "range"),
+                               label_na = "NA") {
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
   moduleServer(
@@ -81,28 +86,20 @@ filter_data_server <- function(id,
       rv_filters <- reactiveValues(mapping = NULL, mapping_na = NULL)
       rv_code <- reactiveValues(expr = NULL, dplyr = NULL)
 
-      observe({
+      output$placeholder_filters <- renderUI({
         data <- data()
         vars <- vars()
-        # req(nrow(data) > 0)
-        removeUI(selector = jns("filters_inputs"), immediate = TRUE)
         filters <- create_filters(
           data = data,
           vars = vars,
           drop_ids = drop_ids,
           widget_char = widget_char,
-          widget_num = widget_num
-        )
-        insertUI(
-          selector = jns("placeholder-filters"),
-          ui = tags$div(
-            id = ns("filters_inputs"),
-            filters$ui
-          ),
-          immediate = TRUE
+          widget_num = widget_num,
+          label_na = label_na
         )
         rv_filters$mapping <- filters$filters_id
         rv_filters$mapping_na <- filters$filters_na_id
+        return(filters$ui)
       })
 
       data_filtered <- reactive({
@@ -162,6 +159,7 @@ create_filters <- function(data,
                            widget_char = c("select", "picker"),
                            widget_num = c("slider", "range"),
                            widget_date = c("slider", "range"),
+                           label_na = "NA",
                            width = "100%",
                            session = getDefaultReactiveDomain()) {
   widget_char <- match.arg(widget_char)
@@ -174,7 +172,14 @@ create_filters <- function(data,
   data <- dropListColumns(data)
   if (is.null(vars)) {
     vars <- names(data)
+    labels <- vars
   } else {
+    if (rlang::is_named(vars)) {
+      labels <- names(vars)
+      vars <- unname(unlist(vars))
+    } else {
+      labels <- vars
+    }
     vars <- intersect(names(data), vars)
   }
   # filters_id <- paste0("filter_", sample.int(1e9, length(vars)))
@@ -188,14 +193,18 @@ create_filters <- function(data,
       any_na <- anyNA(var)
       var <- var[!is.na(var)]
       id <- filters_id[[variable]]
-      tag_label <- if (any_na) {
-        tags$span(
-          tags$label(variable), HTML("&nbsp;&nbsp;"),
-          na_filter(id = ns(paste0("na_", id)))
-        )
-      } else {
-        tags$span(tags$label(variable), HTML("&nbsp;&nbsp;"))
-      }
+      label <- labels[variable == vars]
+
+      tag_label <- tags$span(
+        tags$label(
+          label,
+          class = "control-label",
+          `for` = id
+        ),
+        HTML("&nbsp;&nbsp;"),
+        if (any_na) na_filter(id = ns(paste0("na_", id)), label = label_na)
+      )
+
       if (inherits(x = var, what = c("numeric", "integer"))) {
         params <- find_range_step(var)
         if (identical(widget_num, "slider")) {
@@ -321,12 +330,12 @@ set_slider_attr <- function(slider) {
 
 #' @importFrom htmltools tags
 #' @importFrom shinyWidgets prettySwitch
-na_filter <- function(id) {
+na_filter <- function(id, label = "NA") {
   tags$span(
     style = "position: absolute; right: 0px; margin-right: -20px;",
     prettySwitch(
       inputId = id,
-      label = "NA",
+      label = label,
       value = TRUE,
       slim = TRUE,
       status = "primary",

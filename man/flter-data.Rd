@@ -5,7 +5,12 @@
 \alias{filter_data_ui}
 \title{Shiny module to interactively filter a \code{data.frame}}
 \usage{
-filter_data_ui(id, show_nrow = TRUE, label_nrow = "Number of rows:")
+filter_data_ui(
+  id,
+  show_nrow = TRUE,
+  label_nrow = "Number of rows:",
+  max_height = NULL
+)
 }
 \arguments{
 \item{id}{Module id. See \code{\link[shiny]{callModule}}.}

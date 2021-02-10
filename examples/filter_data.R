@@ -30,7 +30,7 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 3,
-      filter_data_ui("filtering")
+      filter_data_ui("filtering", max_height = "500px")
     ),
     column(
       width = 9,
@@ -55,12 +55,28 @@ server <- function(input, output, session) {
     get(input$dataset)
   })
 
+  vars <- reactive({
+    if (identical(input$dataset, "mpg")) {
+      setNames(as.list(names(mpg)[1:5]), c(
+        "Manufacturer name",
+        "Model name",
+        "Engine displacement, in litres",
+        "Year of manufacture",
+        "Number of cylinders"
+      ))
+    } else {
+      NULL
+    }
+  })
+
   res_filter <- filter_data_server(
     id = "filtering",
     data = data,
     name = reactive(input$dataset),
-    widget_num = "range",
-    widget_date = "range"
+    vars = vars,
+    widget_num = "slider",
+    widget_date = "range",
+    label_na = "Missing"
   )
 
   observeEvent(res_filter$data_filtered(), {
