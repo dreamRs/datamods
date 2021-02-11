@@ -13,6 +13,8 @@ Authors@R:
 Description: 'Shiny' modules to import data into an application or 'addin'
     from various sources, and to manipulate them after that.
 License: GPL-3
+URL: https://github.com/dreamRs/datamods
+BugReports: https://github.com/dreamRs/datamods/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

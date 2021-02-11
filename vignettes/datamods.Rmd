@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -23,102 +24,213 @@ corner cases one has to be mindful of. For example:
 
 * checking that the uploaded file is of the correct format  
 
-* checking if R can load the file
+* checking if R can load the file and prevent errors
 
 * while dealing with excel files, providing an option to choose the sheet number.  
 
-* while using googlesheets, the hassle of authentication and stuff.
+* while using Googlesheets, the hassle of authentication and stuff.
 
 The {datamods} package helps to easily load and use data in shiny apps with the
 help of modules.  
-There are 5 modules that can load data from various different sources.
+There are 4 modules that can load data from various different sources.
 The modules with a short intro are described below
 
-## Modules in datamods
 
-### `import-globalenv`
-Imports data from the global environment. 
-It searches for data sets in the global environment and lets the user choose
-the data to use.
+## Import Modules
 
-### `import-file`
-Imports data from an external file. 
-The file can be of any format, csv, xlsx, tsv etc.
-In case of excel files, it gives an option to choose the sheet.  
+### Data Source
 
-### `import-copypaste`
-Imports data via copy/paste. 
-Simply copy and paste data from any source.
+#### From environment
 
-### `import-googlesheets`
-Imports data from googlsheets.  
-If the googlesheet is publicly shared, then no authentication is required.
-Simply pasting the link will import the data.  
-If it is not publicly shared, option is given to the user to authenticate.
+Imports data from the user's global environment or a package environment to retrieve included in it. 
+It searches for data sets in the global environment and lets the user choose the data to use.
 
-### `import-database`
-imports data from databases.  
+```{r}
+# UI
+import_globalenv_ui("myid")
+
+# Server
+imported <- import_globalenv_server("myid")
+```
+
+<img src="figures/datamods-env.png" style="width:100%"></img>
 
 
+#### From file
 
-## Integrating with shiny
+Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package [rio](https://github.com/leeper/rio).
+In case of Excel files, it gives an option to choose the sheet. 
 
-Let's see how one can integrate a {datamods} module in a shiny app.  
+```{r}
+# UI
+import_file_ui("myid")
 
-There are two main functions. `import_*_ui` & `import_*_server` for ui and server
-respectively.  
+# Server
+imported <- import_file_server("myid")
+```
 
-For example, let us consider the module `import-file`. It has the two functions
-as `import_file_ui` & `import_file_server`.  
-
-One just needs to plug these two functions in the right place, as below.  
+<img src="figures/datamods-file.png" style="width:100%"></img>
 
 
+#### From clipboard
 
+Imports data via copy/paste. Simply copy and paste data from any source.
+
+```{r}
+# UI
+import_copypaste_ui("myid")
+
+# Server
+imported <- import_copypaste_server("myid")
+```
+
+<img src="figures/datamods-paste.png" style="width:100%"></img>
+
+
+#### From Googlesheet
+
+Imports data from a Googlsheet. Use the shareable link to read data.
+
+```{r}
+# UI
+import_googlesheets_ui("myid")
+
+# Server
+imported <- import_googlesheets_server("myid")
+```
+
+<img src="figures/datamods-googlesheet.png" style="width:100%"></img>
+
+
+### Usage
+
+All modules are used in the same way in a Shiny application, here is an example:
 
 ```{r}
 library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data from a file"),
+  tags$h3("Import data with copy & paste"),
   fluidRow(
     column(
       width = 4,
-      import_file_ui("myid")  #> this is the ui module
+      import_copypaste_ui("myid")
     ),
     column(
       width = 8,
       tags$b("Imported data:"),
-      tableOutput(outputId = "result")
+      verbatimTextOutput(outputId = "status"),
+      verbatimTextOutput(outputId = "data")
     )
   )
 )
 
 server <- function(input, output, session) {
-  
-  imported <- import_file_server("myid") #> this is the server module
-  
-  output$result <- renderTable({
+
+  imported <- import_copypaste_server("myid")
+
+  output$status <- renderPrint({
+    imported$status()
+  })
+  output$data <- renderPrint({
     imported$data()
   })
-  
+
 }
 
-if (interactive())
-  shinyApp(ui, server)
+shinyApp(ui, server)  
 ```
 
-**Note:** the import_*_server functions return a `reactiveValues` object. So its
-best to assign the server call to a variable. In the example above, this is done
-by `imported <- import_file_server("myid")`  
+All modules have the same return value server-side, a `list` with three slots:
 
-The data can then be accessed with `imported$data()`  
+* **status**: a `reactive` function returning the status: `NULL`, `error` or `success`.
+* **name**: a `reactive` function returning the name of the imported data as `character`.
+* **data**: a `reactive` function returning the imported `data.frame`.
 
-## An example: `import-copypaste`
 
-Below is an example of a datamods module(`import-copypaste`) in action.
+### Modal Window
 
-![](./figures/copy-paste.gif){width=710px}
+All modules can be lanunched at once in a modal window:
+
+<img src="figures/datamods-modal-2.png" style="width:100%"></img>
+
+
+Launch the modal server-side with:
+
+```{r}
+observeEvent(input$launch_modal, {
+  import_modal(
+    id = "myid",
+    title = "Import data to be used in application"
+  )
+})
+```
+
+See `?import_modal` for a complete example.
+
+
+
+## Update Modules
+
+This module allow to dynamically select, rename and convert variables of a dataset.
+
+<img src="figures/datamods-update-2.png" style="width:100%"></img>
+
+
+Some options for converting to date and numeric are available in a dropdown menu.
+
+Return value of the module is a `reactive` function with the update data.
+
+
+
+### Validate
+
+When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, ... This module allow to validate rules defined with package [validate](https://github.com/data-cleaning/validate).
+
+```{r}
+# UI
+validation_ui("validation", display = "inline")
+
+# Server
+results <- validation_server(
+  id = "validation",
+  data = dataset,
+  n_row = ~ . > 20, # more than 20 rows
+  n_col = ~ . >= 3, # at least 3 columns
+  rules = myrules
+)
+
+# Rules are defined as follow:
+myrules <- validator(
+  is.character(Manufacturer) | is.factor(Manufacturer),
+  is.numeric(Price),
+  Price > 12, # we should use 0 for testing positivity, but that's for the example
+  !is.na(Luggage.room),
+  in_range(Cylinders, min = 4, max = 8),
+  Man.trans.avail %in% c("Yes", "No")
+)
+# Add some labels
+label(myrules) <- c(
+  "Variable Manufacturer must be character",
+  "Variable Price must be numeric",
+  "Variable Price must be strictly positive",
+  "Luggage.room must not contain any missing values",
+  "Cylinders must be between 4 and 8",
+  "Man.trans.avail must be 'Yes' or 'No'"
+)
+# you can also add a description()
+```
+
+<img src="figures/datamods-validation-2.png" style="width:100%"></img>
+
+
+Validation results can be displayed in a dropdown menu (above left) or inline where the module is called.
+
+The return value server-side is a list with the following items:
+
+* **status**: a reactive function returning the best status available between "OK", "Failed" or "Error".
+* **details**: a reactive function returning a list with validation details.
+
 
 

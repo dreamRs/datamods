@@ -11,8 +11,7 @@
 
 ## Overview
 
-This package provides custom shiny modules to import data from various sources and
-update variables in the dataset.  
+This package provides custom shiny modules to import data from various sources, select, rename and convert variables in a dataset and validate content with [validate](https://github.com/data-cleaning/validate) package.  
 The modules can be used in any standard shiny application or RStudio add-in.
 
 
@@ -20,110 +19,45 @@ The modules can be used in any standard shiny application or RStudio add-in.
 
 You can install the development version of datamods from [GitHub](https://github.com/dreamRs/datamods) with:
 
-``` r
+```r
 remotes::install_github("dreamRs/datamods")
 ```
 
 
-### Overview
+### Import
 
-Import data through various sources with dedicated Shiny modules:
+Import data from:
 
-![](man/figures/datamods-imports.png)
+* **environment**: such as Global environment or from a package
+* **file**: text files, Excel, SAS or SPSS format... anything that package [rio](https://github.com/leeper/rio) can handle
+* **copy/paste**: paste data from an other source like Excel or text file
+* **Google Sheet**: use the URL to import the Googlesheet
 
+Each module is available in the form `import_file_ui()` / `import_file_server()` and can be use independently.
 
-All modules are available in a modal gathering them all:
+Or all modules can be launched together in a modal window via `import_modal()` / `import_server()`:
 
 ![](man/figures/datamods-modal.png)
 
+This module also allow to view imported data and to update variables.
 
-It's also possible to select, rename and change classes of imported data:
+
+### Update
+
+Module `update_variables_ui()` / `update_variables_server()` allow to:
+
+* **select** variables of interest in a dataset
+* **rename** variablesto be used in application after that
+* **convert** variables to change their class, from character to numeric for example
 
 ![](man/figures/datamods-update.png)
 
 
+### Validate
 
-### Usage
+Define some validation rules with package [validate](https://github.com/data-cleaning/validate) and check whether data lives up to those expectations.
 
-There are two functions associated with each module, `import_*_ui` and `import_*_server`  
-Just plug them in the correct place with an `id` and they should be up and running.  
-
-Let us take the `import-file` module as an example.  
-
-
-#### Steps:  
-
-1. Add `import_file_ui` in the ui definition of the app.  
-
-```r
-library(datamods)
-library(shiny)
-
-ui <- fluidPage(
-  tags$h3("Import data from a file"),
-  fluidRow(
-    column(
-      width = 4,
-      import_file_ui("myid")  ## <---
-    ),
-    column(
-      width = 8,
-      tags$b("Imported data:"),
-      tableOutput(outputId = "result")
-    )
-  )
-)
-```
-
-2. Add the `import_file_server` to the server definition.  
-Note that the `id` should be the same.  
-
-```r
-server <- function(input, output, session) {
-  
-  imported <- import_file_server("myid") ## <---
-  
-  output$result <- renderTable({
-    imported$data()
-  })
-  
-}
-```
-
-3. The call to server returns a `list` with a `reactive` function, so we assign it in a variable `imported`  
-We can now call `imported$data()` to access the data returned.
-
-4. Run the app!
-
-```r
-if (interactive())
-  shinyApp(ui, server)
-```
-
-
-
-## Modules available
-
-
-### Import from Environment
-
-This module imports data from the global environment or from a package.
-
-
-### Import from file
-
-One can upload files of format supported by `rio::import()` (text, csv, Excel, SAS, ...).
-
-
-### Import by copying/pasting data
-
-Copy and paste data from anywhere and it will be read as a `data.frame`.
-
-
-### Import from GoogleSheet
-
-Just paste the link to a GoogleSheet file and it will be read.  
-
+![](man/figures/datamods-validation.png)
 
 
 ## Final Notes :
