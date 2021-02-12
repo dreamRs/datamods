@@ -233,4 +233,35 @@ The return value server-side is a list with the following items:
 * **details**: a reactive function returning a list with validation details.
 
 
+### Filter
+
+Interactively filter a `data.frame` and generate code to reproduce filters applied:
+
+```{r}
+# UI
+filter_data_ui("filtering", max_height = "500px")
+
+# Server
+res_filter <- filter_data_server(
+  id = "filtering",
+  data = reactive(mtcars),
+  name = reactive("mtcars"),
+  vars = reactive(names(mtcars)),
+  widget_num = "slider",
+  widget_date = "slider",
+  label_na = "Missing"
+)
+```
+
+You can select variables for which to create a filter and choose widgets used to create the UI filter.
+
+<img src="figures/datamods-filter-2.png" style="width:100%"></img>
+
+The return value server-side is a list with the following items:
+
+* **filtered**: a `reactive` function returning the data filtered.
+* **code**: a `reactive` function returning the dplyr pipeline to filter data.
+* **expr**: a `reactive` function returning an expression to filter data.
+
+
 

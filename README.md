@@ -60,6 +60,13 @@ Define some validation rules with package [validate](https://github.com/data-cle
 ![](man/figures/datamods-validation.png)
 
 
+### Filter
+
+Interactively filter a `data.frame`, this module also generates the code to reproduce the filters.
+
+![](man/figures/datamods-filter.png)
+
+
 ## Final Notes :
 
  - Please find example apps of each of the modules in the `/examples` folder.
