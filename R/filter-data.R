@@ -76,6 +76,7 @@ filter_data_server <- function(id,
                                label_na = "NA") {
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
+  widget_date <- match.arg(widget_date)
   moduleServer(
     id,
     function(input, output, session) {
@@ -98,6 +99,7 @@ filter_data_server <- function(id,
           drop_ids = drop_ids,
           widget_char = widget_char,
           widget_num = widget_num,
+          widget_date = widget_date,
           label_na = label_na
         )
         rv_filters$mapping <- filters$filters_id
@@ -168,6 +170,7 @@ create_filters <- function(data,
                            session = getDefaultReactiveDomain()) {
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
+  widget_date <- match.arg(widget_date)
   ns <- session$ns
   data <- drop_na(data)
   if (isTRUE(drop_ids)) {

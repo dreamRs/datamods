@@ -89,6 +89,12 @@ mtcars_na[] <- lapply(
   }
 )
 
+datetime <- data.frame(
+  date = seq(Sys.Date(), by = "day", length.out = 300),
+  datetime = seq(Sys.time(), by = "hour", length.out = 300),
+  num = sample.int(1e5, 300)
+)
+
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
 
@@ -99,7 +105,8 @@ ui <- fluidPage(
       "iris",
       "mtcars",
       "mtcars_na",
-      "Cars93"
+      "Cars93",
+      "datetime"
     ),
     inline = TRUE
   ),
@@ -133,13 +140,13 @@ server <- function(input, output, session) {
   })
 
   vars <- reactive({
-    if (identical(input$dataset, "mpg")) {
-      setNames(as.list(names(mpg)[1:5]), c(
-        "Manufacturer name",
-        "Model name",
-        "Engine displacement, in litres",
-        "Year of manufacture",
-        "Number of cylinders"
+    if (identical(input$dataset, "mtcars")) {
+      setNames(as.list(names(mtcars)[1:5]), c(
+        "Miles/(US) gallon",
+        "Number of cylinders",
+        "Displacement (cu.in.)",
+        "Gross horsepower",
+        "Rear axle ratio"
       ))
     } else {
       NULL
@@ -152,14 +159,14 @@ server <- function(input, output, session) {
     name = reactive(input$dataset),
     vars = vars,
     widget_num = "slider",
-    widget_date = "range",
+    widget_date = "slider",
     label_na = "Missing"
   )
 
-  observeEvent(res_filter$data_filtered(), {
+  observeEvent(res_filter$filtered(), {
     updateProgressBar(
       session = session, id = "pbar",
-      value = nrow(res_filter$data_filtered()), total = nrow(data())
+      value = nrow(res_filter$filtered()), total = nrow(data())
     )
   })
 
@@ -176,7 +183,7 @@ server <- function(input, output, session) {
   })
 
   output$res_str <- renderPrint({
-    str(res_filter$data_filtered())
+    str(res_filter$filtered())
   })
 
 }
