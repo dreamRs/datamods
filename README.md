@@ -3,7 +3,6 @@
 > Shiny modules to import and manipulate data into an application or addin.
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![R build status](https://github.com/dreamRs/datamods/workflows/R-CMD-check/badge.svg)](https://github.com/dreamRs/datamods/actions)
 [![codecov](https://codecov.io/gh/dreamRs/datamods/branch/master/graphs/badge.svg)](https://codecov.io/gh/dreamRs/datamods)
 <!-- badges: end -->

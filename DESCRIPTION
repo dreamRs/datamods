@@ -1,6 +1,6 @@
 Package: datamods
 Title: Modules to Import and Manipulate Data in 'Shiny'
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     c(person(given = "Victor",
              family = "Perrier",

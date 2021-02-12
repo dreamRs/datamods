@@ -7,6 +7,8 @@
 
 0 errors | 0 warnings | 1 note
 
+Fixed invalid URL.
+
 * This is a new release.
 This package contains Shiny modules to import, update, validate and filter data in interactive applications.
 
