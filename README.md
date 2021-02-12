@@ -47,7 +47,7 @@ This module also allow to view imported data and to update variables.
 Module `update_variables_ui()` / `update_variables_server()` allow to:
 
 * **select** variables of interest in a dataset
-* **rename** variablesto be used in application after that
+* **rename** variables to be used in application after that
 * **convert** variables to change their class, from character to numeric for example
 
 ![](man/figures/datamods-update.png)

@@ -6,7 +6,7 @@
 #'
 #' @param id Module's id
 #' @param from The import_ui & server to use, i.e. the method.
-#'   There are 4 options to choose from. ("env", "file", "copypaste", "googlsheets")
+#'   There are 4 options to choose from. ("env", "file", "copypaste", "googlesheets")
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI

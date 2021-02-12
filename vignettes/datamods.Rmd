@@ -89,7 +89,7 @@ imported <- import_copypaste_server("myid")
 
 #### From Googlesheet
 
-Imports data from a Googlsheet. Use the shareable link to read data.
+Imports data from a Googlesheet. Use the shareable link to read data.
 
 ```{r}
 # UI

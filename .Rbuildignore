@@ -6,3 +6,4 @@
 ^Meta$
 ^\.github$
 ^dev$
+^cran-comments\.md$
