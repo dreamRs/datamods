@@ -3,8 +3,22 @@ dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
 }
 
+dropNullsOrEmpty <- function(x) {
+  x[!vapply(x, nullOrEmpty, FUN.VALUE = logical(1))]
+}
+
+nullOrEmpty <- function(x) {
+  is.null(x) || length(x) == 0 || x == ""
+}
+
 `%||%` <- function(x, y) {
   if (!is.null(x)) x else y
+}
+
+dropListColumns <- function(x) {
+  type_col <- vapply(X = x, FUN = typeof, FUN.VALUE = character(1),
+                     USE.NAMES = FALSE)
+  x[, type_col != "list", drop = FALSE]
 }
 
 #' Search for object with specific class in an environment
@@ -71,6 +85,13 @@ genId <- function(bytes = 12) {
   paste(format(as.hexmode(sample(256, bytes, replace = TRUE) - 1), width = 2), collapse = "")
 }
 
-
+makeId <- function(x) {
+  x <- as.character(x)
+  x <- lapply(X = x, FUN = function(y) {
+    paste(as.character(charToRaw(y)), collapse = "")
+  })
+  x <- unlist(x, use.names = FALSE)
+  make.unique(x, sep = "_")
+}
 
 
