@@ -64,7 +64,7 @@ filter_data_ui <- function(id,
 #'
 #' @importFrom rlang eval_tidy
 #' @importFrom shiny observeEvent reactiveValues removeUI
-#'  insertUI reactive req isolate reactive renderUI tags
+#'  insertUI reactive req isolate reactive renderUI tags outputOptions
 filter_data_server <- function(id,
                                data = reactive(),
                                vars = reactive(NULL),
@@ -138,6 +138,7 @@ filter_data_server <- function(id,
           data
         }
       })
+      outputOptions(x = output, name = "placeholder_filters", suspendWhenHidden = FALSE)
 
       return(list(
         filtered = data_filtered,
