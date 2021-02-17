@@ -3,6 +3,8 @@ test_that("import_googlesheets_ui works", {
 })
 
 test_that("import_googlesheets_server works", {
+  testthat::skip_on_cran()
+  testthat::skip_if_offline()
   shiny::testServer(import_googlesheets_server, {
     session$setInputs(link = 0) #to bypass ignoreInit = TRUE
     session$setInputs(
