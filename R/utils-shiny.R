@@ -134,6 +134,16 @@ make_success_alert <- function(data,
   return(success_message)
 }
 
+insert_error <- function(selector = "import",
+                         session = shiny::getDefaultReactiveDomain()) {
+  insert_alert(
+    selector = session$ns(selector),
+    status = "danger",
+    tags$b(icon("exclamation-triangle"), i18n("Ooops")),
+    i18n("Something went wrong...")
+  )
+}
+
 
 #' @importFrom htmltools tagList tags doRenderTags
 help_popup <- function(text) {
@@ -142,7 +152,7 @@ help_popup <- function(text) {
       icon("question"),
       `data-toggle` = "popover",
       `data-trigger` = "focus",
-      title = "Help",
+      title = i18n("Help"),
       `data-html` = "true",
       `data-content` = htmltools::doRenderTags(text),
       tabindex = "0",

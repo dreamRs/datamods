@@ -166,12 +166,7 @@ import_globalenv_server <- function(id,
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_alert(
-          selector = ns("import"),
-          status = "danger",
-          tags$b(icon("exclamation-triangle"), i18n("Ooops")),
-          i18n("Something went wrong...")
-        )
+        insert_error()
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {

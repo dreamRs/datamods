@@ -67,10 +67,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
   labsImport <- list(
-    "env" = "Environment",
-    "file" = "External file",
-    "copypaste" = "Copy / Paste",
-    "googlesheets" = "Googlesheets"
+    "env" = i18n("Environment"),
+    "file" = i18n("External file"),
+    "copypaste" = i18n("Copy / Paste"),
+    "googlesheets" = i18n("Googlesheets")
   )
   iconsImport <- list(
     "env" = icon("code"),
@@ -108,7 +108,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
         ),
         radioGroupButtons(
           inputId = ns("from"),
-          label = "How to import data?",
+          label = i18n("How to import data?"),
           choiceValues = from,
           choiceNames = lapply(
             X = from,
@@ -133,20 +133,21 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = "Import", importTab
+        title = i18n("Import"),
+        importTab
       ),
       tabPanel(
-        title = "View",
+        title = i18n("View"),
         tags$br(),
         DTOutput(outputId = ns("view"))
       ),
       tabPanel(
-        title = "Update",
+        title = i18n("Update"),
         tags$br(),
         update_variables_ui(id = ns("update"), title = NULL)
       ),
       tabPanel(
-        title = "Validate",
+        title = i18n("Validate"),
         tags$br(),
         validation_ui(
           id = ns("validation"),

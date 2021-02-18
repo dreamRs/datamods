@@ -19,7 +19,10 @@
 update_variables_ui <- function(id, title = TRUE) {
   ns <- NS(id)
   if (isTRUE(title)) {
-    title <- tags$h4("Update & select variables", class = "datamods-title")
+    title <- tags$h4(
+      i18n("Update & select variables"),
+      class = "datamods-title"
+    )
   }
   tags$div(
     class = "datamods-update",
