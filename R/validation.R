@@ -34,7 +34,7 @@ validation_ui <- function(id, display = c("dropdown", "inline"), max_height = NU
     ui <- dropMenu(
       actionButton(
         inputId = ns("menu"),
-        label = "Validation:",
+        label = i18n("Validation:"),
         ...,
         icon = icon("caret-down")
       ),
@@ -136,7 +136,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-success",
-              icon("check"), "OK"
+              icon("check"), i18n("OK")
             )
           ))
         } else if (identical(valid_status, "Failed")) {
@@ -144,7 +144,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-warning",
-              icon("warning"), "Failed"
+              icon("warning"), i18n("Failed")
             )
           ))
         } else if (identical(valid_status, "Error")) {
@@ -152,7 +152,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-danger",
-              icon("times"), "Error"
+              icon("times"), i18n("Error")
             )
           ))
         }
@@ -169,7 +169,7 @@ validation_server <- function(id,
             style = "border-right: 1px solid #e6e6e6;",
             tags$span(
               class = "label label-success",
-              "OK:",
+              i18n("OK"),
               tags$span(sum(total == "OK"), class = "datamods-validation-item")
             )
           ),
@@ -178,7 +178,7 @@ validation_server <- function(id,
             style = "border-right: 1px solid #e6e6e6;",
             tags$span(
               class = "label label-warning",
-              "Failed:",
+              i18n("Failed"),
               tags$span(sum(total == "Failed"), class = "datamods-validation-item")
             )
           ),
@@ -186,7 +186,7 @@ validation_server <- function(id,
             class = "datamods-validation-summary",
             tags$span(
               class = "label label-danger",
-              "Error:",
+              i18n("Error"),
               tags$span(sum(total == "Error"), class = "datamods-validation-item")
             )
           )
