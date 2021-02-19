@@ -6,12 +6,7 @@
 \alias{filter_data_server}
 \title{Shiny module to interactively filter a \code{data.frame}}
 \usage{
-filter_data_ui(
-  id,
-  show_nrow = TRUE,
-  label_nrow = "Number of rows:",
-  max_height = NULL
-)
+filter_data_ui(id, show_nrow = TRUE, max_height = NULL)
 
 filter_data_server(
   id,
@@ -29,8 +24,6 @@ filter_data_server(
 \item{id}{Module id. See \code{\link[shiny]{callModule}}.}
 
 \item{show_nrow}{Show number of filtered rows and total.}
-
-\item{label_nrow}{Text to be displayed before number of rows.}
 
 \item{max_height}{Maximum height for filters panel, useful
 if you have many variables to filter and limited space.}

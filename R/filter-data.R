@@ -6,7 +6,6 @@
 #'
 #' @param id Module id. See \code{\link[shiny]{callModule}}.
 #' @param show_nrow Show number of filtered rows and total.
-#' @param label_nrow Text to be displayed before number of rows.
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
 #'
@@ -22,7 +21,6 @@
 #' @example examples/filter_data.R
 filter_data_ui <- function(id,
                            show_nrow = TRUE,
-                           label_nrow = "Number of rows:",
                            max_height = NULL) {
   ns <- NS(id)
   max_height <- if (!is.null(max_height)) {
@@ -35,7 +33,7 @@ filter_data_ui <- function(id,
       )
     ),
     if (isTRUE(show_nrow)) {
-      tags$span(label_nrow, uiOutput(outputId = ns("nrow"), inline = TRUE))
+      tags$span(i18n("Number of rows:"), uiOutput(outputId = ns("nrow"), inline = TRUE))
     },
     uiOutput(outputId = ns("placeholder_filters"), style = max_height)
   )
