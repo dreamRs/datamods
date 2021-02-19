@@ -1,0 +1,97 @@
+---
+title: "Internationalization"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Internationalization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(datamods)
+```
+
+When using {datamods} modules, a simple way to modify labels display is provided for using a different language or simply use other labels.
+There are 4 different ways to use new labels:
+
+```{r}
+# Using a supported language
+options("datamods.i18n" = "fr")
+
+# Using a named list
+options("datamods.i18n" = list(...))
+
+# Using a data.frame
+options("datamods.i18n" = data.frame(label = c(...), translation = c(...)))
+
+# Using a CSV file
+options("datamods.i18n" = "path/to/file.csv")
+```
+
+
+## Supported language
+
+Currently only french is supported, you can display all labels in french with:
+
+```{r}
+options("datamods.i18n" = "fr")
+```
+
+If you want to contribute to the package, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder).
+
+
+## Using a list
+
+You can change labels with a named `list`, where names correspond to the labels and values to the translation to use:
+
+```{r}
+options("datamods.i18n" = list(
+  "Import a dataset from an environment" = "Importer un jeu de données depuis l'environnement global",
+  "Select a data.frame:" = "Sélectionner un data.frame :",
+  ...
+))
+```
+
+
+## Using a data.frame
+
+You can change labels with a `data.frame` with two columns `label` (the original label) and `translation` (the new label to display):
+
+```{r}
+options("datamods.i18n" = data.frame(
+  label = c("Import a dataset from an environment", "Select a data.frame:", ...),
+  translation = c("Importer un jeu de données depuis l'environnement global", "Sélectionner un data.frame :", ...)
+))
+```
+
+
+## Using a file
+
+Use a CSV file with same structure than `data.frame` above:
+
+```{r}
+options("datamods.i18n" = "path/to/file.csv")
+```
+
+An example of file is shown below.
+
+
+## All labels
+
+Here's the file used for french translation with all labels used in the package:
+
+```{r, echo=FALSE, eval=TRUE, comment=""}
+cat(readLines(system.file("i18n", "fr.csv", package = "datamods"), encoding = "UTF-8"), sep = '\n')
+```
+
+
+
+

@@ -5,7 +5,7 @@ i18n <- function(x) {
   lang <- getOption("datamods.i18n")
   if (is.null(lang))
     return(x)
-  if (is.list(lang)) {
+  if (is.list(lang) & !is.data.frame(lang)) {
     if (!x %in% names(lang)) {
       warning("datamods i18n: translation for '", x, "' not found!", call. = FALSE)
       return(x)
