@@ -4,7 +4,14 @@
 \alias{show_data}
 \title{Display a table in a window}
 \usage{
-show_data(data, title = NULL, options = NULL, width = "80\%")
+show_data(
+  data,
+  title = NULL,
+  options = NULL,
+  show_classes = TRUE,
+  type = c("popup", "modal"),
+  width = "80\%"
+)
 }
 \arguments{
 \item{data}{a data object (either a \code{matrix} or a \code{data.frame}).}
@@ -13,7 +20,11 @@ show_data(data, title = NULL, options = NULL, width = "80\%")
 
 \item{options}{Options passed to \link[DT]{datatable}'s options argument.}
 
-\item{width}{Width of the window.}
+\item{show_classes}{Show variables classes under variables names in table header.}
+
+\item{type}{Display table in a pop-up or in modal window.}
+
+\item{width}{Width of the window, only used if \code{type = "popup"}.}
 }
 \value{
 No value.
@@ -28,15 +39,31 @@ library(datamods)
 
 ui <- fluidPage(
   actionButton(
-    inputId = "show",
-    label = "Show data",
+    inputId = "show1",
+    label = "Show data in popup",
+    icon = icon("eye")
+  ),
+  actionButton(
+    inputId = "show2",
+    label = "Show data in modal",
+    icon = icon("eye")
+  ),
+  actionButton(
+    inputId = "show3",
+    label = "Show data without classes",
     icon = icon("eye")
   )
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$show, {
+  observeEvent(input$show1, {
     show_data(mtcars, title = "My data")
+  })
+  observeEvent(input$show2, {
+    show_data(mtcars, title = "My data", type = "modal")
+  })
+  observeEvent(input$show3, {
+    show_data(mtcars, title = "My data", show_classes = FALSE)
   })
 }
 
