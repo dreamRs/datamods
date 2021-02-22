@@ -1,0 +1,8 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  datamods: datamods.html
+  i18n: i18n.html
+last_built: 2021-02-22T09:51Z
+
