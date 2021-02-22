@@ -135,7 +135,14 @@
     <p>Display a table in a window</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show_data</span><span class='op'>(</span><span class='va'>data</span>, title <span class='op'>=</span> <span class='cn'>NULL</span>, options <span class='op'>=</span> <span class='cn'>NULL</span>, width <span class='op'>=</span> <span class='st'>"80%"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>show_data</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  options <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show_classes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"popup"</span>, <span class='st'>"modal"</span><span class='op'>)</span>,
+  width <span class='op'>=</span> <span class='st'>"80%"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,8 +160,16 @@
       <td><p>Options passed to <a href='https://rdrr.io/pkg/DT/man/datatable.html'>datatable</a>'s options argument.</p></td>
     </tr>
     <tr>
+      <th>show_classes</th>
+      <td><p>Show variables classes under variables names in table header.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Display table in a pop-up or in modal window.</p></td>
+    </tr>
+    <tr>
       <th>width</th>
-      <td><p>Width of the window.</p></td>
+      <td><p>Width of the window, only used if <code>type = "popup"</code>.</p></td>
     </tr>
     </table>
 
@@ -169,15 +184,31 @@
 
 <span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidPage</a></span><span class='op'>(</span>
   <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/actionButton.html'>actionButton</a></span><span class='op'>(</span>
-    inputId <span class='op'>=</span> <span class='st'>"show"</span>,
-    label <span class='op'>=</span> <span class='st'>"Show data"</span>,
+    inputId <span class='op'>=</span> <span class='st'>"show1"</span>,
+    label <span class='op'>=</span> <span class='st'>"Show data in popup"</span>,
+    icon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/icon.html'>icon</a></span><span class='op'>(</span><span class='st'>"eye"</span><span class='op'>)</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/actionButton.html'>actionButton</a></span><span class='op'>(</span>
+    inputId <span class='op'>=</span> <span class='st'>"show2"</span>,
+    label <span class='op'>=</span> <span class='st'>"Show data in modal"</span>,
+    icon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/icon.html'>icon</a></span><span class='op'>(</span><span class='st'>"eye"</span><span class='op'>)</span>
+  <span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/actionButton.html'>actionButton</a></span><span class='op'>(</span>
+    inputId <span class='op'>=</span> <span class='st'>"show3"</span>,
+    label <span class='op'>=</span> <span class='st'>"Show data without classes"</span>,
     icon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/icon.html'>icon</a></span><span class='op'>(</span><span class='st'>"eye"</span><span class='op'>)</span>
   <span class='op'>)</span>
 <span class='op'>)</span>
 
 <span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>show</span>, <span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>show1</span>, <span class='op'>{</span>
     <span class='fu'>show_data</span><span class='op'>(</span><span class='va'>mtcars</span>, title <span class='op'>=</span> <span class='st'>"My data"</span><span class='op'>)</span>
+  <span class='op'>}</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>show2</span>, <span class='op'>{</span>
+    <span class='fu'>show_data</span><span class='op'>(</span><span class='va'>mtcars</span>, title <span class='op'>=</span> <span class='st'>"My data"</span>, type <span class='op'>=</span> <span class='st'>"modal"</span><span class='op'>)</span>
+  <span class='op'>}</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>show3</span>, <span class='op'>{</span>
+    <span class='fu'>show_data</span><span class='op'>(</span><span class='va'>mtcars</span>, title <span class='op'>=</span> <span class='st'>"My data"</span>, show_classes <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
   <span class='op'>}</span><span class='op'>)</span>
 <span class='op'>}</span>
 
