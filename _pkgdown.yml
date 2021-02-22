@@ -1,0 +1,14 @@
+template:
+  params:
+    bootswatch: flatly
+
+authors:
+  Victor Perrier:
+    href: https://twitter.com/_pvictorr
+    html: <img src="https://pbs.twimg.com/profile_images/844237339404722177/E1U61aM8_normal.jpg"/> Victor Perrier
+  Fanny Meyer:
+    href: https://twitter.com/_mfaan
+    html: <img src="https://pbs.twimg.com/profile_images/912313931326218240/o1-wvA18_normal.jpg" /> Fanny Meyer
+  Zauad Shahreer Abeer:
+    href: https://twitter.com/shahreyarabeer
+    html: <img src="http://pbs.twimg.com/profile_images/1272445553503113217/RUViNXpI_normal.jpg" /> Zauad Shahreer Abeer
