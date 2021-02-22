@@ -22,7 +22,10 @@ import_copypaste_ui <- function(id, title = TRUE) {
   ns <- NS(id)
 
   if (isTRUE(title)) {
-    title <- tags$h4("Copy & paste data", class = "datamods-title")
+    title <- tags$h4(
+      i18n("Copy & paste data"),
+      class = "datamods-title"
+    )
   }
 
   tags$div(
@@ -32,7 +35,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
     tagAppendAttributes(
       textAreaInput(
         inputId = ns("data_pasted"),
-        label = "Paste data here:",
+        label = i18n("Paste data here:"),
         height = "300px",
         width = "100%",
         resize = "none"
@@ -44,8 +47,8 @@ import_copypaste_ui <- function(id, title = TRUE) {
       alert(
         id = ns("import-result"),
         status = "info",
-        tags$b("Nothing pasted yet!"),
-        "Please copy and paste some data in the dialog box above.",
+        tags$b(i18n("Nothing pasted yet!")),
+        i18n("Please copy and paste some data in the dialog box above."),
         dismissible = TRUE
       )
     ),
@@ -96,11 +99,7 @@ import_copypaste_server <- function(id,
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_alert(
-          selector = ns("import"),
-          status = "danger",
-          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-        )
+        insert_error()
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {
@@ -120,7 +119,7 @@ import_copypaste_server <- function(id,
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data)
+      show_data(temporary_rv$data, title = i18n("Imported data"))
     })
 
     observeEvent(input$confirm, {

@@ -19,7 +19,10 @@
 update_variables_ui <- function(id, title = TRUE) {
   ns <- NS(id)
   if (isTRUE(title)) {
-    title <- tags$h4("Update & select variables", class = "datamods-title")
+    title <- tags$h4(
+      i18n("Update & select variables"),
+      class = "datamods-title"
+    )
   }
   tags$div(
     class = "datamods-update",
@@ -38,19 +41,19 @@ update_variables_ui <- function(id, title = TRUE) {
           ),
           textInputIcon(
             inputId = ns("format"),
-            label = "Date format:",
+            label = i18n("Date format:"),
             value = "%Y-%m-%d",
             icon = icon("clock-o")
           ),
           textInputIcon(
             inputId = ns("origin"),
-            label = "Date to use as origin to convert date/datetime:",
+            label = i18n("Date to use as origin to convert date/datetime:"),
             value = "1970-01-01",
             icon = icon("calendar")
           ),
           textInputIcon(
             inputId = ns("dec"),
-            label = "Decimal separator:",
+            label = i18n("Decimal separator:"),
             value = ".",
             icon = list("0.00")
           )
@@ -66,13 +69,13 @@ update_variables_ui <- function(id, title = TRUE) {
         id = ns("update-result"),
         status = "info",
         icon("info"),
-        "Select, rename and convert variables in table above,",
-        "then apply changes by clicking button below."
+        i18n(paste("Select, rename and convert variables in table above,",
+                   "then apply changes by clicking button below."))
       )
     ),
     actionButton(
       inputId = ns("validate"),
-      label = "Apply changes",
+      label = i18n("Apply changes"),
       icon = icon("arrow-circle-right"),
       width = "100%"
     )
@@ -110,7 +113,7 @@ update_variables_server <- function(id, data, height = NULL) {
 
       output$data_info <- renderUI({
         data <- data_r()
-        sprintf("Data has %s observations and %s variables", nrow(data), ncol(data))
+        sprintf(i18n("Data has %s observations and %s variables."), nrow(data), ncol(data))
       })
 
       variables_r <- reactive({
@@ -159,16 +162,12 @@ update_variables_server <- function(id, data, height = NULL) {
         }, silent = TRUE)
 
         if (inherits(res_update, "try-error")) {
-          insert_alert(
-            selector = ns("update"),
-            status = "danger",
-            tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-          )
+          insert_error("update")
         } else {
           insert_alert(
             selector = ns("update"),
             status = "success",
-            tags$b(icon("check"), "Data successfully updated!")
+            tags$b(icon("check"), i18n("Data successfully updated!"))
           )
           updated_data$x <- data
         }

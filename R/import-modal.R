@@ -67,10 +67,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
   labsImport <- list(
-    "env" = "Environment",
-    "file" = "External file",
-    "copypaste" = "Copy / Paste",
-    "googlesheets" = "Googlesheets"
+    "env" = i18n("Environment"),
+    "file" = i18n("External file"),
+    "copypaste" = i18n("Copy / Paste"),
+    "googlesheets" = i18n("Googlesheets")
   )
   iconsImport <- list(
     "env" = icon("code"),
@@ -108,7 +108,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
         ),
         radioGroupButtons(
           inputId = ns("from"),
-          label = "How to import data?",
+          label = i18n("How to import data?"),
           choiceValues = from,
           choiceNames = lapply(
             X = from,
@@ -133,20 +133,25 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = "Import", importTab
+        title = i18n("Import"),
+        value = "import",
+        importTab
       ),
       tabPanel(
-        title = "View",
+        title = i18n("View"),
+        value = "view",
         tags$br(),
         DTOutput(outputId = ns("view"))
       ),
       tabPanel(
-        title = "Update",
+        title = i18n("Update"),
+        value = "update",
         tags$br(),
         update_variables_ui(id = ns("update"), title = NULL)
       ),
       tabPanel(
-        title = "Validate",
+        title = i18n("Validate"),
+        value = "validate",
         tags$br(),
         validation_ui(
           id = ns("validation"),
@@ -167,9 +172,9 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tags$script(
       sprintf("$('#%s').addClass('nav-justified');", ns("tabs-mode")),
       sprintf("fadeTab({id: '%s'});", ns("tabs-mode")),
-      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "View"),
-      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "Update"),
-      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "Validate")
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "view"),
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "update"),
+      sprintf("disableTab({id: '%s', value: '%s'});", ns("tabs-mode"), "validate")
     )
   )
 }
@@ -201,7 +206,7 @@ import_server <- function(id,
 
       observeEvent(input$hidden, {
         if (length(validation_opts) < 1) {
-          hideTab(inputId = "tabs-mode", target = "Validate")
+          hideTab(inputId = "tabs-mode", target = "validate")
         }
       })
 
@@ -269,9 +274,9 @@ import_server <- function(id,
               toggle_widget(inputId = "confirm", enable = FALSE)
             }
           }
-          enable_tab("tabs-mode", "View")
-          enable_tab("tabs-mode", "Update")
-          enable_tab("tabs-mode", "Validate")
+          enable_tab("tabs-mode", "view")
+          enable_tab("tabs-mode", "update")
+          enable_tab("tabs-mode", "validate")
         } else {
           toggle_widget(inputId = "confirm", enable = FALSE)
         }
@@ -328,13 +333,13 @@ import_server <- function(id,
         status <- validation_results$status()
         req(status)
         if (status %in% c("Error", "Failed")) {
-          update_tab_label("tabs-mode", "Validate", tagList(
+          update_tab_label("tabs-mode", "validate", tagList(
             tags$span(
               style = "color: firebrick;", icon("exclamation-circle")
-            ), "Validate"
+            ), i18n("Validate")
           ))
         } else {
-          update_tab_label("tabs-mode", "Validate", "Validate")
+          update_tab_label("tabs-mode", "validate", i18n("Validate"))
         }
         if (status %in% allowed_status) {
           toggle_widget(inputId = "confirm", enable = TRUE)

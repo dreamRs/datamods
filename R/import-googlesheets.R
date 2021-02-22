@@ -22,7 +22,10 @@ import_googlesheets_ui <- function(id, title = TRUE) {
   ns <- NS(id)
 
   if (isTRUE(title)) {
-    title <- tags$h4("Import Google Spreadsheet", class = "datamods-title")
+    title <- tags$h4(
+      i18n("Import Google Spreadsheet"),
+      class = "datamods-title"
+    )
   }
 
   tags$div(
@@ -32,20 +35,20 @@ import_googlesheets_ui <- function(id, title = TRUE) {
     tags$div(
       class = "pull-right",
       help_popup(tagList(
-        "You can either use:",
+        i18n("You can either use:"),
         tags$ul(
           tags$li(
-            "A shareable link, in that case first sheet will be read"
+            i18n("A shareable link, in that case first sheet will be read")
           ),
           tags$li(
-            "The URL that appear in your browser, in that case the current sheet will be read"
+            i18n("The URL that appear in your browser, in that case the current sheet will be read")
           )
         )
       ))
     ),
     textInputIcon(
       inputId = ns("link"),
-      label = "Enter a shareable link to a GoogleSheet:",
+      label = i18n("Enter a shareable link to a GoogleSheet:"),
       icon = icon("link"),
       width = "100%"
     ),
@@ -54,8 +57,8 @@ import_googlesheets_ui <- function(id, title = TRUE) {
       alert(
         id = ns("import-result"),
         status = "info",
-        tags$b("Nothing pasted yet!"),
-        "Please paste a valid GoogleSheet link in the dialog box above.",
+        tags$b(i18n("Nothing pasted yet!")),
+        i18n("Please paste a valid GoogleSheet link in the dialog box above."),
         dismissible = TRUE
       )
     ),
@@ -111,11 +114,7 @@ import_googlesheets_server <- function(id,
       imported <- try(read_gsheet(input$link), silent = TRUE)
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_alert(
-          selector = ns("import"),
-          status = "danger",
-          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-        )
+        insert_error()
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {
@@ -135,7 +134,7 @@ import_googlesheets_server <- function(id,
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data)
+      show_data(temporary_rv$data, title = i18n("Imported data"))
     })
 
     observeEvent(input$confirm, {

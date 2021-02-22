@@ -1,2 +1,2 @@
 
-utils::globalVariables(c("%>%", "filter"))
+utils::globalVariables(c("%>%", "filter", "label", "translation"))

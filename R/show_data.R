@@ -10,17 +10,21 @@
 #' @export
 #'
 #' @importFrom shinyWidgets show_alert
-#' @importFrom htmltools tags
+#' @importFrom htmltools tags tagList
 #' @importFrom DT datatable
 #'
 #' @example examples/show_data.R
-show_data <- function(data, title = "Imported data", options = NULL, width = "80%") { # nocov start
+show_data <- function(data, title = NULL, options = NULL, width = "80%") { # nocov start
   data <- as.data.frame(data)
   show_alert(
     title = NULL,
     text = tags$div(
-      tags$h3(title),
-      tags$hr(),
+      if (!is.null(title)) {
+        tagList(
+          tags$h3(title),
+          tags$hr()
+        )
+      },
       style = "color: #000 !important;",
       tags$style(".dataTables_length {text-align: left;}"),
       tags$style(".dataTables_info {text-align: left;}"),
@@ -31,7 +35,6 @@ show_data <- function(data, title = "Imported data", options = NULL, width = "80
         class = "display dt-responsive",
         style = "bootstrap",
         width = "100%",
-        autoHideNavigation = TRUE,
         options = c(list(
           scrollX = TRUE
         ), options)

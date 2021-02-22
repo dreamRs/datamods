@@ -42,7 +42,10 @@ import_globalenv_ui <- function(id,
   }
 
   if (isTRUE(title)) {
-    title <- tags$h4("Import a dataset from an environment", class = "datamods-title")
+    title <- tags$h4(
+      i18n("Import a dataset from an environment"),
+      class = "datamods-title"
+    )
   }
 
   tags$div(
@@ -51,19 +54,19 @@ import_globalenv_ui <- function(id,
     title,
     pickerInput(
       inputId = ns("data"),
-      label = "Select a data.frame:",
+      label = i18n("Select a data.frame:"),
       choices = NULL,
-      options = list(title = "List of data.frame..."),
+      options = list(title = i18n("List of data.frame...")),
       width = "100%"
     ),
     pickerInput(
       inputId = ns("env"),
-      label = "Select an environment in which to search:",
+      label = i18n("Select an environment in which to search:"),
       choices = choices,
       selected = selected,
       width = "100%",
       options = list(
-        "title" = "Select environment",
+        "title" = i18n("Select environment"),
         "live-search" = TRUE,
         "size" = 10
       )
@@ -74,8 +77,8 @@ import_globalenv_ui <- function(id,
       alert(
         id = ns("import-result"),
         status = "info",
-        tags$b("No data selected!"),
-        "Use a data.frame from your environment or from the environment of a package.",
+        tags$b(i18n("No data selected!")),
+        i18n("Use a data.frame from your environment or from the environment of a package."),
         dismissible = TRUE
       )
     ),
@@ -127,7 +130,7 @@ import_globalenv_server <- function(id,
         choices <- list_pkg_data(input$env)
       }
       if (is.null(choices)) {
-        choices <- "No data.frame here..."
+        choices <- i18n("No data.frame here...")
         choicesOpt <- list(disabled = TRUE)
       } else {
         choicesOpt <- list(
@@ -163,11 +166,7 @@ import_globalenv_server <- function(id,
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_alert(
-          selector = ns("import"),
-          status = "danger",
-          tags$b(icon("exclamation-triangle"), "Ooops"), "Something went wrong..."
-        )
+        insert_error()
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {
@@ -189,7 +188,7 @@ import_globalenv_server <- function(id,
 
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data)
+      show_data(temporary_rv$data, title = i18n("Imported data"))
     })
 
     observeEvent(input$confirm, {
