@@ -5,10 +5,9 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 note
 
-* This is a new release.
-This package contains Shiny modules to import, update, validate and filter data in interactive applications.
+* Fixed failing test on Solaris
 
 Thanks,
 

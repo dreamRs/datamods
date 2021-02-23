@@ -151,7 +151,7 @@ All modules have the same return value server-side, a `list` with three slots:
 
 ### Modal Window
 
-All modules can be lanunched at once in a modal window:
+All modules can be launched at once in a modal window:
 
 <img src="figures/datamods-modal-2.png" style="width:100%"></img>
 
