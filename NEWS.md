@@ -1,3 +1,8 @@
+# datamods 1.1.1
+
+* Fixed a bug when retrieving data from package with parenthesis in name.
+
+
 # datamods 1.1.0
 
 * Added internationalization to translate labels used in modules, see corresponding vignette.
