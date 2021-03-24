@@ -19,7 +19,8 @@ test_that("i18n works with data.frame", {
   translation <- "quelque chose"
   options("datamods.i18n" = data.frame(
     label = label,
-    translation = translation
+    translation = translation,
+    stringsAsFactors = FALSE
   ))
   expect_identical(i18n(label), translation)
   expect_warning(i18n("label"))
