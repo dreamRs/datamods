@@ -273,11 +273,20 @@ list_pkg_data <- function(pkg) {
 
 #' @importFrom utils data
 get_env_data <- function(obj, env = globalenv()) {
+  pkg <- attr(obj, "package")
+  re <- regexpr(pattern = "\\(([^\\)]+)\\)", text = obj)
+  obj_ <- substr(x = obj, start = re + 1, stop = re + attr(re, "match.length") - 2)
   obj <- gsub(pattern = "\\s.*", replacement = "", x = obj)
   if (obj %in% ls(name = env)) {
     get(x = obj, envir = env)
-  } else if (!is.null(attr(obj, "package")) && !identical(attr(obj, "package"), "")) {
-    get(utils::data(list = obj, package = attr(obj, "package"), envir = environment()))
+  } else if (!is.null(pkg) && !identical(pkg, "")) {
+    res <- suppressWarnings(try(
+      get(utils::data(list = obj, package = pkg, envir = environment())), silent = TRUE
+    ))
+    if (!inherits(res, "try-error"))
+      return(res)
+    data(list = obj_, package = pkg, envir = environment())
+    get(obj, envir = environment())
   } else {
     NULL
   }
