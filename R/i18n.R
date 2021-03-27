@@ -1,6 +1,6 @@
 
 
-#' @importFrom data.table as.data.table fread
+#' @importFrom data.table as.data.table fread :=
 i18n <- function(x) {
   lang <- getOption("datamods.i18n")
   if (is.null(lang))
@@ -22,7 +22,9 @@ i18n <- function(x) {
   }
   if (is.data.frame(lang)) {
     lang <- as.data.table(lang)
+    lang[, label := as.character(label)]
     lang <- unique(lang, by = "label")
+    lang[, translation := as.character(translation)]
     if (!x %in% lang$label) {
       warning("datamods i18n: translation for '", x, "' not found!", call. = FALSE)
       return(x)
