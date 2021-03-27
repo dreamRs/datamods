@@ -7,7 +7,7 @@
 
 0 errors | 0 warnings | 0 note
 
-* Fixed a little bug.
+* Fixed a bug and a test on R-oldrel.
 
 Thanks,
 
