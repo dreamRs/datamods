@@ -1,3 +1,8 @@
+# datamods 1.1.3
+
+* Preserve class `sf` in output.
+
+
 # datamods 1.1.2
 
 * Fixed a bug when retrieving data from package with parenthesis in name.
