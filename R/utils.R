@@ -71,13 +71,17 @@ as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
   if (is.null(x))
     return(NULL)
   return_class <- match.arg(return_class)
-  if (identical(return_class, "data.frame")) {
+  is_sf <- inherits(x, "sf")
+  x <- if (identical(return_class, "data.frame")) {
     as.data.frame(x)
   } else if (identical(return_class, "data.table")) {
     as.data.table(x)
   } else {
     as_tibble(x)
   }
+  if (is_sf)
+    class(x) <- c("sf", class(x))
+  return(x)
 }
 
 
