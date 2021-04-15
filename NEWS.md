@@ -1,3 +1,9 @@
+# datamods 1.1.4
+
+* `filter_data_server`: convert data to `data.frame`.
+* `filter_data_server`: fixed bug with timezone if POSIXct.
+
+
 # datamods 1.1.3
 
 * Preserve class `sf` in output.

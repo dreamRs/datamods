@@ -167,6 +167,7 @@ create_filters <- function(data,
                            label_na = "NA",
                            width = "100%",
                            session = getDefaultReactiveDomain()) {
+  data <- as.data.frame(data)
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
   widget_date <- match.arg(widget_date)
@@ -251,7 +252,8 @@ create_filters <- function(data,
               max = max(var),
               value = range_var,
               label = NULL,
-              width = width
+              width = width,
+              timezone = if (inherits(var, "POSIXct")) format(var[1], format = "%z")
             ))
           )
         } else {
@@ -380,7 +382,11 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
           }
         }
       } else if (inherits(x = values, what = c("Date", "POSIXct"))) {
-        values <- format(values)
+        values <- if (inherits(values, "Date")) {
+          format(values)
+        } else {
+          format(values, tz = format(data_values[1], format = "%Z"))
+        }
         data_range <- range(data_values, na.rm = TRUE)
         data_range <- format(data_range)
         if (!identical(values, data_range)) {

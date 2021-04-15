@@ -15,10 +15,19 @@ nullOrEmpty <- function(x) {
   if (!is.null(x)) x else y
 }
 
+#' @importFrom data.table .SD
 dropListColumns <- function(x) {
-  type_col <- vapply(X = x, FUN = typeof, FUN.VALUE = character(1),
-                     USE.NAMES = FALSE)
-  x[, type_col != "list", drop = FALSE]
+  type_col <- vapply(
+    X = x,
+    FUN = typeof,
+    FUN.VALUE = character(1),
+    USE.NAMES = FALSE
+  )
+  if (inherits(x, "data.table")) {
+    x[, .SD, .SDcols = type_col != "list"]
+  } else {
+    x[, type_col != "list", drop = FALSE]
+  }
 }
 
 #' Search for object with specific class in an environment
