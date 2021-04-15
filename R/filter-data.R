@@ -90,6 +90,7 @@ filter_data_server <- function(id,
 
       output$placeholder_filters <- renderUI({
         data <- data()
+        req(data)
         vars <- vars()
         filters <- create_filters(
           data = data,
