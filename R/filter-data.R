@@ -108,6 +108,7 @@ filter_data_server <- function(id,
 
       data_filtered <- reactive({
         data <- data()
+        req(data)
         req(all(names(rv_filters$mapping) %in% names(data)))
         filter_inputs <- lapply(
           X = rv_filters$mapping,
