@@ -169,6 +169,7 @@ import_globalenv_server <- function(id,
         insert_error()
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
+        temporary_rv$name <- NULL
       } else {
         toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
@@ -180,9 +181,16 @@ import_globalenv_server <- function(id,
             btn_show_data = btn_show_data
           )
         )
+        pkg <- attr(name_df, "package")
+        if (!is.null(pkg)) {
+          name <- paste(pkg, input$data, sep = "::")
+        } else {
+          name <- input$data
+        }
+        name <- trimws(sub("\\(([^\\)]+)\\)", "", name))
         temporary_rv$status <- "success"
         temporary_rv$data <- imported
-        temporary_rv$name <- input$data
+        temporary_rv$name <- name
       }
     }, ignoreInit = TRUE)
 
