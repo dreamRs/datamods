@@ -452,10 +452,16 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
     }
   )
   expressions <- dropNullsOrEmpty(expressions)
+  data_name <- as.character(data_name)
+  if (grepl("::", data_name)) {
+    data_name <- str2lang(data_name)
+  } else {
+    data_name <- sym(data_name)
+  }
   expr_dplyr <- Reduce(
     f = function(x, y) expr(!!x %>% filter(!!y)),
     x = expressions,
-    init = expr(!!sym(data_name))
+    init = expr(!!data_name)
   )
   expression <- Reduce(
     f = function(x, y) expr(!!x & !!y),
