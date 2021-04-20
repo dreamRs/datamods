@@ -1,7 +1,8 @@
 # datamods 1.1.4
 
-* `filter_data_server`: convert data to `data.frame`.
+* `filter_data_server`: convert data to `data.frame` (fix [esquisse #149](https://github.com/dreamRs/esquisse/issues/149)).
 * `filter_data_server`: fixed bug with timezone if POSIXct.
+* Import data from package: use `pkg::data` notation for data's name.
 
 
 # datamods 1.1.3
