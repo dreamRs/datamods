@@ -12,7 +12,8 @@ import_copypaste_server(
   id,
   btn_show_data = TRUE,
   trigger_return = c("button", "change"),
-  return_class = c("data.frame", "data.table", "tbl_df")
+  return_class = c("data.frame", "data.table", "tbl_df"),
+  reset = reactive(NULL)
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \code{"change"} (each time user select a dataset in the list).}
 
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
+
+\item{reset}{A \code{reactive} function that when triggered resets the data.}
 }
 \value{
 \itemize{

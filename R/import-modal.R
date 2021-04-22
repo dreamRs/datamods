@@ -205,6 +205,8 @@ import_server <- function(id,
       imported_rv <- reactiveValues(data = NULL)
 
       observeEvent(input$hidden, {
+        data_rv$data <- NULL
+        data_rv$name <- NULL
         if (length(validation_opts) < 1) {
           hideTab(inputId = "tabs-mode", target = "validate")
         }
@@ -221,22 +223,26 @@ import_server <- function(id,
       from_env <- import_globalenv_server(
         id = "env",
         trigger_return = "change",
-        btn_show_data = FALSE
+        btn_show_data = FALSE,
+        reset = reactive(input$hidden)
       )
       from_file <- import_file_server(
         id = "file",
         trigger_return = "change",
-        btn_show_data = FALSE
+        btn_show_data = FALSE,
+        reset = reactive(input$hidden)
       )
       from_copypaste <- import_copypaste_server(
         id = "copypaste",
         trigger_return = "change",
-        btn_show_data = FALSE
+        btn_show_data = FALSE,
+        reset = reactive(input$hidden)
       )
       from_googlesheets <- import_googlesheets_server(
         id = "googlesheets",
         trigger_return = "change",
-        btn_show_data = FALSE
+        btn_show_data = FALSE,
+        reset = reactive(input$hidden)
       )
       #from_database <- import_database_server("database")
 
@@ -250,17 +256,17 @@ import_server <- function(id,
       })
       observeEvent(from_copypaste$data(), {
         data_rv$data <- from_copypaste$data()
-        data_rv$name <- from_file$name()
+        data_rv$name <- from_copypaste$name()
       })
       observeEvent(from_googlesheets$data(), {
         data_rv$data <- from_googlesheets$data()
-        data_rv$name <- from_file$name()
+        data_rv$name <- from_googlesheets$name()
       })
       # observeEvent(from_database$data(), {
       #   data_rv$data <- from_database$data()
       # })
 
-      observe({
+      observeEvent(data_rv$data, {
         req(data_rv$data)
         if (is.data.frame(data_rv$data)) {
           if (length(validation_opts) < 1) {

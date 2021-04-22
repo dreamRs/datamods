@@ -65,6 +65,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
 #'  \code{"button"} (when user click on button) or
 #'  \code{"change"} (each time user select a dataset in the list).
 #' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
+#' @param reset A `reactive` function that when triggered resets the data.
 #'
 #' @export
 #'
@@ -77,7 +78,8 @@ import_copypaste_ui <- function(id, title = TRUE) {
 import_copypaste_server <- function(id,
                                     btn_show_data = TRUE,
                                     trigger_return = c("button", "change"),
-                                    return_class = c("data.frame", "data.table", "tbl_df")) {
+                                    return_class = c("data.frame", "data.table", "tbl_df"),
+                                    reset = reactive(NULL)) {
 
   trigger_return <- match.arg(trigger_return)
 
@@ -86,6 +88,12 @@ import_copypaste_server <- function(id,
     ns <- session$ns
     imported_rv <- reactiveValues(data = NULL, name = NULL)
     temporary_rv <- reactiveValues(data = NULL, name = NULL, status = NULL)
+
+    observeEvent(reset(), {
+      temporary_rv$data <- NULL
+      temporary_rv$name <- NULL
+      temporary_rv$status <- NULL
+    })
 
     output$container_valid_btn <- renderUI({
       if (identical(trigger_return, "button")) {
@@ -130,11 +138,13 @@ import_copypaste_server <- function(id,
     if (identical(trigger_return, "button")) {
       return(list(
         status = reactive(temporary_rv$status),
+        name = reactive("clipboard_data"),
         data = reactive(as_out(imported_rv$data, return_class))
       ))
     } else {
       return(list(
         status = reactive(temporary_rv$status),
+        name = reactive("clipboard_data"),
         data = reactive(as_out(temporary_rv$data, return_class))
       ))
     }
