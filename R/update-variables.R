@@ -29,6 +29,7 @@ update_variables_ui <- function(id, title = TRUE) {
     html_dependency_pretty(),
     title,
     tags$div(
+      style = "min-height: 25px;",
       uiOutput(outputId = ns("data_info"), inline = TRUE),
       tagAppendAttributes(
         dropMenu(
@@ -59,9 +60,9 @@ update_variables_ui <- function(id, title = TRUE) {
           )
         ),
         style = "display: inline;"
-      )
+      ),
+      DTOutput(outputId = ns("table"))
     ),
-    DTOutput(outputId = ns("table")),
     tags$br(),
     tags$div(
       id = ns("update-placeholder"),
@@ -90,7 +91,7 @@ update_variables_ui <- function(id, title = TRUE) {
 #'
 #' @rdname update-variables
 #'
-#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList
+#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need
 #' @importFrom DT renderDT
 update_variables_server <- function(id, data, height = NULL) {
   moduleServer(
@@ -103,7 +104,6 @@ update_variables_server <- function(id, data, height = NULL) {
 
       data_r <- reactive({
         if (is.reactive(data)) {
-          req(data())
           token$x <- genId()
           data()
         } else {
@@ -112,11 +112,15 @@ update_variables_server <- function(id, data, height = NULL) {
       })
 
       output$data_info <- renderUI({
+        shiny::req(data_r())
         data <- data_r()
         sprintf(i18n("Data has %s observations and %s variables."), nrow(data), ncol(data))
       })
 
       variables_r <- reactive({
+        shiny::validate(
+          shiny::need(data(), i18n("No data to display."))
+        )
         data <- data_r()
         updated_data$x <- NULL
         summary_vars(data)
