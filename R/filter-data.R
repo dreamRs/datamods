@@ -64,7 +64,7 @@ filter_data_ui <- function(id,
 #' @importFrom shiny observeEvent reactiveValues removeUI
 #'  insertUI reactive req isolate reactive renderUI tags outputOptions
 filter_data_server <- function(id,
-                               data = reactive(),
+                               data = reactive(NULL),
                                vars = reactive(NULL),
                                name = reactive("data"),
                                drop_ids = TRUE,

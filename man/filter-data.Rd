@@ -10,7 +10,7 @@ filter_data_ui(id, show_nrow = TRUE, max_height = NULL)
 
 filter_data_server(
   id,
-  data = reactive(),
+  data = reactive(NULL),
   vars = reactive(NULL),
   name = reactive("data"),
   drop_ids = TRUE,
