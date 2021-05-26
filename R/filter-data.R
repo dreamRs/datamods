@@ -170,6 +170,8 @@ create_filters <- function(data,
                            width = "100%",
                            session = getDefaultReactiveDomain()) {
   data <- as.data.frame(data)
+  if (ncol(data) < 1)
+    return(NULL)
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
   widget_date <- match.arg(widget_date)
