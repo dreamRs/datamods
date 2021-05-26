@@ -99,6 +99,8 @@ genId <- function(bytes = 12) {
 }
 
 makeId <- function(x) {
+  if (length(x) < 1)
+    return(NULL)
   x <- as.character(x)
   x <- lapply(X = x, FUN = function(y) {
     paste(as.character(charToRaw(y)), collapse = "")
