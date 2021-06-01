@@ -187,7 +187,7 @@ import_file_server <- function(id,
         imported <- try(rio::import(
           file = input$file$datapath,
           skip = input$skip_rows,
-          dec = ifelse(tools::file_ext(input$file)=="sas7bdat", NULL, input$dec),
+          dec = ifelse(tools::file_ext(input$file$datapath)=="sas7bdat", NULL, input$dec),
           encoding = input$encoding
         ), silent = TRUE)
       }
