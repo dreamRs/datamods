@@ -183,13 +183,19 @@ import_file_server <- function(id,
           which = input$sheet,
           skip = input$skip_rows
         ), silent = TRUE)
-      } else {
+      } else if(is_sas(input$file$datapath)) {
         imported <- try(rio::import(
           file = input$file$datapath,
           skip = input$skip_rows,
-          dec = input$dec,
           encoding = input$encoding
         ), silent = TRUE)
+      }else{
+         imported <- try(rio::import(
+          file = input$file$datapath,
+          skip = input$skip_rows,
+          dec= input$dec,
+          encoding = input$encoding
+        ), silent = TRUE) 
       }
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
@@ -263,5 +269,9 @@ import_file_server <- function(id,
 
 is_excel <- function(path) {
   isTRUE(tools::file_ext(path) %in% c("xls", "xlsx"))
+}
+
+is_sas <- function(path) {
+  isTRUE(tools::file_ext(path) %in% c("sas7bdat"))
 }
 
