@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get packages containing datasets — get_data_packages • datamods</title>
+<title>Internationalization — i18n • datamods</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Get packages containing datasets — get_data_packages" />
-<meta property="og:description" content="Get packages containing datasets" />
+<meta property="og:title" content="Internationalization — i18n" />
+<meta property="og:description" content="Simple mechanism to translate labels in a Shiny application." />
 
 
 
@@ -126,27 +126,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get packages containing datasets</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dreamRs/datamods/blob/master/R/import-globalenv.R'><code>R/import-globalenv.R</code></a></small>
-    <div class="hidden name"><code>get_data_packages.Rd</code></div>
+    <h1>Internationalization</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dreamRs/datamods/blob/master/R/i18n.R'><code>R/i18n.R</code></a></small>
+    <div class="hidden name"><code>i18n.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get packages containing datasets</p>
+    <p>Simple mechanism to translate labels in a Shiny application.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_data_packages</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>i18n</span><span class='op'>(</span><span class='va'>x</span>, translations <span class='op'>=</span> <span class='fu'>i18n_translations</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
+<span class='fu'>i18n_translations</span><span class='op'>(</span>package <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/packageName.html'>packageName</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Label to translate.</p></td>
+    </tr>
+    <tr>
+      <th>translations</th>
+      <td><p>Either a <code>list</code> or a <code>data.frame</code> with translations.</p></td>
+    </tr>
+    <tr>
+      <th>package</th>
+      <td><p>Name of the package where the function is called, use <code>NULL</code> outside a package.
+It will retrieve option <code>"i18n.&lt;PACKAGE&gt;"</code> (or <code>"i18n"</code> if no package) to returns appropriate labels.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a character vector of packages names</p>
+    <p><code>i18n()</code> returns a <code>character</code>, <code>i18n_translations()</code> returns a <code>list</code> or a <code>data.frame</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_data_packages</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] "shinyWidgets" "datasets"     "MASS"         "forcats"      "stringr"     
-#&gt;  [6] "validate"     "xtable"       "boot"         "cluster"      "lattice"     
-#&gt; [11] "Matrix"       "mgcv"         "nlme"         "rpart"        "survival"    </div></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dreamRs/datamods'>datamods</a></span><span class='op'>)</span>
+
+<span class='co'># Use with an objet</span>
+<span class='va'>my.translations</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  <span class='st'>"Hello"</span> <span class='op'>=</span> <span class='st'>"Bonjour"</span>
+<span class='op'>)</span>
+<span class='fu'>i18n</span><span class='op'>(</span><span class='st'>"Hello"</span>, <span class='va'>my.translations</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Bonjour"</div><div class='input'>
+<span class='co'># Use with options()</span>
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"i18n"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  <span class='st'>"Hello"</span> <span class='op'>=</span> <span class='st'>"Bonjour"</span>
+<span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>i18n</span><span class='op'>(</span><span class='st'>"Hello"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Bonjour"</div><div class='input'>
+<span class='co'># With a package</span>
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span><span class='st'>"datamods.i18n"</span> <span class='op'>=</span> <span class='st'>"fr"</span><span class='op'>)</span>
+<span class='fu'>i18n</span><span class='op'>(</span><span class='st'>"Browse..."</span>, translations <span class='op'>=</span> <span class='fu'>i18n_translations</span><span class='op'>(</span><span class='st'>"datamods"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "Parcourir..."</div><div class='input'><span class='co'># If you call i18n() from within a function of your package</span>
+<span class='co'># you don't need second argument, e.g.:</span>
+<span class='co'># i18n("Browse...")</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
