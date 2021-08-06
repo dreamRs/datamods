@@ -50,8 +50,7 @@ import_file_ui <- function(id, title = TRUE) {
           placement = "bottom-end",
           actionButton(
             inputId = ns("settings"),
-            label = NULL,
-            icon = icon("gear"),
+            label = phosphoricons::ph("gear"),
             class = "btn-block",
             style = "margin-top: 25px;"
           ),
@@ -72,7 +71,7 @@ import_file_ui <- function(id, title = TRUE) {
             inputId = ns("encoding"),
             label = i18n("Encoding:"),
             value = "UTF-8",
-            icon = icon("font")
+            icon = phosphoricons::ph("text-aa")
           )
         )
       )

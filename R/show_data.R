@@ -73,7 +73,7 @@ show_data <- function(data,
     showModal(modalDialog(
       title = tagList(
         tags$button(
-          icon("close"),
+          phosphoricons::ph("x", title = "close"),
           class = "btn btn-default pull-right",
           style = "border: 0 none;",
           `data-dismiss` = "modal",

@@ -32,8 +32,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tabPanel(
       title = "env",
       tags$br(),
-      import_globalenv_ui(id = ns("env"), title = NULL),
-      icon = icon("code")
+      import_globalenv_ui(id = ns("env"), title = NULL)
     )
   }
 
@@ -41,8 +40,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tabPanel(
       title = "file",
       tags$br(),
-      import_file_ui(id = ns("file"), title = NULL),
-      icon = icon("file-import")
+      import_file_ui(id = ns("file"), title = NULL)
     )
   }
 
@@ -50,8 +48,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tabPanel(
       title = "copypaste",
       tags$br(),
-      import_copypaste_ui(id = ns("copypaste"), title = NULL),
-      icon = icon("copy")
+      import_copypaste_ui(id = ns("copypaste"), title = NULL)
     )
   }
 
@@ -59,8 +56,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     tabPanel(
       title = "googlesheets",
       tags$br(),
-      import_googlesheets_ui(id = ns("googlesheets"), title = NULL),
-      icon = icon("cloud-download")
+      import_googlesheets_ui(id = ns("googlesheets"), title = NULL)
     )
   }
 
@@ -73,10 +69,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     "googlesheets" = i18n("Googlesheets")
   )
   iconsImport <- list(
-    "env" = icon("code"),
-    "file" = icon("file-import"),
-    "copypaste" = icon("copy"),
-    "googlesheets" = icon("cloud-download")
+    "env" = phosphoricons::ph("code"),
+    "file" = phosphoricons::ph("file-arrow-down"),
+    "copypaste" = phosphoricons::ph("clipboard-text"),
+    "googlesheets" = phosphoricons::ph("cloud-arrow-down")
   )
 
 
@@ -133,24 +129,24 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = i18n("Import"),
+        title = tagList(phosphoricons::ph("download-simple"), i18n("Import")),
         value = "import",
         importTab
       ),
       tabPanel(
-        title = i18n("View"),
+        title = tagList(phosphoricons::ph("table"), i18n("View")),
         value = "view",
         tags$br(),
         DTOutput(outputId = ns("view"))
       ),
       tabPanel(
-        title = i18n("Update"),
+        title = tagList(phosphoricons::ph("gear-six"), i18n("Update")),
         value = "update",
         tags$br(),
         update_variables_ui(id = ns("update"), title = NULL)
       ),
       tabPanel(
-        title = i18n("Validate"),
+        title = tagList(phosphoricons::ph("shield-check"), i18n("Validate")),
         value = "validate",
         tags$br(),
         validation_ui(
@@ -340,9 +336,7 @@ import_server <- function(id,
         req(status)
         if (status %in% c("Error", "Failed")) {
           update_tab_label("tabs-mode", "validate", tagList(
-            tags$span(
-              style = "color: firebrick;", icon("exclamation-circle")
-            ), i18n("Validate")
+            phosphoricons::ph("warning-circle", weight = "fill", fill = "firebrick"), i18n("Validate")
           ))
         } else {
           update_tab_label("tabs-mode", "validate", i18n("Validate"))
@@ -383,7 +377,7 @@ import_modal <- function(id, from, title = "Import data", size = "l") {
   showModal(modalDialog(
     title = tagList(
       tags$button(
-        icon("close"),
+        phosphoricons::ph("x", title = "close"),
         class = "btn btn-default pull-right",
         style = "border: 0 none;",
         `data-dismiss` = "modal",

@@ -34,9 +34,8 @@ validation_ui <- function(id, display = c("dropdown", "inline"), max_height = NU
     ui <- dropMenu(
       actionButton(
         inputId = ns("menu"),
-        label = i18n("Validation:"),
-        ...,
-        icon = icon("caret-down")
+        label = tagList(phosphoricons::ph("caret-down", weight = "fill"), i18n("Validation:")),
+        ...
       ),
       uiOutput(
         outputId = ns("results"),
@@ -136,7 +135,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-success",
-              icon("check"), i18n("OK")
+              phosphoricons::ph("check", weight = "bold"), i18n("OK")
             )
           ))
         } else if (identical(valid_status, "Failed")) {
@@ -144,7 +143,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-warning",
-              icon("warning"), i18n("Failed")
+              phosphoricons::ph("warning", weight = "bold"), i18n("Failed")
             )
           ))
         } else if (identical(valid_status, "Error")) {
@@ -152,7 +151,7 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-danger",
-              icon("times"), i18n("Error")
+              phosphoricons::ph("x", weight = "bold"), i18n("Error")
             )
           ))
         }
@@ -247,9 +246,9 @@ make_validation_alerts <- function(.list) {
     FUN = function(x) {
       icon <- switch(
         x$status,
-        "OK" = icon("check"),
-        "Failed" = icon("warning"),
-        "Error" = icon("times")
+        "OK" = phosphoricons::ph("check"),
+        "Failed" = phosphoricons::ph("warning"),
+        "Error" = phosphoricons::ph("x")
       )
       status <- switch(
         x$status,
