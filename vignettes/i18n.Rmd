@@ -45,7 +45,7 @@ Currently only french is supported, you can display all labels in french with:
 options("datamods.i18n" = "fr")
 ```
 
-If you want to contribute to the package, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder).
+If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
 
 ## Using a list

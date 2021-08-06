@@ -9,10 +9,19 @@
 <!-- badges: end -->
 
 
-## Overview
+### Overview
 
 This package provides custom shiny modules to import data from various sources, select, rename and convert variables in a dataset and validate content with [validate](https://github.com/data-cleaning/validate) package.  
 The modules can be used in any standard shiny application or RStudio add-in.
+
+
+### Internationalization
+
+Currently you can use {datamods} in the following language: :gb: / :us: english (default), :fr: french.
+
+If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
+
+See the [online vignette](https://dreamrs.github.io/datamods/articles/i18n.html) for more on this topic.
 
 
 ### Installation
