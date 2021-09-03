@@ -36,21 +36,18 @@ update_variables_ui <- function(id, title = TRUE) {
           placement = "bottom-end",
           actionButton(
             inputId = ns("settings"),
-            label = NULL,
-            icon = icon("gear"),
+            label = phosphoricons::ph("gear"),
             class = "pull-right"
           ),
           textInputIcon(
             inputId = ns("format"),
-            label = i18n("Date format:"),
-            value = "%Y-%m-%d",
-            icon = icon("clock-o")
+            label = tagList(phosphoricons::ph("clock"), i18n("Date format:")),
+            value = "%Y-%m-%d"
           ),
           textInputIcon(
             inputId = ns("origin"),
-            label = i18n("Date to use as origin to convert date/datetime:"),
-            value = "1970-01-01",
-            icon = icon("calendar")
+            label = tagList(phosphoricons::ph("calendar"), i18n("Date to use as origin to convert date/datetime:")),
+            value = "1970-01-01"
           ),
           textInputIcon(
             inputId = ns("dec"),
@@ -69,15 +66,17 @@ update_variables_ui <- function(id, title = TRUE) {
       alert(
         id = ns("update-result"),
         status = "info",
-        icon("info"),
+        phosphoricons::ph("info"),
         i18n(paste("Select, rename and convert variables in table above,",
                    "then apply changes by clicking button below."))
       )
     ),
     actionButton(
       inputId = ns("validate"),
-      label = i18n("Apply changes"),
-      icon = icon("arrow-circle-right"),
+      label = tagList(
+        phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+        i18n("Apply changes")
+      ),
       width = "100%"
     )
   )
@@ -171,7 +170,7 @@ update_variables_server <- function(id, data, height = NULL) {
           insert_alert(
             selector = ns("update"),
             status = "success",
-            tags$b(icon("check"), i18n("Data successfully updated!"))
+            tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
           )
           updated_data$x <- data
         }

@@ -24,7 +24,7 @@ import_modal(id, from, title = "Import data", size = "l")
 \item{from}{The import_ui & server to use, i.e. the method.
 There are 4 options to choose from. ("env", "file", "copypaste", "googlesheets")}
 
-\item{validation_opts}{\code{list} of arguments passed to \code{\link{validation_server}}.}
+\item{validation_opts}{\code{list} of arguments passed to [validation_server().}
 
 \item{allowed_status}{Vector of statuses allowed to confirm dataset imported,
 if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.}

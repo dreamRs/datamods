@@ -103,7 +103,7 @@ make_success_alert <- function(data,
                                session = shiny::getDefaultReactiveDomain()) {
   if (identical(trigger_return, "button")) {
     success_message <- tagList(
-      tags$b(icon("check"), i18n("Data ready to be imported!")),
+      tags$b(phosphoricons::ph("check", weight = "bold"), i18n("Data ready to be imported!")),
       sprintf(
         i18n("data has %s obs. of %s variables."),
         nrow(data), ncol(data)
@@ -112,7 +112,7 @@ make_success_alert <- function(data,
     )
   } else {
     success_message <- tagList(
-      tags$b(icon("check"), i18n("Data successfully imported!")),
+      tags$b(phosphoricons::ph("check", weight = "bold"), i18n("Data successfully imported!")),
       sprintf(
         i18n("data has %s obs. of %s variables."),
         nrow(data), ncol(data)
@@ -126,8 +126,7 @@ make_success_alert <- function(data,
       tags$br(),
       actionLink(
         inputId = session$ns("see_data"),
-        label = i18n("click to see data"),
-        icon = icon("hand-o-right")
+        label = tagList(phosphoricons::ph("table"), i18n("click to see data"))
       )
     )
   }
@@ -139,7 +138,7 @@ insert_error <- function(selector = "import",
   insert_alert(
     selector = session$ns(selector),
     status = "danger",
-    tags$b(icon("exclamation-triangle"), i18n("Ooops")),
+    tags$b(phosphoricons::ph("warning"), i18n("Ooops")),
     i18n("Something went wrong...")
   )
 }
@@ -149,7 +148,7 @@ insert_error <- function(selector = "import",
 help_popup <- function(text) {
   tagList(
     tags$span(
-      icon("question"),
+      phosphoricons::ph("question", title = i18n("Help")),
       `data-toggle` = "popover",
       `data-trigger` = "focus",
       title = i18n("Help"),
@@ -168,8 +167,10 @@ help_popup <- function(text) {
 button_import <- function(session = shiny::getDefaultReactiveDomain()) {
   actionButton(
     inputId = session$ns("confirm"),
-    label = i18n("Import data"),
-    icon = icon("arrow-circle-right"),
+    label = tagList(
+      phosphoricons::ph("arrow-circle-right", title = i18n("Import data")),
+      i18n("Import data")
+    ),
     width = "100%",
     disabled = "disabled",
     class = "btn-primary",

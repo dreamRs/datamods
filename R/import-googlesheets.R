@@ -49,7 +49,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
     textInputIcon(
       inputId = ns("link"),
       label = i18n("Enter a shareable link to a GoogleSheet:"),
-      icon = icon("link"),
+      icon = phosphoricons::ph("link"),
       width = "100%"
     ),
     tags$div(
