@@ -10,9 +10,9 @@
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
-#'  * Server: a \code{list} with two slots:
-#'    + **data**: a \code{reactive} function returning the imported \code{data.frame}.
-#'    + **name**: a \code{reactive} function returning the name of the imported data as \code{character} (if applicable).
+#'  * Server: a `list` with two slots:
+#'    + **data**: a `reactive` function returning the imported `data.frame`.
+#'    + **name**: a `reactive` function returning the name of the imported data as `character` (if applicable).
 #'
 #' @export
 #' @name import-modal
@@ -69,10 +69,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     "googlesheets" = i18n("Googlesheets")
   )
   iconsImport <- list(
-    "env" = phosphoricons::ph("code"),
-    "file" = phosphoricons::ph("file-arrow-down"),
-    "copypaste" = phosphoricons::ph("clipboard-text"),
-    "googlesheets" = phosphoricons::ph("cloud-arrow-down")
+    "env" = phosphoricons::ph("code", title = labsImport$env),
+    "file" = phosphoricons::ph("file-arrow-down", title = labsImport$file),
+    "copypaste" = phosphoricons::ph("clipboard-text", title = labsImport$copypaste),
+    "googlesheets" = phosphoricons::ph("cloud-arrow-down", title = labsImport$googlesheets)
   )
 
 
@@ -129,24 +129,36 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       type = "tabs",
       id = ns("tabs-mode"),
       tabPanel(
-        title = tagList(phosphoricons::ph("download-simple"), i18n("Import")),
+        title = tagList(
+          phosphoricons::ph("download-simple", title = i18n("Import")),
+          i18n("Import")
+        ),
         value = "import",
         importTab
       ),
       tabPanel(
-        title = tagList(phosphoricons::ph("table"), i18n("View")),
+        title = tagList(
+          phosphoricons::ph("table", title = i18n("View")),
+          i18n("View")
+        ),
         value = "view",
         tags$br(),
         DTOutput(outputId = ns("view"))
       ),
       tabPanel(
-        title = tagList(phosphoricons::ph("gear-six"), i18n("Update")),
+        title = tagList(
+          phosphoricons::ph("gear-six", title = i18n("Update")),
+          i18n("Update")
+        ),
         value = "update",
         tags$br(),
         update_variables_ui(id = ns("update"), title = NULL)
       ),
       tabPanel(
-        title = tagList(phosphoricons::ph("shield-check"), i18n("Validate")),
+        title = tagList(
+          phosphoricons::ph("shield-check", title = i18n("Validate")),
+          i18n("Validate")
+        ),
         value = "validate",
         tags$br(),
         validation_ui(
@@ -176,10 +188,10 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
 }
 
 
-#' @param validation_opts \code{list} of arguments passed to \code{\link{validation_server}}.
+#' @param validation_opts `list` of arguments passed to [validation_server().
 #' @param allowed_status Vector of statuses allowed to confirm dataset imported,
-#'  if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
+#'  if you want that all validation rules are successful before importing data use `allowed_status = "OK"`.
+#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble).
 #'
 #' @export
 #' @rdname import-modal

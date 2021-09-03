@@ -148,7 +148,7 @@ insert_error <- function(selector = "import",
 help_popup <- function(text) {
   tagList(
     tags$span(
-      phosphoricons::ph("question"),
+      phosphoricons::ph("question", title = i18n("Help")),
       `data-toggle` = "popover",
       `data-trigger` = "focus",
       title = i18n("Help"),
@@ -168,7 +168,7 @@ button_import <- function(session = shiny::getDefaultReactiveDomain()) {
   actionButton(
     inputId = session$ns("confirm"),
     label = tagList(
-      phosphoricons::ph("arrow-circle-right"),
+      phosphoricons::ph("arrow-circle-right", title = i18n("Import data")),
       i18n("Import data")
     ),
     width = "100%",

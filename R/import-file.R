@@ -50,7 +50,7 @@ import_file_ui <- function(id, title = TRUE) {
           placement = "bottom-end",
           actionButton(
             inputId = ns("settings"),
-            label = phosphoricons::ph("gear"),
+            label = phosphoricons::ph("gear", title = "parameters"),
             class = "btn-block",
             style = "margin-top: 25px;"
           ),
@@ -194,7 +194,7 @@ import_file_server <- function(id,
           skip = input$skip_rows,
           dec= input$dec,
           encoding = input$encoding
-        ), silent = TRUE) 
+        ), silent = TRUE)
       }
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
