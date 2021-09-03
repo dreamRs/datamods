@@ -73,7 +73,10 @@ update_variables_ui <- function(id, title = TRUE) {
     ),
     actionButton(
       inputId = ns("validate"),
-      label = tagList(phosphoricons::ph("arrow-circle-right"), i18n("Apply changes")),
+      label = tagList(
+        phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+        i18n("Apply changes")
+      ),
       width = "100%"
     )
   )

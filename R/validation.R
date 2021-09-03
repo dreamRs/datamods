@@ -34,7 +34,10 @@ validation_ui <- function(id, display = c("dropdown", "inline"), max_height = NU
     ui <- dropMenu(
       actionButton(
         inputId = ns("menu"),
-        label = tagList(phosphoricons::ph("caret-down", weight = "fill"), i18n("Validation:")),
+        label = tagList(
+          phosphoricons::ph("caret-down", weight = "fill", title = i18n("Validation:")),
+          i18n("Validation:")
+        ),
         ...
       ),
       uiOutput(
@@ -135,7 +138,8 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-success",
-              phosphoricons::ph("check", weight = "bold"), i18n("OK")
+              phosphoricons::ph("check", weight = "bold", title = i18n("OK")),
+              i18n("OK")
             )
           ))
         } else if (identical(valid_status, "Failed")) {
@@ -143,7 +147,8 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-warning",
-              phosphoricons::ph("warning", weight = "bold"), i18n("Failed")
+              phosphoricons::ph("warning", weight = "bold", title = i18n("Failed")),
+              i18n("Failed")
             )
           ))
         } else if (identical(valid_status, "Error")) {
@@ -151,7 +156,8 @@ validation_server <- function(id,
             btn_label,
             tags$span(
               class = "label label-danger",
-              phosphoricons::ph("x", weight = "bold"), i18n("Error")
+              phosphoricons::ph("x", weight = "bold", title = i18n("Error")),
+              i18n("Error")
             )
           ))
         }
@@ -246,9 +252,9 @@ make_validation_alerts <- function(.list) {
     FUN = function(x) {
       icon <- switch(
         x$status,
-        "OK" = phosphoricons::ph("check"),
-        "Failed" = phosphoricons::ph("warning"),
-        "Error" = phosphoricons::ph("x")
+        "OK" = phosphoricons::ph("check", title = i18n("OK")),
+        "Failed" = phosphoricons::ph("warning", title = i18n("Failed")),
+        "Error" = phosphoricons::ph("x", title = i18n("Error"))
       )
       status <- switch(
         x$status,
