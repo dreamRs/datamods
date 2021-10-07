@@ -4,8 +4,9 @@
 #' @description Let user upload a file and import data
 #'
 #' @param id Module's ID.
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @param title Module's title, if `TRUE` use the default title,
+#'  use `NULL` for no title or a `shiny.tag` for a custom one.
+#' @param preview_data Show or not a preview of the data under the file input.
 #'
 #' @eval doc_return_import()
 #'
@@ -18,7 +19,7 @@
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #'
 #' @example examples/from-file.R
-import_file_ui <- function(id, title = TRUE) {
+import_file_ui <- function(id, title = TRUE, preview_data = TRUE) {
 
   ns <- NS(id)
 
@@ -96,10 +97,12 @@ import_file_ui <- function(id, title = TRUE) {
         dismissible = TRUE
       )
     ),
-    tagAppendAttributes(
-      tableOutput(outputId = ns("table")),
-      class = "datamods-table-container"
-    ),
+    if (isTRUE(preview_data)) {
+      tagAppendAttributes(
+        tableOutput(outputId = ns("table")),
+        class = "datamods-table-container"
+      )
+    },
     uiOutput(
       outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"

@@ -6,7 +6,7 @@
 \alias{import_file_server}
 \title{Import data from a file}
 \usage{
-import_file_ui(id, title = TRUE)
+import_file_ui(id, title = TRUE, preview_data = TRUE)
 
 import_file_server(
   id,
@@ -21,6 +21,8 @@ import_file_server(
 
 \item{title}{Module's title, if \code{TRUE} use the default title,
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
+
+\item{preview_data}{Show or not a preview of the data under the file input.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 
