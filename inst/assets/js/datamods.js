@@ -72,11 +72,13 @@ function disableTab(data) {
   }
 }
 Shiny.addCustomMessageHandler("datamods-disableTab", disableTab);
-Shiny.addCustomMessageHandler("datamods-enableTab", function(data) {
+
+function enableTab(data) {
   var el = $("#" + data.id).find("[data-value='" + data.value + "']");
   if (typeof el[0] != "undefined") {
     $(el[0]).attr("data-toggle", "tab");
     $(el[0]).parent().removeClass("disabled");
   }
-});
+}
+Shiny.addCustomMessageHandler("datamods-enableTab", enableTab);
 

@@ -19,7 +19,7 @@
 #' @importFrom shiny NS actionButton icon textInput
 #' @importFrom shinyWidgets pickerInput alert
 #'
-#' @example examples/globalenv-default.R
+#' @example examples/from-globalenv.R
 import_globalenv_ui <- function(id,
                                 globalenv = TRUE,
                                 packages = get_data_packages(),

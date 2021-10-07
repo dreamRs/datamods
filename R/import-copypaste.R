@@ -16,7 +16,7 @@
 #' @importFrom shiny NS icon textAreaInput actionButton
 #' @importFrom htmltools tags tagAppendAttributes
 #'
-#' @example examples/copypaste.R
+#' @example examples/from-copypaste.R
 import_copypaste_ui <- function(id, title = TRUE) {
 
   ns <- NS(id)

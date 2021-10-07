@@ -16,7 +16,7 @@
 #' @importFrom shinyWidgets textInputIcon
 #' @importFrom htmltools tags tagList
 #'
-#' @example examples/googlesheets.R
+#' @example examples/from-googlesheets.R
 import_googlesheets_ui <- function(id, title = TRUE) {
 
   ns <- NS(id)
