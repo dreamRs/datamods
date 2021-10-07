@@ -389,11 +389,11 @@ import_modal <- function(id, from, title = "Import data", size = "l") {
   showModal(modalDialog(
     title = tagList(
       tags$button(
-        phosphoricons::ph("x", title = "close", height = "2em"),
+        phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-dismiss` = "modal",
-        `aria-label` = "Close"
+        `aria-label` = i18n("Close")
       ),
       title
     ),
