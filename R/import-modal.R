@@ -281,8 +281,7 @@ import_server <- function(id,
             toggle_widget(inputId = "confirm", enable = TRUE)
           } else {
             status <- validation_results$status()
-            req(status)
-            if (status %in% allowed_status) {
+            if (isTRUE(status %in% allowed_status)) {
               toggle_widget(inputId = "confirm", enable = TRUE)
             } else {
               toggle_widget(inputId = "confirm", enable = FALSE)
