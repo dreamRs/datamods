@@ -17,7 +17,7 @@ The modules can be used in any standard shiny application or RStudio add-in.
 
 ### Internationalization
 
-Currently you can use {datamods} in the following language: :gb: / :us: english (default), :fr: french.
+Currently you can use {datamods} in the following language: :gb: / :us: english (default), :fr: french, :macedonia: macedonian.
 
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 

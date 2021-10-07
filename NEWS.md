@@ -1,3 +1,9 @@
+# datamods 1.1.5.9000
+
+* Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.
+* i18n: :macedonia: macedonian translations added, thanks to [@novica](https://github.com/novica).
+
+
 # datamods 1.1.5
 
 * `import_*_server()` added reset argument to clear the data.

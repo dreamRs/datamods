@@ -37,13 +37,22 @@ options("datamods.i18n" = "path/to/file.csv")
 ```
 
 
-## Supported language
+## Integrated languages
 
-Currently only french is supported, you can display all labels in french with:
+Some languages (other than the default english) are integrated in {datamods} :
+
+* :fr: french, activate with:
 
 ```{r}
 options("datamods.i18n" = "fr")
 ```
+
+* :macedonia: macedonian, activate with:
+
+```{r}
+options("datamods.i18n" = "mk")
+```
+
 
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
