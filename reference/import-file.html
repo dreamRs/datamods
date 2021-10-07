@@ -135,7 +135,7 @@
     <p>Let user upload a file and import data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>import_file_ui</span><span class='op'>(</span><span class='va'>id</span>, title <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>import_file_ui</span><span class='op'>(</span><span class='va'>id</span>, title <span class='op'>=</span> <span class='cn'>TRUE</span>, preview_data <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='fu'>import_file_server</span><span class='op'>(</span>
   <span class='va'>id</span>,
@@ -156,6 +156,10 @@
       <th>title</th>
       <td><p>Module's title, if <code>TRUE</code> use the default title,
 use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.</p></td>
+    </tr>
+    <tr>
+      <th>preview_data</th>
+      <td><p>Show or not a preview of the data under the file input.</p></td>
     </tr>
     <tr>
       <th>btn_show_data</th>
