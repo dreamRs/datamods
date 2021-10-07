@@ -33,7 +33,6 @@ if (requireNamespace("validate")) {
   # you can also add a description()
 
   ui <- fluidPage(
-    theme = bslib::bs_theme(),
     fluidRow(
       column(
         width = 4,
