@@ -11,7 +11,7 @@
 #'
 #' @name i18n
 #'
-#' @importFrom data.table as.data.table fread :=
+#' @importFrom data.table as.data.table :=
 #'
 #' @example examples/i18n.R
 i18n <- function(x, translations = i18n_translations()) {
@@ -46,6 +46,7 @@ i18n <- function(x, translations = i18n_translations()) {
 #' @rdname i18n
 #'
 #' @importFrom utils packageName
+#' @importFrom data.table fread
 i18n_translations <- function(package = packageName(parent.frame(2))) {
   if (is.null(package)) {
     opts <- "i18n"

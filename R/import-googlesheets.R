@@ -33,7 +33,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
     html_dependency_datamods(),
     title,
     tags$div(
-      class = "pull-right",
+      class = "pull-right float-right",
       help_popup(tagList(
         i18n("You can either use:"),
         tags$ul(

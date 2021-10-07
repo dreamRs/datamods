@@ -37,7 +37,7 @@ update_variables_ui <- function(id, title = TRUE) {
           actionButton(
             inputId = ns("settings"),
             label = phosphoricons::ph("gear"),
-            class = "pull-right"
+            class = "pull-right float-right"
           ),
           textInputIcon(
             inputId = ns("format"),

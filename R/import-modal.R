@@ -17,7 +17,7 @@
 #' @export
 #' @name import-modal
 #'
-#' @importFrom shiny NS tabsetPanel tabPanel icon fluidRow column
+#' @importFrom shiny NS tabsetPanel tabPanel tabPanelBody icon fluidRow column
 #' @importFrom htmltools tags HTML
 #' @importFrom shinyWidgets radioGroupButtons
 #' @importFrom DT DTOutput
@@ -29,32 +29,32 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
   from <- match.arg(from, several.ok = TRUE)
 
   env <- if ("env" %in% from) {
-    tabPanel(
-      title = "env",
+    tabPanelBody(
+      value = "env",
       tags$br(),
       import_globalenv_ui(id = ns("env"), title = NULL)
     )
   }
 
   file <- if ("file" %in% from) {
-    tabPanel(
-      title = "file",
+    tabPanelBody(
+      value = "file",
       tags$br(),
       import_file_ui(id = ns("file"), title = NULL)
     )
   }
 
   copypaste <- if ("copypaste" %in% from) {
-    tabPanel(
-      title = "copypaste",
+    tabPanelBody(
+      value = "copypaste",
       tags$br(),
       import_copypaste_ui(id = ns("copypaste"), title = NULL)
     )
   }
 
   googlesheets <- if ("googlesheets" %in% from) {
-    tabPanel(
-      title = "googlesheets",
+    tabPanelBody(
+      value = "googlesheets",
       tags$br(),
       import_googlesheets_ui(id = ns("googlesheets"), title = NULL)
     )
@@ -384,13 +384,14 @@ import_server <- function(id,
 #' @export
 #' @rdname import-modal
 #' @importFrom shiny modalDialog showModal
+#' @importFrom htmltools tags css
 import_modal <- function(id, from, title = "Import data", size = "l") {
   showModal(modalDialog(
     title = tagList(
       tags$button(
-        phosphoricons::ph("x", title = "close"),
-        class = "btn btn-default pull-right",
-        style = "border: 0 none;",
+        phosphoricons::ph("x", title = "close", height = "2em"),
+        class = "btn btn-link",
+        style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-dismiss` = "modal",
         `aria-label` = "Close"
       ),

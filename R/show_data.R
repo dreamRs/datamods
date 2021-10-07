@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @importFrom shinyWidgets show_alert
-#' @importFrom htmltools tags tagList
+#' @importFrom htmltools tags tagList css
 #' @importFrom DT datatable renderDT tableHeader
 #' @importFrom shiny showModal modalDialog
 #'
@@ -73,9 +73,9 @@ show_data <- function(data,
     showModal(modalDialog(
       title = tagList(
         tags$button(
-          phosphoricons::ph("x", title = "close"),
-          class = "btn btn-default pull-right",
-          style = "border: 0 none;",
+          phosphoricons::ph("x", title = "close", height = "2em"),
+          class = "btn btn-link",
+          style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
           `data-dismiss` = "modal",
           `aria-label` = "Close"
         ),
