@@ -126,6 +126,7 @@ import_file_ui <- function(id, title = TRUE, preview_data = TRUE) {
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
+#' @importFrom rlang exec
 #' @importFrom tools file_ext
 #' @importFrom utils head
 #'
@@ -180,26 +181,30 @@ import_file_server <- function(id,
       req(input$skip_rows)
       if (is_excel(input$file$datapath)) {
         req(input$sheet)
-        imported <- try(rio::import(
+        parameters <- list(
           file = input$file$datapath,
           which = input$sheet,
           skip = input$skip_rows
-        ), silent = TRUE)
-      } else if(is_sas(input$file$datapath)) {
-        imported <- try(rio::import(
+        )
+      } else if (is_sas(input$file$datapath)) {
+        parameters <- list(
           file = input$file$datapath,
           skip = input$skip_rows,
           encoding = input$encoding
-        ), silent = TRUE)
-      }else{
-         imported <- try(rio::import(
+        )
+      } else {
+        parameters <- list(
           file = input$file$datapath,
           skip = input$skip_rows,
-          dec= input$dec,
-          encoding = input$encoding
-        ), silent = TRUE)
+          dec = input$dec,
+          encoding = input$encoding,
+          na.strings = c("NA", "")
+        )
       }
-
+      imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
+      if (inherits(imported, "try-error"))
+        imported <- try(rlang::exec(rio::import, !!!parameters[1]), silent = TRUE)
+      
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
         toggle_widget(inputId = "confirm", enable = FALSE)
