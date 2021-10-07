@@ -100,7 +100,7 @@ import_globalenv_ui <- function(id,
 #'
 #' @export
 #'
-#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
+#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeUI is.reactive icon actionLink isTruthy
 #' @importFrom htmltools tags tagList
 #' @importFrom shinyWidgets updatePickerInput
 #'
@@ -163,44 +163,53 @@ import_globalenv_server <- function(id,
 
 
     observeEvent(input$data, {
-      req(input$data)
-      name_df <- input$data
-
-      if (!is.null(temporary_rv$package)) {
-        attr(name_df, "package") <- temporary_rv$package
-      }
-
-      imported <- try(get_env_data(name_df), silent = TRUE)
-
-      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+      if (!isTruthy(input$data)) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_error()
-        temporary_rv$status <- "error"
-        temporary_rv$data <- NULL
-        temporary_rv$name <- NULL
-      } else {
-        toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
           selector = ns("import"),
-          status = "success",
-          make_success_alert(
-            imported,
-            trigger_return = trigger_return,
-            btn_show_data = btn_show_data
-          )
+          status = "info",
+          tags$b(i18n("No data selected!")),
+          i18n("Use a data.frame from your environment or from the environment of a package.")
         )
-        pkg <- attr(name_df, "package")
-        if (!is.null(pkg)) {
-          name <- paste(pkg, input$data, sep = "::")
-        } else {
-          name <- input$data
+      } else {
+        name_df <- input$data
+        
+        if (!is.null(temporary_rv$package)) {
+          attr(name_df, "package") <- temporary_rv$package
         }
-        name <- trimws(sub("\\(([^\\)]+)\\)", "", name))
-        temporary_rv$status <- "success"
-        temporary_rv$data <- imported
-        temporary_rv$name <- name
+        
+        imported <- try(get_env_data(name_df), silent = TRUE)
+        
+        if (inherits(imported, "try-error") || NROW(imported) < 1) {
+          toggle_widget(inputId = "confirm", enable = FALSE)
+          insert_error()
+          temporary_rv$status <- "error"
+          temporary_rv$data <- NULL
+          temporary_rv$name <- NULL
+        } else {
+          toggle_widget(inputId = "confirm", enable = TRUE)
+          insert_alert(
+            selector = ns("import"),
+            status = "success",
+            make_success_alert(
+              imported,
+              trigger_return = trigger_return,
+              btn_show_data = btn_show_data
+            )
+          )
+          pkg <- attr(name_df, "package")
+          if (!is.null(pkg)) {
+            name <- paste(pkg, input$data, sep = "::")
+          } else {
+            name <- input$data
+          }
+          name <- trimws(sub("\\(([^\\)]+)\\)", "", name))
+          temporary_rv$status <- "success"
+          temporary_rv$data <- imported
+          temporary_rv$name <- name
+        }
       }
-    }, ignoreInit = TRUE)
+    }, ignoreInit = TRUE, ignoreNULL = FALSE)
 
 
     observeEvent(input$see_data, {
