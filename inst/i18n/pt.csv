@@ -1,62 +1,61 @@
-label,translation,,,,,
-Import a dataset from an environment,Importe um conjunto de dados do ambiente local,,,,,
-Select a data.frame:,Selecione um data.frame :,,,,,
-List of data.frame...,Lista de data.frame...,,,,,
-Select an environment in which to search:,Selecione um ambiente local para a busca:,,,,,
-Select environment,Selecione um ambiente local,,,,,
-No data selected!,Nenhum dado foi selecionado!,,,,,
-Use a data.frame from your environment or from the environment of a package.,Use um data.frame do seu ambiente local ou do ambiente de um pacote.,,,,,
-No data.frame here...,Nenhum data.frame aqui...,,,,,
-Ooops,Ooops,,,,,
-Something went wrong...,Algo deu errado...,,,,,
-Data successfully imported!,Dados importados com sucesso!,,,,,
-Data ready to be imported!,Dados prontos para serem importados!,,,,,
-data has %s obs. of %s variables.,dados possuem %s observaÁıes de %s vari·veis.,,,,,
-click to see data,clique para visualizar os dados,,,,,
-Import data,Importe os dados,,,,,
-Import a file,Importe um arquivo,,,,,
-Upload a file:,Carregue um arquivo:,,,,,
-Browse...,Buscar...,,,,,
-No file selected,Nenhum arquivo selecionado,,,,,
-Number of rows to skip before reading data:,N˙mero de linhas para pular antes de ler os dados:,,,,,
-Decimal separator:,Separador decimal:,,,,,
-Encoding:,Encoding:,,,,,
-Select sheet to import:,Selecione uma aba para importar:,,,,,
-No file selected:,Nenhum arquivo selecionado:,,,,,
-"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","VocÍ pode importar .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...",,,,,
-First five rows are shown below:,As cinco primeiras linhas s„o mostradas abaixo:,,,,,
-Copy & paste data,Copie & cole os dados,,,,,
-Paste data here:,Cole os dados aqui:,,,,,
-Nothing pasted yet!,Nada foi colado ainda!,,,,,
-Please copy and paste some data in the dialog box above.,"Por favor, copie e cole algum dado na caixa de di·logo acima.",,,,,
-Import Google Spreadsheet,Importe um Spreadsheet do Google,,,,,
-You can either use:,VocÍ pode usar:,,,,,
-"A shareable link, in that case first sheet will be read","Um link compartilh·vel, nesse caso a primeira aba ser· lida",,,,,
-"The URL that appear in your browser, in that case the current sheet will be read","A URL que aparece no seu navegador, nesse caso a aba atual ser· lida",,,,,
-Enter a shareable link to a GoogleSheet:,Coloque um link compartilh·vel para o GoogleSheet:,,,,,
-Please paste a valid GoogleSheet link in the dialog box above.,"Por favor, cole um link v·lido para o GoogleSheet na caixa de di·logo acima.",,,,,
-Help,Ajuda,,,,,
-Environment,Ambiente local,,,,,
-External file,Arquivo externo,,,,,
-Copy / Paste,Copie / Cole,,,,,
-Googlesheets,Googlesheets,,,,,
-How to import data?,Como importar os dados?,,,,,
-Import,Importar,,,,,
-View,Visualizar,,,,,
-Update,Modifique,,,,,
-Validate,ValidaÁ„o,,,,,
-Update & select variables,Carregue & selecione vari·veis,,,,,
-Date format:,Formato dos dados:,,,,,
-Date to use as origin to convert date/datetime:,Data para usar como origem para converter date/datetime:,,,,,
-"Select, rename and convert variables in table above, then apply changes by clicking button below.","Selecione, renomei e converta as vari·veis na tabela acima, depois aplique as mudanÁas clicando no bot„o abaixo.",,,,,
-Apply changes,Aplique as mudanÁas,,,,,
-Data has %s observations and %s variables.,Os dados possuem %s observaÁıes de %s vari·veis.,,,,,
-Data successfully updated!,Os dados foram modificados com sucesso!,,,,,
-Validation:,ValidaÁ„o:,,,,,
-OK,OK,,,,,
-Failed,Falha,,,,,
-Error,Erro,,,,,
-Number of rows:,N˙mero de linhas:,,,,,
-No data to display.,Nenhum dado para mostrar.,,,,,
-Close,Fechar,,,,,
-,,,,,,
+Ôªølabel,translation
+Import a dataset from an environment,Importe um conjunto de dados do ambiente local
+Select a data.frame:,Selecione um data.frame :
+List of data.frame...,Lista de data.frame...
+Select an environment in which to search:,Selecione um ambiente local para a busca:
+Select environment,Selecione um ambiente local
+No data selected!,Nenhum dado foi selecionado!
+Use a data.frame from your environment or from the environment of a package.,Use um data.frame do seu ambiente local ou do ambiente de um pacote.
+No data.frame here...,Nenhum data.frame aqui...
+Ooops,Ooops
+Something went wrong...,Algo deu errado...
+Data successfully imported!,Dados importados com sucesso!
+Data ready to be imported!,Dados prontos para serem importados!
+data has %s obs. of %s variables.,dados possuem %s observa√ß√µes de %s vari√°veis.
+click to see data,clique para visualizar os dados
+Import data,Importe os dados
+Import a file,Importe um arquivo
+Upload a file:,Carregue um arquivo:
+Browse...,Buscar...
+No file selected,Nenhum arquivo selecionado
+Number of rows to skip before reading data:,N√∫mero de linhas para pular antes de ler os dados:
+Decimal separator:,Separador decimal:
+Encoding:,Encoding:
+Select sheet to import:,Selecione uma aba para importar:
+No file selected:,Nenhum arquivo selecionado:
+"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","Voc√™ pode importar .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."
+First five rows are shown below:,As cinco primeiras linhas s√£o mostradas abaixo:
+Copy & paste data,Copie & cole os dados
+Paste data here:,Cole os dados aqui:
+Nothing pasted yet!,Nada foi colado ainda!
+Please copy and paste some data in the dialog box above.,"Por favor, copie e cole algum dado na caixa de di√°logo acima."
+Import Google Spreadsheet,Importe um Spreadsheet do Google
+You can either use:,Voc√™ pode usar:
+"A shareable link, in that case first sheet will be read","Um link compartilh√°vel, nesse caso a primeira aba ser√° lida"
+"The URL that appear in your browser, in that case the current sheet will be read","A URL que aparece no seu navegador, nesse caso a aba atual ser√° lida"
+Enter a shareable link to a GoogleSheet:,Coloque um link compartilh√°vel para o GoogleSheet:
+Please paste a valid GoogleSheet link in the dialog box above.,"Por favor, cole um link v√°lido para o GoogleSheet na caixa de di√°logo acima."
+Help,Ajuda
+Environment,Ambiente local
+External file,Arquivo externo
+Copy / Paste,Copie / Cole
+Googlesheets,Googlesheets
+How to import data?,Como importar os dados?
+Import,Importar
+View,Visualizar
+Update,Modifique
+Validate,Valida√ß√£o
+Update & select variables,Carregue & selecione vari√°veis
+Date format:,Formato dos dados:
+Date to use as origin to convert date/datetime:,Data para usar como origem para converter date/datetime:
+"Select, rename and convert variables in table above, then apply changes by clicking button below.","Selecione, renomei e converta as vari√°veis na tabela acima, depois aplique as mudan√ßas clicando no bot√£o abaixo."
+Apply changes,Aplique as mudan√ßas
+Data has %s observations and %s variables.,Os dados possuem %s observa√ß√µes de %s vari√°veis.
+Data successfully updated!,Os dados foram modificados com sucesso!
+Validation:,Valida√ß√£o:
+OK,OK
+Failed,Falha
+Error,Erro
+Number of rows:,N√∫mero de linhas:
+No data to display.,Nenhum dado para mostrar.
+Close,Fechar
