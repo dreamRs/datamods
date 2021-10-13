@@ -39,20 +39,27 @@ options("datamods.i18n" = "path/to/file.csv")
 
 ## Integrated languages
 
-Some languages (other than the default english) are integrated in {datamods} :
+The following languages are integrated in {datamods} :
 
-* :fr: french, activate with:
+* ![](figures/i18n/gb.svg){height=16} english, the default.
+
+* ![](figures/i18n/fr.svg){height=16} french, activate with:
 
 ```{r}
 options("datamods.i18n" = "fr")
 ```
 
-* :macedonia: macedonian, activate with:
+* ![](figures/i18n/mk.svg){height=16} macedonian, activate with:
 
 ```{r}
 options("datamods.i18n" = "mk")
 ```
 
+* ![](figures/i18n/br.svg){height=16}![](figures/i18n/pt.svg){height=16} brazilian portuguese, activate with:
+
+```{r}
+options("datamods.i18n" = "pt")
+```
 
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
