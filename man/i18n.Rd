@@ -3,11 +3,14 @@
 \name{i18n}
 \alias{i18n}
 \alias{i18n_translations}
+\alias{set_i18n}
 \title{Internationalization}
 \usage{
 i18n(x, translations = i18n_translations())
 
 i18n_translations(package = packageName(parent.frame(2)))
+
+set_i18n(value, packages = c("datamods", "esquisse"))
 }
 \arguments{
 \item{x}{Label to translate.}
@@ -16,6 +19,16 @@ i18n_translations(package = packageName(parent.frame(2)))
 
 \item{package}{Name of the package where the function is called, use \code{NULL} outside a package.
 It will retrieve option \code{"i18n.<PACKAGE>"} (or \code{"i18n"} if no package) to returns appropriate labels.}
+
+\item{value}{Value to set for translation. Can be:
+\itemize{
+\item single \code{character} to use a supported language (\code{"fr"}, \code{"mk"}, \code{"sq"}, \code{"pt"} for esquisse and datamods packages).
+\item a \code{list} with labels as names and translations as values.
+\item a \code{data.frame} with 2 column: \code{label} & \code{translation}.
+\item path to a CSV file with same structure as for \code{data.frame} above.
+}}
+
+\item{packages}{Name of packages for which to set i18n, default to esquisse and datamods}
 }
 \value{
 \code{i18n()} returns a \code{character}, \code{i18n_translations()} returns a \code{list} or a \code{data.frame}.

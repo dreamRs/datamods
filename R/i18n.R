@@ -65,6 +65,30 @@ i18n_translations <- function(package = packageName(parent.frame(2))) {
   return(language)
 }
 
+#' @param value Value to set for translation. Can be:
+#'   * single `character` to use a supported language (`"fr"`, `"mk"`, `"sq"`, `"pt"` for esquisse and datamods packages).
+#'   * a `list` with labels as names and translations as values.
+#'   * a `data.frame` with 2 column: `label` & `translation`.
+#'   * path to a CSV file with same structure as for `data.frame` above.
+#' @param packages Name of packages for which to set i18n, default to esquisse and datamods
+#' 
+#' @export
+#'
+#' @rdname i18n
+#' 
+#' @importFrom stats setNames
+set_i18n <- function(value, packages = c("datamods", "esquisse")) {
+  if (is.null(packages)) {
+    options("i18n" = value)
+  } else {
+    i18n.opts <- setNames(
+      lapply(seq_along(packages), function(...) value),
+      paste(packages, "i18n", sep = ".")
+    )
+    options(i18n.opts)
+  }
+}
+
 
 i18n_file <- function(x, package) {
   if (is.null(package))
