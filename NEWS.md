@@ -2,6 +2,7 @@
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.
 * i18n: :macedonia: macedonian translations added, thanks to [@novica](https://github.com/novica).
+* i18n: :albania: albanian translations added, thanks to [@novica](https://github.com/novica).
 * i18n: :portugal: :brazil: brazilian portuguese translations added, thanks to [@gabrielteotonio](https://github.com/gabrielteotonio).
 
 

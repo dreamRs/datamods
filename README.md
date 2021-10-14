@@ -17,7 +17,7 @@ The modules can be used in any standard shiny application or RStudio add-in.
 
 ### Internationalization
 
-Currently you can use {datamods} in the following language: <img src="man/figures/i18n/gb.svg" height="16"/> english (default), <img src="man/figures/i18n/fr.svg" height="16"/> french, <img src="man/figures/i18n/mk.svg" height="16"/> macedonian, <img src="man/figures/i18n/br.svg" height="16"/><img src="man/figures/i18n/pt.svg" height="16"/> brazilian portuguese.
+Currently you can use {datamods} in the following language: <img src="man/figures/i18n/gb.svg" height="16"/> english (default), <img src="man/figures/i18n/fr.svg" height="16"/> french, <img src="man/figures/i18n/mk.svg" height="16"/> macedonian, <img src="man/figures/i18n/br.svg" height="16"/> <img src="man/figures/i18n/pt.svg" height="16"/> brazilian portuguese, <img src="man/figures/i18n/al.svg" height="16"/> albanian.
 
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
