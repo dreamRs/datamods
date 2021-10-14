@@ -137,7 +137,9 @@
 
     <pre class="usage"><span class='fu'>i18n</span><span class='op'>(</span><span class='va'>x</span>, translations <span class='op'>=</span> <span class='fu'>i18n_translations</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>i18n_translations</span><span class='op'>(</span>package <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/packageName.html'>packageName</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='fu'>i18n_translations</span><span class='op'>(</span>package <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/packageName.html'>packageName</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'>set_i18n</span><span class='op'>(</span><span class='va'>value</span>, packages <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"datamods"</span>, <span class='st'>"esquisse"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,6 +156,19 @@
       <th>package</th>
       <td><p>Name of the package where the function is called, use <code>NULL</code> outside a package.
 It will retrieve option <code>"i18n.&lt;PACKAGE&gt;"</code> (or <code>"i18n"</code> if no package) to returns appropriate labels.</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>Value to set for translation. Can be:</p><ul>
+<li><p>single <code>character</code> to use a supported language (<code>"fr"</code>, <code>"mk"</code>, <code>"sq"</code>, <code>"pt"</code> for esquisse and datamods packages).</p></li>
+<li><p>a <code>list</code> with labels as names and translations as values.</p></li>
+<li><p>a <code>data.frame</code> with 2 column: <code>label</code> &amp; <code>translation</code>.</p></li>
+<li><p>path to a CSV file with same structure as for <code>data.frame</code> above.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>packages</th>
+      <td><p>Name of packages for which to set i18n, default to esquisse and datamods</p></td>
     </tr>
     </table>
 
