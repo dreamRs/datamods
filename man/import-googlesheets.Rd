@@ -17,7 +17,7 @@ import_googlesheets_server(
 )
 }
 \arguments{
-\item{id}{Module's ID}
+\item{id}{Module's ID.}
 
 \item{title}{Module's title, if \code{TRUE} use the default title,
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}

@@ -3,9 +3,7 @@
 #'
 #' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
-#' @param id Module's ID.
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @inheritParams import_globalenv_ui
 #'
 #' @eval doc_return_import()
 #'
@@ -60,12 +58,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
 }
 
 
-#' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
-#' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
-#' @param reset A `reactive` function that when triggered resets the data.
+#' @inheritParams import_globalenv_server
 #'
 #' @export
 #'

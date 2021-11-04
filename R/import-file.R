@@ -3,10 +3,10 @@
 #'
 #' @description Let user upload a file and import data
 #'
-#' @param id Module's ID.
-#' @param title Module's title, if `TRUE` use the default title,
+#' @inheritParams import_globalenv_ui
 #'  use `NULL` for no title or a `shiny.tag` for a custom one.
 #' @param preview_data Show or not a preview of the data under the file input.
+#' @param file_extensions File extensions accepted by [shiny::fileInput()], can also be MIME type.
 #'
 #' @eval doc_return_import()
 #'
@@ -19,7 +19,10 @@
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #'
 #' @example examples/from-file.R
-import_file_ui <- function(id, title = TRUE, preview_data = TRUE) {
+import_file_ui <- function(id,
+                           title = TRUE,
+                           preview_data = TRUE,
+                           file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
 
   ns <- NS(id)
 
@@ -42,7 +45,7 @@ import_file_ui <- function(id, title = TRUE, preview_data = TRUE) {
           label = i18n("Upload a file:"),
           buttonLabel = i18n("Browse..."),
           placeholder = i18n("No file selected"),
-          accept = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav"),
+          accept = file_extensions,
           width = "100%"
         )
       ),
@@ -111,12 +114,7 @@ import_file_ui <- function(id, title = TRUE, preview_data = TRUE) {
 }
 
 
-#' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
-#' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
-#' @param reset A `reactive` function that when triggered resets the data.
+#' @inheritParams import_globalenv_server
 #'
 #' @export
 #'
@@ -204,7 +202,7 @@ import_file_server <- function(id,
       imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
       if (inherits(imported, "try-error"))
         imported <- try(rlang::exec(rio::import, !!!parameters[1]), silent = TRUE)
-      
+
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
         toggle_widget(inputId = "confirm", enable = FALSE)

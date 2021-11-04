@@ -6,8 +6,8 @@
 #' @param id Module's ID.
 #' @param globalenv Search for data in Global environment.
 #' @param packages Name of packages in which to search data.
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @param title Module's title, if `TRUE` use the default title,
+#'  use `NULL` for no title or a `shiny.tag` for a custom one.
 #'
 #' @eval doc_return_import()
 #'
@@ -93,9 +93,9 @@ import_globalenv_ui <- function(id,
 
 #' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
 #' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
+#'  `"button"` (when user click on button) or
+#'  `"change"` (each time user select a dataset in the list).
+#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble).
 #' @param reset A `reactive` function that when triggered resets the data.
 #'
 #' @export
@@ -173,13 +173,13 @@ import_globalenv_server <- function(id,
         )
       } else {
         name_df <- input$data
-        
+
         if (!is.null(temporary_rv$package)) {
           attr(name_df, "package") <- temporary_rv$package
         }
-        
+
         imported <- try(get_env_data(name_df), silent = TRUE)
-        
+
         if (inherits(imported, "try-error") || NROW(imported) < 1) {
           toggle_widget(inputId = "confirm", enable = FALSE)
           insert_error()

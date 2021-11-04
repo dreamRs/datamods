@@ -1,6 +1,9 @@
 # datamods 1.1.5.9000
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.
+* `import_file_ui()` has a new argument `file_extensions` to select the files that the user can import.
+
+### Translations
 * i18n: :macedonia: macedonian translations added, thanks to [@novica](https://github.com/novica).
 * i18n: :albania: albanian translations added, thanks to [@novica](https://github.com/novica).
 * i18n: :portugal: :brazil: brazilian portuguese translations added, thanks to [@gabrielteotonio](https://github.com/gabrielteotonio).
