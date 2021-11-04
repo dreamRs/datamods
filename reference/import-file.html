@@ -148,7 +148,8 @@
   btn_show_data <span class='op'>=</span> <span class='cn'>TRUE</span>,
   trigger_return <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"button"</span>, <span class='st'>"change"</span><span class='op'>)</span>,
   return_class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"data.frame"</span>, <span class='st'>"data.table"</span>, <span class='st'>"tbl_df"</span><span class='op'>)</span>,
-  reset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='cn'>NULL</span><span class='op'>)</span>
+  reset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='cn'>NULL</span><span class='op'>)</span>,
+  read_fns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,6 +190,18 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
       <th>reset</th>
       <td><p>A <code>reactive</code> function that when triggered resets the data.</p></td>
     </tr>
+    <tr>
+      <th>read_fns</th>
+      <td><p>Named list with custom function(s) to read data:</p><ul>
+<li><p>the name must be the extension of the files to which the function will be applied</p></li>
+<li><p>the value must be a function that can have 4 arguments, passed by user through the interface:</p><ul>
+<li><p><code>file</code>: path to the file</p></li>
+<li><p><code>sheet</code>: for Excel files, sheet to read</p></li>
+<li><p><code>skip</code>: number of row to skip</p></li>
+<li><p><code>encoding</code>: file encoding</p></li>
+</ul></li>
+</ul></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -215,7 +228,10 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
 <span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidRow</a></span><span class='op'>(</span></span>
 <span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span></span>
 <span class='r-in'>      width <span class='op'>=</span> <span class='fl'>4</span>,</span>
-<span class='r-in'>      <span class='fu'>import_file_ui</span><span class='op'>(</span><span class='st'>"myid"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='fu'>import_file_ui</span><span class='op'>(</span></span>
+<span class='r-in'>        id <span class='op'>=</span> <span class='st'>"myid"</span>,</span>
+<span class='r-in'>        file_extensions <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>".csv"</span>, <span class='st'>".txt"</span>, <span class='st'>".xls"</span>, <span class='st'>".xlsx"</span>, <span class='st'>".json"</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
 <span class='r-in'>    <span class='op'>)</span>,</span>
 <span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span></span>
 <span class='r-in'>      width <span class='op'>=</span> <span class='fl'>8</span>,</span>
@@ -228,7 +244,18 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span><span class='op'>)</span> <span class='op'>{</span></span>
 <span class='r-in'></span>
-<span class='r-in'>  <span class='va'>imported</span> <span class='op'>&lt;-</span> <span class='fu'>import_file_server</span><span class='op'>(</span><span class='st'>"myid"</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>imported</span> <span class='op'>&lt;-</span> <span class='fu'>import_file_server</span><span class='op'>(</span></span>
+<span class='r-in'>    id <span class='op'>=</span> <span class='st'>"myid"</span>,</span>
+<span class='r-in'>    <span class='co'># Custom functions to read data</span></span>
+<span class='r-in'>    read_fns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>      xls <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>file</span>, <span class='va'>sheet</span>, <span class='va'>skip</span>, <span class='va'>encoding</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='fu'>readxl</span><span class='fu'>::</span><span class='fu'><a href='https://readxl.tidyverse.org/reference/read_excel.html'>read_xls</a></span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>file</span>, sheet <span class='op'>=</span> <span class='va'>sheet</span>, skip <span class='op'>=</span> <span class='va'>skip</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>}</span>,</span>
+<span class='r-in'>      json <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='fu'>jsonlite</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/jsonlite/man/read_json.html'>read_json</a></span><span class='op'>(</span><span class='va'>file</span>, simplifyVector <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'>      <span class='op'>}</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>status</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span></span>
 <span class='r-in'>    <span class='va'>imported</span><span class='op'>$</span><span class='fu'>status</span><span class='op'>(</span><span class='op'>)</span></span>
