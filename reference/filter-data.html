@@ -222,123 +222,123 @@ or  <code><a href='https://rdrr.io/pkg/shiny/man/sliderInput.html'>shiny::slider
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://shiny.rstudio.com/'>shiny</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dreamRs/shinyWidgets'>shinyWidgets</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dreamRs/datamods'>datamods</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span>
-
-<span class='co'># Add some NAs to mpg</span>
-<span class='va'>mtcars_na</span> <span class='op'>&lt;-</span> <span class='va'>mtcars</span>
-<span class='va'>mtcars_na</span><span class='op'>[</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span>
-  X <span class='op'>=</span> <span class='va'>mtcars_na</span>,
-  FUN <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
-    <span class='va'>x</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>:</span><span class='fl'>30</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
-    <span class='va'>x</span>
-  <span class='op'>}</span>
-<span class='op'>)</span>
-
-<span class='va'>datetime</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-  date <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='st'>"day"</span>, length.out <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>,
-  datetime <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='st'>"hour"</span>, length.out <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>,
-  num <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span><span class='op'>(</span><span class='fl'>1e5</span>, <span class='fl'>300</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidPage</a></span><span class='op'>(</span>
-  <span class='va'>tags</span><span class='op'>$</span><span class='fu'>h2</span><span class='op'>(</span><span class='st'>"Filter data.frame"</span><span class='op'>)</span>,
-
-  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/radioButtons.html'>radioButtons</a></span><span class='op'>(</span>
-    inputId <span class='op'>=</span> <span class='st'>"dataset"</span>,
-    label <span class='op'>=</span> <span class='st'>"Data:"</span>,
-    choices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-      <span class='st'>"iris"</span>,
-      <span class='st'>"mtcars"</span>,
-      <span class='st'>"mtcars_na"</span>,
-      <span class='st'>"Cars93"</span>,
-      <span class='st'>"datetime"</span>
-    <span class='op'>)</span>,
-    inline <span class='op'>=</span> <span class='cn'>TRUE</span>
-  <span class='op'>)</span>,
-
-  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidRow</a></span><span class='op'>(</span>
-    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span>
-      width <span class='op'>=</span> <span class='fl'>3</span>,
-      <span class='fu'>filter_data_ui</span><span class='op'>(</span><span class='st'>"filtering"</span>, max_height <span class='op'>=</span> <span class='st'>"500px"</span><span class='op'>)</span>
-    <span class='op'>)</span>,
-    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span>
-      width <span class='op'>=</span> <span class='fl'>9</span>,
-      <span class='fu'><a href='https://rdrr.io/pkg/shinyWidgets/man/progress-bar.html'>progressBar</a></span><span class='op'>(</span>
-        id <span class='op'>=</span> <span class='st'>"pbar"</span>, value <span class='op'>=</span> <span class='fl'>100</span>,
-        total <span class='op'>=</span> <span class='fl'>100</span>, display_pct <span class='op'>=</span> <span class='cn'>TRUE</span>
-      <span class='op'>)</span>,
-      <span class='fu'>DT</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>dataTableOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"table"</span><span class='op'>)</span>,
-      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Code dplyr:"</span><span class='op'>)</span>,
-      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"code_dplyr"</span><span class='op'>)</span>,
-      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Expression:"</span><span class='op'>)</span>,
-      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"code"</span><span class='op'>)</span>,
-      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Filtered data:"</span><span class='op'>)</span>,
-      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"res_str"</span><span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span><span class='op'>)</span> <span class='op'>{</span>
-
-  <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span><span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-
-  <span class='va'>vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span>, <span class='st'>"mtcars"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-      <span class='fu'><a href='https://rdrr.io/r/stats/setNames.html'>setNames</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
-        <span class='st'>"Miles/(US) gallon"</span>,
-        <span class='st'>"Number of cylinders"</span>,
-        <span class='st'>"Displacement (cu.in.)"</span>,
-        <span class='st'>"Gross horsepower"</span>,
-        <span class='st'>"Rear axle ratio"</span>
-      <span class='op'>)</span><span class='op'>)</span>
-    <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>
-      <span class='cn'>NULL</span>
-    <span class='op'>}</span>
-  <span class='op'>}</span><span class='op'>)</span>
-
-  <span class='va'>res_filter</span> <span class='op'>&lt;-</span> <span class='fu'>filter_data_server</span><span class='op'>(</span>
-    id <span class='op'>=</span> <span class='st'>"filtering"</span>,
-    data <span class='op'>=</span> <span class='va'>data</span>,
-    name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span><span class='op'>)</span>,
-    vars <span class='op'>=</span> <span class='va'>vars</span>,
-    widget_num <span class='op'>=</span> <span class='st'>"slider"</span>,
-    widget_date <span class='op'>=</span> <span class='st'>"slider"</span>,
-    label_na <span class='op'>=</span> <span class='st'>"Missing"</span>
-  <span class='op'>)</span>
-
-  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span>, <span class='op'>{</span>
-    <span class='fu'><a href='https://rdrr.io/pkg/shinyWidgets/man/progress-bar.html'>updateProgressBar</a></span><span class='op'>(</span>
-      session <span class='op'>=</span> <span class='va'>session</span>, id <span class='op'>=</span> <span class='st'>"pbar"</span>,
-      value <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, total <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-
-  <span class='va'>output</span><span class='op'>$</span><span class='va'>table</span> <span class='op'>&lt;-</span> <span class='fu'>DT</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>renderDT</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span>
-  <span class='op'>}</span>, options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>pageLength <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
-
-
-  <span class='va'>output</span><span class='op'>$</span><span class='va'>code_dplyr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>code</span><span class='op'>(</span><span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-  <span class='va'>output</span><span class='op'>$</span><span class='va'>code</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>expr</span><span class='op'>(</span><span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-
-  <span class='va'>output</span><span class='op'>$</span><span class='va'>res_str</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-
-<span class='op'>}</span>
-
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/shinyApp.html'>shinyApp</a></span><span class='op'>(</span><span class='va'>ui</span>, <span class='va'>server</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://shiny.rstudio.com/'>shiny</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dreamRs/shinyWidgets'>shinyWidgets</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/dreamRs/datamods'>datamods</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Add some NAs to mpg</span></span>
+<span class='r-in'><span class='va'>mtcars_na</span> <span class='op'>&lt;-</span> <span class='va'>mtcars</span></span>
+<span class='r-in'><span class='va'>mtcars_na</span><span class='op'>[</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span></span>
+<span class='r-in'>  X <span class='op'>=</span> <span class='va'>mtcars_na</span>,</span>
+<span class='r-in'>  FUN <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>x</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>15</span><span class='op'>:</span><span class='fl'>30</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span></span>
+<span class='r-in'>    <span class='va'>x</span></span>
+<span class='r-in'>  <span class='op'>}</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>datetime</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>  date <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='st'>"day"</span>, length.out <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>  datetime <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='st'>"hour"</span>, length.out <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>  num <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span><span class='op'>(</span><span class='fl'>1e5</span>, <span class='fl'>300</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidPage</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>tags</span><span class='op'>$</span><span class='fu'>h2</span><span class='op'>(</span><span class='st'>"Filter data.frame"</span><span class='op'>)</span>,</span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/radioButtons.html'>radioButtons</a></span><span class='op'>(</span></span>
+<span class='r-in'>    inputId <span class='op'>=</span> <span class='st'>"dataset"</span>,</span>
+<span class='r-in'>    label <span class='op'>=</span> <span class='st'>"Data:"</span>,</span>
+<span class='r-in'>    choices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span></span>
+<span class='r-in'>      <span class='st'>"iris"</span>,</span>
+<span class='r-in'>      <span class='st'>"mtcars"</span>,</span>
+<span class='r-in'>      <span class='st'>"mtcars_na"</span>,</span>
+<span class='r-in'>      <span class='st'>"Cars93"</span>,</span>
+<span class='r-in'>      <span class='st'>"datetime"</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    inline <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidRow</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span></span>
+<span class='r-in'>      width <span class='op'>=</span> <span class='fl'>3</span>,</span>
+<span class='r-in'>      <span class='fu'>filter_data_ui</span><span class='op'>(</span><span class='st'>"filtering"</span>, max_height <span class='op'>=</span> <span class='st'>"500px"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/column.html'>column</a></span><span class='op'>(</span></span>
+<span class='r-in'>      width <span class='op'>=</span> <span class='fl'>9</span>,</span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/pkg/shinyWidgets/man/progress-bar.html'>progressBar</a></span><span class='op'>(</span></span>
+<span class='r-in'>        id <span class='op'>=</span> <span class='st'>"pbar"</span>, value <span class='op'>=</span> <span class='fl'>100</span>,</span>
+<span class='r-in'>        total <span class='op'>=</span> <span class='fl'>100</span>, display_pct <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>      <span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='fu'>DT</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>dataTableOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"table"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Code dplyr:"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"code_dplyr"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Expression:"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"code"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='va'>tags</span><span class='op'>$</span><span class='fu'>b</span><span class='op'>(</span><span class='st'>"Filtered data:"</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>verbatimTextOutput</a></span><span class='op'>(</span>outputId <span class='op'>=</span> <span class='st'>"res_str"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span>, <span class='st'>"mtcars"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/r/stats/setNames.html'>setNames</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='st'>"Miles/(US) gallon"</span>,</span>
+<span class='r-in'>        <span class='st'>"Number of cylinders"</span>,</span>
+<span class='r-in'>        <span class='st'>"Displacement (cu.in.)"</span>,</span>
+<span class='r-in'>        <span class='st'>"Gross horsepower"</span>,</span>
+<span class='r-in'>        <span class='st'>"Rear axle ratio"</span></span>
+<span class='r-in'>      <span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span></span>
+<span class='r-in'>      <span class='cn'>NULL</span></span>
+<span class='r-in'>    <span class='op'>}</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>res_filter</span> <span class='op'>&lt;-</span> <span class='fu'>filter_data_server</span><span class='op'>(</span></span>
+<span class='r-in'>    id <span class='op'>=</span> <span class='st'>"filtering"</span>,</span>
+<span class='r-in'>    data <span class='op'>=</span> <span class='va'>data</span>,</span>
+<span class='r-in'>    name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='va'>input</span><span class='op'>$</span><span class='va'>dataset</span><span class='op'>)</span>,</span>
+<span class='r-in'>    vars <span class='op'>=</span> <span class='va'>vars</span>,</span>
+<span class='r-in'>    widget_num <span class='op'>=</span> <span class='st'>"slider"</span>,</span>
+<span class='r-in'>    widget_date <span class='op'>=</span> <span class='st'>"slider"</span>,</span>
+<span class='r-in'>    label_na <span class='op'>=</span> <span class='st'>"Missing"</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span>, <span class='op'>{</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shinyWidgets/man/progress-bar.html'>updateProgressBar</a></span><span class='op'>(</span></span>
+<span class='r-in'>      session <span class='op'>=</span> <span class='va'>session</span>, id <span class='op'>=</span> <span class='st'>"pbar"</span>,</span>
+<span class='r-in'>      value <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, total <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>table</span> <span class='op'>&lt;-</span> <span class='fu'>DT</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>renderDT</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span>, options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>pageLength <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>code_dplyr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>code</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>code</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>expr</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>res_str</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderPrint</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>res_filter</span><span class='op'>$</span><span class='fu'>filtered</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/shinyApp.html'>shinyApp</a></span><span class='op'>(</span><span class='va'>ui</span>, <span class='va'>server</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
