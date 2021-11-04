@@ -3,8 +3,7 @@
 #'
 #' @description Let user upload a file and import data
 #'
-#' @inheritParams import_globalenv_ui
-#'  use `NULL` for no title or a `shiny.tag` for a custom one.
+#' @inheritParams import-globalenv
 #' @param preview_data Show or not a preview of the data under the file input.
 #' @param file_extensions File extensions accepted by [shiny::fileInput()], can also be MIME type.
 #'
@@ -115,6 +114,13 @@ import_file_ui <- function(id,
 
 
 #' @inheritParams import_globalenv_server
+#' @param read_fns Named list with custom function(s) to read data:
+#'  * the name must be the extension of the files to which the function will be applied
+#'  * the value must be a function that can have 4 arguments, passed by user through the interface:
+#'    + `file`: path to the file
+#'    + `sheet`: for Excel files, sheet to read
+#'    + `skip`: number of row to skip
+#'    + `encoding`: file encoding
 #'
 #' @export
 #'
@@ -124,7 +130,7 @@ import_file_ui <- function(id,
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
-#' @importFrom rlang exec
+#' @importFrom rlang exec fn_fmls_names is_named is_function
 #' @importFrom tools file_ext
 #' @importFrom utils head
 #'
@@ -133,7 +139,15 @@ import_file_server <- function(id,
                                btn_show_data = TRUE,
                                trigger_return = c("button", "change"),
                                return_class = c("data.frame", "data.table", "tbl_df"),
-                               reset = reactive(NULL)) {
+                               reset = reactive(NULL),
+                               read_fns = list()) {
+
+  if (length(read_fns) > 0) {
+    if (!is_named(read_fns))
+      stop("import_file_server: `read_fns` must be a named list.", call. = FALSE)
+    if (!all(vapply(read_fns, is_function, logical(1))))
+      stop("import_file_server: `read_fns` must be list of function(s).", call. = FALSE)
+  }
 
   trigger_return <- match.arg(trigger_return)
 
@@ -177,29 +191,43 @@ import_file_server <- function(id,
     ), {
       req(input$file)
       req(input$skip_rows)
-      if (is_excel(input$file$datapath)) {
-        req(input$sheet)
+      extension <- tools::file_ext(input$file$datapath)
+      if (isTRUE(extension %in% names(read_fns))) {
         parameters <- list(
           file = input$file$datapath,
-          which = input$sheet,
-          skip = input$skip_rows
-        )
-      } else if (is_sas(input$file$datapath)) {
-        parameters <- list(
-          file = input$file$datapath,
-          skip = input$skip_rows,
-          encoding = input$encoding
-        )
-      } else {
-        parameters <- list(
-          file = input$file$datapath,
+          sheet = input$sheet,
           skip = input$skip_rows,
           dec = input$dec,
-          encoding = input$encoding,
-          na.strings = c("NA", "")
+          encoding = input$encoding
         )
+        parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
+        imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
+      } else {
+        if (is_excel(input$file$datapath)) {
+          req(input$sheet)
+          parameters <- list(
+            file = input$file$datapath,
+            which = input$sheet,
+            skip = input$skip_rows
+          )
+        } else if (is_sas(input$file$datapath)) {
+          parameters <- list(
+            file = input$file$datapath,
+            skip = input$skip_rows,
+            encoding = input$encoding
+          )
+        } else {
+          parameters <- list(
+            file = input$file$datapath,
+            skip = input$skip_rows,
+            dec = input$dec,
+            encoding = input$encoding,
+            na.strings = c("NA", "")
+          )
+        }
+        imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
       }
-      imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
+
       if (inherits(imported, "try-error"))
         imported <- try(rlang::exec(rio::import, !!!parameters[1]), silent = TRUE)
 

@@ -2,6 +2,7 @@
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.
 * `import_file_ui()` has a new argument `file_extensions` to select the files that the user can import.
+* `import_file_server()` has a new argument `read_fns` to define custom function(s) to read data.
 
 ### Translations
 * i18n: :macedonia: macedonian translations added, thanks to [@novica](https://github.com/novica).

@@ -34,9 +34,10 @@ Imports:
     tibble,
     tools
 Suggests: 
-    testthat,
+    jsonlite,
     knitr,
     MASS,
     rmarkdown,
+    testthat,
     validate
 VignetteBuilder: knitr

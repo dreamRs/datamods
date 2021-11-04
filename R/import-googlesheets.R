@@ -3,7 +3,7 @@
 #'
 #' @description Let user paste link to a Google sheet then import the data.
 #'
-#' @inheritParams import_globalenv_ui
+#' @inheritParams import-globalenv
 #'
 #' @eval doc_return_import()
 #'

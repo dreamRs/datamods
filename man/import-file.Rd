@@ -19,7 +19,8 @@ import_file_server(
   btn_show_data = TRUE,
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df"),
-  reset = reactive(NULL)
+  reset = reactive(NULL),
+  read_fns = list()
 )
 }
 \arguments{
@@ -41,6 +42,18 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 
 \item{reset}{A \code{reactive} function that when triggered resets the data.}
+
+\item{read_fns}{Named list with custom function(s) to read data:
+\itemize{
+\item the name must be the extension of the files to which the function will be applied
+\item the value must be a function that can have 4 arguments, passed by user through the interface:
+\itemize{
+\item \code{file}: path to the file
+\item \code{sheet}: for Excel files, sheet to read
+\item \code{skip}: number of row to skip
+\item \code{encoding}: file encoding
+}
+}}
 }
 \value{
 \itemize{
@@ -67,7 +80,10 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 4,
-      import_file_ui("myid")
+      import_file_ui(
+        id = "myid",
+        file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json")
+      )
     ),
     column(
       width = 8,
@@ -80,7 +96,18 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  imported <- import_file_server("myid")
+  imported <- import_file_server(
+    id = "myid",
+    # Custom functions to read data
+    read_fns = list(
+      xls = function(file, sheet, skip, encoding) {
+        readxl::read_xls(path = file, sheet = sheet, skip = skip)
+      },
+      json = function(file) {
+        jsonlite::read_json(file, simplifyVector = TRUE)
+      }
+    )
+  )
 
   output$status <- renderPrint({
     imported$status()

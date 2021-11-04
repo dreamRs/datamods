@@ -3,7 +3,7 @@
 #'
 #' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
-#' @inheritParams import_globalenv_ui
+#' @inheritParams import-globalenv
 #'
 #' @eval doc_return_import()
 #'
