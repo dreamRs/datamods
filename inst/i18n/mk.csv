@@ -23,7 +23,7 @@ label,translation
 "Encoding:","Енкодинг:"
 "Select sheet to import:","Изберете лист за да увезете"
 "No file selected:","Ниту еден документ не е избран"
-"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","Можете да увезувате документи .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."
+"You can import %s files","Можете да увезувате документи %s"
 "First five rows are shown below:","Првите пет реда се прикажани подолу:"
 "Copy & paste data","Копирајте и залепете податоци"
 "Paste data here:","Залепете ги вашите податоци тука:"

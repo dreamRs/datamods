@@ -17,13 +17,13 @@ Import data,Importoni të dhënat
 Import a file,Importoni skedar
 Upload a file:,Bashkangjitni një dokument:
 Browse...,Shfletoni...
-No file selected,Nuk është zgjedhur asnjë dokument 
+No file selected,Nuk është zgjedhur asnjë dokument
 Number of rows to skip before reading data:,Numri i rreshtave për t’i kërcyer para se të lexohen të dhënat:
 Decimal separator:,Ndarësi dhjetor:
 Encoding:,Kodimi:
 Select sheet to import:,Zgjidhni një fletë për ta importuar
 No file selected:,Nuk është zgjedhur asnjë dokument:
-"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","Mund të importoni dokumente .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...."
+"You can import %s files","Mund të importoni dokumente %s"
 First five rows are shown below:,Pesë rreshtat e parë janë treguar më poshtë:
 Copy & paste data,Kopjoni dhe ngjisni të dhënat
 Paste data here:,Ngjitni të dhënat tuaja këtu:
@@ -52,10 +52,10 @@ Date to use as origin to convert date/datetime:,Data që do të përdoret për t
 Apply changes,Apliko ndryshimet
 Data has %s observations and %s variables.,Të dhënat kanë %vëzhgime dhe %variabla
 Data successfully updated!,Të dhënat janë azhurnuar me sukses!
-Validation:,Verifikimi: 
+Validation:,Verifikimi:
 OK,Në rregull
 Failed,Dështim
 Error,Gabim
 Number of rows:,Numri i rreshtave:
 No data to display.,Nuk ka të dhëna për t’u shfaqur.
-Close,Мbyll 
+Close,Мbyll

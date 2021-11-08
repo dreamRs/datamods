@@ -95,7 +95,7 @@ import_file_ui <- function(id,
         id = ns("import-result"),
         status = "info",
         tags$b(i18n("No file selected:")),
-        i18n("You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."),
+        sprintf(i18n("You can import %s files"), paste(file_extensions, collapse = ", ")),
         dismissible = TRUE
       )
     ),

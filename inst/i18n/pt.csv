@@ -1,4 +1,4 @@
-﻿label,translation
+label,translation
 Import a dataset from an environment,Importe um conjunto de dados do ambiente local
 Select a data.frame:,Selecione um data.frame :
 List of data.frame...,Lista de data.frame...
@@ -23,7 +23,7 @@ Decimal separator:,Separador decimal:
 Encoding:,Encoding:
 Select sheet to import:,Selecione uma aba para importar:
 No file selected:,Nenhum arquivo selecionado:
-"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","Você pode importar .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."
+"You can import %s files","Você pode importar %s"
 First five rows are shown below:,As cinco primeiras linhas são mostradas abaixo:
 Copy & paste data,Copie & cole os dados
 Paste data here:,Cole os dados aqui:
