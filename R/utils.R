@@ -11,10 +11,6 @@ nullOrEmpty <- function(x) {
   is.null(x) || length(x) == 0 || x == ""
 }
 
-`%||%` <- function(x, y) {
-  if (!is.null(x)) x else y
-}
-
 #' @importFrom data.table .SD
 dropListColumns <- function(x) {
   type_col <- vapply(

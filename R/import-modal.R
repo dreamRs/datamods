@@ -198,6 +198,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
 #' @importFrom shiny moduleServer reactiveValues observeEvent
 #'  reactive removeModal updateTabsetPanel hideTab observe
 #' @importFrom DT tableHeader datatable renderDT
+#' @importFrom rlang %||%
 import_server <- function(id,
                           validation_opts = NULL,
                           allowed_status = c("OK", "Failed", "Error"),

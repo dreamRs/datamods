@@ -60,7 +60,7 @@ filter_data_ui <- function(id,
 #' @rdname filter-data
 #' @export
 #'
-#' @importFrom rlang eval_tidy
+#' @importFrom rlang eval_tidy %||%
 #' @importFrom shiny observeEvent reactiveValues removeUI
 #'  insertUI reactive req isolate reactive renderUI tags outputOptions
 filter_data_server <- function(id,
@@ -127,7 +127,7 @@ filter_data_server <- function(id,
           filters = filter_inputs,
           filters_na = filter_nas,
           data = data,
-          data_name = isolate(name())
+          data_name = isolate(name()) %||% "data"
         )
         rv_code$expr <- filters$expr
         rv_code$dplyr <- filters$expr_dplyr
