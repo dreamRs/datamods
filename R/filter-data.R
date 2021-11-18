@@ -133,7 +133,7 @@ filter_data_server <- function(id,
         rv_code$dplyr <- filters$expr_dplyr
         if (length(rv_code$expr) > 0) {
           result <- eval_tidy(expr = rv_code$expr, data = data)
-          data[result, ]
+          data[result, , drop = FALSE]
         } else {
           data
         }
