@@ -11,8 +11,11 @@ ui <- fluidPage(
     ),
     column(
       width = 8,
-      tags$b("Imported data:"),
+      tags$b("Import status:"),
       verbatimTextOutput(outputId = "status"),
+      tags$b("Name:"),
+      verbatimTextOutput(outputId = "name"),
+      tags$b("Data:"),
       verbatimTextOutput(outputId = "data")
     )
   )

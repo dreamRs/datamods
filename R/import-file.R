@@ -256,7 +256,6 @@ import_file_server <- function(id,
         temporary_rv$status <- "success"
         temporary_rv$data <- imported
         temporary_rv$name <- input$file$name
-
       }
     }, ignoreInit = TRUE)
 
@@ -275,6 +274,7 @@ import_file_server <- function(id,
 
     observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
+      imported_rv$name <- temporary_rv$name
     })
 
     if (identical(trigger_return, "button")) {
