@@ -26,6 +26,7 @@ dropListColumns <- function(x) {
   }
 }
 
+
 #' Search for object with specific class in an environment
 #'
 #' @param what a class to look for

@@ -28,6 +28,9 @@ server <- function(input, output, session) {
   output$status <- renderPrint({
     imported$status()
   })
+  output$name <- renderPrint({
+    imported$name()
+  })
   output$data <- renderPrint({
     imported$data()
   })
