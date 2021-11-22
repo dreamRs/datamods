@@ -5,7 +5,7 @@
 <!-- badges: start -->
 [![version](http://www.r-pkg.org/badges/version/datamods)](https://CRAN.R-project.org/package=datamods)
 [![R build status](https://github.com/dreamRs/datamods/workflows/R-CMD-check/badge.svg)](https://github.com/dreamRs/datamods/actions)
-[![codecov](https://codecov.io/gh/dreamRs/datamods/branch/master/graphs/badge.svg)](https://codecov.io/gh/dreamRs/datamods)
+[![codecov](https://app.codecov.io/gh/dreamRs/datamods/branch/master/graphs/badge.svg)](https://app.codecov.io/gh/dreamRs/datamods)
 <!-- badges: end -->
 
 
