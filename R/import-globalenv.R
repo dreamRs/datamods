@@ -260,7 +260,11 @@ import_globalenv_server <- function(id,
 #' @importFrom utils data
 #'
 #' @examples
-#' get_data_packages()
+#' if (interactive()) {
+#'
+#'   get_data_packages()
+#'
+#' }
 get_data_packages <- function() {
   suppressWarnings({
     pkgs <- data(package = .packages(all.available = TRUE))
