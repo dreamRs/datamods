@@ -88,6 +88,10 @@ datetime <- data.frame(
   num = sample.int(1e5, 300)
 )
 
+one_column_numeric <- data.frame(
+  var1 = rnorm(100)
+)
+
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
 
@@ -99,7 +103,8 @@ ui <- fluidPage(
       "mtcars",
       "mtcars_na",
       "Cars93",
-      "datetime"
+      "datetime",
+      "one_column_numeric"
     ),
     inline = TRUE
   ),

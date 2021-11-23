@@ -1,4 +1,4 @@
-label,translation
+label,translation,comment
 Import a dataset from an environment,Importe um conjunto de dados do ambiente local
 Select a data.frame:,Selecione um data.frame :
 List of data.frame...,Lista de data.frame...
@@ -59,3 +59,4 @@ Error,Erro
 Number of rows:,Número de linhas:
 No data to display.,Nenhum dado para mostrar.
 Close,Fechar
+"Add a label to data","Adicionar uma etiqueta aos dados","#TODO #CHECK"

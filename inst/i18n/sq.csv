@@ -1,4 +1,4 @@
-label,translation
+label,translation,comment
 Import a dataset from an environment,Importoni një grup të dhënash nga mjedisi
 Select a data.frame:,Zgjidhni data.frame
 List of data.frame...,Lista e tabelave të të dhënave (data.frame)
@@ -50,7 +50,7 @@ Date format:,Formati i datës:
 Date to use as origin to convert date/datetime:,Data që do të përdoret për të konvertuar ndryshoren date/datetime
 "Select, rename and convert variables in table above, then apply changes by clicking button below.","Zgjidhni, riemërtoni dhe konvertoni variablat në tabelën e mësipërme, e pastaj aplikoni ndryshimet duke klikuar butonin më poshtë."
 Apply changes,Apliko ndryshimet
-Data has %s observations and %s variables.,Të dhënat kanë %vëzhgime dhe %variabla
+Data has %s observations and %s variables.,Të dhënat kanë %s vëzhgime dhe %s variabla
 Data successfully updated!,Të dhënat janë azhurnuar me sukses!
 Validation:,Verifikimi:
 OK,Në rregull
@@ -58,4 +58,5 @@ Failed,Dështim
 Error,Gabim
 Number of rows:,Numri i rreshtave:
 No data to display.,Nuk ka të dhëna për t’u shfaqur.
-Close,Мbyll
+Close,Мbyll,
+"Add a label to data","Shtoni një etiketë në të dhëna","#TODO #CHECK"

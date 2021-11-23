@@ -43,7 +43,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
     textInput(
       inputId = ns("name"),
       label = NULL,
-      placeholder = "Add a label to data",
+      placeholder = i18n("Add a label to data"),
       width = "100%"
     ),
     tags$div(
