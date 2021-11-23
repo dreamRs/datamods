@@ -1,4 +1,4 @@
-# datamods 1.1.5.9000
+# datamods 1.2.0
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.
 * `import_file_ui()` has a new argument `file_extensions` to select the files that the user can import.
