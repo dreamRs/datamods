@@ -243,6 +243,10 @@ or  <code><a href='https://rdrr.io/pkg/shiny/man/sliderInput.html'>shiny::slider
 <span class='r-in'>  num <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span><span class='op'>(</span><span class='fl'>1e5</span>, <span class='fl'>300</span><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-in'></span>
+<span class='r-in'><span class='va'>one_column_numeric</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>  var1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
 <span class='r-in'><span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/fluidPage.html'>fluidPage</a></span><span class='op'>(</span></span>
 <span class='r-in'>  <span class='va'>tags</span><span class='op'>$</span><span class='fu'>h2</span><span class='op'>(</span><span class='st'>"Filter data.frame"</span><span class='op'>)</span>,</span>
 <span class='r-in'></span>
@@ -254,7 +258,8 @@ or  <code><a href='https://rdrr.io/pkg/shiny/man/sliderInput.html'>shiny::slider
 <span class='r-in'>      <span class='st'>"mtcars"</span>,</span>
 <span class='r-in'>      <span class='st'>"mtcars_na"</span>,</span>
 <span class='r-in'>      <span class='st'>"Cars93"</span>,</span>
-<span class='r-in'>      <span class='st'>"datetime"</span></span>
+<span class='r-in'>      <span class='st'>"datetime"</span>,</span>
+<span class='r-in'>      <span class='st'>"one_column_numeric"</span></span>
 <span class='r-in'>    <span class='op'>)</span>,</span>
 <span class='r-in'>    inline <span class='op'>=</span> <span class='cn'>TRUE</span></span>
 <span class='r-in'>  <span class='op'>)</span>,</span>
