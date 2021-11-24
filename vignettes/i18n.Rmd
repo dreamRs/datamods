@@ -24,16 +24,16 @@ There are 4 different ways to use new labels:
 
 ```{r}
 # Using a supported language
-options("datamods.i18n" = "fr")
+set_i18n("fr")
 
 # Using a named list
-options("datamods.i18n" = list(...))
+set_i18n(list("Some label" = "Its translation", ...))
 
-# Using a data.frame
-options("datamods.i18n" = data.frame(label = c(...), translation = c(...)))
+# Using a data.framewith 2 columns
+set_i18n(data.frame(label = c(...), translation = c(...)))
 
 # Using a CSV file
-options("datamods.i18n" = "path/to/file.csv")
+set_i18n("path/to/file.csv")
 ```
 
 
@@ -46,25 +46,25 @@ The following languages are integrated in {datamods} :
 * ![](figures/i18n/fr.svg){height=16} french, activate with:
 
 ```{r}
-options("datamods.i18n" = "fr")
+set_i18n("fr")
 ```
 
 * ![](figures/i18n/mk.svg){height=16} macedonian, activate with:
 
 ```{r}
-options("datamods.i18n" = "mk")
+set_i18n("mk")
 ```
 
 * ![](figures/i18n/br.svg){height=16} ![](figures/i18n/pt.svg){height=16} brazilian portuguese, activate with:
 
 ```{r}
-options("datamods.i18n" = "pt")
+set_i18n("pt")
 ```
 
 * ![](figures/i18n/al.svg){height=16} albanian, activate with:
 
 ```{r}
-options("datamods.i18n" = "sq")
+set_i18n("sq")
 ```
 
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
@@ -88,7 +88,7 @@ options("datamods.i18n" = list(
 You can change labels with a `data.frame` with two columns `label` (the original label) and `translation` (the new label to display):
 
 ```{r}
-options("datamods.i18n" = data.frame(
+set_i18n(data.frame(
   label = c("Import a dataset from an environment", "Select a data.frame:", ...),
   translation = c("Importer un jeu de données depuis l'environnement global", "Sélectionner un data.frame :", ...)
 ))
@@ -100,7 +100,7 @@ options("datamods.i18n" = data.frame(
 Use a CSV file with same structure than `data.frame` above:
 
 ```{r}
-options("datamods.i18n" = "path/to/file.csv")
+set_i18n("path/to/file.csv")
 ```
 
 An example of file is shown below.
