@@ -1,6 +1,13 @@
+url: https://dreamrs.github.io/datamods
+
 template:
-  params:
-    bootswatch: flatly
+  bootstrap: 5
+  bslib:
+    base_font: {google: "Poppins"}
+    primary: "#112446"
+
+navbar:
+  bg: primary
 
 authors:
   Victor Perrier:
