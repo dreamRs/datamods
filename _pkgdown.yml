@@ -2,6 +2,7 @@ url: https://dreamrs.github.io/datamods
 
 template:
   bootstrap: 5
+  bootswatch: zephyr
   bslib:
     base_font: {google: "Poppins"}
     primary: "#112446"

@@ -41,27 +41,27 @@ set_i18n("path/to/file.csv")
 
 The following languages are integrated in {datamods} :
 
-* ![](figures/i18n/gb.svg){height=16} english, the default.
+* ![](figures/i18n/gb.svg){height=16, style="height:16px"} english, the default.
 
-* ![](figures/i18n/fr.svg){height=16} french, activate with:
+* ![](figures/i18n/fr.svg){height=16, style="height:16px"} french, activate with:
 
 ```{r}
 set_i18n("fr")
 ```
 
-* ![](figures/i18n/mk.svg){height=16} macedonian, activate with:
+* ![](figures/i18n/mk.svg){height=16, style="height:16px"} macedonian, activate with:
 
 ```{r}
 set_i18n("mk")
 ```
 
-* ![](figures/i18n/br.svg){height=16} ![](figures/i18n/pt.svg){height=16} brazilian portuguese, activate with:
+* ![](figures/i18n/br.svg){height=16, style="height:16px"} ![](figures/i18n/pt.svg){height=16, style="height:16px"} brazilian portuguese, activate with:
 
 ```{r}
 set_i18n("pt")
 ```
 
-* ![](figures/i18n/al.svg){height=16} albanian, activate with:
+* ![](figures/i18n/al.svg){height=16, style="height:16px"} albanian, activate with:
 
 ```{r}
 set_i18n("sq")
