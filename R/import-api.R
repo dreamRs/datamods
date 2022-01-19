@@ -60,10 +60,10 @@ import_api_ui <- function(id, title = TRUE) {
 #'
 #' @rdname import-api
 import_api_server <- function(id,
-                                       btn_show_data = TRUE,
-                                       trigger_return = c("button", "change"),
-                                       return_class = c("data.frame", "data.table", "tbl_df"),
-                                       reset = reactive(NULL)) {
+    btn_show_data = TRUE,
+    trigger_return = c("button", "change"),
+    return_class = c("data.frame", "data.table", "tbl_df"),
+    reset = reactive(NULL)) {
   
   trigger_return <- match.arg(trigger_return)
   

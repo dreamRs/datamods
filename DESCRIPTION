@@ -30,6 +30,7 @@ Imports:
     data.table,
     DT,
     htmltools,
+    httr,
     phosphoricons,
     readxl,
     rio,
