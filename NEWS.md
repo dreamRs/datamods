@@ -1,3 +1,7 @@
+# datamods 1.3.0
+
+* Added module to read from JSON API `import_api_*()`
+
 # datamods 1.2.0
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.

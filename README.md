@@ -47,6 +47,7 @@ Import data from:
 * **file**: text files, Excel, SAS or SPSS format... anything that package [rio](https://github.com/leeper/rio) can handle
 * **copy/paste**: paste data from an other source like Excel or text file
 * **Google Sheet**: use the URL to import the Googlesheet
+* **JSON API**: use the URL to import from a flat JSON
 
 Each module is available in the form `import_file_ui()` / `import_file_server()` and can be use independently.
 
