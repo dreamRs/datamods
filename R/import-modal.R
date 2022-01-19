@@ -6,7 +6,7 @@
 #'
 #' @param id Module's id
 #' @param from The import_ui & server to use, i.e. the method.
-#'   There are 4 options to choose from. ("env", "file", "copypaste", "googlesheets")
+#'   There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets", "api")
 #'
 #' @return
 #'  * UI: HTML tags that can be included in shiny's UI
@@ -24,7 +24,7 @@
 #'
 #' @example examples/modal.R
 #'
-import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) {
+import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "api")) {
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
 
@@ -59,6 +59,14 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       import_googlesheets_ui(id = ns("googlesheets"), title = NULL)
     )
   }
+  
+  api <- if ("api" %in% from) {
+    tabPanelBody(
+      value = "api",
+      tags$br(),
+      import_api_ui(id = ns("api"), title = NULL)
+    )
+  }
 
   #database <- if("database" %in% from) tabPanel("Database", import_database_ui(ns("database")))
 
@@ -66,13 +74,15 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
     "env" = i18n("Environment"),
     "file" = i18n("External file"),
     "copypaste" = i18n("Copy / Paste"),
-    "googlesheets" = i18n("Googlesheets")
+    "googlesheets" = i18n("Googlesheets"),
+    "api" = i18n("API")
   )
   iconsImport <- list(
     "env" = phosphoricons::ph("code", title = labsImport$env),
     "file" = phosphoricons::ph("file-arrow-down", title = labsImport$file),
     "copypaste" = phosphoricons::ph("clipboard-text", title = labsImport$copypaste),
-    "googlesheets" = phosphoricons::ph("cloud-arrow-down", title = labsImport$googlesheets)
+    "googlesheets" = phosphoricons::ph("cloud-arrow-down", title = labsImport$googlesheets),
+    "api" = phosphoricons::ph("brackets-curly", title = labsImport$api)
   )
 
 
@@ -82,11 +92,12 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets")) 
       "env" = import_globalenv_ui(id = ns("env")),
       "file" = import_file_ui(id = ns("file")),
       "copypaste" = import_copypaste_ui(id = ns("copypaste")),
-      "googlesheets" = import_googlesheets_ui(id = ns("googlesheets"))
+      "googlesheets" = import_googlesheets_ui(id = ns("googlesheets")),
+      "api" = import_api_ui(id = ns("api")),
     )
   } else {
     tabsetPanelArgs <- dropNulls(list(
-      env, file, copypaste, googlesheets,
+      env, file, copypaste, googlesheets, api,
       id = ns("tabs-import"),
       type = "hidden"
     ))
@@ -253,6 +264,12 @@ import_server <- function(id,
         btn_show_data = FALSE,
         reset = reactive(input$hidden)
       )
+      from_api <- import_api_server(
+        id = "api",
+        trigger_return = "change",
+        btn_show_data = FALSE,
+        reset = reactive(input$hidden)
+      )
       #from_database <- import_database_server("database")
 
       observeEvent(from_env$data(), {
@@ -270,6 +287,10 @@ import_server <- function(id,
       observeEvent(from_googlesheets$data(), {
         data_rv$data <- from_googlesheets$data()
         data_rv$name <- from_googlesheets$name()
+      })
+      observeEvent(from_api$data(), {
+        data_rv$data <- from_api$data()
+        data_rv$name <- from_api$name()
       })
       # observeEvent(from_database$data(), {
       #   data_rv$data <- from_database$data()

@@ -32,7 +32,7 @@ corner cases one has to be mindful of. For example:
 
 The {datamods} package helps to easily load and use data in shiny apps with the
 help of modules.  
-There are 4 modules that can load data from various different sources.
+There are 5 modules that can load data from various different sources.
 The modules with a short intro are described below
 
 
@@ -101,6 +101,17 @@ imported <- import_googlesheets_server("myid")
 
 <img src="figures/datamods-googlesheet.png" style="width:100%"></img>
 
+#### From API
+
+Imports data from a JSON-API. Only flat JSONs are supported
+
+```{r}
+# UI
+import_api_ui("myid")
+
+# Server
+imported <- import_api_server("myid")
+```
 
 ### Usage
 
