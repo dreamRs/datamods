@@ -68,7 +68,7 @@ test_that("i18n works with supported language", {
   options("datamods.i18n" = "pt")
   expect_type(i18n_test("Help"), "character")
 
-  options("datamods.i18n" = "sq")
+  options("datamods.i18n" = "al")
   expect_type(i18n_test("Help"), "character")
 })
 

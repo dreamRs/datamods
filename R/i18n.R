@@ -66,7 +66,7 @@ i18n_translations <- function(package = packageName(parent.frame(2))) {
 }
 
 #' @param value Value to set for translation. Can be:
-#'   * single `character` to use a supported language (`"fr"`, `"mk"`, `"sq"`, `"pt"` for esquisse and datamods packages).
+#'   * single `character` to use a supported language (`"fr"`, `"mk"`, `"al"`, `"pt"` for esquisse and datamods packages).
 #'   * a `list` with labels as names and translations as values.
 #'   * a `data.frame` with 2 column: `label` & `translation`.
 #'   * path to a CSV file with same structure as for `data.frame` above.

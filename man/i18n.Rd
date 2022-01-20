@@ -22,7 +22,7 @@ It will retrieve option \code{"i18n.<PACKAGE>"} (or \code{"i18n"} if no package)
 
 \item{value}{Value to set for translation. Can be:
 \itemize{
-\item single \code{character} to use a supported language (\code{"fr"}, \code{"mk"}, \code{"sq"}, \code{"pt"} for esquisse and datamods packages).
+\item single \code{character} to use a supported language (\code{"fr"}, \code{"mk"}, \code{"al"}, \code{"pt"} for esquisse and datamods packages).
 \item a \code{list} with labels as names and translations as values.
 \item a \code{data.frame} with 2 column: \code{label} & \code{translation}.
 \item path to a CSV file with same structure as for \code{data.frame} above.
