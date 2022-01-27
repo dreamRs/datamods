@@ -114,7 +114,7 @@ import_googlesheets_server <- function(id,
       imported <- try(read_gsheet(input$link), silent = TRUE)
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_error()
+        insert_error(mssg = i18n(attr(imported, "condition")$message))
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {

@@ -3,11 +3,11 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data from API"),
+  tags$h3("Import data from URL"),
   fluidRow(
     column(
       width = 4,
-      import_api_ui("myid")
+      import_url_ui("myid")
     ),
     column(
       width = 8,
@@ -23,7 +23,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  imported <- import_api_server("myid")
+  imported <- import_url_server("myid")
   
   output$status <- renderPrint({
     imported$status()

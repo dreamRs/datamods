@@ -101,16 +101,16 @@ imported <- import_googlesheets_server("myid")
 
 <img src="figures/datamods-googlesheet.png" style="width:100%"></img>
 
-#### From API
+#### From URL
 
-Imports data from a JSON-API. Only flat JSONs are supported
+Imports data from a URL. Only flat data in any format supported by <a href='https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats'>rio</a>.
 
 ```{r}
 # UI
-import_api_ui("myid")
+import_url_ui("myid")
 
 # Server
-imported <- import_api_server("myid")
+imported <- import_url_server("myid")
 ```
 
 ### Usage

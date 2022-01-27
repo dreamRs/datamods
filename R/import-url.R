@@ -1,4 +1,4 @@
-#' @title Import data from API providing a flattened JSON
+#' @title Import data from a URL
 #'
 #' @description Let user paste link to a JSON then import the data.
 #'
@@ -7,18 +7,18 @@
 #' @eval doc_return_import()
 #'
 #' @export
-#' @name import-api
+#' @name import-url
 #' 
 #' @importFrom htmltools tags
 #' 
-#' @example examples/from-api.R
-import_api_ui <- function(id, title = TRUE) {
+#' @example examples/from-url.R
+import_url_ui <- function(id, title = TRUE) {
   
   ns <- shiny::NS(id)
   
   if (isTRUE(title)) {
     title <- tags$h4(
-      i18n("Import JSON API"),
+      i18n("Import Url"),
       class = "datamods-title"
     )
   }
@@ -29,7 +29,7 @@ import_api_ui <- function(id, title = TRUE) {
     title,
     shinyWidgets::textInputIcon(
       inputId = ns("link"),
-      label = i18n("Enter URL to JSON data:"),
+      label = i18n("Enter URL to data:"),
       icon = phosphoricons::ph("link"),
       width = "100%"
     ),
@@ -39,7 +39,9 @@ import_api_ui <- function(id, title = TRUE) {
         id = ns("import-result"),
         status = "info",
         tags$b(i18n("Nothing pasted yet!")),
-        i18n("Please paste a valid link in the dialog box above."),
+        i18n(
+          HTML("Please paste a valid link in the dialog box above. 
+            You can import from flat table format supported by <a href='https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats' target='_blank'>rio</a>.")),
         dismissible = TRUE
       )
     ),
@@ -58,8 +60,8 @@ import_api_ui <- function(id, title = TRUE) {
 #' @importFrom shiny reactiveValues observeEvent removeUI reactive req
 #' @importFrom htmltools tags tagList
 #'
-#' @rdname import-api
-import_api_server <- function(id,
+#' @rdname import-url
+import_url_server <- function(id,
     btn_show_data = TRUE,
     trigger_return = c("button", "change"),
     return_class = c("data.frame", "data.table", "tbl_df"),
@@ -94,7 +96,8 @@ import_api_server <- function(id,
     observeEvent(input$link, {
       req(input$link)
       
-      imported <- try(read_json(input$link), silent = TRUE)
+      imported <- try(rio::import(input$link), silent = TRUE)
+      
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
         # pass error message to UI
@@ -146,25 +149,3 @@ import_api_server <- function(id,
   )
 }
 
-
-# Utils -------------------------------------------------------------------
-
-read_json <- function(url) {
-  resp <- httr::GET(url)
-  if (httr::http_type(resp) != "application/json") {
-    stop("API did not return json.", call. = FALSE)
-  }
-  
-  parsed <- httr::content(resp, "text") %>%
-    jsonlite::fromJSON()
-  
-  if (httr::http_error(resp)) {
-    stop("API request failed.", call. = FALSE)
-  }
-  
-  if (!is.data.frame(parsed) | !all(vapply(parsed, is.atomic, logical(1)))) {
-    stop("JSON data is not in flat format.", call. = FALSE)
-  }
-  
-  return(parsed)
-}

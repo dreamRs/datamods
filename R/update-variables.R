@@ -165,7 +165,7 @@ update_variables_server <- function(id, data, height = NULL) {
         }, silent = TRUE)
 
         if (inherits(res_update, "try-error")) {
-          insert_error("update")
+          insert_error(selector = "update")
         } else {
           insert_alert(
             selector = ns("update"),
