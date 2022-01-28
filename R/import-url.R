@@ -1,27 +1,24 @@
-
-#' @title Import data with copy & paste
+#' @title Import data from a URL
 #'
-#' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
+#' @description Let user paste link to a JSON then import the data.
 #'
 #' @inheritParams import-globalenv
 #'
 #' @eval doc_return_import()
 #'
 #' @export
+#' @name import-url
 #'
-#' @name import-copypaste
+#' @importFrom htmltools tags
 #'
-#' @importFrom shiny NS icon textAreaInput actionButton textInput
-#' @importFrom htmltools tags tagAppendAttributes
-#'
-#' @example examples/from-copypaste.R
-import_copypaste_ui <- function(id, title = TRUE) {
+#' @example examples/from-url.R
+import_url_ui <- function(id, title = TRUE) {
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   if (isTRUE(title)) {
     title <- tags$h4(
-      i18n("Copy & paste data"),
+      i18n("Import Url"),
       class = "datamods-title"
     )
   }
@@ -30,20 +27,10 @@ import_copypaste_ui <- function(id, title = TRUE) {
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    tagAppendAttributes(
-      textAreaInput(
-        inputId = ns("data_pasted"),
-        label = i18n("Paste data here:"),
-        height = "300px",
-        width = "100%",
-        resize = "none"
-      ),
-      class = "shiny-input-container-inline"
-    ),
-    textInput(
-      inputId = ns("name"),
-      label = NULL,
-      placeholder = i18n("Add a label to data"),
+    shinyWidgets::textInputIcon(
+      inputId = ns("link"),
+      label = i18n("Enter URL to data:"),
+      icon = phosphoricons::ph("link"),
       width = "100%"
     ),
     tags$div(
@@ -52,34 +39,33 @@ import_copypaste_ui <- function(id, title = TRUE) {
         id = ns("import-result"),
         status = "info",
         tags$b(i18n("Nothing pasted yet!")),
-        i18n("Please copy and paste some data in the dialog box above."),
+        i18n(
+          HTML("Please paste a valid link in the dialog box above.
+            You can import from flat table format supported by <a href='https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats' target='_blank'>rio</a>.")),
         dismissible = TRUE
       )
     ),
-    uiOutput(
-      outputId = ns("container_valid_btn"),
+    shiny::uiOutput(
+      outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"
     )
   )
 }
-
 
 #' @inheritParams import_globalenv_server
 #'
 #' @export
 #'
 #' @importFrom shiny moduleServer
-#' @importFrom data.table fread
-#' @importFrom shiny reactiveValues observeEvent removeUI reactive
+#' @importFrom shiny reactiveValues observeEvent removeUI reactive req
 #' @importFrom htmltools tags tagList
-#' @importFrom rlang %||%
 #'
-#' @rdname import-copypaste
-import_copypaste_server <- function(id,
-                                    btn_show_data = TRUE,
-                                    trigger_return = c("button", "change"),
-                                    return_class = c("data.frame", "data.table", "tbl_df"),
-                                    reset = reactive(NULL)) {
+#' @rdname import-url
+import_url_server <- function(id,
+    btn_show_data = TRUE,
+    trigger_return = c("button", "change"),
+    return_class = c("data.frame", "data.table", "tbl_df"),
+    reset = reactive(NULL)) {
 
   trigger_return <- match.arg(trigger_return)
 
@@ -95,18 +81,26 @@ import_copypaste_server <- function(id,
       temporary_rv$status <- NULL
     })
 
-    output$container_valid_btn <- renderUI({
+    output$container_confirm_btn <- renderUI({
       if (identical(trigger_return, "button")) {
         button_import()
       }
     })
 
-    observeEvent(input$data_pasted, {
-      req(input$data_pasted)
-      imported <- try(data.table::fread(text = input$data_pasted), silent = TRUE)
+    observeEvent(input$trigger, {
+      if (identical(trigger_return, "change")) {
+        hideUI(selector = paste0("#", ns("confirm-button")))
+      }
+    })
+
+    observeEvent(input$link, {
+      req(input$link)
+
+      imported <- try(rio::import(input$link), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
+        # pass error message to UI
         insert_error(mssg = i18n(attr(imported, "condition")$message))
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
@@ -124,16 +118,9 @@ import_copypaste_server <- function(id,
         )
         temporary_rv$status <- "success"
         temporary_rv$data <- imported
+        temporary_rv$name <- basename(input$link)
       }
     }, ignoreInit = TRUE)
-
-    observeEvent(input$name, {
-      temporary_rv$name <- if (isTruthy(input$name)) {
-        input$name
-      } else {
-        "clipboard_data"
-      }
-    })
 
     observeEvent(input$see_data, {
       show_data(temporary_rv$data, title = i18n("Imported data"))
@@ -143,7 +130,6 @@ import_copypaste_server <- function(id,
       imported_rv$data <- temporary_rv$data
       imported_rv$name <- temporary_rv$name
     })
-
 
     if (identical(trigger_return, "button")) {
       return(list(
@@ -165,6 +151,4 @@ import_copypaste_server <- function(id,
     module = module
   )
 }
-
-
 

@@ -39,7 +39,7 @@ if (requireNamespace("validate")) {
         checkboxGroupInput(
           inputId = "from",
           label = "From",
-          choices = c("env", "file", "copypaste", "googlesheets"),
+          choices = c("env", "file", "copypaste", "googlesheets", "url"),
           selected = c("file", "copypaste")
         ),
         actionButton("launch_modal", "Launch modal window")

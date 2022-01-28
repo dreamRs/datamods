@@ -1,3 +1,8 @@
+# datamods 1.3.0
+
+* Added module to read flat data from URLs `import_url_*()`.
+* Error messages displayed to the user are more informative on the actual error.
+
 # datamods 1.2.0
 
 * Switch to [{phosphoricons}](https://github.com/dreamRs/phosphoricons) for icons.

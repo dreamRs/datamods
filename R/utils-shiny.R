@@ -133,13 +133,14 @@ make_success_alert <- function(data,
   return(success_message)
 }
 
-insert_error <- function(selector = "import",
+insert_error <- function(mssg = i18n("Something went wrong..."),
+                         selector = "import",
                          session = shiny::getDefaultReactiveDomain()) {
   insert_alert(
     selector = session$ns(selector),
     status = "danger",
     tags$b(phosphoricons::ph("warning"), i18n("Ooops")),
-    i18n("Something went wrong...")
+    mssg
   )
 }
 
