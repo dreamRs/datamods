@@ -93,7 +93,7 @@
 <li><p>while using Googlesheets, the hassle of authentication and stuff.</p></li>
 </ul>
 <p>The {datamods} package helps to easily load and use data in shiny apps with the help of modules.<br>
-There are 4 modules that can load data from various different sources. The modules with a short intro are described below</p>
+There are 5 modules that can load data from various different sources. The modules with a short intro are described below</p>
 <div class="section level2">
 <h2 id="import-modules">Import Modules<a class="anchor" aria-label="anchor" href="#import-modules"></a>
 </h2>
@@ -148,12 +148,23 @@ There are 4 modules that can load data from various different sources. The modul
 <span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-googlesheets.html">import_googlesheets_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></code></pre></div>
 <p><img src="figures/datamods-googlesheet.png" style="width:100%"></p>
 </div>
+<div class="section level4">
+<h4 id="from-url">From URL<a class="anchor" aria-label="anchor" href="#from-url"></a>
+</h4>
+<p>Imports data from a URL. Only flat data in any format supported by <a href="https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats" class="external-link">rio</a>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># UI</span>
+<span class="fu"><a href="../reference/import-url.html">import_url_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span>
+
+<span class="co"># Server</span>
+<span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-url.html">import_url_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
 <p>All modules are used in the same way in a Shiny application, here is an example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span>
 
@@ -203,7 +214,7 @@ There are 4 modules that can load data from various different sources. The modul
 <p>All modules can be launched at once in a modal window:</p>
 <p><img src="figures/datamods-modal-2.png" style="width:100%"></p>
 <p>Launch the modal server-side with:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">launch_modal</span>, <span class="op">{</span>
   <span class="fu"><a href="../reference/import-modal.html">import_modal</a></span><span class="op">(</span>
     id <span class="op">=</span> <span class="st">"myid"</span>,
@@ -224,7 +235,7 @@ There are 4 modules that can load data from various different sources. The modul
 <h3 id="validate">Validate<a class="anchor" aria-label="anchor" href="#validate"></a>
 </h3>
 <p>When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, … This module allow to validate rules defined with package <a href="https://github.com/data-cleaning/validate" class="external-link">validate</a>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># UI</span>
 <span class="fu"><a href="../reference/validation.html">validation_ui</a></span><span class="op">(</span><span class="st">"validation"</span>, display <span class="op">=</span> <span class="st">"inline"</span><span class="op">)</span>
 
@@ -270,7 +281,7 @@ There are 4 modules that can load data from various different sources. The modul
 <h3 id="filter">Filter<a class="anchor" aria-label="anchor" href="#filter"></a>
 </h3>
 <p>Interactively filter a <code>data.frame</code> and generate code to reproduce filters applied:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># UI</span>
 <span class="fu"><a href="../reference/filter-data.html">filter_data_ui</a></span><span class="op">(</span><span class="st">"filtering"</span>, max_height <span class="op">=</span> <span class="st">"500px"</span><span class="op">)</span>
 
