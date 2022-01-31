@@ -77,6 +77,7 @@ show_data <- function(data,
           class = "btn btn-link",
           style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
           `data-dismiss` = "modal",
+          `data-bs-dismiss` = "modal",
           `aria-label` = i18n("Close")
         ),
         title

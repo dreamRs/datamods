@@ -59,7 +59,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
       import_googlesheets_ui(id = ns("googlesheets"), title = NULL)
     )
   }
-  
+
   url <- if ("url" %in% from) {
     tabPanelBody(
       value = "url",
@@ -415,6 +415,7 @@ import_modal <- function(id, from, title = "Import data", size = "l") {
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-dismiss` = "modal",
+        `data-bs-dismiss` = "modal",
         `aria-label` = i18n("Close")
       ),
       title
