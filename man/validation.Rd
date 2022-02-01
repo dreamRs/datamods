@@ -15,7 +15,8 @@ validation_server(
   n_row_label = "Valid number of rows",
   n_col_label = "Valid number of columns",
   btn_label = "Dataset validation:",
-  rules = NULL
+  rules = NULL,
+  bs_version = 3
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ you cannot use \code{inputId}/\code{outputId}, \code{label} or \code{icon} (butt
 \item{btn_label}{Label for the dropdown button, will be followed by validation result.}
 
 \item{rules}{An object of class \code{validator} created with \code{validate::validator}.}
+
+\item{bs_version}{Bootstrap version used, it may affect rendering, especially status badges.}
 }
 \value{
 \itemize{
