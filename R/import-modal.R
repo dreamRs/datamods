@@ -330,7 +330,7 @@ import_server <- function(id,
           rownames = FALSE,
           selection = "none",
           class = "display dt-responsive cell-border compact",
-          style = "bootstrap",
+          style = "auto",
           width = "100%",
           container = container,
           options = list(
