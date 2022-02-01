@@ -70,7 +70,8 @@
   n_row_label <span class="op">=</span> <span class="st">"Valid number of rows"</span>,
   n_col_label <span class="op">=</span> <span class="st">"Valid number of columns"</span>,
   btn_label <span class="op">=</span> <span class="st">"Dataset validation:"</span>,
-  rules <span class="op">=</span> <span class="cn">NULL</span>
+  rules <span class="op">=</span> <span class="cn">NULL</span>,
+  bs_version <span class="op">=</span> <span class="fl">3</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -96,6 +97,8 @@ you cannot use <code>inputId</code>/<code>outputId</code>, <code>label</code> or
 <dd><p>Label for the dropdown button, will be followed by validation result.</p></dd>
 <dt>rules</dt>
 <dd><p>An object of class <code>validator</code> created with <code><a href="https://rdrr.io/pkg/validate/man/validator.html" class="external-link">validate::validator</a></code>.</p></dd>
+<dt>bs_version</dt>
+<dd><p>Bootstrap version used, it may affect rendering, especially status badges.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
