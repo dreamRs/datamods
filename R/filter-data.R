@@ -9,7 +9,12 @@
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
 #'
-#' @eval doc_return_filter()
+#' @return
+#' * UI: HTML tags that can be included in shiny's UI
+#' * Server: a `list` with three slots:
+#'   + **filtered**: a `reactive` function returning the data filtered.
+#'   + **code**: a `reactive` function returning the dplyr pipeline to filter data.
+#'   + **expr**: a `reactive` function returning an expression to filter data.
 #'
 #' @export
 #'

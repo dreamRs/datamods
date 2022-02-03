@@ -1,18 +1,13 @@
 
-
-#' @title Get all import functions in a Modal
+#' @title Import from all sources
 #'
-#' @description Let the user choose a method of his choice to import data
+#' @description Wrap all import modules into one, can be displayed inline or in a modal window..
 #'
 #' @param id Module's id
 #' @param from The import_ui & server to use, i.e. the method.
 #'   There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets", "url")
 #'
-#' @return
-#'  * UI: HTML tags that can be included in shiny's UI
-#'  * Server: a `list` with two slots:
-#'    + **data**: a `reactive` function returning the imported `data.frame`.
-#'    + **name**: a `reactive` function returning the name of the imported data as `character` (if applicable).
+#' @template module-import
 #'
 #' @export
 #' @name import-modal

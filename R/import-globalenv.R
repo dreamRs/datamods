@@ -9,7 +9,7 @@
 #' @param title Module's title, if `TRUE` use the default title,
 #'  use `NULL` for no title or a `shiny.tag` for a custom one.
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #'

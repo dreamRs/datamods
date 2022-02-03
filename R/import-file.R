@@ -7,7 +7,7 @@
 #' @param preview_data Show or not a preview of the data under the file input.
 #' @param file_extensions File extensions accepted by [shiny::fileInput()], can also be MIME type.
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #'

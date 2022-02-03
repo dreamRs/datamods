@@ -5,7 +5,7 @@
 #'
 #' @inheritParams import-globalenv
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #'

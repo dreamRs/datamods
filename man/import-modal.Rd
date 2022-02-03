@@ -5,7 +5,7 @@
 \alias{import_ui}
 \alias{import_server}
 \alias{import_modal}
-\title{Get all import functions in a Modal}
+\title{Import from all sources}
 \usage{
 import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "url"))
 
@@ -38,15 +38,16 @@ if you want that all validation rules are successful before importing data use \
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with two slots:
+\item Server: a \code{list} with three slots:
 \itemize{
+\item \strong{status}: a \code{reactive} function returning the status: \code{NULL}, \code{error} or \code{success}.
+\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character}.
 \item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
-\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character} (if applicable).
 }
 }
 }
 \description{
-Let the user choose a method of his choice to import data
+Wrap all import modules into one, can be displayed inline or in a modal window..
 }
 \examples{
 

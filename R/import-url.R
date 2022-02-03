@@ -4,7 +4,7 @@
 #'
 #' @inheritParams import-globalenv
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #' @name import-url
