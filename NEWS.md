@@ -3,6 +3,8 @@
 * New module to read flat data from URLs `import_url_*()`.
 * Error messages displayed to the user are more informative on the actual error.
 * `filter_data_server()`: new argument `value_na` to set default value for NA's filters widgets.
+* i18n: chinese translations added, thanks to [@xmusphlkg](https://github.com/xmusphlkg).
+* i18n: spanish translations added, thanks to [@drdsdaniel](https://github.com/drdsdaniel).
 
 
 # datamods 1.2.0
