@@ -37,7 +37,9 @@ brazilian portuguese,
 <img src="man/figures/i18n/al.svg" height="16" style="height:16px"/>
 albanian,
 <img src="man/figures/i18n/cn.svg" height="16" style="height:16px"/>
-chinese.
+chinese,
+<img src="man/figures/i18n/es.svg" height="16" style="height:16px"/>
+spanish.
 
 If you want another language to be supported, you can submit a Pull
 Request to add a CSV file like the one used for french (file is located
