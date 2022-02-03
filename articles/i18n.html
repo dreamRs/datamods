@@ -132,13 +132,19 @@
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"cn"</span><span class="op">)</span></code></pre></div>
+<ul>
+<li>
+<img src="figures/i18n/es.svg" style="height:16px"> spanish, activate with:</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"es"</span><span class="op">)</span></code></pre></div>
 <p>If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in <code>inst/i18n</code> folder in the package, you can see it <a href="https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv" class="external-link">here on GitHub</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="using-a-list">Using a list<a class="anchor" aria-label="anchor" href="#using-a-list"></a>
 </h2>
 <p>You can change labels with a named <code>list</code>, where names correspond to the labels and values to the translation to use:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"datamods.i18n"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
   <span class="st">"Import a dataset from an environment"</span> <span class="op">=</span> <span class="st">"Importer un jeu de données depuis l'environnement global"</span>,
   <span class="st">"Select a data.frame:"</span> <span class="op">=</span> <span class="st">"Sélectionner un data.frame :"</span>,
@@ -149,7 +155,7 @@
 <h2 id="using-a-data-frame">Using a data.frame<a class="anchor" aria-label="anchor" href="#using-a-data-frame"></a>
 </h2>
 <p>You can change labels with a <code>data.frame</code> with two columns <code>label</code> (the original label) and <code>translation</code> (the new label to display):</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
   label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Import a dataset from an environment"</span>, <span class="st">"Select a data.frame:"</span>, <span class="va">...</span><span class="op">)</span>,
   translation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Importer un jeu de données depuis l'environnement global"</span>, <span class="st">"Sélectionner un data.frame :"</span>, <span class="va">...</span><span class="op">)</span>
@@ -159,7 +165,7 @@
 <h2 id="using-a-file">Using a file<a class="anchor" aria-label="anchor" href="#using-a-file"></a>
 </h2>
 <p>Use a CSV file with same structure than <code>data.frame</code> above:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"path/to/file.csv"</span><span class="op">)</span></code></pre></div>
 <p>An example of file is shown below.</p>
 </div>
