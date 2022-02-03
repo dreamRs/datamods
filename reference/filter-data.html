@@ -12,7 +12,7 @@ Code to reproduce the filter is returned as an expression with filtered data."><
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9100</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,42 +74,45 @@ Code to reproduce the filter is returned as an expression with filtered data.</p
   widget_char <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"select"</span>, <span class="st">"picker"</span><span class="op">)</span>,
   widget_num <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slider"</span>, <span class="st">"range"</span><span class="op">)</span>,
   widget_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slider"</span>, <span class="st">"range"</span><span class="op">)</span>,
-  label_na <span class="op">=</span> <span class="st">"NA"</span>
+  label_na <span class="op">=</span> <span class="st">"NA"</span>,
+  value_na <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>id</dt>
-<dd><p>Module id. See <code><a href="https://rdrr.io/pkg/shiny/man/callModule.html" class="external-link">callModule</a></code>.</p></dd>
+<dd><p>Module id. See <code><a href="https://rdrr.io/pkg/shiny/man/callModule.html" class="external-link">shiny::callModule()</a></code>.</p></dd>
 <dt>show_nrow</dt>
 <dd><p>Show number of filtered rows and total.</p></dd>
 <dt>max_height</dt>
 <dd><p>Maximum height for filters panel, useful
 if you have many variables to filter and limited space.</p></dd>
 <dt>data</dt>
-<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></code> function returning a
+<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">shiny::reactive()</a></code> function returning a
 <code>data.frame</code> to filter.</p></dd>
 <dt>vars</dt>
-<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></code> function returning a
+<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">shiny::reactive()</a></code> function returning a
 <code>character</code> vector of variables for which to add a filter.
 If a named <code>list</code>, names are used as labels.</p></dd>
 <dt>name</dt>
-<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></code> function returning a
+<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">shiny::reactive()</a></code> function returning a
 <code>character</code> string representing <code>data</code> name, only used for code generated.</p></dd>
 <dt>drop_ids</dt>
 <dd><p>Drop columns containing more than 90% of unique values, or than 50 distinct values.</p></dd>
 <dt>widget_char</dt>
-<dd><p>Widget to use for <code>character</code> variables: <code><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">shinyWidgets::pickerInput</a></code>
-or  <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">shiny::selectizeInput</a></code> (default).</p></dd>
+<dd><p>Widget to use for <code>character</code> variables: <code><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">shinyWidgets::pickerInput()</a></code>
+or <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">shiny::selectInput()</a></code> (default).</p></dd>
 <dt>widget_num</dt>
-<dd><p>Widget to use for <code>numeric</code> variables: <code><a href="https://dreamrs.github.io/shinyWidgets/reference/numericRangeInput.html" class="external-link">shinyWidgets::numericRangeInput</a></code>
-or  <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">shiny::sliderInput</a></code> (default).</p></dd>
+<dd><p>Widget to use for <code>numeric</code> variables: <code><a href="https://dreamrs.github.io/shinyWidgets/reference/numericRangeInput.html" class="external-link">shinyWidgets::numericRangeInput()</a></code>
+or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">shiny::sliderInput()</a></code> (default).</p></dd>
 <dt>widget_date</dt>
-<dd><p>Widget to use for <code>date/time</code> variables: <code><a href="https://rdrr.io/pkg/shiny/man/dateRangeInput.html" class="external-link">shiny::dateRangeInput</a></code>
-or  <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">shiny::sliderInput</a></code> (default).</p></dd>
+<dd><p>Widget to use for <code>date/time</code> variables: <code><a href="https://rdrr.io/pkg/shiny/man/dateRangeInput.html" class="external-link">shiny::dateRangeInput()</a></code>
+or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">shiny::sliderInput()</a></code> (default).</p></dd>
 <dt>label_na</dt>
 <dd><p>Label for missing value widget.</p></dd>
+<dt>value_na</dt>
+<dd><p>Default value for all NA's filters.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -132,7 +135,7 @@ or  <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="extern
 <span class="r-in"><span class="va">mtcars_na</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
 <span class="r-in">  X <span class="op">=</span> <span class="va">mtcars_na</span>,</span>
 <span class="r-in">  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">    <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">15</span><span class="op">:</span><span class="fl">30</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span class="r-in">    <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in">    <span class="va">x</span></span>
 <span class="r-in">  <span class="op">}</span></span>
 <span class="r-in"><span class="op">)</span></span>
