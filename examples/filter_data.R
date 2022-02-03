@@ -8,7 +8,7 @@ mtcars_na <- mtcars
 mtcars_na[] <- lapply(
   X = mtcars_na,
   FUN = function(x) {
-    x[sample.int(n = length(x), size = sample(15:30, 1))] <- NA
+    x[sample.int(n = length(x), size = sample(5:10, 1))] <- NA
     x
   }
 )

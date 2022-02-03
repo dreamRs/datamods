@@ -17,39 +17,42 @@ filter_data_server(
   widget_char = c("select", "picker"),
   widget_num = c("slider", "range"),
   widget_date = c("slider", "range"),
-  label_na = "NA"
+  label_na = "NA",
+  value_na = TRUE
 )
 }
 \arguments{
-\item{id}{Module id. See \code{\link[shiny]{callModule}}.}
+\item{id}{Module id. See \code{\link[shiny:callModule]{shiny::callModule()}}.}
 
 \item{show_nrow}{Show number of filtered rows and total.}
 
 \item{max_height}{Maximum height for filters panel, useful
 if you have many variables to filter and limited space.}
 
-\item{data}{\code{\link[shiny]{reactive}} function returning a
+\item{data}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{data.frame} to filter.}
 
-\item{vars}{\code{\link[shiny]{reactive}} function returning a
+\item{vars}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{character} vector of variables for which to add a filter.
 If a named \code{list}, names are used as labels.}
 
-\item{name}{\code{\link[shiny]{reactive}} function returning a
+\item{name}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{character} string representing \code{data} name, only used for code generated.}
 
 \item{drop_ids}{Drop columns containing more than 90\% of unique values, or than 50 distinct values.}
 
-\item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
-or  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).}
+\item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput()}}
+or \code{\link[shiny:selectInput]{shiny::selectInput()}} (default).}
 
-\item{widget_num}{Widget to use for \code{numeric} variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput}}
-or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).}
+\item{widget_num}{Widget to use for \code{numeric} variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput()}}
+or \code{\link[shiny:sliderInput]{shiny::sliderInput()}} (default).}
 
-\item{widget_date}{Widget to use for \code{date/time} variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput}}
-or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).}
+\item{widget_date}{Widget to use for \code{date/time} variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput()}}
+or \code{\link[shiny:sliderInput]{shiny::sliderInput()}} (default).}
 
 \item{label_na}{Label for missing value widget.}
+
+\item{value_na}{Default value for all NA's filters.}
 }
 \value{
 \itemize{
@@ -77,7 +80,7 @@ mtcars_na <- mtcars
 mtcars_na[] <- lapply(
   X = mtcars_na,
   FUN = function(x) {
-    x[sample.int(n = length(x), size = sample(15:30, 1))] <- NA
+    x[sample.int(n = length(x), size = sample(5:10, 1))] <- NA
     x
   }
 )

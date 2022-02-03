@@ -1,10 +1,10 @@
 
-#' @title Shiny module to interactively filter a \code{data.frame}
+#' @title Shiny module to interactively filter a `data.frame`
 #'
-#' @description Module generate inputs to filter \code{data.frame} according column's type.
+#' @description Module generate inputs to filter `data.frame` according column's type.
 #'  Code to reproduce the filter is returned as an expression with filtered data.
 #'
-#' @param id Module id. See \code{\link[shiny]{callModule}}.
+#' @param id Module id. See [shiny::callModule()].
 #' @param show_nrow Show number of filtered rows and total.
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
@@ -40,21 +40,22 @@ filter_data_ui <- function(id,
 }
 
 
-#' @param data \code{\link[shiny]{reactive}} function returning a
+#' @param data [shiny::reactive()] function returning a
 #'  \code{data.frame} to filter.
-#' @param vars \code{\link[shiny]{reactive}} function returning a
+#' @param vars [shiny::reactive()] function returning a
 #'  `character` vector of variables for which to add a filter.
 #'  If a named `list`, names are used as labels.
-#' @param name \code{\link[shiny]{reactive}} function returning a
+#' @param name [shiny::reactive()] function returning a
 #'  `character` string representing `data` name, only used for code generated.
 #' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
-#' @param widget_char Widget to use for `character` variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
-#'  or  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).
-#' @param widget_num Widget to use for `numeric` variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput}}
-#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
-#' @param widget_date Widget to use for `date/time` variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput}}
-#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
+#' @param widget_char Widget to use for `character` variables: [shinyWidgets::pickerInput()]
+#'  or [shiny::selectInput()] (default).
+#' @param widget_num Widget to use for `numeric` variables: [shinyWidgets::numericRangeInput()]
+#'  or [shiny::sliderInput()] (default).
+#' @param widget_date Widget to use for `date/time` variables: [shiny::dateRangeInput()]
+#'  or [shiny::sliderInput()] (default).
 #' @param label_na Label for missing value widget.
+#' @param value_na Default value for all NA's filters.
 #'
 #'
 #' @rdname filter-data
@@ -71,7 +72,8 @@ filter_data_server <- function(id,
                                widget_char = c("select", "picker"),
                                widget_num = c("slider", "range"),
                                widget_date = c("slider", "range"),
-                               label_na = "NA") {
+                               label_na = "NA",
+                               value_na = TRUE) {
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
   widget_date <- match.arg(widget_date)
@@ -99,7 +101,8 @@ filter_data_server <- function(id,
           widget_char = widget_char,
           widget_num = widget_num,
           widget_date = widget_date,
-          label_na = label_na
+          label_na = label_na,
+          value_na = value_na
         )
         rv_filters$mapping <- filters$filters_id
         rv_filters$mapping_na <- filters$filters_na_id
@@ -167,6 +170,7 @@ create_filters <- function(data,
                            widget_num = c("slider", "range"),
                            widget_date = c("slider", "range"),
                            label_na = "NA",
+                           value_na = TRUE,
                            width = "100%",
                            session = getDefaultReactiveDomain()) {
   data <- as.data.frame(data)
@@ -213,7 +217,7 @@ create_filters <- function(data,
           `for` = id
         ),
         HTML("&nbsp;&nbsp;"),
-        if (any_na) na_filter(id = ns(paste0("na_", id)), label = label_na)
+        if (any_na) na_filter(id = ns(paste0("na_", id)), label = label_na, value = value_na)
       )
 
       if (inherits(x = var, what = c("numeric", "integer"))) {
@@ -344,13 +348,13 @@ set_slider_attr <- function(slider) {
 
 #' @importFrom htmltools tags
 #' @importFrom shinyWidgets prettySwitch
-na_filter <- function(id, label = "NA") {
+na_filter <- function(id, label = "NA", value = TRUE) {
   tags$span(
     style = "position: absolute; right: 0px; margin-right: -20px;",
     prettySwitch(
       inputId = id,
       label = label,
-      value = TRUE,
+      value = value,
       slim = TRUE,
       status = "primary",
       inline = TRUE
