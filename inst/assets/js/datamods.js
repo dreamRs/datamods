@@ -69,6 +69,7 @@ function disableTab(data) {
   if (typeof el[0] != "undefined") {
     $(el[0]).removeAttr("data-toggle");
     $(el[0]).parent().addClass("disabled");
+    $(el[0]).addClass("disabled");
   }
 }
 Shiny.addCustomMessageHandler("datamods-disableTab", disableTab);
@@ -78,6 +79,7 @@ function enableTab(data) {
   if (typeof el[0] != "undefined") {
     $(el[0]).attr("data-toggle", "tab");
     $(el[0]).parent().removeClass("disabled");
+    $(el[0]).removeClass("disabled");
   }
 }
 Shiny.addCustomMessageHandler("datamods-enableTab", enableTab);

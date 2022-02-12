@@ -55,6 +55,8 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  # Try with different Bootstrap version
+  # theme = bslib::bs_theme(version = 4),
   fluidRow(
     column(
       width = 4,
