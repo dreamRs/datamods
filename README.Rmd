@@ -53,7 +53,8 @@ languages <- list(
   "br|pt" = "brazilian portuguese",
   al = "albanian",
   cn = "chinese",
-  es = "spanish"
+  es = "spanish",
+  de = "german"
 )
 ```
 
