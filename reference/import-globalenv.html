@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9300</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@
 <span class="fu">import_globalenv_server</span><span class="op">(</span>
   <span class="va">id</span>,
   btn_show_data <span class="op">=</span> <span class="cn">TRUE</span>,
+  show_data_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"popup"</span>, <span class="st">"modal"</span><span class="op">)</span>,
   trigger_return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"button"</span>, <span class="st">"change"</span><span class="op">)</span>,
   return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span><span class="op">)</span>,
   reset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
@@ -89,6 +90,8 @@
 use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.</p></dd>
 <dt>btn_show_data</dt>
 <dd><p>Display or not a button to display data in a modal window if import is successful.</p></dd>
+<dt>show_data_in</dt>
+<dd><p>Where to display data: in a <code>"popup"</code> or in a <code>"modal"</code> window.</p></dd>
 <dt>trigger_return</dt>
 <dd><p>When to update selected data:
 <code>"button"</code> (when user click on button) or
