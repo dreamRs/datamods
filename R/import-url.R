@@ -39,9 +39,12 @@ import_url_ui <- function(id, title = TRUE) {
         id = ns("import-result"),
         status = "info",
         tags$b(i18n("Nothing pasted yet!")),
-        i18n(
-          HTML("Please paste a valid link in the dialog box above.
-            You can import from flat table format supported by <a href='https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats' target='_blank'>rio</a>.")),
+        i18n("Please paste a valid link in the dialog box above."),
+        i18n("You can import from flat table format supported by"),
+        tags$a(
+          href = "https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats",
+          "package rio"
+        ),
         dismissible = TRUE
       )
     ),
@@ -62,10 +65,11 @@ import_url_ui <- function(id, title = TRUE) {
 #'
 #' @rdname import-url
 import_url_server <- function(id,
-    btn_show_data = TRUE,
-    trigger_return = c("button", "change"),
-    return_class = c("data.frame", "data.table", "tbl_df"),
-    reset = reactive(NULL)) {
+                              btn_show_data = TRUE,
+                              show_data_in = c("popup", "modal"),
+                              trigger_return = c("button", "change"),
+                              return_class = c("data.frame", "data.table", "tbl_df"),
+                              reset = reactive(NULL)) {
 
   trigger_return <- match.arg(trigger_return)
 
@@ -123,7 +127,7 @@ import_url_server <- function(id,
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     observeEvent(input$confirm, {

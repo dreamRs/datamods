@@ -77,6 +77,7 @@ import_copypaste_ui <- function(id, title = TRUE) {
 #' @rdname import-copypaste
 import_copypaste_server <- function(id,
                                     btn_show_data = TRUE,
+                                    show_data_in = c("popup", "modal"),
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df"),
                                     reset = reactive(NULL)) {
@@ -136,7 +137,7 @@ import_copypaste_server <- function(id,
     })
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     observeEvent(input$confirm, {

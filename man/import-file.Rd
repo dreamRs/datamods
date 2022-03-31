@@ -17,6 +17,7 @@ import_file_ui(
 import_file_server(
   id,
   btn_show_data = TRUE,
+  show_data_in = c("popup", "modal"),
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df"),
   reset = reactive(NULL),
@@ -34,6 +35,8 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \item{file_extensions}{File extensions accepted by \code{\link[shiny:fileInput]{shiny::fileInput()}}, can also be MIME type.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
+
+\item{show_data_in}{Where to display data: in a \code{"popup"} or in a \code{"modal"} window.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
@@ -109,7 +112,8 @@ server <- function(input, output, session) {
       json = function(file) {
         jsonlite::read_json(file, simplifyVector = TRUE)
       }
-    )
+    ),
+    show_data_in = "modal"
   )
 
   output$status <- renderPrint({

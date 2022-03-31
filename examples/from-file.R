@@ -37,7 +37,8 @@ server <- function(input, output, session) {
       json = function(file) {
         jsonlite::read_json(file, simplifyVector = TRUE)
       }
-    )
+    ),
+    show_data_in = "modal"
   )
 
   output$status <- renderPrint({

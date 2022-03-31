@@ -16,6 +16,7 @@ import_globalenv_ui(
 import_globalenv_server(
   id,
   btn_show_data = TRUE,
+  show_data_in = c("popup", "modal"),
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df"),
   reset = reactive(NULL)
@@ -32,6 +33,8 @@ import_globalenv_server(
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
+
+\item{show_data_in}{Where to display data: in a \code{"popup"} or in a \code{"modal"} window.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or

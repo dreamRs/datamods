@@ -84,7 +84,8 @@ show_data <- function(data,
       ),
       DT::renderDT(datatable),
       size = "l",
-      footer = NULL
+      footer = NULL,
+      easyClose = TRUE
     ))
   }
 } # nocov end

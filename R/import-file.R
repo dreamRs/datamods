@@ -14,7 +14,7 @@
 #' @name import-file
 #'
 #' @importFrom shiny NS fileInput tableOutput actionButton icon
-#' @importFrom htmltools tags tagAppendAttributes
+#' @importFrom htmltools tags tagAppendAttributes css
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #'
 #' @example examples/from-file.R
@@ -49,13 +49,18 @@ import_file_ui <- function(id,
         )
       ),
       tags$div(
+        tags$label(
+          class = "control-label",
+          style = css(visibility = "hidden", width = "100%", marginBottom = "0.5rem"),
+          "Parameters",
+          `for` = ns("settings")
+        ),
         dropMenu(
           placement = "bottom-end",
           actionButton(
             inputId = ns("settings"),
             label = phosphoricons::ph("gear", title = "parameters"),
-            class = "btn-block",
-            style = "margin-top: 25px;"
+            class = "btn-block"
           ),
           numericInputIcon(
             inputId = ns("skip_rows"),
@@ -137,6 +142,7 @@ import_file_ui <- function(id,
 #' @rdname import-file
 import_file_server <- function(id,
                                btn_show_data = TRUE,
+                               show_data_in = c("popup", "modal"),
                                trigger_return = c("button", "change"),
                                return_class = c("data.frame", "data.table", "tbl_df"),
                                reset = reactive(NULL),
@@ -260,7 +266,7 @@ import_file_server <- function(id,
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     output$table <- renderTable({
