@@ -68,7 +68,8 @@
   show_data_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"popup"</span>, <span class="st">"modal"</span><span class="op">)</span>,
   trigger_return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"button"</span>, <span class="st">"change"</span><span class="op">)</span>,
   return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span><span class="op">)</span>,
-  reset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
+  reset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,
+  fread_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -79,6 +80,8 @@
 <dt>title</dt>
 <dd><p>Module's title, if <code>TRUE</code> use the default title,
 use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.</p></dd>
+<dt>name_field</dt>
+<dd><p>Show or not a field to add a name to data (that is returned server-side).</p></dd>
 <dt>btn_show_data</dt>
 <dd><p>Display or not a button to display data in a modal window if import is successful.</p></dd>
 <dt>show_data_in</dt>
@@ -91,8 +94,8 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
 <dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code> or <code>tbl_df</code> (tibble).</p></dd>
 <dt>reset</dt>
 <dd><p>A <code>reactive</code> function that when triggered resets the data.</p></dd>
-<dt>label_field</dt>
-<dd><p>Show or not a field to add a name to data (that is returned server-side).</p></dd>
+<dt>fread_args</dt>
+<dd><p><code>list</code> of additional arguments to pass to <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">data.table::fread()</a></code> when reading data.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
