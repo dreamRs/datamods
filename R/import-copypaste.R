@@ -4,7 +4,7 @@
 #' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
 #' @inheritParams import-globalenv
-#' @param label_field Show or not a field to add a name to data (that is returned server-side).
+#' @param name_field Show or not a field to add a name to data (that is returned server-side).
 #'
 #' @template module-import
 #'
@@ -68,6 +68,7 @@ import_copypaste_ui <- function(id, title = TRUE, name_field = TRUE) {
 
 
 #' @inheritParams import_globalenv_server
+#' @param fread_args `list` of additional arguments to pass to [data.table::fread()] when reading data.
 #'
 #' @export
 #'
@@ -83,7 +84,8 @@ import_copypaste_server <- function(id,
                                     show_data_in = c("popup", "modal"),
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df"),
-                                    reset = reactive(NULL)) {
+                                    reset = reactive(NULL),
+                                    fread_args = list()) {
 
   trigger_return <- match.arg(trigger_return)
 
@@ -107,7 +109,8 @@ import_copypaste_server <- function(id,
 
     observeEvent(input$data_pasted, {
       req(input$data_pasted)
-      imported <- try(data.table::fread(text = input$data_pasted), silent = TRUE)
+      fread_args$tex <- input$data_pasted
+      imported <- try(rlang::exec(data.table::fread, !!!fread_args), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)

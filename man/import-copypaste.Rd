@@ -14,7 +14,8 @@ import_copypaste_server(
   show_data_in = c("popup", "modal"),
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df"),
-  reset = reactive(NULL)
+  reset = reactive(NULL),
+  fread_args = list()
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ import_copypaste_server(
 
 \item{title}{Module's title, if \code{TRUE} use the default title,
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
+
+\item{name_field}{Show or not a field to add a name to data (that is returned server-side).}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 
@@ -35,7 +38,7 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{reset}{A \code{reactive} function that when triggered resets the data.}
 
-\item{label_field}{Show or not a field to add a name to data (that is returned server-side).}
+\item{fread_args}{\code{list} of additional arguments to pass to \code{\link[data.table:fread]{data.table::fread()}} when reading data.}
 }
 \value{
 \itemize{
