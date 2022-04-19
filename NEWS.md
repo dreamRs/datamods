@@ -3,6 +3,7 @@
 * New module to read flat data from URLs `import_url_*()`.
 * Error messages displayed to the user are more informative on the actual error.
 * `filter_data_server()`: new argument `value_na` to set default value for NA's filters widgets.
+* `import_copypaste_ui()`: new argument `name_field` to show or not name field.
 * i18n: chinese translations added, thanks to [@xmusphlkg](https://github.com/xmusphlkg).
 * i18n: spanish translations added, thanks to [@drdsdaniel](https://github.com/drdsdaniel).
 * i18n: german translations added, thanks to [@SteEcker](https://github.com/SteEcker) and [@joerghenkebuero](https://github.com/joerghenkebuero).

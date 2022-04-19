@@ -6,7 +6,7 @@
 \alias{import_copypaste_server}
 \title{Import data with copy & paste}
 \usage{
-import_copypaste_ui(id, title = TRUE)
+import_copypaste_ui(id, title = TRUE, name_field = TRUE)
 
 import_copypaste_server(
   id,
@@ -34,6 +34,8 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
 
 \item{reset}{A \code{reactive} function that when triggered resets the data.}
+
+\item{label_field}{Show or not a field to add a name to data (that is returned server-side).}
 }
 \value{
 \itemize{

@@ -4,6 +4,7 @@
 #' @description Let the user copy data from Excel or text file then paste it into a text area to import it.
 #'
 #' @inheritParams import-globalenv
+#' @param label_field Show or not a field to add a name to data (that is returned server-side).
 #'
 #' @template module-import
 #'
@@ -15,7 +16,7 @@
 #' @importFrom htmltools tags tagAppendAttributes
 #'
 #' @example examples/from-copypaste.R
-import_copypaste_ui <- function(id, title = TRUE) {
+import_copypaste_ui <- function(id, title = TRUE, name_field = TRUE) {
 
   ns <- NS(id)
 
@@ -40,12 +41,14 @@ import_copypaste_ui <- function(id, title = TRUE) {
       ),
       class = "shiny-input-container-inline"
     ),
-    textInput(
-      inputId = ns("name"),
-      label = NULL,
-      placeholder = i18n("Add a label to data"),
-      width = "100%"
-    ),
+   if (isTRUE(name_field)) {
+     textInput(
+       inputId = ns("name"),
+       label = NULL,
+       placeholder = i18n("Add a label to data"),
+       width = "100%"
+     )
+   },
     tags$div(
       id = ns("import-placeholder"),
       alert(
