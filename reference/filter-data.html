@@ -12,7 +12,7 @@ Code to reproduce the filter is returned as an expression with filtered data."><
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9320</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9330</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,7 +178,7 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
 <span class="r-in">        id <span class="op">=</span> <span class="st">"pbar"</span>, value <span class="op">=</span> <span class="fl">100</span>,</span>
 <span class="r-in">        total <span class="op">=</span> <span class="fl">100</span>, display_pct <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span class="r-in">      <span class="op">)</span>,</span>
-<span class="r-in">      <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/dataTableOutput.html" class="external-link">dataTableOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">"table"</span><span class="op">)</span>,</span>
+<span class="r-in">      <span class="fu">reactable</span><span class="fu">::</span><span class="fu"><a href="https://glin.github.io/reactable/reference/reactable-shiny.html" class="external-link">reactableOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">"table"</span><span class="op">)</span>,</span>
 <span class="r-in">      <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Code dplyr:"</span><span class="op">)</span>,</span>
 <span class="r-in">      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput</a></span><span class="op">(</span>outputId <span class="op">=</span> <span class="st">"code_dplyr"</span><span class="op">)</span>,</span>
 <span class="r-in">      <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Expression:"</span><span class="op">)</span>,</span>
@@ -226,9 +226,9 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">}</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in">  <span class="va">output</span><span class="op">$</span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/dataTableOutput.html" class="external-link">renderDT</a></span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">    <span class="va">res_filter</span><span class="op">$</span><span class="fu">filtered</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">}</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pageLength <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">output</span><span class="op">$</span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">reactable</span><span class="fu">::</span><span class="fu"><a href="https://glin.github.io/reactable/reference/reactable-shiny.html" class="external-link">renderReactable</a></span><span class="op">(</span><span class="op">{</span></span>
+<span class="r-in">    <span class="fu">reactable</span><span class="fu">::</span><span class="fu"><a href="https://glin.github.io/reactable/reference/reactable.html" class="external-link">reactable</a></span><span class="op">(</span><span class="va">res_filter</span><span class="op">$</span><span class="fu">filtered</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="op">}</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in">  <span class="va">output</span><span class="op">$</span><span class="va">code_dplyr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="op">{</span></span>
