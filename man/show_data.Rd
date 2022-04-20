@@ -18,7 +18,7 @@ show_data(
 
 \item{title}{Title to be displayed in window.}
 
-\item{options}{Options passed to \link[DT]{datatable}'s options argument.}
+\item{options}{Arguments passed to \code{\link[reactable:reactable]{reactable::reactable()}}.}
 
 \item{show_classes}{Show variables classes under variables names in table header.}
 
@@ -63,7 +63,12 @@ server <- function(input, output, session) {
     show_data(mtcars, title = "My data", type = "modal")
   })
   observeEvent(input$show3, {
-    show_data(mtcars, title = "My data", show_classes = FALSE)
+    show_data(
+      data = mtcars,
+      title = "My data",
+      show_classes = FALSE,
+      options = list(searchable = TRUE, highlight = TRUE)
+    )
   })
 }
 

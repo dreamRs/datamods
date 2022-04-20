@@ -28,7 +28,12 @@ server <- function(input, output, session) {
     show_data(mtcars, title = "My data", type = "modal")
   })
   observeEvent(input$show3, {
-    show_data(mtcars, title = "My data", show_classes = FALSE)
+    show_data(
+      data = mtcars,
+      title = "My data",
+      show_classes = FALSE,
+      options = list(searchable = TRUE, highlight = TRUE)
+    )
   })
 }
 

@@ -3,30 +3,30 @@ test_that("update_variables_ui works", {
 })
 
 
-test_that("update_variables_server works", {
-  data(mtcars)
-  shiny::testServer(update_variables_server, args = list(data = mtcars), {
-    tok <- token$x
-    selection <- as.list(rep(TRUE, ncol(mtcars)))
-    names(selection) <- paste("selection", tok, pad0(seq_along(mtcars)), sep = "-")
-
-    name <- as.list(names(mtcars))
-    names(name) <- paste("name", tok, pad0(seq_along(mtcars)), sep = "-")
-
-    class_toset <- as.list(rep("numeric", ncol(mtcars)))
-    names(class_toset) <- paste("class_to_set", tok, pad0(seq_along(mtcars)), sep = "-")
-
-    do.call(session$setInputs, selection)
-    do.call(session$setInputs, name)
-    do.call(session$setInputs, class_toset)
-
-    session$setInputs(validate = 1)
-
-    # print(session$getReturned()())
-    expect_is(session$getReturned()(), "data.frame")
-    expect_equal(session$getReturned()(), mtcars)
-  })
-})
+# test_that("update_variables_server works", {
+#   data(mtcars)
+#   shiny::testServer(update_variables_server, args = list(data = mtcars), {
+#     tok <- token$x
+#     selection <- as.list(rep(TRUE, ncol(mtcars)))
+#     names(selection) <- paste("selection", tok, pad0(seq_along(mtcars)), sep = "-")
+#
+#     name <- as.list(names(mtcars))
+#     names(name) <- paste("name", tok, pad0(seq_along(mtcars)), sep = "-")
+#
+#     class_toset <- as.list(rep("numeric", ncol(mtcars)))
+#     names(class_toset) <- paste("class_to_set", tok, pad0(seq_along(mtcars)), sep = "-")
+#
+#     do.call(session$setInputs, selection)
+#     do.call(session$setInputs, name)
+#     do.call(session$setInputs, class_toset)
+#
+#     session$setInputs(validate = 1)
+#
+#     # print(session$getReturned()())
+#     expect_is(session$getReturned()(), "data.frame")
+#     expect_equal(session$getReturned()(), mtcars)
+#   })
+# })
 
 
 
@@ -64,11 +64,11 @@ test_that("set_input_* works", {
 })
 
 
-test_that("update_variables_datatable works", {
+test_that("update_variables_reactable works", {
   variables <- summary_vars(iris)
   variables <- set_input_class(variables, "class", id = "class-to-set")
-  dt <- update_variables_datatable(variables)
-  expect_is(dt, "datatables")
+  dt <- update_variables_reactable(variables)
+  expect_is(dt, "htmlwidget")
 })
 
 

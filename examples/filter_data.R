@@ -51,7 +51,7 @@ ui <- fluidPage(
         id = "pbar", value = 100,
         total = 100, display_pct = TRUE
       ),
-      DT::dataTableOutput(outputId = "table"),
+      reactable::reactableOutput(outputId = "table"),
       tags$b("Code dplyr:"),
       verbatimTextOutput(outputId = "code_dplyr"),
       tags$b("Expression:"),
@@ -99,9 +99,9 @@ server <- function(input, output, session) {
     )
   })
 
-  output$table <- DT::renderDT({
-    res_filter$filtered()
-  }, options = list(pageLength = 5))
+  output$table <- reactable::renderReactable({
+    reactable::reactable(res_filter$filtered())
+  })
 
 
   output$code_dplyr <- renderPrint({

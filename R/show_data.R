@@ -1,20 +1,20 @@
 
 #' Display a table in a window
 #'
-#' @param data a data object (either a \code{matrix} or a \code{data.frame}).
+#' @param data a data object (either a `matrix` or a `data.frame`).
 #' @param title Title to be displayed in window.
 #' @param show_classes Show variables classes under variables names in table header.
 #' @param type Display table in a pop-up or in modal window.
-#' @param options Options passed to \link[DT]{datatable}'s options argument.
-#' @param width Width of the window, only used if \code{type = "popup"}.
+#' @param options Arguments passed to [reactable::reactable()].
+#' @param width Width of the window, only used if `type = "popup"`.
 #'
 #' @return No value.
 #' @export
 #'
 #' @importFrom shinyWidgets show_alert
 #' @importFrom htmltools tags tagList css
-#' @importFrom DT datatable renderDT tableHeader
 #' @importFrom shiny showModal modalDialog
+#' @importFrom utils modifyList
 #'
 #' @example examples/show_data.R
 show_data <- function(data,
@@ -26,28 +26,30 @@ show_data <- function(data,
   type <- match.arg(type)
   data <- as.data.frame(data)
   if (isTRUE(show_classes)) {
-    classes <- get_classes(data)
-    classes <- sprintf("<span style='font-style: italic; font-weight: normal; font-size: small;'>%s</span>", classes)
-    container <- tags$table(
-      tableHeader(paste(paste0(names(data), "&nbsp;&nbsp;"), classes, sep = "<br>"), escape = FALSE)
+    defaultColDef <- reactable::colDef(
+      header = function(value) {
+        if (!value %in% names(data))
+          return("")
+        classes <- tags$div(
+          style = "font-style: italic; font-weight: normal; font-size: small;",
+          get_classes(data[, value, drop = FALSE])
+        )
+        tags$div(title = value, value, classes)
+      }
     )
   } else {
-    container <- tags$table(
-      tableHeader(paste0(names(data), "&nbsp;&nbsp;"), escape = FALSE)
-    )
+    defaultColDef <- NULL
   }
-  datatable <- DT::datatable(
-    data = data,
-    rownames = FALSE,
-    selection = "none",
-    class = "display dt-responsive cell-border compact",
-    style = "auto",
-    width = "100%",
-    container = container,
-    options = c(list(
-      scrollX = TRUE
-    ), options)
-  )
+  if (is.null(options))
+    options <- list()
+  options <- modifyList(x = options, val = list(
+    bordered = TRUE,
+    compact = TRUE,
+    striped = TRUE
+  ))
+  options$data <- data
+  options$defaultColDef <- defaultColDef
+  datatable <- rlang::exec(reactable::reactable, !!!options)
   if (identical(type, "popup")) {
     show_alert(
       title = NULL,
@@ -59,8 +61,6 @@ show_data <- function(data,
           )
         },
         style = "color: #000 !important;",
-        tags$style(".dataTables_length {text-align: left;}"),
-        tags$style(".dataTables_info {text-align: left;}"),
         datatable
       ),
       closeOnClickOutside = TRUE,
@@ -82,7 +82,7 @@ show_data <- function(data,
         ),
         title
       ),
-      DT::renderDT(datatable),
+      reactable::renderReactable(datatable),
       size = "l",
       footer = NULL,
       easyClose = TRUE

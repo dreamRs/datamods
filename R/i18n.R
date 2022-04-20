@@ -60,7 +60,7 @@ i18n_translations <- function(package = packageName(parent.frame(2))) {
     language <- fread(file = i18n_file(language, package = package), encoding = "UTF-8", fill = TRUE)
   }
   if (is.character(language) && file.exists(language)) {
-    language <- fread(file = language, encoding = "UTF-8")
+    language <- fread(file = language, encoding = "UTF-8", fill = TRUE)
   }
   return(language)
 }

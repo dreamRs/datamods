@@ -1,6 +1,6 @@
 
 library(shiny)
-library(datamods)
+# library(datamods)
 
 testdata <- data.frame(
   date_as_char = as.character(Sys.Date() + 0:9),

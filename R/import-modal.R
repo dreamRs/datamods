@@ -15,7 +15,6 @@
 #' @importFrom shiny NS tabsetPanel tabPanel tabPanelBody icon fluidRow column
 #' @importFrom htmltools tags HTML
 #' @importFrom shinyWidgets radioGroupButtons
-#' @importFrom DT DTOutput
 #'
 #' @example examples/modal.R
 #'
@@ -149,7 +148,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
         ),
         value = "view",
         tags$br(),
-        DTOutput(outputId = ns("view"))
+        reactable::reactableOutput(outputId = ns("view"))
       ),
       tabPanel(
         title = tagList(
@@ -203,7 +202,6 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
 #' @rdname import-modal
 #' @importFrom shiny moduleServer reactiveValues observeEvent
 #'  reactive removeModal updateTabsetPanel hideTab observe
-#' @importFrom DT tableHeader datatable renderDT
 #' @importFrom rlang %||%
 import_server <- function(id,
                           validation_opts = NULL,
@@ -312,31 +310,24 @@ import_server <- function(id,
         }
       })
 
-      output$view <- renderDT({
-        req(data_rv$data)
-        data <- data_rv$data
-        classes <- get_classes(data)
-        classes <- sprintf("<span style='font-style: italic; font-weight: normal; font-size: small;'>%s</span>", classes)
-        container <- tags$table(
-          tableHeader(paste(names(data), classes, sep = "<br>"), escape = FALSE)
-        )
-        datatable(
-          data = data,
-          rownames = FALSE,
-          selection = "none",
-          class = "display dt-responsive cell-border compact",
-          style = "auto",
-          width = "100%",
-          container = container,
-          options = list(
-            scrollX = TRUE,
-            searching = FALSE,
-            lengthChange = FALSE,
-            pageLength = min(c(10, nrow(data_rv$data))),
-            columnDefs = list(
-              list(targets = "_all", className = "datamods-dt-nowrap")
-            )
-          )
+      output$view <- reactable::renderReactable({
+        data <- req(data_rv$data)
+        reactable::reactable(
+          data,
+          defaultColDef = reactable::colDef(
+            header = function(value) {
+              print(value)
+              classes <- tags$div(
+                style = "font-style: italic; font-weight: normal; font-size: small;",
+                get_classes(data[, value, drop = FALSE])
+              )
+              tags$div(title = value, value, classes)
+            }
+          ),
+          columns = list(),
+          bordered = TRUE,
+          compact = TRUE,
+          striped = TRUE
         )
       })
 
