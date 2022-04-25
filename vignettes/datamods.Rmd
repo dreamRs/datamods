@@ -103,7 +103,7 @@ imported <- import_googlesheets_server("myid")
 
 #### From URL
 
-Imports data from a URL. Only flat data in any format supported by <a href='https://cran.r-project.org/web/packages/rio/vignettes/rio.html#Supported_file_formats'>rio</a>.
+Imports data from a URL. Only flat data in any format supported by [package rio](https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats).
 
 ```{r}
 # UI

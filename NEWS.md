@@ -1,4 +1,4 @@
-# datamods (unreleased)
+# datamods 1.3.0
 
 * New module to read flat data from URLs `import_url_*()`.
 * Error messages displayed to the user are more informative on the actual error.
