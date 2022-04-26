@@ -141,9 +141,6 @@ update_variables_server <- function(id, data, height = NULL) {
       observeEvent(input$validate, {
         data <- data_r()
         tok <- isolate(token$x)
-        # browser()
-        # getting the input values
-        # new_selections <- get_inputs(paste("selection", tok, sep = "-"))
         new_selections <- reactable::getReactableState("table", "selected")
         new_names <- get_inputs(paste("name", tok, sep = "-"))
         new_classes <- get_inputs(paste("class_to_set", tok, sep = "-"))
@@ -418,7 +415,7 @@ update_variables_reactable <- function(data, height = NULL) {
   if (is.null(height)) {
     height <- if (NROW(data) > 8) "400px" else "auto"
   }
-  reactable::reactable(
+  tble <- reactable::reactable(
     data = data,
     defaultColDef = reactable::colDef(html = TRUE),
     columns = list(
@@ -436,9 +433,9 @@ update_variables_reactable <- function(data, height = NULL) {
     bordered = TRUE,
     compact = TRUE,
     striped = TRUE,
-    wrap = FALSE,
-    rowClass = reactable::JS("function() {Shiny.bindAll();}")
+    wrap = FALSE
   )
+  htmlwidgets::onRender(tble, jsCode = "function() {Shiny.bindAll();}")
 }
 
 

@@ -1,6 +1,6 @@
 Package: datamods
 Title: Modules to Import and Manipulate Data in 'Shiny'
-Version: 1.3.0
+Version: 1.3.0.9000
 Authors@R: 
     c(person(given = "Victor",
              family = "Perrier",
@@ -29,6 +29,7 @@ RoxygenNote: 7.1.2
 Imports: 
     data.table,
     htmltools,
+    htmlwidgets,
     phosphoricons,
     reactable,
     readxl,
