@@ -13,3 +13,4 @@
 ^pkgdown$
 ^man-roxygen$
 ^README\.Rmd$
+^CRAN-SUBMISSION$

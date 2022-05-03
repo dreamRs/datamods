@@ -1,3 +1,9 @@
+# datamods 1.3.1
+
+* Fixed a bug in `update_variables` module.
+
+
+
 # datamods 1.3.0
 
 * New module to read flat data from URLs `import_url_*()`.

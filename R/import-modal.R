@@ -316,7 +316,6 @@ import_server <- function(id,
           data,
           defaultColDef = reactable::colDef(
             header = function(value) {
-              print(value)
               classes <- tags$div(
                 style = "font-style: italic; font-weight: normal; font-size: small;",
                 get_classes(data[, value, drop = FALSE])

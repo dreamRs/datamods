@@ -7,7 +7,7 @@
 
 0 errors | 0 warnings | 0 note
 
-* Added new functions, more arguments to existing ones, support more language for i18n.
+* Fixed a bug introduced in last release.
 
 Thanks,
 
