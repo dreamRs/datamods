@@ -25,7 +25,8 @@ one_column_numeric <- data.frame(
 
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
-
+  actionButton("saveFilterButton","Save Filter Values"),
+  actionButton("loadFilterButton","Load Filter Values"),
   radioButtons(
     inputId = "dataset",
     label = "Data:",
@@ -63,7 +64,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  savedFilterValues <- reactiveVal()
   data <- reactive({
     get(input$dataset)
   })
@@ -81,12 +82,22 @@ server <- function(input, output, session) {
       NULL
     }
   })
+  
+  observeEvent(input$saveFilterButton,{
+    savedFilterValues <<- res_filter$values()
+  },ignoreInit = T)
+  
+  defaults <- reactive({
+    input$loadFilterButton
+    savedFilterValues
+  })
 
   res_filter <- filter_data_server(
     id = "filtering",
     data = data,
     name = reactive(input$dataset),
     vars = vars,
+    defaults = defaults,
     widget_num = "slider",
     widget_date = "slider",
     label_na = "Missing"
