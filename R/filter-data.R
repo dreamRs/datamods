@@ -11,10 +11,11 @@
 #'
 #' @return
 #' * UI: HTML tags that can be included in shiny's UI
-#' * Server: a `list` with three slots:
+#' * Server: a `list` with four slots:
 #'   + **filtered**: a `reactive` function returning the data filtered.
 #'   + **code**: a `reactive` function returning the dplyr pipeline to filter data.
 #'   + **expr**: a `reactive` function returning an expression to filter data.
+#'   + **values**: a `reactive` function returning a named list of variables and filter values.
 #'
 #' @export
 #'
