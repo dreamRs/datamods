@@ -52,6 +52,8 @@ filter_data_ui <- function(id,
 #'  If a named `list`, names are used as labels.
 #' @param name [shiny::reactive()] function returning a
 #'  `character` string representing `data` name, only used for code generated.
+#' @param defaults [shiny::reactive()] function returning a
+#'  named `list` of variable:value pairs which will be used to set the filters.
 #' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
 #' @param widget_char Widget to use for `character` variables: [shinyWidgets::pickerInput()]
 #'  or [shiny::selectInput()] (default).
