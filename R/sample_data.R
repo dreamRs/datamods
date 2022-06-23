@@ -131,6 +131,17 @@ sample_server<- function(id, my_data) {
         } else {
           table_sample <- sample_rows(my_data(), input$slider_rows)
         }
+
+        table_sample <- reactable(
+          table_sample,
+          defaultColDef = colDef(
+            align = "center"
+            ),
+          borderless = TRUE,
+          highlight = TRUE,
+          striped = TRUE
+          )
+
         return(table_sample)
       })
 
@@ -138,24 +149,5 @@ sample_server<- function(id, my_data) {
     }
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

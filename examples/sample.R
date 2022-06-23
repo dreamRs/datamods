@@ -1,11 +1,20 @@
 library(shiny)
-library(echantillon)
-library(shinythemes)
 
 ##### ui.R #####
 
 ui <- fluidPage(
-  theme = shinytheme("cerulean"),
+  #theme = shinytheme("cerulean"),
+  # Thème bslib
+  theme = bs_theme (
+    version = 5,
+    bg = "#FFFFFF",
+    fg = "#0f3587",
+    primary = "#0f3587",
+    "well-bg" = "#FFF",
+    base_font = font_google("Poppins"),
+    code_font = font_google("Poppins")
+  ),
+
   titlePanel("Sampling"),
 
   fluidRow(
@@ -15,7 +24,8 @@ ui <- fluidPage(
     ),
     column(
       width = 8,
-      dataTableOutput("table")
+      #dataTableOutput("table")
+      reactableOutput("table")
     )
   )
 )
@@ -28,7 +38,11 @@ server <- function(input, output, session) {
 
   result_sample <- sample_server("myID", reactive(iris))
 
-  output$table <- renderDataTable({
+  # output$table <- renderDataTable({
+  #   result_sample()
+  # })
+
+  output$table <- renderReactable({
     result_sample()
   })
 }

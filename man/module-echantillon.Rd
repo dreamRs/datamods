@@ -20,8 +20,6 @@ Shiny Sample Module
 }
 \examples{
 library(shiny)
-library(echantillon)
-library(shinythemes)
 
 ##### ui.R #####
 
