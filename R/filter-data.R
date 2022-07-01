@@ -45,7 +45,6 @@ filter_data_ui <- function(id,
   )
 }
 
-#' @param id name of the filter
 #' @param data [shiny::reactive()] function returning a
 #'  \code{data.frame} to filter.
 #' @param vars [shiny::reactive()] function returning a
