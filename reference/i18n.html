@@ -60,61 +60,72 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">i18n</span><span class="op">(</span><span class="va">x</span>, translations <span class="op">=</span> <span class="fu">i18n_translations</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">i18n_translations</span><span class="op">(</span>package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/packageName.html" class="external-link">packageName</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">set_i18n</span><span class="op">(</span><span class="va">value</span>, packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"datamods"</span>, <span class="st">"esquisse"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">i18n</span><span class="op">(</span><span class="va">x</span>, translations <span class="op">=</span> <span class="fu">i18n_translations</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">i18n_translations</span><span class="op">(</span>package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/packageName.html" class="external-link">packageName</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">set_i18n</span><span class="op">(</span><span class="va">value</span>, packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"datamods"</span>, <span class="st">"esquisse"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>Label to translate.</p></dd>
+
+
 <dt>translations</dt>
 <dd><p>Either a <code>list</code> or a <code>data.frame</code> with translations.</p></dd>
+
+
 <dt>package</dt>
 <dd><p>Name of the package where the function is called, use <code>NULL</code> outside a package.
 It will retrieve option <code>"i18n.&lt;PACKAGE&gt;"</code> (or <code>"i18n"</code> if no package) to returns appropriate labels.</p></dd>
+
+
 <dt>value</dt>
 <dd><p>Value to set for translation. Can be:</p><ul><li><p>single <code>character</code> to use a supported language (<code>"fr"</code>, <code>"mk"</code>, <code>"al"</code>, <code>"pt"</code> for esquisse and datamods packages).</p></li>
 <li><p>a <code>list</code> with labels as names and translations as values.</p></li>
 <li><p>a <code>data.frame</code> with 2 column: <code>label</code> &amp; <code>translation</code>.</p></li>
 <li><p>path to a CSV file with same structure as for <code>data.frame</code> above.</p></li>
 </ul></dd>
+
+
 <dt>packages</dt>
 <dd><p>Name of packages for which to set i18n, default to esquisse and datamods</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>i18n()</code> returns a <code>character</code>, <code>i18n_translations()</code> returns a <code>list</code> or a <code>data.frame</code>.</p>
+    
+
+<p><code>i18n()</code> returns a <code>character</code>, <code>i18n_translations()</code> returns a <code>list</code> or a <code>data.frame</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Use with an objet</span></span>
-<span class="r-in"><span class="va">my.translations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"Hello"</span> <span class="op">=</span> <span class="st">"Bonjour"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">i18n</span><span class="op">(</span><span class="st">"Hello"</span>, <span class="va">my.translations</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use with an objet</span></span></span>
+<span class="r-in"><span><span class="va">my.translations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"Hello"</span> <span class="op">=</span> <span class="st">"Bonjour"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">i18n</span><span class="op">(</span><span class="st">"Hello"</span>, <span class="va">my.translations</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Bonjour"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Use with options()</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"i18n"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"Hello"</span> <span class="op">=</span> <span class="st">"Bonjour"</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">i18n</span><span class="op">(</span><span class="st">"Hello"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use with options()</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"i18n"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"Hello"</span> <span class="op">=</span> <span class="st">"Bonjour"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">i18n</span><span class="op">(</span><span class="st">"Hello"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Bonjour"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># With a package</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"datamods.i18n"</span> <span class="op">=</span> <span class="st">"fr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">i18n</span><span class="op">(</span><span class="st">"Browse..."</span>, translations <span class="op">=</span> <span class="fu">i18n_translations</span><span class="op">(</span><span class="st">"datamods"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With a package</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"datamods.i18n"</span> <span class="op">=</span> <span class="st">"fr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">i18n</span><span class="op">(</span><span class="st">"Browse..."</span>, translations <span class="op">=</span> <span class="fu">i18n_translations</span><span class="op">(</span><span class="st">"datamods"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Parcourir..."</span>
-<span class="r-in"><span class="co"># If you call i18n() from within a function of your package</span></span>
-<span class="r-in"><span class="co"># you don't need second argument, e.g.:</span></span>
-<span class="r-in"><span class="co"># i18n("Browse...")</span></span>
+<span class="r-in"><span><span class="co"># If you call i18n() from within a function of your package</span></span></span>
+<span class="r-in"><span><span class="co"># you don't need second argument, e.g.:</span></span></span>
+<span class="r-in"><span><span class="co"># i18n("Browse...")</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -126,7 +137,7 @@ It will retrieve option <code>"i18n.&lt;PACKAGE&gt;"</code> (or <code>"i18n"</co
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

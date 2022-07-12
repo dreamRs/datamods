@@ -60,49 +60,70 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">validation_ui</span><span class="op">(</span><span class="va">id</span>, display <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dropdown"</span>, <span class="st">"inline"</span><span class="op">)</span>, max_height <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">validation_server</span><span class="op">(</span>
-  <span class="va">id</span>,
-  <span class="va">data</span>,
-  n_row <span class="op">=</span> <span class="cn">NULL</span>,
-  n_col <span class="op">=</span> <span class="cn">NULL</span>,
-  n_row_label <span class="op">=</span> <span class="st">"Valid number of rows"</span>,
-  n_col_label <span class="op">=</span> <span class="st">"Valid number of columns"</span>,
-  btn_label <span class="op">=</span> <span class="st">"Dataset validation:"</span>,
-  rules <span class="op">=</span> <span class="cn">NULL</span>,
-  bs_version <span class="op">=</span> <span class="fl">3</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validation_ui</span><span class="op">(</span><span class="va">id</span>, display <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dropdown"</span>, <span class="st">"inline"</span><span class="op">)</span>, max_height <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">validation_server</span><span class="op">(</span></span>
+<span>  <span class="va">id</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  n_row <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_row_label <span class="op">=</span> <span class="st">"Valid number of rows"</span>,</span>
+<span>  n_col_label <span class="op">=</span> <span class="st">"Valid number of columns"</span>,</span>
+<span>  btn_label <span class="op">=</span> <span class="st">"Dataset validation:"</span>,</span>
+<span>  rules <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bs_version <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>id</dt>
 <dd><p>Module's ID.</p></dd>
+
+
 <dt>display</dt>
 <dd><p>Display validation results in a dropdown menu
 by clicking on a button or display results directly in interface.</p></dd>
+
+
 <dt>max_height</dt>
 <dd><p>Maximum height for validation results element, useful if you have many rules.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments passed to <code>actionButton</code> or <code>uiOutput</code> depending on display mode,
 you cannot use <code>inputId</code>/<code>outputId</code>, <code>label</code> or <code>icon</code> (button only).</p></dd>
+
+
 <dt>data</dt>
 <dd><p>a <code>reactive</code> function returning a <code>data.frame</code>.</p></dd>
+
+
 <dt>n_row, n_col</dt>
 <dd><p>A one-sided formula to check number of rows and columns respectively, see below for examples.</p></dd>
+
+
 <dt>n_row_label, n_col_label</dt>
 <dd><p>Text to be displayed with the result of the check for number of rows/columns.</p></dd>
+
+
 <dt>btn_label</dt>
 <dd><p>Label for the dropdown button, will be followed by validation result.</p></dd>
+
+
 <dt>rules</dt>
 <dd><p>An object of class <code>validator</code> created with <code><a href="https://rdrr.io/pkg/validate/man/validator.html" class="external-link">validate::validator</a></code>.</p></dd>
+
+
 <dt>bs_version</dt>
 <dd><p>Bootstrap version used, it may affect rendering, especially status badges.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <ul><li><p>UI: HTML tags that can be included in shiny's UI</p></li>
+    
+
+<ul><li><p>UI: HTML tags that can be included in shiny's UI</p></li>
 <li><p>Server: a <code>list</code> with two slots:</p><ul><li><p><strong>status</strong>: a <code>reactive</code> function returning the best status available between <code>"OK"</code>, <code>"Failed"</code> or <code>"Error"</code>.</p></li>
 <li><p><strong>details</strong>: a <code>reactive</code> function returning a <code>list</code> with validation details.</p></li>
 </ul></li>
@@ -110,94 +131,94 @@ you cannot use <code>inputId</code>/<code>outputId</code>, <code>label</code> or
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"validate"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-cleaning/validate" class="external-link">validate</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="co"># Define some rules to be applied to data</span></span>
-<span class="r-in">  <span class="va">myrules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html" class="external-link">validator</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">Manufacturer</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">is.factor</a></span><span class="op">(</span><span class="va">Manufacturer</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">Price</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="va">Price</span> <span class="op">&gt;</span> <span class="fl">12</span>, <span class="co"># we should use 0 for testing positivity, but that's for the example</span></span>
-<span class="r-in">    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Luggage.room</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/pkg/validate/man/in_range.html" class="external-link">in_range</a></span><span class="op">(</span><span class="va">Cylinders</span>, min <span class="op">=</span> <span class="fl">4</span>, max <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="va">Man.trans.avail</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="co"># Add some labels</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/validate/man/label.html" class="external-link">label</a></span><span class="op">(</span><span class="va">myrules</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"Variable Manufacturer must be character"</span>,</span>
-<span class="r-in">    <span class="st">"Variable Price must be numeric"</span>,</span>
-<span class="r-in">    <span class="st">"Variable Price must be strictly positive"</span>,</span>
-<span class="r-in">    <span class="st">"Luggage.room must not contain any missing values"</span>,</span>
-<span class="r-in">    <span class="st">"Cylinders must be between 4 and 8"</span>,</span>
-<span class="r-in">    <span class="st">"Man.trans.avail must be 'Yes' or 'No'"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="co"># you can also add a description()</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">tags</span><span class="op">$</span><span class="fu">h2</span><span class="op">(</span><span class="st">"Validation"</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidRow</a></span><span class="op">(</span></span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html" class="external-link">column</a></span><span class="op">(</span></span>
-<span class="r-in">        width <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/radioButtons.html" class="external-link">radioButtons</a></span><span class="op">(</span></span>
-<span class="r-in">          inputId <span class="op">=</span> <span class="st">"dataset"</span>,</span>
-<span class="r-in">          label <span class="op">=</span> <span class="st">"Choose dataset:"</span>,</span>
-<span class="r-in">          choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mtcars"</span>, <span class="st">"MASS::Cars93"</span><span class="op">)</span></span>
-<span class="r-in">        <span class="op">)</span>,</span>
-<span class="r-in">        <span class="va">tags</span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"Dropdown example:"</span><span class="op">)</span>,</span>
-<span class="r-in">        <span class="fu">validation_ui</span><span class="op">(</span><span class="st">"validation1"</span><span class="op">)</span>,</span>
-<span class="r-in"></span>
-<span class="r-in">        <span class="va">tags</span><span class="op">$</span><span class="fu">br</span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in"></span>
-<span class="r-in">        <span class="va">tags</span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"Inline example:"</span><span class="op">)</span>,</span>
-<span class="r-in">        <span class="fu">validation_ui</span><span class="op">(</span><span class="st">"validation2"</span>, display <span class="op">=</span> <span class="st">"inline"</span><span class="op">)</span></span>
-<span class="r-in">      <span class="op">)</span>,</span>
-<span class="r-in">      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html" class="external-link">column</a></span><span class="op">(</span></span>
-<span class="r-in">        width <span class="op">=</span> <span class="fl">8</span>,</span>
-<span class="r-in">        <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Status:"</span><span class="op">)</span>,</span>
-<span class="r-in">        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput</a></span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span>,</span>
-<span class="r-in">        <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Details:"</span><span class="op">)</span>,</span>
-<span class="r-in">        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput</a></span><span class="op">(</span><span class="st">"details"</span><span class="op">)</span></span>
-<span class="r-in">      <span class="op">)</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in">    <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dataset</span> <span class="op">==</span> <span class="st">"mtcars"</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">        <span class="va">mtcars</span></span>
-<span class="r-in">      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span class="r-in">        <span class="fu">MASS</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/MASS/man/Cars93.html" class="external-link">Cars93</a></span></span>
-<span class="r-in">      <span class="op">}</span></span>
-<span class="r-in">    <span class="op">}</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">    <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">validation_server</span><span class="op">(</span></span>
-<span class="r-in">      id <span class="op">=</span> <span class="st">"validation1"</span>,</span>
-<span class="r-in">      data <span class="op">=</span> <span class="va">dataset</span>,</span>
-<span class="r-in">      n_row <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="co"># more than 20 rows</span></span>
-<span class="r-in">      n_col <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;=</span> <span class="fl">3</span>, <span class="co"># at least 3 columns</span></span>
-<span class="r-in">      rules <span class="op">=</span> <span class="va">myrules</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">    <span class="fu">validation_server</span><span class="op">(</span></span>
-<span class="r-in">      id <span class="op">=</span> <span class="st">"validation2"</span>,</span>
-<span class="r-in">      data <span class="op">=</span> <span class="va">dataset</span>,</span>
-<span class="r-in">      n_row <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="co"># more than 20 rows</span></span>
-<span class="r-in">      n_col <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;=</span> <span class="fl">3</span>, <span class="co"># at least 3 columns</span></span>
-<span class="r-in">      rules <span class="op">=</span> <span class="va">myrules</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">    <span class="va">output</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">    <span class="va">output</span><span class="op">$</span><span class="va">details</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="fu">details</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in">  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"validate"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-cleaning/validate" class="external-link">validate</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Define some rules to be applied to data</span></span></span>
+<span class="r-in"><span>  <span class="va">myrules</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/validate/man/validator.html" class="external-link">validator</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">Manufacturer</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">is.factor</a></span><span class="op">(</span><span class="va">Manufacturer</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">Price</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Price</span> <span class="op">&gt;</span> <span class="fl">12</span>, <span class="co"># we should use 0 for testing positivity, but that's for the example</span></span></span>
+<span class="r-in"><span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Luggage.room</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/validate/man/in_range.html" class="external-link">in_range</a></span><span class="op">(</span><span class="va">Cylinders</span>, min <span class="op">=</span> <span class="fl">4</span>, max <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Man.trans.avail</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Add some labels</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/validate/man/label.html" class="external-link">label</a></span><span class="op">(</span><span class="va">myrules</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"Variable Manufacturer must be character"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"Variable Price must be numeric"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"Variable Price must be strictly positive"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"Luggage.room must not contain any missing values"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"Cylinders must be between 4 and 8"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"Man.trans.avail must be 'Yes' or 'No'"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># you can also add a description()</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">tags</span><span class="op">$</span><span class="fu">h2</span><span class="op">(</span><span class="st">"Validation"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidRow</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html" class="external-link">column</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        width <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/radioButtons.html" class="external-link">radioButtons</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>          inputId <span class="op">=</span> <span class="st">"dataset"</span>,</span></span>
+<span class="r-in"><span>          label <span class="op">=</span> <span class="st">"Choose dataset:"</span>,</span></span>
+<span class="r-in"><span>          choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mtcars"</span>, <span class="st">"MASS::Cars93"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        <span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="va">tags</span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"Dropdown example:"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="fu">validation_ui</span><span class="op">(</span><span class="st">"validation1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>        <span class="va">tags</span><span class="op">$</span><span class="fu">br</span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>        <span class="va">tags</span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"Inline example:"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="fu">validation_ui</span><span class="op">(</span><span class="st">"validation2"</span>, display <span class="op">=</span> <span class="st">"inline"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html" class="external-link">column</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        width <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>        <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Status:"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput</a></span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="va">tags</span><span class="op">$</span><span class="fu">b</span><span class="op">(</span><span class="st">"Details:"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput</a></span><span class="op">(</span><span class="st">"details"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>    <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dataset</span> <span class="op">==</span> <span class="st">"mtcars"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>        <span class="va">mtcars</span></span></span>
+<span class="r-in"><span>      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>        <span class="fu">MASS</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/MASS/man/Cars93.html" class="external-link">Cars93</a></span></span></span>
+<span class="r-in"><span>      <span class="op">}</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>    <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">validation_server</span><span class="op">(</span></span></span>
+<span class="r-in"><span>      id <span class="op">=</span> <span class="st">"validation1"</span>,</span></span>
+<span class="r-in"><span>      data <span class="op">=</span> <span class="va">dataset</span>,</span></span>
+<span class="r-in"><span>      n_row <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="co"># more than 20 rows</span></span></span>
+<span class="r-in"><span>      n_col <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;=</span> <span class="fl">3</span>, <span class="co"># at least 3 columns</span></span></span>
+<span class="r-in"><span>      rules <span class="op">=</span> <span class="va">myrules</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>    <span class="fu">validation_server</span><span class="op">(</span></span></span>
+<span class="r-in"><span>      id <span class="op">=</span> <span class="st">"validation2"</span>,</span></span>
+<span class="r-in"><span>      data <span class="op">=</span> <span class="va">dataset</span>,</span></span>
+<span class="r-in"><span>      n_row <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="co"># more than 20 rows</span></span></span>
+<span class="r-in"><span>      n_col <span class="op">=</span> <span class="op">~</span> <span class="va">.</span> <span class="op">&gt;=</span> <span class="fl">3</span>, <span class="co"># at least 3 columns</span></span></span>
+<span class="r-in"><span>      rules <span class="op">=</span> <span class="va">myrules</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>    <span class="va">output</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">output</span><span class="op">$</span><span class="va">details</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="fu">details</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: validate</span>
 </code></pre></div>
     </div>
@@ -210,7 +231,7 @@ you cannot use <code>inputId</code>/<code>outputId</code>, <code>label</code> or
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
