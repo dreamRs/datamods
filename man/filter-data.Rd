@@ -13,6 +13,7 @@ filter_data_server(
   data = reactive(NULL),
   vars = reactive(NULL),
   name = reactive("data"),
+  defaults = reactive(NULL),
   drop_ids = TRUE,
   widget_char = c("select", "picker"),
   widget_num = c("slider", "range"),
@@ -39,6 +40,9 @@ If a named \code{list}, names are used as labels.}
 \item{name}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{character} string representing \code{data} name, only used for code generated.}
 
+\item{defaults}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
+named \code{list} of variable:value pairs which will be used to set the filters.}
+
 \item{drop_ids}{Drop columns containing more than 90\% of unique values, or than 50 distinct values.}
 
 \item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput()}}
@@ -57,11 +61,12 @@ or \code{\link[shiny:sliderInput]{shiny::sliderInput()}} (default).}
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with three slots:
+\item Server: a \code{list} with four slots:
 \itemize{
 \item \strong{filtered}: a \code{reactive} function returning the data filtered.
 \item \strong{code}: a \code{reactive} function returning the dplyr pipeline to filter data.
 \item \strong{expr}: a \code{reactive} function returning an expression to filter data.
+\item \strong{values}: a \code{reactive} function returning a named list of variables and filter values.
 }
 }
 }
@@ -97,7 +102,8 @@ one_column_numeric <- data.frame(
 
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
-
+  actionButton("saveFilterButton","Save Filter Values"),
+  actionButton("loadFilterButton","Load Filter Values"),
   radioButtons(
     inputId = "dataset",
     label = "Data:",
@@ -135,7 +141,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  savedFilterValues <- reactiveVal()
   data <- reactive({
     get(input$dataset)
   })
@@ -153,12 +159,22 @@ server <- function(input, output, session) {
       NULL
     }
   })
+  
+  observeEvent(input$saveFilterButton,{
+    savedFilterValues <<- res_filter$values()
+  },ignoreInit = T)
+  
+  defaults <- reactive({
+    input$loadFilterButton
+    savedFilterValues
+  })
 
   res_filter <- filter_data_server(
     id = "filtering",
     data = data,
     name = reactive(input$dataset),
     vars = vars,
+    defaults = defaults,
     widget_num = "slider",
     widget_date = "slider",
     label_na = "Missing"

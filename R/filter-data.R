@@ -11,10 +11,11 @@
 #'
 #' @return
 #' * UI: HTML tags that can be included in shiny's UI
-#' * Server: a `list` with three slots:
+#' * Server: a `list` with four slots:
 #'   + **filtered**: a `reactive` function returning the data filtered.
 #'   + **code**: a `reactive` function returning the dplyr pipeline to filter data.
 #'   + **expr**: a `reactive` function returning an expression to filter data.
+#'   + **values**: a `reactive` function returning a named list of variables and filter values.
 #'
 #' @export
 #'
@@ -44,7 +45,6 @@ filter_data_ui <- function(id,
   )
 }
 
-
 #' @param data [shiny::reactive()] function returning a
 #'  \code{data.frame} to filter.
 #' @param vars [shiny::reactive()] function returning a
@@ -52,6 +52,8 @@ filter_data_ui <- function(id,
 #'  If a named `list`, names are used as labels.
 #' @param name [shiny::reactive()] function returning a
 #'  `character` string representing `data` name, only used for code generated.
+#' @param defaults [shiny::reactive()] function returning a
+#'  named `list` of variable:value pairs which will be used to set the filters.
 #' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
 #' @param widget_char Widget to use for `character` variables: [shinyWidgets::pickerInput()]
 #'  or [shiny::selectInput()] (default).
@@ -73,6 +75,7 @@ filter_data_server <- function(id,
                                data = reactive(NULL),
                                vars = reactive(NULL),
                                name = reactive("data"),
+                               defaults = reactive(NULL),
                                drop_ids = TRUE,
                                widget_char = c("select", "picker"),
                                widget_num = c("slider", "range"),
@@ -99,9 +102,11 @@ filter_data_server <- function(id,
         data <- data()
         req(data)
         vars <- vars()
+        defaults <- defaults()
         filters <- create_filters(
           data = data,
           vars = vars,
+          defaults = defaults,
           drop_ids = drop_ids,
           widget_char = widget_char,
           widget_num = widget_num,
@@ -112,6 +117,19 @@ filter_data_server <- function(id,
         rv_filters$mapping <- filters$filters_id
         rv_filters$mapping_na <- filters$filters_na_id
         return(filters$ui)
+      })
+      
+      filter_values <- reactive({
+        data <- data()
+        req(data)
+        req(all(names(rv_filters$mapping) %in% names(data)))
+        filter_inputs <- lapply(
+          X = rv_filters$mapping,
+          FUN = function(x) {
+            input[[x]]
+          }
+        )
+        filter_inputs
       })
 
       data_filtered <- reactive({
@@ -150,6 +168,7 @@ filter_data_server <- function(id,
 
       return(list(
         filtered = data_filtered,
+        values = filter_values,
         code = reactive(rv_code$dplyr),
         expr = reactive(rv_code$expr)
       ))
@@ -170,6 +189,7 @@ filter_data_server <- function(id,
 #' @importFrom shinyWidgets pickerInput pickerOptions numericRangeInput
 create_filters <- function(data,
                            vars = NULL,
+                           defaults = NULL,
                            drop_ids = TRUE,
                            widget_char = c("select", "picker"),
                            widget_num = c("slider", "range"),
@@ -227,6 +247,9 @@ create_filters <- function(data,
 
       if (inherits(x = var, what = c("numeric", "integer"))) {
         params <- find_range_step(var)
+        if(!is.null(defaults) && label %in% names(defaults)){
+          params$range = defaults[[label]]
+        }
         if (identical(widget_num, "slider")) {
           tags$div(
             style = "position: relative;",
@@ -255,6 +278,9 @@ create_filters <- function(data,
         }
       } else if (inherits(x = var, what = c("Date", "POSIXct"))) {
         range_var <- range(var)
+        if(!is.null(defaults) && label %in% names(defaults)){
+          range_var = defaults[[label]]
+        }
         if (identical(widget_date, "slider")) {
           tags$div(
             style = "position: relative;",
@@ -285,21 +311,25 @@ create_filters <- function(data,
           )
         }
       } else {
-        values <- unique(as.character(var))
-        if ("" %in% values)
-          values <- append(values, "<empty field>")
-        values <- tryCatch(values[trimws(values) != ""], error = function(e) {
-          Encoding(values[!validEnc(values)]) <- "unknown"
-          values
+        choices <- unique(as.character(var))
+        if ("" %in% choices)
+          choices <- append(choices, "<empty field>")
+        choices <- tryCatch(choices[trimws(choices) != ""], error = function(e) {
+          Encoding(choices[!validEnc(choices)]) <- "unknown"
+          choices
         })
+        selected = choices
+        if(!is.null(defaults) && label %in% names(defaults)){
+          selected = defaults[[label]]
+        }
         if (identical(widget_char, "picker")) {
           tags$div(
             style = "position: relative;",
             tag_label,
             pickerInput(
               inputId = ns(id),
-              choices = values,
-              selected = values,
+              choices = choices,
+              selected = selected,
               label = NULL,
               multiple = TRUE,
               width = width,
@@ -313,12 +343,12 @@ create_filters <- function(data,
         } else {
           tags$div(
             style = "position: relative;",
-            class = if (length(values) > 15) "selectize-big",
+            class = if (length(choices) > 15) "selectize-big",
             tag_label,
             selectizeInput(
               inputId = ns(id),
-              choices = values,
-              selected = values,
+              choices = choices,
+              selected = selected,
               label = NULL,
               multiple = TRUE,
               width = width,
