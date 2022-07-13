@@ -1,3 +1,10 @@
+# datamods 1.3.3
+
+* i18n: turkish translations added, thanks to [@sbalci](https://github.com/sbalci).
+* `filter_data` module now support getting and setting filter values, thanks to [@bellma-lilly](https://github.com/bellma-lilly).
+
+
+
 # datamods 1.3.2
 
 * Fix bad link in NEWS.
