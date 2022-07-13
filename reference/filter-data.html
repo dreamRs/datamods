@@ -12,7 +12,7 @@ Code to reproduce the filter is returned as an expression with filtered data."><
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@ Code to reproduce the filter is returned as an expression with filtered data.</p
 <span>  data <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  vars <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  name <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="st">"data"</span><span class="op">)</span>,</span>
+<span>  defaults <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  drop_ids <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  widget_char <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"select"</span>, <span class="st">"picker"</span><span class="op">)</span>,</span>
 <span>  widget_num <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"slider"</span>, <span class="st">"range"</span><span class="op">)</span>,</span>
@@ -110,6 +111,11 @@ If a named <code>list</code>, names are used as labels.</p></dd>
 <code>character</code> string representing <code>data</code> name, only used for code generated.</p></dd>
 
 
+<dt>defaults</dt>
+<dd><p><code><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">shiny::reactive()</a></code> function returning a
+named <code>list</code> of variable:value pairs which will be used to set the filters.</p></dd>
+
+
 <dt>drop_ids</dt>
 <dd><p>Drop columns containing more than 90% of unique values, or than 50 distinct values.</p></dd>
 
@@ -142,9 +148,10 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
     
 
 <ul><li><p>UI: HTML tags that can be included in shiny's UI</p></li>
-<li><p>Server: a <code>list</code> with three slots:</p><ul><li><p><strong>filtered</strong>: a <code>reactive</code> function returning the data filtered.</p></li>
+<li><p>Server: a <code>list</code> with four slots:</p><ul><li><p><strong>filtered</strong>: a <code>reactive</code> function returning the data filtered.</p></li>
 <li><p><strong>code</strong>: a <code>reactive</code> function returning the dplyr pipeline to filter data.</p></li>
 <li><p><strong>expr</strong>: a <code>reactive</code> function returning an expression to filter data.</p></li>
+<li><p><strong>values</strong>: a <code>reactive</code> function returning a named list of variables and filter values.</p></li>
 </ul></li>
 </ul></div>
 
@@ -177,7 +184,8 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">tags</span><span class="op">$</span><span class="fu">h2</span><span class="op">(</span><span class="st">"Filter data.frame"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"saveFilterButton"</span>,<span class="st">"Save Filter Values"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"loadFilterButton"</span>,<span class="st">"Load Filter Values"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/radioButtons.html" class="external-link">radioButtons</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    inputId <span class="op">=</span> <span class="st">"dataset"</span>,</span></span>
 <span class="r-in"><span>    label <span class="op">=</span> <span class="st">"Data:"</span>,</span></span>
@@ -215,7 +223,7 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">savedFilterValues</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveVal.html" class="external-link">reactiveVal</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dataset</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
@@ -233,12 +241,22 @@ or <code><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="externa
 <span class="r-in"><span>      <span class="cn">NULL</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">saveFilterButton</span>,<span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">savedFilterValues</span> <span class="op">&lt;&lt;-</span> <span class="va">res_filter</span><span class="op">$</span><span class="fu">values</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span>,ignoreInit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="va">defaults</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">input</span><span class="op">$</span><span class="va">loadFilterButton</span></span></span>
+<span class="r-in"><span>    <span class="va">savedFilterValues</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">res_filter</span> <span class="op">&lt;-</span> <span class="fu">filter_data_server</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    id <span class="op">=</span> <span class="st">"filtering"</span>,</span></span>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dataset</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    vars <span class="op">=</span> <span class="va">vars</span>,</span></span>
+<span class="r-in"><span>    defaults <span class="op">=</span> <span class="va">defaults</span>,</span></span>
 <span class="r-in"><span>    widget_num <span class="op">=</span> <span class="st">"slider"</span>,</span></span>
 <span class="r-in"><span>    widget_date <span class="op">=</span> <span class="st">"slider"</span>,</span></span>
 <span class="r-in"><span>    label_na <span class="op">=</span> <span class="st">"Missing"</span></span></span>
