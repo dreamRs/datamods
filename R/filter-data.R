@@ -220,7 +220,9 @@ create_filters <- function(data,
     } else {
       labels <- vars
     }
-    vars <- intersect(names(data), vars)
+    vars_display <- intersect(names(data), vars)
+    labels <- labels[vars %in% vars_display]
+    vars <- vars_display
   }
   # filters_id <- paste0("filter_", sample.int(1e9, length(vars)))
   filters_id <- paste0("filter_", makeId(vars))
