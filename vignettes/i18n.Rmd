@@ -85,6 +85,12 @@ set_i18n("es")
 set_i18n("de")
 ```
 
+* ![](figures/i18n/tr.svg){height=16, style="height:16px"} turkish, activate with:
+
+```{r}
+set_i18n("tr")
+```
+
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
 
