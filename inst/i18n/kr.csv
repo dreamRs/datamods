@@ -53,3 +53,10 @@ Data has %s observations and %s variables.,%s행 %s 변수
 No data to display.,화면에 나타낼 데이터 없음.
 file not found: %s,파일 발견되지 않음: %s
 Data successfully updated!,데이터 업데이트 성공
+Close,닫기
+Import data,데이터 불러오기
+Show data,데이터 보기
+Enter URL to data:,데이터 URL 입력:
+Please paste a valid link in the dialog box above.,위의 대화 상자에 유효한 링크를 붙여넣으십시오.
+You can import from flat table format supported by,에서 지원하는 플랫 테이블 형식에서 가져올 수 있습니다.
+No data.frame here...,여기에 data.frame이 없습니다...
