@@ -74,7 +74,7 @@ test_that("i18n works with supported language", {
 
 
 test_that("i18n dont work if no list, no data.frame, no file", {
-  options("datamods.i18n" = I("a"))
+  options("datamods.i18n" = Sys.Date())
   on.exit(options("datamods.i18n" = NULL))
   label <- "something"
   expect_error(i18n_test(label))

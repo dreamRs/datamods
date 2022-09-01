@@ -58,9 +58,14 @@ i18n_translations <- function(package = packageName(parent.frame(2))) {
     return(NULL)
   if (is.character(language) && i18n_exist(language, package = package)) {
     language <- fread(file = i18n_file(language, package = package), encoding = "UTF-8", fill = TRUE)
-  }
-  if (is.character(language) && file.exists(language)) {
+  } else if (is.character(language) && file.exists(language)) {
     language <- fread(file = language, encoding = "UTF-8", fill = TRUE)
+  } else if (is.character(language)) {
+    warning(
+      "i18n translations not found for : ", language,
+      call. = FALSE
+    )
+    language <- NULL
   }
   return(language)
 }
