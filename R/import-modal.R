@@ -6,6 +6,7 @@
 #' @param id Module's id
 #' @param from The import_ui & server to use, i.e. the method.
 #'   There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets", "url")
+#' @inheritParams import-file
 #'
 #' @template module-import
 #'
@@ -18,7 +19,9 @@
 #'
 #' @example examples/modal.R
 #'
-import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "url")) {
+import_ui <- function(id,
+                      from = c("env", "file", "copypaste", "googlesheets", "url"),
+                      file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
   ns <- NS(id)
   from <- match.arg(from, several.ok = TRUE)
 
@@ -34,7 +37,7 @@ import_ui <- function(id, from = c("env", "file", "copypaste", "googlesheets", "
     tabPanelBody(
       value = "file",
       tags$br(),
-      import_file_ui(id = ns("file"), title = NULL)
+      import_file_ui(id = ns("file"), title = NULL, file_extensions = file_extensions)
     )
   }
 
@@ -392,7 +395,11 @@ import_server <- function(id,
 #' @rdname import-modal
 #' @importFrom shiny modalDialog showModal
 #' @importFrom htmltools tags css
-import_modal <- function(id, from, title = "Import data", size = "l") {
+import_modal <- function(id,
+                         from,
+                         title = "Import data",
+                         size = "l",
+                         file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
   showModal(modalDialog(
     title = tagList(
       tags$button(
@@ -405,7 +412,7 @@ import_modal <- function(id, from, title = "Import data", size = "l") {
       ),
       title
     ),
-    import_ui(id, from),
+    import_ui(id, from, file_extensions = file_extensions),
     size = size,
     footer = NULL
   ))

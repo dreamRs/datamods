@@ -7,7 +7,12 @@
 \alias{import_modal}
 \title{Import from all sources}
 \usage{
-import_ui(id, from = c("env", "file", "copypaste", "googlesheets", "url"))
+import_ui(
+  id,
+  from = c("env", "file", "copypaste", "googlesheets", "url"),
+  file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
+    ".sav")
+)
 
 import_server(
   id,
@@ -16,13 +21,22 @@ import_server(
   return_class = c("data.frame", "data.table", "tbl_df")
 )
 
-import_modal(id, from, title = "Import data", size = "l")
+import_modal(
+  id,
+  from,
+  title = "Import data",
+  size = "l",
+  file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
+    ".sav")
+)
 }
 \arguments{
 \item{id}{Module's id}
 
 \item{from}{The import_ui & server to use, i.e. the method.
 There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets", "url")}
+
+\item{file_extensions}{File extensions accepted by \code{\link[shiny:fileInput]{shiny::fileInput()}}, can also be MIME type.}
 
 \item{validation_opts}{\code{list} of arguments passed to [validation_server().}
 
