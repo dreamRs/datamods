@@ -55,7 +55,8 @@ languages <- list(
   cn = "chinese",
   es = "spanish",
   de = "german",
-  tr = "turkish"
+  tr = "turkish",
+  kr = "korean"
 )
 ```
 
