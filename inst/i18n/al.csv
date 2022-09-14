@@ -1,0 +1,62 @@
+label,translation,comment
+Import a dataset from an environment,Importoni një grup të dhënash nga mjedisi
+Select a data.frame:,Zgjidhni data.frame
+List of data.frame...,Lista e tabelave të të dhënave (data.frame)
+Select an environment in which to search:,Zgjidhni një mjedis në të cilin do të kërkoni
+Select environment,Zgjidhni një mjedis
+No data selected!,Nuk ka të dhëna të zgjedhura!
+Use a data.frame from your environment or from the environment of a package.,Përdorni data.frame nga mjedisi juaj ose nga mjedisi i paketës
+No data.frame here...,Këtu nuk ka të dhëna (data.frame) ...
+Ooops,Ups
+Something went wrong...,Diçka shkoi keq...
+Data successfully imported!,Të dhënat u importuan me sukses
+Data ready to be imported!,Të dhënat që janë gati për t'u importuar
+data has %s obs. of %s variables.,Të dhënat kanë %vëzhgime dhe %variabla
+click to see data,Klikoni këtu për t’i parë të dhënat
+Import data,Importoni të dhënat
+Import a file,Importoni skedar
+Upload a file:,Bashkangjitni një dokument:
+Browse...,Shfletoni...
+No file selected,Nuk është zgjedhur asnjë dokument
+Number of rows to skip before reading data:,Numri i rreshtave për t’i kërcyer para se të lexohen të dhënat:
+Decimal separator:,Ndarësi dhjetor:
+Encoding:,Kodimi:
+Select sheet to import:,Zgjidhni një fletë për ta importuar
+No file selected:,Nuk është zgjedhur asnjë dokument:
+"You can import %s files","Mund të importoni dokumente %s"
+First five rows are shown below:,Pesë rreshtat e parë janë treguar më poshtë:
+Copy & paste data,Kopjoni dhe ngjisni të dhënat
+Paste data here:,Ngjitni të dhënat tuaja këtu:
+Nothing pasted yet!,Asgjë nuk është ngjitur deri më tani!
+Please copy and paste some data in the dialog box above.,Ju lutemi kopjoni dhe ngjisni disa të dhëna në dritaren e dialogut më poshtë
+Import Google Spreadsheet,Importoni GoogleSheet
+You can either use:,Mund ta përdorni edhe ndonjërën nga këto:
+"A shareable link, in that case first sheet will be read","Linku që mund të ndahet, në këtë rast do të lexohet fleta e parë"
+"The URL that appear in your browser, in that case the current sheet will be read","URL-ja që shfaqet në shfletuesin tuaj, në këtë rast do të lexohet fleta e parë"
+Enter a shareable link to a GoogleSheet:,Futni një link që mund të ndahet në GoogleSheet:
+Please paste a valid GoogleSheet link in the dialog box above.,Ju lutemi ngjisni një link të vlefshëm në GoogleSheet në dritaren e dialogut më poshtë.
+Help,Ndihmë
+Environment,Mjedisi
+External file,Skedari i jashtëm
+Copy / Paste,Kopjoni / ngjisni
+Googlesheets,Googlesheets
+How to import data?,Si të importoni të dhëna?
+Import,Importo
+View,Shiko
+Update,Azhurno
+Validate,Verifiko
+Update & select variables,Azhurnoni dhe zgjidhni variablat
+Date format:,Formati i datës:
+Date to use as origin to convert date/datetime:,Data që do të përdoret për të konvertuar ndryshoren date/datetime
+"Select, rename and convert variables in table above, then apply changes by clicking button below.","Zgjidhni, riemërtoni dhe konvertoni variablat në tabelën e mësipërme, e pastaj aplikoni ndryshimet duke klikuar butonin më poshtë."
+Apply changes,Apliko ndryshimet
+Data has %s observations and %s variables.,Të dhënat kanë %s vëzhgime dhe %s variabla
+Data successfully updated!,Të dhënat janë azhurnuar me sukses!
+Validation:,Verifikimi:
+OK,Në rregull
+Failed,Dështim
+Error,Gabim
+Number of rows:,Numri i rreshtave:
+No data to display.,Nuk ka të dhëna për t’u shfaqur.
+Close,Мbyll,
+"Add a label to data","Shtoni një etiketë në të dhëna","#TODO #CHECK"

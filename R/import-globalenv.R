@@ -6,10 +6,10 @@
 #' @param id Module's ID.
 #' @param globalenv Search for data in Global environment.
 #' @param packages Name of packages in which to search data.
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @param title Module's title, if `TRUE` use the default title,
+#'  use `NULL` for no title or a `shiny.tag` for a custom one.
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #'
@@ -19,7 +19,7 @@
 #' @importFrom shiny NS actionButton icon textInput
 #' @importFrom shinyWidgets pickerInput alert
 #'
-#' @example examples/globalenv-default.R
+#' @example examples/from-globalenv.R
 import_globalenv_ui <- function(id,
                                 globalenv = TRUE,
                                 packages = get_data_packages(),
@@ -92,21 +92,23 @@ import_globalenv_ui <- function(id,
 
 
 #' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
+#' @param show_data_in Where to display data: in a `"popup"` or in a `"modal"` window.
 #' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
+#'  `"button"` (when user click on button) or
+#'  `"change"` (each time user select a dataset in the list).
+#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble).
 #' @param reset A `reactive` function that when triggered resets the data.
 #'
 #' @export
 #'
-#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeUI is.reactive icon actionLink
+#' @importFrom shiny moduleServer reactiveValues observeEvent reactive removeUI is.reactive icon actionLink isTruthy
 #' @importFrom htmltools tags tagList
 #' @importFrom shinyWidgets updatePickerInput
 #'
 #' @rdname import-globalenv
 import_globalenv_server <- function(id,
                                     btn_show_data = TRUE,
+                                    show_data_in = c("popup", "modal"),
                                     trigger_return = c("button", "change"),
                                     return_class = c("data.frame", "data.table", "tbl_df"),
                                     reset = reactive(NULL)) {
@@ -163,48 +165,57 @@ import_globalenv_server <- function(id,
 
 
     observeEvent(input$data, {
-      req(input$data)
-      name_df <- input$data
-
-      if (!is.null(temporary_rv$package)) {
-        attr(name_df, "package") <- temporary_rv$package
-      }
-
-      imported <- try(get_env_data(name_df), silent = TRUE)
-
-      if (inherits(imported, "try-error") || NROW(imported) < 1) {
+      if (!isTruthy(input$data)) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_error()
-        temporary_rv$status <- "error"
-        temporary_rv$data <- NULL
-        temporary_rv$name <- NULL
-      } else {
-        toggle_widget(inputId = "confirm", enable = TRUE)
         insert_alert(
           selector = ns("import"),
-          status = "success",
-          make_success_alert(
-            imported,
-            trigger_return = trigger_return,
-            btn_show_data = btn_show_data
-          )
+          status = "info",
+          tags$b(i18n("No data selected!")),
+          i18n("Use a data.frame from your environment or from the environment of a package.")
         )
-        pkg <- attr(name_df, "package")
-        if (!is.null(pkg)) {
-          name <- paste(pkg, input$data, sep = "::")
-        } else {
-          name <- input$data
+      } else {
+        name_df <- input$data
+
+        if (!is.null(temporary_rv$package)) {
+          attr(name_df, "package") <- temporary_rv$package
         }
-        name <- trimws(sub("\\(([^\\)]+)\\)", "", name))
-        temporary_rv$status <- "success"
-        temporary_rv$data <- imported
-        temporary_rv$name <- name
+
+        imported <- try(get_env_data(name_df), silent = TRUE)
+
+        if (inherits(imported, "try-error") || NROW(imported) < 1) {
+          toggle_widget(inputId = "confirm", enable = FALSE)
+          insert_error(mssg = i18n(attr(imported, "condition")$message))
+          temporary_rv$status <- "error"
+          temporary_rv$data <- NULL
+          temporary_rv$name <- NULL
+        } else {
+          toggle_widget(inputId = "confirm", enable = TRUE)
+          insert_alert(
+            selector = ns("import"),
+            status = "success",
+            make_success_alert(
+              imported,
+              trigger_return = trigger_return,
+              btn_show_data = btn_show_data
+            )
+          )
+          pkg <- attr(name_df, "package")
+          if (!is.null(pkg)) {
+            name <- paste(pkg, input$data, sep = "::")
+          } else {
+            name <- input$data
+          }
+          name <- trimws(sub("\\(([^\\)]+)\\)", "", name))
+          temporary_rv$status <- "success"
+          temporary_rv$data <- imported
+          temporary_rv$name <- name
+        }
       }
-    }, ignoreInit = TRUE)
+    }, ignoreInit = TRUE, ignoreNULL = FALSE)
 
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     observeEvent(input$confirm, {
@@ -251,7 +262,11 @@ import_globalenv_server <- function(id,
 #' @importFrom utils data
 #'
 #' @examples
-#' get_data_packages()
+#' if (interactive()) {
+#'
+#'   get_data_packages()
+#'
+#' }
 get_data_packages <- function() {
   suppressWarnings({
     pkgs <- data(package = .packages(all.available = TRUE))

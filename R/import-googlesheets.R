@@ -3,11 +3,9 @@
 #'
 #' @description Let user paste link to a Google sheet then import the data.
 #'
-#' @param id Module's ID
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @inheritParams import-globalenv
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #' @name import-googlesheets
@@ -16,7 +14,7 @@
 #' @importFrom shinyWidgets textInputIcon
 #' @importFrom htmltools tags tagList
 #'
-#' @example examples/googlesheets.R
+#' @example examples/from-googlesheets.R
 import_googlesheets_ui <- function(id, title = TRUE) {
 
   ns <- NS(id)
@@ -33,7 +31,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
     html_dependency_datamods(),
     title,
     tags$div(
-      class = "pull-right",
+      class = "pull-right float-right",
       help_popup(tagList(
         i18n("You can either use:"),
         tags$ul(
@@ -70,12 +68,7 @@ import_googlesheets_ui <- function(id, title = TRUE) {
 }
 
 
-#' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
-#' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
-#' @param reset A `reactive` function that when triggered resets the data.
+#' @inheritParams import_globalenv_server
 #'
 #' @export
 #'
@@ -84,9 +77,9 @@ import_googlesheets_ui <- function(id, title = TRUE) {
 #' @importFrom htmltools tags tagList
 #'
 #' @rdname import-googlesheets
-
 import_googlesheets_server <- function(id,
                                        btn_show_data = TRUE,
+                                       show_data_in = c("popup", "modal"),
                                        trigger_return = c("button", "change"),
                                        return_class = c("data.frame", "data.table", "tbl_df"),
                                        reset = reactive(NULL)) {
@@ -122,7 +115,7 @@ import_googlesheets_server <- function(id,
       imported <- try(read_gsheet(input$link), silent = TRUE)
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_error()
+        insert_error(mssg = i18n(attr(imported, "condition")$message))
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
       } else {
@@ -142,7 +135,7 @@ import_googlesheets_server <- function(id,
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     observeEvent(input$confirm, {

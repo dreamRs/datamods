@@ -13,52 +13,60 @@ filter_data_server(
   data = reactive(NULL),
   vars = reactive(NULL),
   name = reactive("data"),
+  defaults = reactive(NULL),
   drop_ids = TRUE,
   widget_char = c("select", "picker"),
   widget_num = c("slider", "range"),
   widget_date = c("slider", "range"),
-  label_na = "NA"
+  label_na = "NA",
+  value_na = TRUE
 )
 }
 \arguments{
-\item{id}{Module id. See \code{\link[shiny]{callModule}}.}
+\item{id}{Module id. See \code{\link[shiny:callModule]{shiny::callModule()}}.}
 
 \item{show_nrow}{Show number of filtered rows and total.}
 
 \item{max_height}{Maximum height for filters panel, useful
 if you have many variables to filter and limited space.}
 
-\item{data}{\code{\link[shiny]{reactive}} function returning a
+\item{data}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{data.frame} to filter.}
 
-\item{vars}{\code{\link[shiny]{reactive}} function returning a
+\item{vars}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{character} vector of variables for which to add a filter.
 If a named \code{list}, names are used as labels.}
 
-\item{name}{\code{\link[shiny]{reactive}} function returning a
+\item{name}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 \code{character} string representing \code{data} name, only used for code generated.}
+
+\item{defaults}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
+named \code{list} of variable:value pairs which will be used to set the filters.}
 
 \item{drop_ids}{Drop columns containing more than 90\% of unique values, or than 50 distinct values.}
 
-\item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
-or  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).}
+\item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput()}}
+or \code{\link[shiny:selectInput]{shiny::selectInput()}} (default).}
 
-\item{widget_num}{Widget to use for \code{numeric} variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput}}
-or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).}
+\item{widget_num}{Widget to use for \code{numeric} variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput()}}
+or \code{\link[shiny:sliderInput]{shiny::sliderInput()}} (default).}
 
-\item{widget_date}{Widget to use for \code{date/time} variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput}}
-or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).}
+\item{widget_date}{Widget to use for \code{date/time} variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput()}}
+or \code{\link[shiny:sliderInput]{shiny::sliderInput()}} (default).}
 
 \item{label_na}{Label for missing value widget.}
+
+\item{value_na}{Default value for all NA's filters.}
 }
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with three slots:
+\item Server: a \code{list} with four slots:
 \itemize{
 \item \strong{filtered}: a \code{reactive} function returning the data filtered.
 \item \strong{code}: a \code{reactive} function returning the dplyr pipeline to filter data.
 \item \strong{expr}: a \code{reactive} function returning an expression to filter data.
+\item \strong{values}: a \code{reactive} function returning a named list of variables and filter values.
 }
 }
 }
@@ -77,7 +85,7 @@ mtcars_na <- mtcars
 mtcars_na[] <- lapply(
   X = mtcars_na,
   FUN = function(x) {
-    x[sample.int(n = length(x), size = sample(15:30, 1))] <- NA
+    x[sample.int(n = length(x), size = sample(5:10, 1))] <- NA
     x
   }
 )
@@ -88,9 +96,14 @@ datetime <- data.frame(
   num = sample.int(1e5, 300)
 )
 
+one_column_numeric <- data.frame(
+  var1 = rnorm(100)
+)
+
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
-
+  actionButton("saveFilterButton","Save Filter Values"),
+  actionButton("loadFilterButton","Load Filter Values"),
   radioButtons(
     inputId = "dataset",
     label = "Data:",
@@ -99,7 +112,8 @@ ui <- fluidPage(
       "mtcars",
       "mtcars_na",
       "Cars93",
-      "datetime"
+      "datetime",
+      "one_column_numeric"
     ),
     inline = TRUE
   ),
@@ -115,7 +129,7 @@ ui <- fluidPage(
         id = "pbar", value = 100,
         total = 100, display_pct = TRUE
       ),
-      DT::dataTableOutput(outputId = "table"),
+      reactable::reactableOutput(outputId = "table"),
       tags$b("Code dplyr:"),
       verbatimTextOutput(outputId = "code_dplyr"),
       tags$b("Expression:"),
@@ -127,7 +141,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  savedFilterValues <- reactiveVal()
   data <- reactive({
     get(input$dataset)
   })
@@ -145,12 +159,22 @@ server <- function(input, output, session) {
       NULL
     }
   })
+  
+  observeEvent(input$saveFilterButton,{
+    savedFilterValues <<- res_filter$values()
+  },ignoreInit = T)
+  
+  defaults <- reactive({
+    input$loadFilterButton
+    savedFilterValues
+  })
 
   res_filter <- filter_data_server(
     id = "filtering",
     data = data,
     name = reactive(input$dataset),
     vars = vars,
+    defaults = defaults,
     widget_num = "slider",
     widget_date = "slider",
     label_na = "Missing"
@@ -163,9 +187,9 @@ server <- function(input, output, session) {
     )
   })
 
-  output$table <- DT::renderDT({
-    res_filter$filtered()
-  }, options = list(pageLength = 5))
+  output$table <- reactable::renderReactable({
+    reactable::reactable(res_filter$filtered())
+  })
 
 
   output$code_dplyr <- renderPrint({
