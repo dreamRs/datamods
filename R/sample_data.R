@@ -1,11 +1,11 @@
-## Function sample_rows()
+## Function sample_n()
 
 #' @title Sample rows
 #'
-#' @description The `sample_rows` function returns the sample of a dataset from a number of rows chosen by the user.
+#' @description The `sample_n` function returns the sample of a dataset from a number of rows chosen by the user.
 #'
 #' @param data `data.frame`
-#' @param rows vecteur de type `numeric`
+#' @param n vecteur de type `numeric`
 #'
 #' @return the sample of a dataset in the form of `data.table`
 #'
@@ -14,17 +14,17 @@
 #' @importFrom data.table as.data.table .N
 #'
 #' @examples
-#' sample_rows(iris, 25)
-sample_rows <- function(data, rows) {
-  as.data.table(data)[sample(x = .N, size = rows)]
+#' sample_n(iris, 25)
+sample_n <- function(data, n) {
+  as.data.table(data)[sample(x = .N, size = n)]
 }
 
 
-## Function sample_percentage()
+## Function sample_prop()
 
 #' @title Sample percentage
 #'
-#' @description The `sample_percentage` function returns the sample of a dataset from a percentage chosen by the user.
+#' @description The `sample_prop` function returns the sample of a dataset from a percentage chosen by the user.
 #'
 #' @param data `data.frame`
 #' @param percentage vecteur de type `numeric`
@@ -35,8 +35,8 @@ sample_rows <- function(data, rows) {
 #'
 #' @importFrom data.table as.data.table .N
 #'
-sample_percentage <- function(data, percentage) {
-  as.data.table(data)[sample(x = .N, size = nrow(data) * (percentage/100))]
+sample_prop <- function(data, prop) {
+  as.data.table(data)[sample(x = .N, size = nrow(data) * (prop/100))]
 }
 
 
@@ -48,7 +48,7 @@ sample_percentage <- function(data, percentage) {
 #'
 #' @export
 #'
-#' @name module-echantillon
+#' @name module-sample
 #'
 #' @importFrom htmltools tagList
 #' @importFrom shinyWidgets radioGroupButtons
@@ -60,31 +60,31 @@ sample_ui <- function(id) {
 
   tagList(
     radioGroupButtons(
-      ns("choice"),
-      label = "Display :",
-      choices = c("Percentage", "Rows"),
+      inputId = ns("choice"),
+      label = "Sample data by :",
+      choices = c("number of rows", "proportion of rows"),
       justified = TRUE
     ),
 
     conditionalPanel(
-      condition = "input.choice == `Percentage`",
+      condition = "input.choice == `proportion of rows`",
       ns = ns,
       sliderInput(
-        ns("bins"),
-        label = "Choose a percentage:",
+        inputId = ns("proportion_rows"),
+        label = "Choose a percentage :",
         min = 0, max = 100, value = 0,
         post = " %"),
-      uiOutput(ns("text1"))
+      uiOutput(outputId = ns("feedback_proportion_rows"))
     ),
 
     conditionalPanel(
-      condition = "input.choice == `Rows`",
+      condition = "input.choice == `number of rows`",
       ns = ns,
       sliderInput(
-        ns('slider_rows'),
-        label = 'Choose a number of rows:',
+        inputId = ns("number_rows"),
+        label = "Choose a number of rows :",
         min = 0, max = 10, value = 10),
-      uiOutput(ns("text2")),
+      uiOutput(outputId = ns("feedback_number_rows")),
     ),
   )
 }
@@ -92,56 +92,45 @@ sample_ui <- function(id) {
 
 ## Function sample_server()
 
-#' @param my_data `reactive` containing a `data.frame` to use in the module.
+#' @param data_r `reactive` containing a `data.frame` to use in the module.
 #'
 #' @export
 #'
-#' @rdname module-echantillon
+#' @rdname module-sample
 #'
 #' @importFrom shiny moduleServer observeEvent updateSliderInput renderUI reactive
-#' @importFrom htmltools tags h4
+#' @importFrom htmltools tags div
 #'
-sample_server<- function(id, my_data) {
+sample_server<- function(id, data_r) {
   moduleServer(
     id,
     function(input, output, session) {
 
-      observeEvent(my_data(), {
+      observeEvent(data_r(), {
         updateSliderInput(
           session,
-          inputId = "slider_rows",
-          min = 0, max = nrow(my_data()), value = min(0, nrow(my_data())
+          inputId = "number_rows",
+          min = 0, max = nrow(data_r()), value = min(0, nrow(data_r())
           )
         )
       })
 
-      output$text1 <- renderUI({
-        value <- nrow(my_data()) * (input$bins/100)
-        tags$h4(paste(input$bins, "%, that is", round(value), "rows."))
+      output$feedback_proportion_rows <- renderUI({
+        value <- nrow(data_r()) * (input$proportion_rows/100)
+        tags$div(paste(input$proportion_rows, "%, that is", round(value), "rows."))
       })
 
-      output$text2 <- renderUI({
-        value <- input$slider_rows / nrow(my_data()) * 100
-        h4(paste(input$slider_rows, "rows, that is", round(value, 1), "%."))
+      output$feedback_number_rows <- renderUI({
+        value <- input$number_rows / nrow(data_r()) * 100
+        tags$div(paste(input$number_rows, "rows, that is", round(value, 1), "%."))
       })
 
       sample <- reactive({
-        if (input$choice == "Percentage") {
-          table_sample <- sample_percentage(my_data(), input$bins)
+        if (input$choice == "proportion of rows") {
+          table_sample <- sample_prop(data = data_r(), prop = input$proportion_rows)
         } else {
-          table_sample <- sample_rows(my_data(), input$slider_rows)
+          table_sample <- sample_n(data = data_r(), n = input$number_rows)
         }
-
-        table_sample <- reactable(
-          table_sample,
-          defaultColDef = colDef(
-            align = "center"
-            ),
-          borderless = TRUE,
-          highlight = TRUE,
-          striped = TRUE
-          )
-
         return(table_sample)
       })
 

@@ -3,9 +3,9 @@ library(shiny)
 ##### ui.R #####
 
 ui <- fluidPage(
-  #theme = shinytheme("cerulean"),
+  # theme = shinythemes::shinytheme("cerulean"),
   # Thème bslib
-  theme = bs_theme (
+  theme = bslib::bs_theme (
     version = 5,
     bg = "#FFFFFF",
     fg = "#0f3587",
@@ -43,7 +43,16 @@ server <- function(input, output, session) {
   # })
 
   output$table <- renderReactable({
-    result_sample()
+    table_sample <- reactable(
+      data = result_sample(),
+      defaultColDef = colDef(
+        align = "center"
+      ),
+      borderless = TRUE,
+      highlight = TRUE,
+      striped = TRUE
+    )
+    return(table_sample)
   })
 }
 
