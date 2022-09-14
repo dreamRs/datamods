@@ -63,7 +63,8 @@ sample_ui <- function(id) {
       inputId = ns("choice"),
       label = "Sample data by :",
       choices = c("number of rows", "proportion of rows"),
-      justified = TRUE
+      justified = FALSE,
+      size = "xs"
     ),
 
     conditionalPanel(
@@ -72,8 +73,9 @@ sample_ui <- function(id) {
       sliderInput(
         inputId = ns("proportion_rows"),
         label = "Choose a percentage :",
-        min = 0, max = 100, value = 0,
-        post = " %"),
+        min = 0, max = 100, value = 100,
+        post = " %"
+        ),
       uiOutput(outputId = ns("feedback_proportion_rows"))
     ),
 
@@ -83,9 +85,10 @@ sample_ui <- function(id) {
       sliderInput(
         inputId = ns("number_rows"),
         label = "Choose a number of rows :",
-        min = 0, max = 10, value = 10),
-      uiOutput(outputId = ns("feedback_number_rows")),
-    ),
+        min = 0, max = 10, value = 10
+        ),
+      uiOutput(outputId = ns("feedback_number_rows"))
+    )
   )
 }
 
@@ -101,31 +104,34 @@ sample_ui <- function(id) {
 #' @importFrom shiny moduleServer observeEvent updateSliderInput renderUI reactive
 #' @importFrom htmltools tags div
 #'
-sample_server<- function(id, data_r) {
+sample_server <- function(id, data_r = reactive(NULL)) {
   moduleServer(
     id,
     function(input, output, session) {
 
       observeEvent(data_r(), {
+        req(data_r())
         updateSliderInput(
           session,
           inputId = "number_rows",
-          min = 0, max = nrow(data_r()), value = min(0, nrow(data_r())
-          )
+          min = 0, max = nrow(data_r()), value = nrow(data_r())
         )
       })
 
       output$feedback_proportion_rows <- renderUI({
+        req(data_r())
         value <- nrow(data_r()) * (input$proportion_rows/100)
-        tags$div(paste(input$proportion_rows, "%, that is", round(value), "rows."))
+        tags$div(paste(input$proportion_rows, "% of the total, i.e.", round(value), "rows"))
       })
 
       output$feedback_number_rows <- renderUI({
+        req(data_r())
         value <- input$number_rows / nrow(data_r()) * 100
-        tags$div(paste(input$number_rows, "rows, that is", round(value, 1), "%."))
+        tags$div(paste(input$number_rows, "lines, i.e.", round(value, 1), "% of the total"))
       })
 
       sample <- reactive({
+        req(data_r())
         if (input$choice == "proportion of rows") {
           table_sample <- sample_prop(data = data_r(), prop = input$proportion_rows)
         } else {
