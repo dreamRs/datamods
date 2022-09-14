@@ -61,11 +61,20 @@ test_that("i18n works with file", {
 test_that("i18n works with supported language", {
   options("datamods.i18n" = "fr")
   expect_identical(i18n_test("Help"), "Aide")
+
+  options("datamods.i18n" = "mk")
+  expect_type(i18n_test("Help"), "character")
+
+  options("datamods.i18n" = "pt")
+  expect_type(i18n_test("Help"), "character")
+
+  options("datamods.i18n" = "al")
+  expect_type(i18n_test("Help"), "character")
 })
 
 
 test_that("i18n dont work if no list, no data.frame, no file", {
-  options("datamods.i18n" = I("a"))
+  options("datamods.i18n" = Sys.Date())
   on.exit(options("datamods.i18n" = NULL))
   label <- "something"
   expect_error(i18n_test(label))

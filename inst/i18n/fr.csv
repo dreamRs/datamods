@@ -1,4 +1,4 @@
-label,translation
+label,translation,comment
 "Import a dataset from an environment","Importer un jeu de données depuis l'environnement global"
 "Select a data.frame:","Sélectionner un data.frame :"
 "List of data.frame...","Liste des tableau de données"
@@ -23,7 +23,7 @@ label,translation
 "Encoding:","Encodage :"
 "Select sheet to import:","Sélectionner la feuille à importer :"
 "No file selected:","Aucun fichier sélectionné"
-"You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ...","Vous pouvez importer des fichers .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."
+"You can import %s files","Vous pouvez importer des fichers %s"
 "First five rows are shown below:","Les cinq premières lignes sont affichées ci-dessous :"
 "Copy & paste data","Copier / coller des données"
 "Paste data here:","Collez vos données ici :"
@@ -58,3 +58,5 @@ label,translation
 "Error","Erreur"
 "Number of rows:","Nombre de lignes :"
 "No data to display.","Pas de données à afficher."
+"Close","Fermer"
+"Add a label to data","Ajouter un libellé aux données"

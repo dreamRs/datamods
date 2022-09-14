@@ -8,7 +8,7 @@ mtcars_na <- mtcars
 mtcars_na[] <- lapply(
   X = mtcars_na,
   FUN = function(x) {
-    x[sample.int(n = length(x), size = sample(15:30, 1))] <- NA
+    x[sample.int(n = length(x), size = sample(5:10, 1))] <- NA
     x
   }
 )
@@ -19,9 +19,14 @@ datetime <- data.frame(
   num = sample.int(1e5, 300)
 )
 
+one_column_numeric <- data.frame(
+  var1 = rnorm(100)
+)
+
 ui <- fluidPage(
   tags$h2("Filter data.frame"),
-
+  actionButton("saveFilterButton","Save Filter Values"),
+  actionButton("loadFilterButton","Load Filter Values"),
   radioButtons(
     inputId = "dataset",
     label = "Data:",
@@ -30,7 +35,8 @@ ui <- fluidPage(
       "mtcars",
       "mtcars_na",
       "Cars93",
-      "datetime"
+      "datetime",
+      "one_column_numeric"
     ),
     inline = TRUE
   ),
@@ -46,7 +52,7 @@ ui <- fluidPage(
         id = "pbar", value = 100,
         total = 100, display_pct = TRUE
       ),
-      DT::dataTableOutput(outputId = "table"),
+      reactable::reactableOutput(outputId = "table"),
       tags$b("Code dplyr:"),
       verbatimTextOutput(outputId = "code_dplyr"),
       tags$b("Expression:"),
@@ -58,7 +64,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  savedFilterValues <- reactiveVal()
   data <- reactive({
     get(input$dataset)
   })
@@ -76,12 +82,22 @@ server <- function(input, output, session) {
       NULL
     }
   })
+  
+  observeEvent(input$saveFilterButton,{
+    savedFilterValues <<- res_filter$values()
+  },ignoreInit = T)
+  
+  defaults <- reactive({
+    input$loadFilterButton
+    savedFilterValues
+  })
 
   res_filter <- filter_data_server(
     id = "filtering",
     data = data,
     name = reactive(input$dataset),
     vars = vars,
+    defaults = defaults,
     widget_num = "slider",
     widget_date = "slider",
     label_na = "Missing"
@@ -94,9 +110,9 @@ server <- function(input, output, session) {
     )
   })
 
-  output$table <- DT::renderDT({
-    res_filter$filtered()
-  }, options = list(pageLength = 5))
+  output$table <- reactable::renderReactable({
+    reactable::reactable(res_filter$filtered())
+  })
 
 
   output$code_dplyr <- renderPrint({

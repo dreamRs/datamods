@@ -16,6 +16,7 @@ import_globalenv_ui(
 import_globalenv_server(
   id,
   btn_show_data = TRUE,
+  show_data_in = c("popup", "modal"),
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df"),
   reset = reactive(NULL)
@@ -32,6 +33,8 @@ import_globalenv_server(
 use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
+
+\item{show_data_in}{Where to display data: in a \code{"popup"} or in a \code{"modal"} window.}
 
 \item{trigger_return}{When to update selected data:
 \code{"button"} (when user click on button) or
@@ -56,58 +59,60 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 Let the user select a dataset from its own environment or from a package's environment.
 }
 \examples{
+if (interactive()) {
+  library(shiny)
+  library(datamods)
 
-library(shiny)
-library(datamods)
+  # Create some data.frames
 
-# Create some data.frames
+  my_df <- data.frame(
+    variable1 = sample(letters, 20, TRUE),
+    variable2 = sample(1:100, 20, TRUE)
+  )
 
-my_df <- data.frame(
-  variable1 = sample(letters, 20, TRUE),
-  variable2 = sample(1:100, 20, TRUE)
-)
-
-results_analysis <- data.frame(
-  id = sample(letters, 20, TRUE),
-  measure = sample(1:100, 20, TRUE),
-  response = sample(1:100, 20, TRUE)
-)
+  results_analysis <- data.frame(
+    id = sample(letters, 20, TRUE),
+    measure = sample(1:100, 20, TRUE),
+    response = sample(1:100, 20, TRUE)
+  )
 
 
-# Application
+  # Application
 
-ui <- fluidPage(
-  fluidRow(
-    column(
-      width = 4,
-      import_globalenv_ui("myid")
-    ),
-    column(
-      width = 8,
-      tags$b("Imported data:"),
-      verbatimTextOutput(outputId = "status"),
-      verbatimTextOutput(outputId = "name"),
-      verbatimTextOutput(outputId = "data")
+  ui <- fluidPage(
+    fluidRow(
+      column(
+        width = 4,
+        import_globalenv_ui("myid")
+      ),
+      column(
+        width = 8,
+        tags$b("Import status:"),
+        verbatimTextOutput(outputId = "status"),
+        tags$b("Name:"),
+        verbatimTextOutput(outputId = "name"),
+        tags$b("Data:"),
+        verbatimTextOutput(outputId = "data")
+      )
     )
   )
-)
 
-server <- function(input, output, session) {
+  server <- function(input, output, session) {
 
-  imported <- import_globalenv_server("myid")
+    imported <- import_globalenv_server("myid")
 
-  output$status <- renderPrint({
-    imported$status()
-  })
-  output$name <- renderPrint({
-    imported$name()
-  })
-  output$data <- renderPrint({
-    imported$data()
-  })
+    output$status <- renderPrint({
+      imported$status()
+    })
+    output$name <- renderPrint({
+      imported$name()
+    })
+    output$data <- renderPrint({
+      imported$data()
+    })
 
-}
+  }
 
-if (interactive())
   shinyApp(ui, server)
+}
 }

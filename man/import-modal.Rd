@@ -5,9 +5,14 @@
 \alias{import_ui}
 \alias{import_server}
 \alias{import_modal}
-\title{Get all import functions in a Modal}
+\title{Import from all sources}
 \usage{
-import_ui(id, from = c("env", "file", "copypaste", "googlesheets"))
+import_ui(
+  id,
+  from = c("env", "file", "copypaste", "googlesheets", "url"),
+  file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
+    ".sav")
+)
 
 import_server(
   id,
@@ -16,13 +21,22 @@ import_server(
   return_class = c("data.frame", "data.table", "tbl_df")
 )
 
-import_modal(id, from, title = "Import data", size = "l")
+import_modal(
+  id,
+  from,
+  title = "Import data",
+  size = "l",
+  file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
+    ".sav")
+)
 }
 \arguments{
 \item{id}{Module's id}
 
 \item{from}{The import_ui & server to use, i.e. the method.
-There are 4 options to choose from. ("env", "file", "copypaste", "googlesheets")}
+There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets", "url")}
+
+\item{file_extensions}{File extensions accepted by \code{\link[shiny:fileInput]{shiny::fileInput()}}, can also be MIME type.}
 
 \item{validation_opts}{\code{list} of arguments passed to [validation_server().}
 
@@ -38,15 +52,16 @@ if you want that all validation rules are successful before importing data use \
 \value{
 \itemize{
 \item UI: HTML tags that can be included in shiny's UI
-\item Server: a \code{list} with two slots:
+\item Server: a \code{list} with three slots:
 \itemize{
+\item \strong{status}: a \code{reactive} function returning the status: \code{NULL}, \code{error} or \code{success}.
+\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character}.
 \item \strong{data}: a \code{reactive} function returning the imported \code{data.frame}.
-\item \strong{name}: a \code{reactive} function returning the name of the imported data as \code{character} (if applicable).
 }
 }
 }
 \description{
-Let the user choose a method of his choice to import data
+Wrap all import modules into one, can be displayed inline or in a modal window..
 }
 \examples{
 
@@ -54,13 +69,15 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  # Try with different Bootstrap version
+  # theme = bslib::bs_theme(version = 4),
   fluidRow(
     column(
       width = 4,
       checkboxGroupInput(
         inputId = "from",
         label = "From",
-        choices = c("env", "file", "copypaste", "googlesheets"),
+        choices = c("env", "file", "copypaste", "googlesheets", "url"),
         selected = c("file", "copypaste")
       ),
       actionButton("launch_modal", "Launch modal window")

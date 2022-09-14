@@ -13,5 +13,9 @@ a character vector of packages names
 Get packages containing datasets
 }
 \examples{
-get_data_packages()
+if (interactive()) {
+
+  get_data_packages()
+
+}
 }

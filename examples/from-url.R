@@ -2,42 +2,29 @@
 library(shiny)
 library(datamods)
 
-# Create some data.frames
-
-my_df <- data.frame(
-  variable1 = sample(letters, 20, TRUE),
-  variable2 = sample(1:100, 20, TRUE)
-)
-
-results_analysis <- data.frame(
-  id = sample(letters, 20, TRUE),
-  measure = sample(1:100, 20, TRUE),
-  response = sample(1:100, 20, TRUE)
-)
-
-
-# Application
-
 ui <- fluidPage(
+  tags$h3("Import data from URL"),
   fluidRow(
     column(
       width = 4,
-      import_globalenv_ui("myid")
+      import_url_ui("myid")
     ),
     column(
       width = 8,
-      tags$b("Imported data:"),
+      tags$b("Import status:"),
       verbatimTextOutput(outputId = "status"),
+      tags$b("Name:"),
       verbatimTextOutput(outputId = "name"),
+      tags$b("Data:"),
       verbatimTextOutput(outputId = "data")
     )
   )
 )
 
 server <- function(input, output, session) {
-
-  imported <- import_globalenv_server("myid")
-
+  
+  imported <- import_url_server("myid")
+  
   output$status <- renderPrint({
     imported$status()
   })
@@ -47,7 +34,7 @@ server <- function(input, output, session) {
   output$data <- renderPrint({
     imported$data()
   })
-
+  
 }
 
 if (interactive())

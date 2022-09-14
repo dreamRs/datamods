@@ -12,7 +12,6 @@
 #'
 #' @importFrom shiny uiOutput actionButton icon
 #' @importFrom htmltools tagList tags
-#' @importFrom DT DTOutput
 #' @importFrom shinyWidgets html_dependency_pretty textInputIcon dropMenu
 #'
 #' @example examples/variables.R
@@ -30,35 +29,40 @@ update_variables_ui <- function(id, title = TRUE) {
     title,
     tags$div(
       style = "min-height: 25px;",
-      uiOutput(outputId = ns("data_info"), inline = TRUE),
-      tagAppendAttributes(
-        dropMenu(
-          placement = "bottom-end",
-          actionButton(
-            inputId = ns("settings"),
-            label = phosphoricons::ph("gear"),
-            class = "pull-right"
+      tags$div(
+        uiOutput(outputId = ns("data_info"), inline = TRUE),
+        tagAppendAttributes(
+          dropMenu(
+            placement = "bottom-end",
+            actionButton(
+              inputId = ns("settings"),
+              label = phosphoricons::ph("gear"),
+              class = "pull-right float-right"
+            ),
+            textInputIcon(
+              inputId = ns("format"),
+              label = i18n("Date format:"),
+              value = "%Y-%m-%d",
+              icon = list(phosphoricons::ph("clock"))
+            ),
+            textInputIcon(
+              inputId = ns("origin"),
+              label = i18n("Date to use as origin to convert date/datetime:"),
+              value = "1970-01-01",
+              icon = list(phosphoricons::ph("calendar"))
+            ),
+            textInputIcon(
+              inputId = ns("dec"),
+              label = i18n("Decimal separator:"),
+              value = ".",
+              icon = list("0.00")
+            )
           ),
-          textInputIcon(
-            inputId = ns("format"),
-            label = tagList(phosphoricons::ph("clock"), i18n("Date format:")),
-            value = "%Y-%m-%d"
-          ),
-          textInputIcon(
-            inputId = ns("origin"),
-            label = tagList(phosphoricons::ph("calendar"), i18n("Date to use as origin to convert date/datetime:")),
-            value = "1970-01-01"
-          ),
-          textInputIcon(
-            inputId = ns("dec"),
-            label = i18n("Decimal separator:"),
-            value = ".",
-            icon = list("0.00")
-          )
-        ),
-        style = "display: inline;"
+          style = "display: inline;"
+        )
       ),
-      DTOutput(outputId = ns("table"))
+      tags$br(),
+      reactable::reactableOutput(outputId = ns("table"))
     ),
     tags$br(),
     tags$div(
@@ -91,7 +95,6 @@ update_variables_ui <- function(id, title = TRUE) {
 #' @rdname update-variables
 #'
 #' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need
-#' @importFrom DT renderDT
 update_variables_server <- function(id, data, height = NULL) {
   moduleServer(
     id = id,
@@ -125,21 +128,20 @@ update_variables_server <- function(id, data, height = NULL) {
         summary_vars(data)
       })
 
-      output$table <- renderDT({
+      output$table <- reactable::renderReactable({
         req(variables_r())
         tok <- isolate(token$x)
         variables <- variables_r()
-        variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
+        # variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
         variables <- set_input_text(variables, "name", ns(paste("name", tok, sep = "-")))
         variables <- set_input_class(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
-        update_variables_datatable(variables, height = height)
+        update_variables_reactable(variables, height = height)
       })
 
       observeEvent(input$validate, {
         data <- data_r()
         tok <- isolate(token$x)
-        # getting the input values
-        new_selections <- get_inputs(paste("selection", tok, sep = "-"))
+        new_selections <- reactable::getReactableState("table", "selected")
         new_names <- get_inputs(paste("name", tok, sep = "-"))
         new_classes <- get_inputs(paste("class_to_set", tok, sep = "-"))
 
@@ -161,11 +163,11 @@ update_variables_server <- function(id, data, height = NULL) {
           # rename
           names(data) <- unlist(new_names, use.names = FALSE)
           # select
-          data <- data[, unlist(new_selections, use.names = FALSE), drop = FALSE]
+          data <- data[, new_selections, drop = FALSE]
         }, silent = TRUE)
 
         if (inherits(res_update, "try-error")) {
-          insert_error("update")
+          insert_error(selector = "update")
         } else {
           insert_alert(
             selector = ns("update"),
@@ -284,7 +286,7 @@ summary_vars <- function(data) {
 
 #' @title Convert to textInput
 #'
-#' @description Convert a variable to several text inputs to be displayed in a \code{DT::datatable}.
+#' @description Convert a variable to several text inputs to be displayed in a widget table.
 #'
 #' @param data a \code{data.frame}
 #' @param variable name of the variable to replace by text inputs
@@ -299,12 +301,14 @@ set_input_text <- function(data, variable, id = "variable", width = "100%") {
   values <- data[[variable]]
   text_input <- mapply(
     FUN = function(inputId, value) {
-      doRenderTags(textInput(
+      input <- textInput(
         inputId = inputId,
         label = NULL,
         value = value,
         width = width
-      ))
+      )
+      input <- htmltools::tagAppendAttributes(input, style = "margin-bottom: 5px;")
+      doRenderTags(input)
     },
     inputId = paste(id, pad0(seq_along(values)), sep = "-"),
     value = values,
@@ -344,7 +348,7 @@ set_input_checkbox <- function(data, id = "selection") {
         shape = "curve",
         width = "100%"
       )
-      tag <- tagAppendAttributes(tag, style = "margin-top: 5px;")
+      tag <- tagAppendAttributes(tag, style = "margin-top: 5px; margin-bottom: 5px;")
       doRenderTags(tag)
     },
     X = pad0(seq_len(nrow(data)))
@@ -376,14 +380,16 @@ set_input_class <- function(data, variable, id = "classes", width = "100%") {
   class_input <- mapply(
     FUN = function(inputId, class) {
       if (class %in% classes_up) {
-        doRenderTags(selectInput(
+        input <- selectInput(
           inputId = inputId,
           label = NULL,
           choices = classes_up,
           selected = class,
           width = width,
           selectize = FALSE
-        ))
+        )
+        input <- htmltools::tagAppendAttributes(input, style = "margin-bottom: 5px;")
+        doRenderTags(input)
       } else {
         ""
       }
@@ -405,63 +411,32 @@ set_input_class <- function(data, variable, id = "classes", width = "100%") {
 
 
 
-#' DT table to display variables info & update
-#'
-#' @param data a \code{data.frame}
-#'
-#' @return a \code{DT} htmlwidget
-#' @noRd
-#'
-#' @importFrom DT datatable formatPercentage JS
-update_variables_datatable <- function(data, height = NULL) {
+update_variables_reactable <- function(data, height = NULL) {
   if (is.null(height)) {
-    height <- if (nrow(data) > 8) "400px"
+    height <- if (NROW(data) > 8) "400px" else "auto"
   }
-  dt <- datatable(
+  tble <- reactable::reactable(
     data = data,
-    rownames = TRUE,
-    colnames = c("Name", "Class", "Class to set",
-                 "Missing values",
-                 "Complete obs.",
-                 "Unique values"),
-    selection = "none",
-    escape = FALSE,
-    style = "bootstrap",
-    class = "display dt-responsive",
-    fillContainer = FALSE,
-    options = list(
-      scrollY = height,
-      scrollX = FALSE,
-      lengthChange = FALSE,
-      paging = FALSE,
-      info = FALSE,
-      searching = FALSE,
-      autoWidth = TRUE,
-      preDrawCallback = JS("function() {Shiny.unbindAll(this.api().table().node());}"),
-      drawCallback = JS("function() {Shiny.bindAll(this.api().table().node());}"),
-      columnDefs = list(
-        list(width = "5%", targets = 0),
-        list(width = "25%", targets = 1),
-        list(width = "20%", targets = 2),
-        list(width = "20%", targets = 3),
-        list(width = "10%", targets = 4),
-        list(width = "10%", targets = 5),
-        list(width = "10%", targets = 6)
-      ),
-      columns = list(
-        list(width = "5%"),
-        list(width = "25%"),
-        list(width = "20%"),
-        list(width = "20%"),
-        list(width = "10%"),
-        list(width = "10%"),
-        list(width = "10%")
-      )
-    )
+    defaultColDef = reactable::colDef(html = TRUE),
+    columns = list(
+      name = reactable::colDef(name = "Name"),
+      class = reactable::colDef(name = "Class"),
+      class_toset = reactable::colDef(name = "New class"),
+      n_missing = reactable::colDef(name = "Missing values"),
+      p_complete = reactable::colDef(name = "Complete obs.", format = reactable::colFormat(percent = TRUE, digits = 1)),
+      n_unique = reactable::colDef(name = "Unique values")
+    ),
+    height = height,
+    selection = "multiple",
+    defaultSelected = seq_len(nrow(data)),
+    pagination = FALSE,
+    bordered = TRUE,
+    compact = TRUE,
+    striped = TRUE,
+    wrap = FALSE
   )
-  formatPercentage(dt, "p_complete")
+  htmlwidgets::onRender(tble, jsCode = "function() {Shiny.bindAll();}")
 }
-
 
 
 

@@ -11,3 +11,6 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^man-roxygen$
+^README\.Rmd$
+^CRAN-SUBMISSION$

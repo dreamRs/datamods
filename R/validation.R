@@ -65,6 +65,7 @@ validation_ui <- function(id, display = c("dropdown", "inline"), max_height = NU
 #' @param n_row_label,n_col_label Text to be displayed with the result of the check for number of rows/columns.
 #' @param btn_label Label for the dropdown button, will be followed by validation result.
 #' @param rules An object of class \code{validator} created with \code{validate::validator}.
+#' @param bs_version Bootstrap version used, it may affect rendering, especially status badges.
 #'
 #' @rdname validation
 #'
@@ -77,7 +78,8 @@ validation_server <- function(id,
                               n_row_label = "Valid number of rows",
                               n_col_label = "Valid number of columns",
                               btn_label = "Dataset validation:",
-                              rules = NULL) {
+                              rules = NULL,
+                              bs_version = 3) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -137,7 +139,7 @@ validation_server <- function(id,
           label <- doRenderTags(tagList(
             btn_label,
             tags$span(
-              class = "label label-success",
+              class = badge_class(bs_version, "success"),
               phosphoricons::ph("check", weight = "bold", title = i18n("OK")),
               i18n("OK")
             )
@@ -146,7 +148,7 @@ validation_server <- function(id,
           label <- doRenderTags(tagList(
             btn_label,
             tags$span(
-              class = "label label-warning",
+              class = badge_class(bs_version, "warning"),
               phosphoricons::ph("warning", weight = "bold", title = i18n("Failed")),
               i18n("Failed")
             )
@@ -155,7 +157,7 @@ validation_server <- function(id,
           label <- doRenderTags(tagList(
             btn_label,
             tags$span(
-              class = "label label-danger",
+              class = badge_class(bs_version, "danger"),
               phosphoricons::ph("x", weight = "bold", title = i18n("Error")),
               i18n("Error")
             )
@@ -173,7 +175,7 @@ validation_server <- function(id,
             class = "datamods-validation-summary",
             style = "border-right: 1px solid #e6e6e6;",
             tags$span(
-              class = "label label-success",
+              class = badge_class(bs_version, "success"),
               i18n("OK"),
               tags$span(sum(total == "OK"), class = "datamods-validation-item")
             )
@@ -182,7 +184,7 @@ validation_server <- function(id,
             class = "datamods-validation-summary",
             style = "border-right: 1px solid #e6e6e6;",
             tags$span(
-              class = "label label-warning",
+              class = badge_class(bs_version, "warning"),
               i18n("Failed"),
               tags$span(sum(total == "Failed"), class = "datamods-validation-item")
             )
@@ -190,7 +192,7 @@ validation_server <- function(id,
           tags$div(
             class = "datamods-validation-summary",
             tags$span(
-              class = "label label-danger",
+              class = badge_class(bs_version, "danger"),
               i18n("Error"),
               tags$span(sum(total == "Error"), class = "datamods-validation-item")
             )
@@ -305,6 +307,17 @@ format_validate <- function(data) {
       )
     }
   )
+}
+
+
+badge_class <- function(bs_version, status) {
+  if (!is.numeric(bs_version))
+    stop("`bs_version` must be a numeric.")
+  if (bs_version <= 3) {
+    paste0("label label-", status)
+  } else {
+    sprintf("badge badge-%1$s bg-%1$s", status)
+  }
 }
 
 

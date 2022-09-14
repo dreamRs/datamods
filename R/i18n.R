@@ -11,7 +11,7 @@
 #'
 #' @name i18n
 #'
-#' @importFrom data.table as.data.table fread :=
+#' @importFrom data.table as.data.table :=
 #'
 #' @example examples/i18n.R
 i18n <- function(x, translations = i18n_translations()) {
@@ -46,6 +46,7 @@ i18n <- function(x, translations = i18n_translations()) {
 #' @rdname i18n
 #'
 #' @importFrom utils packageName
+#' @importFrom data.table fread
 i18n_translations <- function(package = packageName(parent.frame(2))) {
   if (is.null(package)) {
     opts <- "i18n"
@@ -56,12 +57,41 @@ i18n_translations <- function(package = packageName(parent.frame(2))) {
   if (is.null(language))
     return(NULL)
   if (is.character(language) && i18n_exist(language, package = package)) {
-    language <- fread(file = i18n_file(language, package = package), encoding = "UTF-8")
-  }
-  if (is.character(language) && file.exists(language)) {
-    language <- fread(file = language, encoding = "UTF-8")
+    language <- fread(file = i18n_file(language, package = package), encoding = "UTF-8", fill = TRUE)
+  } else if (is.character(language) && file.exists(language)) {
+    language <- fread(file = language, encoding = "UTF-8", fill = TRUE)
+  } else if (is.character(language)) {
+    warning(
+      "i18n translations not found for : ", language,
+      call. = FALSE
+    )
+    language <- NULL
   }
   return(language)
+}
+
+#' @param value Value to set for translation. Can be:
+#'   * single `character` to use a supported language (`"fr"`, `"mk"`, `"al"`, `"pt"` for esquisse and datamods packages).
+#'   * a `list` with labels as names and translations as values.
+#'   * a `data.frame` with 2 column: `label` & `translation`.
+#'   * path to a CSV file with same structure as for `data.frame` above.
+#' @param packages Name of packages for which to set i18n, default to esquisse and datamods
+#'
+#' @export
+#'
+#' @rdname i18n
+#'
+#' @importFrom stats setNames
+set_i18n <- function(value, packages = c("datamods", "esquisse")) {
+  if (is.null(packages)) {
+    options("i18n" = value)
+  } else {
+    i18n.opts <- setNames(
+      lapply(seq_along(packages), function(...) value),
+      paste(packages, "i18n", sep = ".")
+    )
+    options(i18n.opts)
+  }
 }
 
 

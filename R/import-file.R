@@ -3,22 +3,25 @@
 #'
 #' @description Let user upload a file and import data
 #'
-#' @param id Module's ID.
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @inheritParams import-globalenv
+#' @param preview_data Show or not a preview of the data under the file input.
+#' @param file_extensions File extensions accepted by [shiny::fileInput()], can also be MIME type.
 #'
-#' @eval doc_return_import()
+#' @template module-import
 #'
 #' @export
 #'
 #' @name import-file
 #'
 #' @importFrom shiny NS fileInput tableOutput actionButton icon
-#' @importFrom htmltools tags tagAppendAttributes
+#' @importFrom htmltools tags tagAppendAttributes css
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #'
 #' @example examples/from-file.R
-import_file_ui <- function(id, title = TRUE) {
+import_file_ui <- function(id,
+                           title = TRUE,
+                           preview_data = TRUE,
+                           file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
 
   ns <- NS(id)
 
@@ -41,18 +44,23 @@ import_file_ui <- function(id, title = TRUE) {
           label = i18n("Upload a file:"),
           buttonLabel = i18n("Browse..."),
           placeholder = i18n("No file selected"),
-          accept = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav"),
+          accept = file_extensions,
           width = "100%"
         )
       ),
       tags$div(
+        tags$label(
+          class = "control-label",
+          style = css(visibility = "hidden", width = "100%", marginBottom = "0.5rem"),
+          "Parameters",
+          `for` = ns("settings")
+        ),
         dropMenu(
           placement = "bottom-end",
           actionButton(
             inputId = ns("settings"),
             label = phosphoricons::ph("gear", title = "parameters"),
-            class = "btn-block",
-            style = "margin-top: 25px;"
+            class = "btn-block"
           ),
           numericInputIcon(
             inputId = ns("skip_rows"),
@@ -92,14 +100,16 @@ import_file_ui <- function(id, title = TRUE) {
         id = ns("import-result"),
         status = "info",
         tags$b(i18n("No file selected:")),
-        i18n("You can import .rds, .txt, .csv, .xls, .xlsx, .sas7bdat, .sav, ..."),
+        sprintf(i18n("You can import %s files"), paste(file_extensions, collapse = ", ")),
         dismissible = TRUE
       )
     ),
-    tagAppendAttributes(
-      tableOutput(outputId = ns("table")),
-      class = "datamods-table-container"
-    ),
+    if (isTRUE(preview_data)) {
+      tagAppendAttributes(
+        tableOutput(outputId = ns("table")),
+        class = "datamods-table-container"
+      )
+    },
     uiOutput(
       outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"
@@ -108,12 +118,14 @@ import_file_ui <- function(id, title = TRUE) {
 }
 
 
-#' @param btn_show_data Display or not a button to display data in a modal window if import is successful.
-#' @param trigger_return When to update selected data:
-#'  \code{"button"} (when user click on button) or
-#'  \code{"change"} (each time user select a dataset in the list).
-#' @param return_class Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).
-#' @param reset A `reactive` function that when triggered resets the data.
+#' @inheritParams import_globalenv_server
+#' @param read_fns Named list with custom function(s) to read data:
+#'  * the name must be the extension of the files to which the function will be applied
+#'  * the value must be a function that can have 4 arguments, passed by user through the interface:
+#'    + `file`: path to the file
+#'    + `sheet`: for Excel files, sheet to read
+#'    + `skip`: number of row to skip
+#'    + `encoding`: file encoding
 #'
 #' @export
 #'
@@ -123,15 +135,25 @@ import_file_ui <- function(id, title = TRUE) {
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
+#' @importFrom rlang exec fn_fmls_names is_named is_function
 #' @importFrom tools file_ext
 #' @importFrom utils head
 #'
 #' @rdname import-file
 import_file_server <- function(id,
                                btn_show_data = TRUE,
+                               show_data_in = c("popup", "modal"),
                                trigger_return = c("button", "change"),
                                return_class = c("data.frame", "data.table", "tbl_df"),
-                               reset = reactive(NULL)) {
+                               reset = reactive(NULL),
+                               read_fns = list()) {
+
+  if (length(read_fns) > 0) {
+    if (!is_named(read_fns))
+      stop("import_file_server: `read_fns` must be a named list.", call. = FALSE)
+    if (!all(vapply(read_fns, is_function, logical(1))))
+      stop("import_file_server: `read_fns` must be list of function(s).", call. = FALSE)
+  }
 
   trigger_return <- match.arg(trigger_return)
 
@@ -175,32 +197,50 @@ import_file_server <- function(id,
     ), {
       req(input$file)
       req(input$skip_rows)
-      if (is_excel(input$file$datapath)) {
-        req(input$sheet)
-        imported <- try(rio::import(
+      extension <- tools::file_ext(input$file$datapath)
+      if (isTRUE(extension %in% names(read_fns))) {
+        parameters <- list(
           file = input$file$datapath,
-          which = input$sheet,
-          skip = input$skip_rows
-        ), silent = TRUE)
-      } else if(is_sas(input$file$datapath)) {
-        imported <- try(rio::import(
-          file = input$file$datapath,
+          sheet = input$sheet,
           skip = input$skip_rows,
+          dec = input$dec,
           encoding = input$encoding
-        ), silent = TRUE)
-      }else{
-         imported <- try(rio::import(
-          file = input$file$datapath,
-          skip = input$skip_rows,
-          dec= input$dec,
-          encoding = input$encoding
-        ), silent = TRUE)
+        )
+        parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
+        imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
+      } else {
+        if (is_excel(input$file$datapath)) {
+          req(input$sheet)
+          parameters <- list(
+            file = input$file$datapath,
+            which = input$sheet,
+            skip = input$skip_rows
+          )
+        } else if (is_sas(input$file$datapath)) {
+          parameters <- list(
+            file = input$file$datapath,
+            skip = input$skip_rows,
+            encoding = input$encoding
+          )
+        } else {
+          parameters <- list(
+            file = input$file$datapath,
+            skip = input$skip_rows,
+            dec = input$dec,
+            encoding = input$encoding,
+            na.strings = c("NA", "")
+          )
+        }
+        imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
       }
+
+      if (inherits(imported, "try-error"))
+        imported <- try(rlang::exec(rio::import, !!!parameters[1]), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
         toggle_widget(inputId = "confirm", enable = FALSE)
-        insert_error()
+        insert_error(mssg = i18n(attr(imported, "condition")$message))
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
         temporary_rv$name <- NULL
@@ -222,12 +262,11 @@ import_file_server <- function(id,
         temporary_rv$status <- "success"
         temporary_rv$data <- imported
         temporary_rv$name <- input$file$name
-
       }
     }, ignoreInit = TRUE)
 
     observeEvent(input$see_data, {
-      show_data(temporary_rv$data, title = i18n("Imported data"))
+      show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
     output$table <- renderTable({
@@ -241,6 +280,7 @@ import_file_server <- function(id,
 
     observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
+      imported_rv$name <- temporary_rv$name
     })
 
     if (identical(trigger_return, "button")) {

@@ -3,16 +3,19 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data from Googlesheets"),
+  tags$h3("Import data with copy & paste"),
   fluidRow(
     column(
       width = 4,
-      import_googlesheets_ui("myid")
+      import_copypaste_ui("myid")
     ),
     column(
       width = 8,
-      tags$b("Imported data:"),
+      tags$b("Import status:"),
       verbatimTextOutput(outputId = "status"),
+      tags$b("Name:"),
+      verbatimTextOutput(outputId = "name"),
+      tags$b("Data:"),
       verbatimTextOutput(outputId = "data")
     )
   )
@@ -20,10 +23,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  imported <- import_googlesheets_server("myid")
+  imported <- import_copypaste_server("myid")
 
   output$status <- renderPrint({
     imported$status()
+  })
+  output$name <- renderPrint({
+    imported$name()
   })
   output$data <- renderPrint({
     imported$data()

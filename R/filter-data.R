@@ -1,15 +1,21 @@
 
-#' @title Shiny module to interactively filter a \code{data.frame}
+#' @title Shiny module to interactively filter a `data.frame`
 #'
-#' @description Module generate inputs to filter \code{data.frame} according column's type.
+#' @description Module generate inputs to filter `data.frame` according column's type.
 #'  Code to reproduce the filter is returned as an expression with filtered data.
 #'
-#' @param id Module id. See \code{\link[shiny]{callModule}}.
+#' @param id Module id. See [shiny::callModule()].
 #' @param show_nrow Show number of filtered rows and total.
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
 #'
-#' @eval doc_return_filter()
+#' @return
+#' * UI: HTML tags that can be included in shiny's UI
+#' * Server: a `list` with four slots:
+#'   + **filtered**: a `reactive` function returning the data filtered.
+#'   + **code**: a `reactive` function returning the dplyr pipeline to filter data.
+#'   + **expr**: a `reactive` function returning an expression to filter data.
+#'   + **values**: a `reactive` function returning a named list of variables and filter values.
 #'
 #' @export
 #'
@@ -39,39 +45,43 @@ filter_data_ui <- function(id,
   )
 }
 
-
-#' @param data \code{\link[shiny]{reactive}} function returning a
+#' @param data [shiny::reactive()] function returning a
 #'  \code{data.frame} to filter.
-#' @param vars \code{\link[shiny]{reactive}} function returning a
+#' @param vars [shiny::reactive()] function returning a
 #'  `character` vector of variables for which to add a filter.
 #'  If a named `list`, names are used as labels.
-#' @param name \code{\link[shiny]{reactive}} function returning a
+#' @param name [shiny::reactive()] function returning a
 #'  `character` string representing `data` name, only used for code generated.
+#' @param defaults [shiny::reactive()] function returning a
+#'  named `list` of variable:value pairs which will be used to set the filters.
 #' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
-#' @param widget_char Widget to use for `character` variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput}}
-#'  or  \code{\link[shiny:selectInput]{shiny::selectizeInput}} (default).
-#' @param widget_num Widget to use for `numeric` variables: \code{\link[shinyWidgets:numericRangeInput]{shinyWidgets::numericRangeInput}}
-#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
-#' @param widget_date Widget to use for `date/time` variables: \code{\link[shiny:dateRangeInput]{shiny::dateRangeInput}}
-#'  or  \code{\link[shiny:sliderInput]{shiny::sliderInput}} (default).
+#' @param widget_char Widget to use for `character` variables: [shinyWidgets::pickerInput()]
+#'  or [shiny::selectInput()] (default).
+#' @param widget_num Widget to use for `numeric` variables: [shinyWidgets::numericRangeInput()]
+#'  or [shiny::sliderInput()] (default).
+#' @param widget_date Widget to use for `date/time` variables: [shiny::dateRangeInput()]
+#'  or [shiny::sliderInput()] (default).
 #' @param label_na Label for missing value widget.
+#' @param value_na Default value for all NA's filters.
 #'
 #'
 #' @rdname filter-data
 #' @export
 #'
-#' @importFrom rlang eval_tidy
+#' @importFrom rlang eval_tidy %||%
 #' @importFrom shiny observeEvent reactiveValues removeUI
 #'  insertUI reactive req isolate reactive renderUI tags outputOptions
 filter_data_server <- function(id,
                                data = reactive(NULL),
                                vars = reactive(NULL),
                                name = reactive("data"),
+                               defaults = reactive(NULL),
                                drop_ids = TRUE,
                                widget_char = c("select", "picker"),
                                widget_num = c("slider", "range"),
                                widget_date = c("slider", "range"),
-                               label_na = "NA") {
+                               label_na = "NA",
+                               value_na = TRUE) {
   widget_char <- match.arg(widget_char)
   widget_num <- match.arg(widget_num)
   widget_date <- match.arg(widget_date)
@@ -92,18 +102,34 @@ filter_data_server <- function(id,
         data <- data()
         req(data)
         vars <- vars()
+        defaults <- defaults()
         filters <- create_filters(
           data = data,
           vars = vars,
+          defaults = defaults,
           drop_ids = drop_ids,
           widget_char = widget_char,
           widget_num = widget_num,
           widget_date = widget_date,
-          label_na = label_na
+          label_na = label_na,
+          value_na = value_na
         )
         rv_filters$mapping <- filters$filters_id
         rv_filters$mapping_na <- filters$filters_na_id
         return(filters$ui)
+      })
+      
+      filter_values <- reactive({
+        data <- data()
+        req(data)
+        req(all(names(rv_filters$mapping) %in% names(data)))
+        filter_inputs <- lapply(
+          X = rv_filters$mapping,
+          FUN = function(x) {
+            input[[x]]
+          }
+        )
+        filter_inputs
       })
 
       data_filtered <- reactive({
@@ -127,13 +153,13 @@ filter_data_server <- function(id,
           filters = filter_inputs,
           filters_na = filter_nas,
           data = data,
-          data_name = isolate(name())
+          data_name = isolate(name()) %||% "data"
         )
         rv_code$expr <- filters$expr
         rv_code$dplyr <- filters$expr_dplyr
         if (length(rv_code$expr) > 0) {
           result <- eval_tidy(expr = rv_code$expr, data = data)
-          data[result, ]
+          data[result, , drop = FALSE]
         } else {
           data
         }
@@ -142,6 +168,7 @@ filter_data_server <- function(id,
 
       return(list(
         filtered = data_filtered,
+        values = filter_values,
         code = reactive(rv_code$dplyr),
         expr = reactive(rv_code$expr)
       ))
@@ -162,11 +189,13 @@ filter_data_server <- function(id,
 #' @importFrom shinyWidgets pickerInput pickerOptions numericRangeInput
 create_filters <- function(data,
                            vars = NULL,
+                           defaults = NULL,
                            drop_ids = TRUE,
                            widget_char = c("select", "picker"),
                            widget_num = c("slider", "range"),
                            widget_date = c("slider", "range"),
                            label_na = "NA",
+                           value_na = TRUE,
                            width = "100%",
                            session = getDefaultReactiveDomain()) {
   data <- as.data.frame(data)
@@ -191,7 +220,9 @@ create_filters <- function(data,
     } else {
       labels <- vars
     }
-    vars <- intersect(names(data), vars)
+    vars_display <- intersect(names(data), vars)
+    labels <- labels[vars %in% vars_display]
+    vars <- vars_display
   }
   # filters_id <- paste0("filter_", sample.int(1e9, length(vars)))
   filters_id <- paste0("filter_", makeId(vars))
@@ -213,11 +244,14 @@ create_filters <- function(data,
           `for` = id
         ),
         HTML("&nbsp;&nbsp;"),
-        if (any_na) na_filter(id = ns(paste0("na_", id)), label = label_na)
+        if (any_na) na_filter(id = ns(paste0("na_", id)), label = label_na, value = value_na)
       )
 
       if (inherits(x = var, what = c("numeric", "integer"))) {
         params <- find_range_step(var)
+        if(!is.null(defaults) && label %in% names(defaults)){
+          params$range = defaults[[label]]
+        }
         if (identical(widget_num, "slider")) {
           tags$div(
             style = "position: relative;",
@@ -246,6 +280,9 @@ create_filters <- function(data,
         }
       } else if (inherits(x = var, what = c("Date", "POSIXct"))) {
         range_var <- range(var)
+        if(!is.null(defaults) && label %in% names(defaults)){
+          range_var = defaults[[label]]
+        }
         if (identical(widget_date, "slider")) {
           tags$div(
             style = "position: relative;",
@@ -276,19 +313,25 @@ create_filters <- function(data,
           )
         }
       } else {
-        values <- unique(as.character(var))
-        values <- tryCatch(values[trimws(values) != ""], error = function(e){
-          Encoding(values[!validEnc(values)]) <- "unknown"
-          values
+        choices <- unique(as.character(var))
+        if ("" %in% choices)
+          choices <- append(choices, "<empty field>")
+        choices <- tryCatch(choices[trimws(choices) != ""], error = function(e) {
+          Encoding(choices[!validEnc(choices)]) <- "unknown"
+          choices
         })
+        selected = choices
+        if(!is.null(defaults) && label %in% names(defaults)){
+          selected = defaults[[label]]
+        }
         if (identical(widget_char, "picker")) {
           tags$div(
             style = "position: relative;",
             tag_label,
             pickerInput(
               inputId = ns(id),
-              choices = values,
-              selected = values,
+              choices = choices,
+              selected = selected,
               label = NULL,
               multiple = TRUE,
               width = width,
@@ -302,12 +345,12 @@ create_filters <- function(data,
         } else {
           tags$div(
             style = "position: relative;",
-            class = if (length(values) > 15) "selectize-big",
+            class = if (length(choices) > 15) "selectize-big",
             tag_label,
             selectizeInput(
               inputId = ns(id),
-              choices = values,
-              selected = values,
+              choices = choices,
+              selected = selected,
               label = NULL,
               multiple = TRUE,
               width = width,
@@ -342,13 +385,13 @@ set_slider_attr <- function(slider) {
 
 #' @importFrom htmltools tags
 #' @importFrom shinyWidgets prettySwitch
-na_filter <- function(id, label = "NA") {
+na_filter <- function(id, label = "NA", value = TRUE) {
   tags$span(
     style = "position: absolute; right: 0px; margin-right: -20px;",
     prettySwitch(
       inputId = id,
       label = label,
-      value = TRUE,
+      value = value,
       slim = TRUE,
       status = "primary",
       inline = TRUE
@@ -410,6 +453,8 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
         }
       } else {
         data_values <- unique(as.character(data_values))
+        if ("<empty field>" %in% values)
+          values[which(values == "<empty field>")] <- ""
         if (!identical(sort(values), sort(data_values))) {
           if (length(values) == 0) {
             if (isTRUE(nas)) {

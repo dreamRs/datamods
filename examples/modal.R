@@ -3,13 +3,15 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  # Try with different Bootstrap version
+  # theme = bslib::bs_theme(version = 4),
   fluidRow(
     column(
       width = 4,
       checkboxGroupInput(
         inputId = "from",
         label = "From",
-        choices = c("env", "file", "copypaste", "googlesheets"),
+        choices = c("env", "file", "copypaste", "googlesheets", "url"),
         selected = c("file", "copypaste")
       ),
       actionButton("launch_modal", "Launch modal window")
