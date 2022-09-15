@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,24 +85,21 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span></code></pre></div>
-<p>When working with shiny, uploading data is a bit of a hassle. There are a number of corner cases one has to be mindful of. For example:</p>
+<p>The {datamods} package contains modules to work with data in Shiny application, currently the following modules are implemented :</p>
 <ul>
-<li><p>checking that the uploaded file is of the correct format</p></li>
-<li><p>checking if R can load the file and prevent errors</p></li>
-<li><p>while dealing with excel files, providing an option to choose the sheet number.</p></li>
-<li><p>while using Googlesheets, the hassle of authentication and stuff.</p></li>
+<li>Import modules : import data from various sources</li>
+<li>Update table structure: select columns to keep, rename variable and convert from a class to anoter (e.g. numeric to character)</li>
+<li>Filter data : interactively filter a <code>data.frame</code>
+</li>
+<li>Validate : check that data respect some expectations (with <a href="https://cran.r-project.org/package=validate" class="external-link">package {validate}</a>)</li>
+<li>Sample data: interactively sample a <code>data.frame</code>.</li>
 </ul>
-<p>The {datamods} package helps to easily load and use data in shiny apps with the help of modules.<br>
-There are 5 modules that can load data from various different sources. The modules with a short intro are described below</p>
 <div class="section level2">
-<h2 id="import-modules">Import Modules<a class="anchor" aria-label="anchor" href="#import-modules"></a>
+<h2 id="import">Import<a class="anchor" aria-label="anchor" href="#import"></a>
 </h2>
 <div class="section level3">
-<h3 id="data-source">Data Source<a class="anchor" aria-label="anchor" href="#data-source"></a>
+<h3 id="from-environment">From environment<a class="anchor" aria-label="anchor" href="#from-environment"></a>
 </h3>
-<div class="section level4">
-<h4 id="from-environment">From environment<a class="anchor" aria-label="anchor" href="#from-environment"></a>
-</h4>
 <p>Imports data from the user’s global environment or a package environment to retrieve included in it. It searches for data sets in the global environment and lets the user choose the data to use.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -112,9 +109,9 @@ There are 5 modules that can load data from various different sources. The modul
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-globalenv.html">import_globalenv_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/datamods-env.png" style="width:100%"></p>
 </div>
-<div class="section level4">
-<h4 id="from-file">From file<a class="anchor" aria-label="anchor" href="#from-file"></a>
-</h4>
+<div class="section level3">
+<h3 id="from-file">From file<a class="anchor" aria-label="anchor" href="#from-file"></a>
+</h3>
 <p>Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package <a href="https://github.com/leeper/rio" class="external-link">rio</a>. In case of Excel files, it gives an option to choose the sheet.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -124,9 +121,9 @@ There are 5 modules that can load data from various different sources. The modul
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-file.html">import_file_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/datamods-file.png" style="width:100%"></p>
 </div>
-<div class="section level4">
-<h4 id="from-clipboard">From clipboard<a class="anchor" aria-label="anchor" href="#from-clipboard"></a>
-</h4>
+<div class="section level3">
+<h3 id="from-clipboard">From clipboard<a class="anchor" aria-label="anchor" href="#from-clipboard"></a>
+</h3>
 <p>Imports data via copy/paste. Simply copy and paste data from any source.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -136,9 +133,9 @@ There are 5 modules that can load data from various different sources. The modul
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-copypaste.html">import_copypaste_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/datamods-paste.png" style="width:100%"></p>
 </div>
-<div class="section level4">
-<h4 id="from-googlesheet">From Googlesheet<a class="anchor" aria-label="anchor" href="#from-googlesheet"></a>
-</h4>
+<div class="section level3">
+<h3 id="from-googlesheet">From Googlesheet<a class="anchor" aria-label="anchor" href="#from-googlesheet"></a>
+</h3>
 <p>Imports data from a Googlesheet. Use the shareable link to read data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -148,9 +145,9 @@ There are 5 modules that can load data from various different sources. The modul
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-googlesheets.html">import_googlesheets_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/datamods-googlesheet.png" style="width:100%"></p>
 </div>
-<div class="section level4">
-<h4 id="from-url">From URL<a class="anchor" aria-label="anchor" href="#from-url"></a>
-</h4>
+<div class="section level3">
+<h3 id="from-url">From URL<a class="anchor" aria-label="anchor" href="#from-url"></a>
+</h3>
 <p>Imports data from a URL. Only flat data in any format supported by <a href="https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats" class="external-link">package rio</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -158,7 +155,6 @@ There are 5 modules that can load data from various different sources. The modul
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-url.html">import_url_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -231,9 +227,10 @@ There are 5 modules that can load data from various different sources. The modul
 <p><img src="figures/datamods-update-2.png" style="width:100%"></p>
 <p>Some options for converting to date and numeric are available in a dropdown menu.</p>
 <p>Return value of the module is a <code>reactive</code> function with the update data.</p>
-<div class="section level3">
-<h3 id="validate">Validate<a class="anchor" aria-label="anchor" href="#validate"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="validate">Validate<a class="anchor" aria-label="anchor" href="#validate"></a>
+</h2>
 <p>When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, … This module allow to validate rules defined with package <a href="https://github.com/data-cleaning/validate" class="external-link">validate</a>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -277,9 +274,9 @@ There are 5 modules that can load data from various different sources. The modul
 <strong>details</strong>: a reactive function returning a list with validation details.</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="filter">Filter<a class="anchor" aria-label="anchor" href="#filter"></a>
-</h3>
+<div class="section level2">
+<h2 id="filter">Filter<a class="anchor" aria-label="anchor" href="#filter"></a>
+</h2>
 <p>Interactively filter a <code>data.frame</code> and generate code to reproduce filters applied:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
@@ -307,6 +304,17 @@ There are 5 modules that can load data from various different sources. The modul
 <strong>expr</strong>: a <code>reactive</code> function returning an expression to filter data.</li>
 </ul>
 </div>
+<div class="section level2">
+<h2 id="sample">Sample<a class="anchor" aria-label="anchor" href="#sample"></a>
+</h2>
+<p>Interactively sample a <code>data.frame</code> to keep only part of the data, depending on the number or proportion of rows to keep.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># UI</span></span>
+<span><span class="fu"><a href="../reference/module-sample.html">sample_ui</a></span><span class="op">(</span><span class="st">"myID"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Server</span></span>
+<span><span class="va">result_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module-sample.html">sample_server</a></span><span class="op">(</span><span class="st">"myID"</span>, <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/datamods-sample.png" style="width:100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -316,7 +324,7 @@ There are 5 modules that can load data from various different sources. The modul
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by <a href="https://twitter.com/_pvictorr" class="external-link"><img src="https://pbs.twimg.com/profile_images/844237339404722177/E1U61aM8_normal.jpg"> Victor Perrier</a>, <a href="https://twitter.com/_mfaan" class="external-link"><img src="https://pbs.twimg.com/profile_images/912313931326218240/o1-wvA18_normal.jpg"> Fanny Meyer</a>, <a href="https://twitter.com/shahreyarabeer" class="external-link"><img src="http://pbs.twimg.com/profile_images/1272445553503113217/RUViNXpI_normal.jpg"> Zauad Shahreer Abeer</a>.</p>
+<p>Developed by <a href="https://twitter.com/_pvictorr" class="external-link"><img src="https://pbs.twimg.com/profile_images/844237339404722177/E1U61aM8_normal.jpg"> Victor Perrier</a>, <a href="https://twitter.com/_mfaan" class="external-link"><img src="https://pbs.twimg.com/profile_images/912313931326218240/o1-wvA18_normal.jpg"> Fanny Meyer</a>, Samra Goumri, <a href="https://twitter.com/shahreyarabeer" class="external-link"><img src="http://pbs.twimg.com/profile_images/1272445553503113217/RUViNXpI_normal.jpg"> Zauad Shahreer Abeer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
