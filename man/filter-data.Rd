@@ -23,7 +23,7 @@ filter_data_server(
 )
 }
 \arguments{
-\item{id}{Module id. See \code{\link[shiny:callModule]{shiny::callModule()}}.}
+\item{id}{Module id. See \code{\link[shiny:moduleServer]{shiny::moduleServer()}}.}
 
 \item{show_nrow}{Show number of filtered rows and total.}
 

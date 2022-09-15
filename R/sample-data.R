@@ -42,9 +42,15 @@ sample_prop <- function(data, prop) {
 
 ## Function sample_ui()
 
-#' @title Shiny Sample Module
+#' @title Shiny module to interactively sample a `data.frame`
 #'
-#' @param id Module ID
+#' @description Allow to take a sample of `data.frame` for a given number or proportion of rows to keep.
+#'
+#' @param id Module id. See [shiny::moduleServer()].
+#'
+#' @return
+#' * UI: HTML tags that can be included in shiny's UI
+#' * Server: a `reactive` fgunction with the sampled data.
 #'
 #' @export
 #'
@@ -130,7 +136,7 @@ sample_server <- function(id, data_r = reactive(NULL)) {
         tags$div(paste(input$number_rows, "lines, i.e.", round(value, 1), "% of the total"))
       })
 
-      sample <- reactive({
+      sample_r <- reactive({
         req(data_r())
         if (input$choice == "proportion of rows") {
           table_sample <- sample_prop(data = data_r(), prop = input$proportion_rows)
@@ -140,7 +146,7 @@ sample_server <- function(id, data_r = reactive(NULL)) {
         return(table_sample)
       })
 
-      return(sample)
+      return(sample_r)
     }
   )
 }

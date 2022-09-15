@@ -4,7 +4,7 @@
 #' @description Module generate inputs to filter `data.frame` according column's type.
 #'  Code to reproduce the filter is returned as an expression with filtered data.
 #'
-#' @param id Module id. See [shiny::callModule()].
+#' @param id Module id. See [shiny::moduleServer()].
 #' @param show_nrow Show number of filtered rows and total.
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
@@ -118,7 +118,7 @@ filter_data_server <- function(id,
         rv_filters$mapping_na <- filters$filters_na_id
         return(filters$ui)
       })
-      
+
       filter_values <- reactive({
         data <- data()
         req(data)

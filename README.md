@@ -12,6 +12,7 @@
 [![R build
 status](https://github.com/dreamRs/datamods/workflows/R-CMD-check/badge.svg)](https://github.com/dreamRs/datamods/actions)
 [![codecov](https://app.codecov.io/gh/dreamRs/datamods/branch/master/graphs/badge.svg)](https://app.codecov.io/gh/dreamRs/datamods)
+[![cranlogs](https://cranlogs.r-pkg.org/badges/datamods)](https://cran.r-project.org/package=datamods)
 <!-- badges: end -->
 
 ### Overview
@@ -119,11 +120,8 @@ to reproduce the filters.
 
 ![](man/figures/datamods-filter.png)
 
-## Final Notes :
+### Sample
 
--   Please find example apps of each of the modules in the `/examples`
-    folder.
--   For a detailed description, please see the vignette.
--   Read more about shiny modules
-    [here](https://shiny.rstudio.com/articles/modules.html) and how to
-    test them [here](https://mastering-shiny.org/scaling-testing.html)
+Interactively sample a `data.frame`:
+
+![](man/figures/datamods-sample.png)

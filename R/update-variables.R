@@ -1,7 +1,7 @@
 
 #' Select, rename and convert variables
 #'
-#' @param id Module's ID.
+#' @param id Module id. See [shiny::moduleServer()].
 #' @param title Module's title, if \code{TRUE} use the default title,
 #'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'

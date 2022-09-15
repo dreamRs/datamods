@@ -1,3 +1,9 @@
+# datamods 1.3.5
+
+* New module : `sample_ui()` / `sample_server()` to take a sample from a table, thanks to [@ggsamra](https://github.com/ggsamra).
+
+
+
 # datamods 1.3.4
 
 * i18n: korean translations added, thanks to [@ChangwooLim](https://github.com/ChangwooLim) (migrated from esquisse package).

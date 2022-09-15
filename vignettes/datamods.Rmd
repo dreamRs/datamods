@@ -19,28 +19,19 @@ knitr::opts_chunk$set(
 library(datamods)
 ```
 
-When working with shiny, uploading data is a bit of a hassle. There are a number of
-corner cases one has to be mindful of. For example:  
 
-* checking that the uploaded file is of the correct format  
+The {datamods} package contains modules to work with data in Shiny application, currently the following modules are implemented :
 
-* checking if R can load the file and prevent errors
-
-* while dealing with excel files, providing an option to choose the sheet number.  
-
-* while using Googlesheets, the hassle of authentication and stuff.
-
-The {datamods} package helps to easily load and use data in shiny apps with the
-help of modules.  
-There are 5 modules that can load data from various different sources.
-The modules with a short intro are described below
+* Import modules : import data from various sources
+* Update table structure: select columns to keep, rename variable and convert from a class to anoter (e.g. numeric to character)
+* Filter data : interactively filter a `data.frame`
+* Validate : check that data respect some expectations (with [package {validate}](https://cran.r-project.org/package=validate))
+* Sample data: interactively sample a `data.frame`.
 
 
-## Import Modules
+## Import
 
-### Data Source
-
-#### From environment
+### From environment
 
 Imports data from the user's global environment or a package environment to retrieve included in it. 
 It searches for data sets in the global environment and lets the user choose the data to use.
@@ -56,7 +47,7 @@ imported <- import_globalenv_server("myid")
 <img src="figures/datamods-env.png" style="width:100%"></img>
 
 
-#### From file
+### From file
 
 Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package [rio](https://github.com/leeper/rio).
 In case of Excel files, it gives an option to choose the sheet. 
@@ -72,7 +63,7 @@ imported <- import_file_server("myid")
 <img src="figures/datamods-file.png" style="width:100%"></img>
 
 
-#### From clipboard
+### From clipboard
 
 Imports data via copy/paste. Simply copy and paste data from any source.
 
@@ -87,7 +78,7 @@ imported <- import_copypaste_server("myid")
 <img src="figures/datamods-paste.png" style="width:100%"></img>
 
 
-#### From Googlesheet
+### From Googlesheet
 
 Imports data from a Googlesheet. Use the shareable link to read data.
 
@@ -101,7 +92,7 @@ imported <- import_googlesheets_server("myid")
 
 <img src="figures/datamods-googlesheet.png" style="width:100%"></img>
 
-#### From URL
+### From URL
 
 Imports data from a URL. Only flat data in any format supported by [package rio](https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats).
 
@@ -112,6 +103,7 @@ import_url_ui("myid")
 # Server
 imported <- import_url_server("myid")
 ```
+
 
 ### Usage
 
@@ -195,7 +187,7 @@ Return value of the module is a `reactive` function with the update data.
 
 
 
-### Validate
+## Validate
 
 When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, ... This module allow to validate rules defined with package [validate](https://github.com/data-cleaning/validate).
 
@@ -244,7 +236,7 @@ The return value server-side is a list with the following items:
 * **details**: a reactive function returning a list with validation details.
 
 
-### Filter
+## Filter
 
 Interactively filter a `data.frame` and generate code to reproduce filters applied:
 
@@ -274,5 +266,20 @@ The return value server-side is a list with the following items:
 * **code**: a `reactive` function returning the dplyr pipeline to filter data.
 * **expr**: a `reactive` function returning an expression to filter data.
 
+
+
+## Sample
+
+Interactively sample a `data.frame` to keep only part of the data, depending on the number or proportion of rows to keep.
+
+```{r}
+# UI
+sample_ui("myID")
+
+# Server
+result_sample <- sample_server("myID", reactive(iris))
+```
+
+<img src="figures/datamods-sample.png" style="width:100%"></img>
 
 
