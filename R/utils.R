@@ -107,3 +107,20 @@ makeId <- function(x) {
 }
 
 
+`%inT%` <- function(x, table) {
+  if (!is.null(table) && ! "" %in% table) {
+    x %in% table
+  } else {
+    rep_len(TRUE, length(x))
+  }
+}
+
+
+
+`%inF%` <- function(x, table) {
+  if (!is.null(table) && ! "" %in% table) {
+    x %in% table
+  } else {
+    rep_len(FALSE, length(x))
+  }
+}

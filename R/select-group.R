@@ -1,0 +1,243 @@
+
+#' @title Select Group
+#'
+#' @description Group of mutually dependent select menus for filtering `data.frame`'s columns (like in Excel).
+#'
+#' @param id Module's id.
+#' @param params A named list of parameters passed to each `selectizeInput`, you can use :
+#'  `inputId` (obligatory, must be variable name), `label`, `placeholder`.
+#' @param label Character, global label on top of all labels.
+#' @param btn_label Character, reset button label.
+#' @param inline If `TRUE` (the default), select menus are horizontally positioned, otherwise vertically.
+#'
+#' @return a [shiny::reactive()] function containing data filtered.
+#' @export
+#'
+#' @name select-group
+#'
+#' @importFrom htmltools tagList tags css
+#' @importFrom shiny NS actionLink icon singleton
+#'
+select_group_ui <- function(id, params, label = NULL, btn_label = "Reset filters", inline = TRUE) {
+
+  ns <- NS(id)
+
+  button_reset <- actionLink(
+    inputId = ns("reset_all"),
+    label = tagList(phosphoricons::ph("x"), btn_label),
+    icon = NULL,
+    style = "float: right;"
+  )
+  label_tag <- if (!is.null(label))
+    tags$b(label, class = "select-group-label")
+
+  if (isTRUE(inline)) {
+    sel_tag <- tags$div(
+      class = "select-group-container",
+      style = htmltools::css(
+        display = "grid",
+        gridTemplateColumns = sprintf("repeat(%s, 1fr)", length(params)),
+        gridColumnGap = "5px"
+      ),
+      lapply(
+        X = seq_along(params),
+        FUN = function(x) {
+          input <- params[[x]]
+          tags$div(
+            class = "select-group-item",
+            id = ns(paste0("container-", input$inputId)),
+            shinyWidgets::virtualSelectInput(
+              inputId = ns(input$inputId),
+              label = input$label %||% input$title,
+              choices = input$choices,
+              selected = input$selected,
+              multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
+              width = "100%",
+              showValueAsTags = TRUE,
+              zIndex = 10,
+              disableSelectAll = TRUE
+            )
+          )
+        }
+      )
+    )
+  } else {
+    sel_tag <- lapply(
+      X = seq_along(params),
+      FUN = function(x) {
+        input <- params[[x]]
+        tags$div(
+          class = "select-group-item",
+          id = ns(paste0("container-", input$inputId)),
+          shinyWidgets::virtualSelectInput(
+            inputId = ns(input$inputId),
+            label = input$label %||% input$title,
+            choices = input$choices,
+            selected = input$selected,
+            multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
+            width = "100%",
+            showValueAsTags = TRUE,
+            zIndex = 10,
+            disableSelectAll = TRUE
+          )
+        )
+      }
+    )
+  }
+
+  tags$div(
+    class = "select-group",
+    label_tag,
+    sel_tag,
+    button_reset,
+    html_dependency_datamods()
+  )
+}
+
+
+
+#' @param data_r Either a [data.frame()] or a [shiny::reactive()]
+#'  function returning a `data.frame` (do not use parentheses).
+#' @param vars_r character, columns to use to create filters,
+#'  must correspond to variables listed in `params`. Can be a
+#'  [shiny::reactive()] function, but values must be included in the initial ones (in `params`).
+#'
+#' @export
+#'
+#' @rdname select-group
+#' @importFrom shiny observeEvent reactiveValues reactive is.reactive isolate
+select_group_server <- function(id, data_r, vars_r) {
+  moduleServer(
+    id = id,
+    module = function(input, output, session) {
+
+      # Namespace
+      ns <- session$ns
+      hideUI(selector = paste0("#", ns("reset_all")))
+
+
+      # data <- as.data.frame(data)
+      rv <- reactiveValues(data = NULL, vars = NULL)
+      observe({
+        if (is.reactive(data_r)) {
+          rv$data <- data_r()
+        } else {
+          rv$data <- as.data.frame(data_r)
+        }
+        if (is.reactive(vars_r)) {
+          rv$vars <- vars_r()
+        } else {
+          rv$vars <- vars_r
+        }
+        for (var in names(rv$data)) {
+          if (var %in% rv$vars) {
+            showUI(selector = paste0("#", ns(paste0("container-", var))))
+          } else {
+            hideUI(selector = paste0("#", ns(paste0("container-", var))))
+          }
+        }
+      })
+
+      observe({
+        lapply(
+          X = rv$vars,
+          FUN = function(x) {
+            vals <- sort(unique(rv$data[[x]]))
+            shinyWidgets::updateVirtualSelect(
+              session = session,
+              inputId = x,
+              choices = vals,
+              selected = isolate(input[[x]])
+            )
+          }
+        )
+      })
+
+      observeEvent(input$reset_all, {
+        lapply(
+          X = rv$vars,
+          FUN = function(x) {
+            vals <- sort(unique(rv$data[[x]]))
+            shinyWidgets::updateVirtualSelect(
+              session = session,
+              inputId = x,
+              choices = vals
+            )
+          }
+        )
+      })
+
+
+      observe({
+        vars <- rv$vars
+        lapply(
+          X = vars,
+          FUN = function(x) {
+
+            ovars <- vars[vars != x]
+
+            observeEvent(input[[x]], {
+
+              data <- rv$data
+
+              indicator <- lapply(
+                X = vars,
+                FUN = function(x) {
+                  data[[x]] %inT% input[[x]]
+                }
+              )
+              indicator <- Reduce(f = `&`, x = indicator)
+              data <- data[indicator, ]
+
+              if (all(indicator)) {
+                hideUI(selector = paste0("#", ns("reset_all")))
+              } else {
+                showUI(selector = paste0("#", ns("reset_all")))
+              }
+
+              for (i in ovars) {
+                if (is.null(input[[i]])) {
+                  shinyWidgets::updateVirtualSelect(
+                    session = session,
+                    inputId = i,
+                    choices = sort(unique(data[[i]]))
+                  )
+                }
+              }
+
+              if (is.null(input[[x]])) {
+                shinyWidgets::updateVirtualSelect(
+                  session = session,
+                  inputId = x,
+                  choices = sort(unique(data[[x]]))
+                )
+              }
+
+            }, ignoreNULL = FALSE, ignoreInit = TRUE)
+
+          }
+        )
+      })
+
+      return(reactive({
+        data <- rv$data
+        vars <- rv$vars
+        indicator <- lapply(
+          X = vars,
+          FUN = function(x) {
+            data[[x]] %inT% input[[x]]
+          }
+        )
+        indicator <- Reduce(f = `&`, x = indicator)
+        data <- data[indicator, ]
+        return(data)
+      }))
+
+    }
+  )
+}
+
+
+
+
+
