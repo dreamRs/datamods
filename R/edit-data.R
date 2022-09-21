@@ -1,21 +1,21 @@
 
-data_edit_ui <- function(id) {
+edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
-    # Ajouter une ligne --
-    uiOutput(outputId = ns("bouton_ajouter")),
+    # Add a row --
+    uiOutput(outputId = ns("add_button")),
 
     # Table --
     reactableOutput(outputId = ns("table"))
   )
 }
 
-data_edit_server <- function(id,
-                             data_r = reactive(NULL), # fonction reactive avec un data.frame
-                             add = TRUE, # si vrai, permet d'ajouter une ligne dans la table via un bouton en haut à droite
-                             update = TRUE, # si vrai, permet de modifier une ligne de la table via un bouton situé dans le tableau sur la ligne que l'on veut éditer
-                             delete = TRUE # si vrai, permet de supprimer une ligne de la table via un bouton dans la table
+edit_data_server <- function(id,
+                             data_r = reactive(NULL), # reactive function with a data.frame
+                             add = TRUE, # if true, allows you to add a row in the table via a button at the top right
+                             update = TRUE, # if true, allows you to modify a row of the table via a button located in the table on the row you want to edit
+                             delete = TRUE # if true, allows a row to be deleted from the table via a button in the table
 ) {
   moduleServer(
     id,
@@ -23,51 +23,51 @@ data_edit_server <- function(id,
 
       ns <- session$ns
 
-      # Donnees data_r() avec ajout des colonnes "ID" et "ID_2" ---
-      data_calc_r <- reactive({
-        req(data_r())
+      data_rv <- reactiveValues(data = NULL)
+
+      # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
+      observeEvent(data_r(), {
         data <- data_r()
         data <- as.data.table(data)
-        # Ajout de la colonne "ID" et "ID_2"
-        data <- data[, ID := 1:nrow(data)]
-        data <- data[, ID_2 := 1:nrow(data)]
-        return(data)
+        data <- data[, .datamods_edit_update := 1:nrow(data)]
+        data <- data[, .datamods_edit_delete := 1:nrow(data)]
+        data_rv$data <- data
       })
 
       # Table ---
       output$table <- renderReactable({
-        req(data_calc_r())
-        data <- data_calc_r()
+        req(data_r())
+        data <- data_rv$data
         table(data = data,
-              modifierInputId = if (isTRUE(update)) ns("modifier"),
-              supprimerInputId = if (isTRUE(delete)) ns("supprimer"))
+              updateInputId = if (isTRUE(update)) ns("update"),
+              deleteInputId = if (isTRUE(delete)) ns("delete"))
       })
 
-      # Ajouter une ligne  ---
-      output$bouton_ajouter <- renderUI({
+      # Add a row ---
+      output$add_button <- renderUI({
         if (isTRUE(add)) {
           actionButton(
-            inputId = ns("ajouter"),
-            label = tagList(ph("plus"), "Ajouter une ligne"),
+            inputId = ns("add"),
+            label = tagList(ph("plus"), "Add a row"),
             class = "btn-outline-primary float-end"
           )
         }
       })
 
-      observeEvent(input$ajouter, {
-        req(data_calc_r())
-        fenetre_saisie(id_valider = "ajouter_ligne",
-                       donnees = data_calc_r())
+      observeEvent(input$add, {
+        req(data_r())
+        input_window(id_validate = "add_row",
+                     datas = data_rv$data)
       })
 
-      observeEvent(input$ajouter_ligne, {
-        req(data_calc_r())
-        data <- data_calc_r()
+      observeEvent(input$add_row, {
+        req(data_r())
+        data <- data_rv$data
         data <- as.data.table(data)
         removeModal()
         list_inputs <- reactiveValuesToList(input)
-        resultat_ajout <- try({
-          resultats_inputs <- lapply(
+        results_add <- try({
+          results_inputs <- lapply(
             X = seq_len(ncol(data)),
             FUN = function(i) {
               inputs <- list()
@@ -75,54 +75,54 @@ data_edit_server <- function(id,
               inputs[[i]] <- list_inputs[[input_name]]
             }
           )
-          resultats_inputs[[ncol(data) - 1]] <- max(data$ID) + 1
-          resultats_inputs[[ncol(data)]] <- max(data$ID_2) + 1
+          results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
+          results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
 
-          new <- data.frame(resultats_inputs)
+          new <- data.frame(results_inputs)
           colnames(new) <- names(data)
           new <- data.table(new)
           data <- rbind(data, new, fill = TRUE)
-          #print(data)
+          data_rv$data <- data
           #saveRDS(data, file = "datamods/data.rds") #changer nom
         })
-        if (inherits(resultat_ajout, "try-error")) {
+        if (inherits(results_add, "try-error")) {
           shinybusy::report_failure(
-            title = "Erreur",
-            text = "Impossible d\'ajouter l\'\u00e9l\u00e9ment, contactez l\'administrateur de la plateforme.",
-            button = "Fermer"
+            title = "Error",
+            text = "Unable to add the row, contact the platform administrator",
+            button = "Close"
           )
         } else {
           shinybusy::report_success(
-            title = "Enregistr\u00e9",
-            text = "L\'\u00e9l\u00e9ment a \u00e9t\u00e9 enregistr\u00e9",
-            button = "Fermer"
+            title = "Registered",
+            text = "Row has been saved",
+            button = "Close"
           )
         }
       })
 
 
-      # Modifier une ligne ---
-      observeEvent(input$modifier, {
-        req(data_calc_r())
-        data <- data_calc_r()
+      # Update a row ---
+      observeEvent(input$update, {
+        req(data_r())
+        data <- data_rv$data
         data <- as.data.table(data)
-        ligne <- data[ID == input$modifier]
-        fenetre_saisie(
-          .data = ligne,
-          titre = "Modifier la ligne",
-          id_valider = "modifier_ligne",
-          donnees = data_calc_r()
+        row <- data[.datamods_edit_update == input$update]
+        input_window(
+          .data = row,
+          title = "Update row",
+          id_validate = "update_row",
+          datas = data
         )
       })
 
-      observeEvent(input$modifier_ligne, {
-        req(data_calc_r())
-        data <- data_calc_r()
+      observeEvent(input$update_row, {
+        req(data_r())
+        data <- data_rv$data
         data <- as.data.table(data)
         removeModal()
         list_inputs <- reactiveValuesToList(input)
-          resultat_modifier <- try({
-            resultats_inputs <- lapply(
+        results_update <- try({
+            results_inputs <- lapply(
               X = seq_len(ncol(data)),
               FUN = function(i) {
                 inputs <- list()
@@ -130,81 +130,83 @@ data_edit_server <- function(id,
                 inputs[[i]] <- list_inputs[[input_name]]
               }
             )
-            resultats_inputs[[ncol(data) - 1]] <- data[ID == input$modifier, ID]
-            resultats_inputs[[ncol(data)]] <- data[ID_2 == input$modifier, ID_2]
+            results_inputs[[ncol(data) - 1]] <- data[.datamods_edit_update == input$update, .datamods_edit_update]
+            results_inputs[[ncol(data)]] <- data[.datamods_edit_delete == input$update, .datamods_edit_delete]
 
-            modification <- data.frame(resultats_inputs)
+            modification <- data.frame(results_inputs)
             colnames(modification) <- names(data)
             modification <- data.table(modification)
 
-            data <- rbind(data[ID != input$modifier], modification, fill = TRUE)
-            data <- data[order(ID)]
-            #print(data)
+            data <- rbind(data[.datamods_edit_update != input$update], modification, fill = TRUE)
+            data <- data[order(.datamods_edit_update)]
+            data_rv$data <- data
             #saveRDS(data, file = "datamods/data.rds") #changer nom
           })
-          if (inherits(resultat_modifier, "try-error")) {
+          if (inherits(results_update, "try-error")) {
             shinybusy::report_failure(
-              title = "Erreur",
-              text = "Impossible de modifier l\'\u00e9l\u00e9ment, contactez l\'administrateur de la plateforme.",
-              button = "Fermer"
+              title = "Error",
+              text = "Unable to modify the item, contact the platform administrator",
+              button = "Close"
             )
           } else {
             shinybusy::report_success(
-              title = "Enregistr\u00e9",
-              text = "L\'\u00e9l\u00e9ment a \u00e9t\u00e9 modifi\u00e9",
-              button = "Fermer"
+              title = "Registered",
+              text = "Item has been modified",
+              button = "Close"
             )
           }
         })
 
 
-      # Supprimer une ligne ---
-      observeEvent(input$supprimer, {
-        req(data_calc_r())
-        data <- data_calc_r()
+      # Delete a row ---
+      observeEvent(input$delete, {
+        req(data_r())
+        data <- data_rv$data
         data <- as.data.table(data)
-        ligne <- data[ID_2 == input$supprimer]
+        row <- data[.datamods_edit_delete == input$delete]
         removeModal()
-        showModal(fenetre_confirmation(
-          inputId = ns("confirmation_supprimer_ligne"),
-          titre = "Supprimer",
-          "Souhaitez-vous supprimer l\'\u00e9l\u00e9ment s\u00e9lectionn\u00e9 ?"
+        showModal(confirmation_window(
+          inputId = ns("confirmation_delete_row"),
+          title = "Delete",
+          "Do you want to delete the selected row ?"
         ))
       })
-      observeEvent(input$confirmation_supprimer_ligne_oui, {
-        req(data_calc_r())
-        data <- data_calc_r()
+      observeEvent(input$confirmation_delete_row_yes, {
+        req(data_r())
+        data <- data_rv$data
         data <- as.data.table(data)
-        ligne <- data[ID_2 == input$supprimer]
-        resultat_supprimer <- try({
-          data <- data[ID_2 != input$supprimer]
-          data <- data[order(ID)]
-          #print(data)
+        row <- data[.datamods_edit_delete == input$delete]
+        results_delete <- try({
+          data <- data[.datamods_edit_delete != input$delete]
+          data <- data[order(.datamods_edit_update)]
+          data_rv$data <- data
           #saveRDS(data, file = "datamods/data.rds") #changer nom
         })
-        if (inherits(resultat_supprimer, "try-error")) {
+        if (inherits(results_delete, "try-error")) {
           shinybusy::report_failure(
-            title = "Erreur",
-            text = "Impossible de supprimer l\'\u00e9l\u00e9ment, contactez l\'administrateur de la plateforme.",
-            button = "Fermer"
+            title = "Error",
+            text = "Unable to delete the row, contact platform administrator",
+            button = "Close"
           )
         } else {
           shinybusy::report_success(
-            title = "Enregistr\u00e9",
-            text = "L\'\u00e9l\u00e9ment a \u00e9t\u00e9 supprim\u00e9",
-            button = "Fermer"
+            title = "Registered",
+            text = "The row has been deleted",
+            button = "Close"
           )
         }
         removeModal()
       })
-      observeEvent(input$confirmation_supprimer_ligne_non, {
+      observeEvent(input$confirmation_delete_row_no, {
         shinybusy::report_info(
           title = "Information",
-          text = "L\'\u00e9l\u00e9ment n\'a pas \u00e9t\u00e9 supprim\u00e9",
-          button = "Fermer"
+          text = "Row was not deleted",
+          button = "Close"
         )
         removeModal()
       })
+
+      return(reactive(data_rv$data))
 
     }
   )
@@ -214,37 +216,37 @@ data_edit_server <- function(id,
 
 # Fonctions ---------------------------------------------------------------
 
-fenetre_saisie <- function(.data = list(),
-                            id_valider = "ajouter_ligne",
-                            titre = "Ajouter une ligne",
-                            donnees,
-                            session = getDefaultReactiveDomain()) {
+input_window <- function(.data = list(),
+                          id_validate = "add_row",
+                          title = "Add a row",
+                          datas,
+                          session = getDefaultReactiveDomain()) {
   ns <- session$ns
   showModal(modalDialog(
     title = tagList(
-      titre,
+      title,
       tags$button(
-        phosphoricons::ph("x", title = "Fermer", height = "2em"),
+        phosphoricons::ph("x", title = "Close", height = "2em"),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-bs-dismiss` = "modal",
-        `aria-label` = "Fermer"
+        `aria-label` = "Close"
       )
     ),
     footer = NULL,
-    size = "xl",
+    size = "m",
     easyClose = TRUE,
-    saisie_ligne(.data = .data, donnees, session = session),
+    line_input(.data = .data, datas, session = session),
     actionButton(
-      inputId = ns(id_valider),
-      label = "Valider la saisie",
+      inputId = ns(id_validate),
+      label = "Validate the entry",
       class = "btn-outline-primary float-end"
     )
   ))
 }
 
 
-saisie_ligne <- function(.data = list(), donnees, session = getDefaultReactiveDomain()) {
+line_input <- function(.data = list(), datas, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
@@ -254,10 +256,10 @@ saisie_ligne <- function(.data = list(), donnees, session = getDefaultReactiveDo
       column(
         width = 6,
         lapply(
-          X = seq_len(ncol(donnees)),
+          X = seq_len(ncol(datas)),
           FUN = function(i) {
-            variable_name <- names(donnees)[i]
-            variable <- donnees[[i]]
+            variable_name <- names(datas)[i]
+            variable <- datas[[i]]
 
             if (isTRUE((inherits(x = variable, what = "numeric")))) {
               numericInput(
@@ -288,13 +290,15 @@ saisie_ligne <- function(.data = list(), donnees, session = getDefaultReactiveDo
                 label = paste0(variable_name, " : "),
                 value = .data$variable_name %||% FALSE,
                 icon = icon("check"),
-                status = "primary"
+                status = "primary",
+                width = "100%"
               )
             } else if (isTRUE((inherits(x = variable, what = "Date")))) {
               dateInput(
                 inputId = ns("variable_name"),
                 label = paste0(variable_name, " : "),
-                value = .data$variable_name %||% Sys.Date()
+                value = .data$variable_name %||% Sys.Date(),
+                width = "100%"
               )
             } else {
               return(NULL)
@@ -307,21 +311,21 @@ saisie_ligne <- function(.data = list(), donnees, session = getDefaultReactiveDo
 }
 
 
-table <- function(data, modifierInputId = NULL, supprimerInputId = NULL) {
+table <- function(data, updateInputId = NULL, deleteInputId = NULL) {
   reactable(
     data = data,
     columns = list(
-      ID = col_def_modifier(modifierInputId),
-      ID_2 = col_def_supprimer(supprimerInputId)
+      .datamods_edit_update = col_def_update(updateInputId),
+      .datamods_edit_delete = col_def_delete(deleteInputId)
       )
     )
 }
 
-col_def_modifier <- function(inputId) {
+col_def_update <- function(inputId) {
   if (is.null(inputId))
     return(reactable::colDef(show = FALSE))
   reactable::colDef(
-    name = "Modifier",
+    name = "Update",
     width = 82,
     sortable = FALSE,
     html = TRUE,
@@ -338,7 +342,7 @@ col_def_modifier <- function(inputId) {
           "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
           inputId, value
         ),
-        title = "cliquez \u00e9diter",
+        title = "Click to edit",
         ph("pencil-simple-line", height = "1.2em")
       ) %>%
         htmltools::doRenderTags()
@@ -346,11 +350,11 @@ col_def_modifier <- function(inputId) {
   )
 }
 
-col_def_supprimer <- function(inputId) {
+col_def_delete <- function(inputId) {
   if (is.null(inputId))
     return(reactable::colDef(show = FALSE))
   reactable::colDef(
-    name = "Supprimer",
+    name = "Delete",
     width = 96,
     sortable = FALSE,
     html = TRUE,
@@ -367,7 +371,7 @@ col_def_supprimer <- function(inputId) {
           "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
           inputId, value
         ),
-        title = "cliquez pour supprimer",
+        title = "Click to delete",
         ph("x", height = "1.2em")
       ) %>%
         htmltools::doRenderTags()
@@ -376,35 +380,35 @@ col_def_supprimer <- function(inputId) {
 }
 
 
-fenetre_confirmation <- function(inputId, ..., titre = NULL) {
+confirmation_window <- function(inputId, ..., title = NULL) {
   modalDialog(
     title = tagList(
       tags$button(
-        phosphoricons::ph("x", title = "Fermer", height = "2em"),
+        phosphoricons::ph("x", title = "Close", height = "2em"),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-bs-dismiss` = "modal",
         `aria-label` = "Fermer"
       ),
-      titre
+      title
     ),
     ...,
     size = "m",
     footer = tagList(
       tags$button(
-        "Annuler",
+        "Cancel",
         class = "btn btn-outline-secondary",
         `data-bs-dismiss` = "modal"
       ),
       actionButton(
-        inputId = paste0(inputId, "_non"),
-        label = "Non",
+        inputId = paste0(inputId, "_no"),
+        label = "No",
         class = "btn-outline-danger",
         `data-bs-dismiss` = "modal"
       ),
       actionButton(
-        inputId = paste0(inputId, "_oui"),
-        label = "Oui",
+        inputId = paste0(inputId, "_yes"),
+        label = "Yes",
         class = "btn-outline-primary"
       )
     )
