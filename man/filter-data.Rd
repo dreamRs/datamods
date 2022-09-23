@@ -15,7 +15,7 @@ filter_data_server(
   name = reactive("data"),
   defaults = reactive(NULL),
   drop_ids = TRUE,
-  widget_char = c("select", "picker"),
+  widget_char = c("virtualSelect", "select", "picker"),
   widget_num = c("slider", "range"),
   widget_date = c("slider", "range"),
   label_na = "NA",

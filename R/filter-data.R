@@ -77,7 +77,7 @@ filter_data_server <- function(id,
                                name = reactive("data"),
                                defaults = reactive(NULL),
                                drop_ids = TRUE,
-                               widget_char = c("select", "picker"),
+                               widget_char = c("virtualSelect", "select", "picker"),
                                widget_num = c("slider", "range"),
                                widget_date = c("slider", "range"),
                                label_na = "NA",
@@ -186,12 +186,12 @@ filter_data_server <- function(id,
 #' @importFrom htmltools HTML tagList tags
 #' @importFrom shiny selectizeInput sliderInput dateRangeInput
 #' @importFrom stats setNames
-#' @importFrom shinyWidgets pickerInput pickerOptions numericRangeInput
+#' @importFrom shinyWidgets pickerInput pickerOptions numericRangeInput virtualSelectInput
 create_filters <- function(data,
                            vars = NULL,
                            defaults = NULL,
                            drop_ids = TRUE,
-                           widget_char = c("select", "picker"),
+                           widget_char = c("virtualSelect", "select", "picker"),
                            widget_num = c("slider", "range"),
                            widget_date = c("slider", "range"),
                            label_na = "NA",
@@ -342,6 +342,22 @@ create_filters <- function(data,
               )
             )
           )
+        } else if (identical(widget_char, "virtualSelect")) {
+          tags$div(
+            style = "position: relative;",
+            tag_label,
+            virtualSelectInput(
+              inputId = ns(id),
+              choices = choices,
+              selected = selected,
+              label = NULL,
+              multiple = TRUE,
+              width = width,
+              showValueAsTags = TRUE,
+              zIndex = 9999,
+              dropboxWrapper = ".datamods-filters-container"
+            )
+          )
         } else {
           tags$div(
             style = "position: relative;",
@@ -362,7 +378,10 @@ create_filters <- function(data,
     }
   )
   list(
-    ui = tagList(ui),
+    ui = tags$div(
+      class = "datamods-filters-container",
+      ui
+    ),
     filters_id = filters_id,
     filters_na_id = filters_na_id
   )

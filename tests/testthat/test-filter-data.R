@@ -11,10 +11,10 @@ test_that("create_filters works", {
   expect_length(filters, 3)
   expect_named(filters, c("ui", "filters_id", "filters_na_id"))
 
-  expect_is(filters$ui, "shiny.tag.list")
+  expect_is(filters$ui, "shiny.tag")
 
   expect_length(filters$filters_id, ncol(iris))
-  expect_equal(length(filters$ui[[1]]), length(filters$filters_id))
+  expect_equal(length(filters$ui$children[[1]]), length(filters$filters_id))
   expect_equal(length(filters$filters_id), length(filters$filters_na_id))
 })
 
@@ -26,10 +26,10 @@ test_that("create_filters with options works", {
   expect_length(filters, 3)
   expect_named(filters, c("ui", "filters_id", "filters_na_id"))
 
-  expect_is(filters$ui, "shiny.tag.list")
+  expect_is(filters$ui, "shiny.tag")
 
   expect_length(filters$filters_id, 3)
-  expect_equal(length(filters$ui[[1]]), length(filters$filters_id))
+  expect_equal(length(filters$ui$children[[1]]), length(filters$filters_id))
   expect_equal(length(filters$filters_id), length(filters$filters_na_id))
 })
 
@@ -47,10 +47,10 @@ test_that("create_filters with dates and ids works", {
   expect_length(filters, 3)
   expect_named(filters, c("ui", "filters_id", "filters_na_id"))
 
-  expect_is(filters$ui, "shiny.tag.list")
+  expect_is(filters$ui, "shiny.tag")
 
   expect_length(filters$filters_id, 2)
-  expect_equal(length(filters$ui[[1]]), length(filters$filters_id))
+  expect_equal(length(filters$ui$children[[1]]), length(filters$filters_id))
   expect_equal(length(filters$filters_id), length(filters$filters_na_id))
 })
 
@@ -68,10 +68,10 @@ test_that("create_filters with dates and ids works (bis)", {
   expect_length(filters, 3)
   expect_named(filters, c("ui", "filters_id", "filters_na_id"))
 
-  expect_is(filters$ui, "shiny.tag.list")
+  expect_is(filters$ui, "shiny.tag")
 
   expect_length(filters$filters_id, 2)
-  expect_equal(length(filters$ui[[1]]), length(filters$filters_id))
+  expect_equal(length(filters$ui$children[[1]]), length(filters$filters_id))
   expect_equal(length(filters$filters_id), length(filters$filters_na_id))
 })
 
