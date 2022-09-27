@@ -29,8 +29,8 @@ edit_data_server <- function(id,
       observeEvent(data_r(), {
         data <- data_r()
         data <- as.data.table(data)
-        data <- data[, .datamods_edit_update := 1:nrow(data)]
-        data <- data[, .datamods_edit_delete := 1:nrow(data)]
+        data <- data[, .datamods_edit_update := seq_len(.N)]
+        data <- data[, .datamods_edit_delete := seq_len(.N)]
         data_rv$data <- data
       })
 
@@ -38,25 +38,30 @@ edit_data_server <- function(id,
       output$table <- renderReactable({
         req(data_r())
         data <- data_rv$data
-        table(data = data,
-              updateInputId = if (isTRUE(update)) ns("update"),
-              deleteInputId = if (isTRUE(delete)) ns("delete"))
+        table_display(
+          data = data,
+          updateInputId = if (isTRUE(update)) ns("update"),
+          deleteInputId = if (isTRUE(delete)) ns("delete")
+        )
       })
 
       # Add a row ---
       output$add_button <- renderUI({
         if (isTRUE(add)) {
-          actionButton(
-            inputId = ns("add"),
-            label = tagList(ph("plus"), "Add a row"),
-            class = "btn-outline-primary float-end"
+          tagList(
+            actionButton(
+              inputId = ns("add"),
+              label = tagList(ph("plus"), "Add a row"),
+              class = "btn-outline-primary float-end"
+            ),
+            tags$div(class = "clearfix")
           )
         }
       })
 
       observeEvent(input$add, {
         req(data_r())
-        input_window(id_validate = "add_row",
+        edit_modal(id_validate = "add_row",
                      datas = data_rv$data)
       })
 
@@ -107,7 +112,7 @@ edit_data_server <- function(id,
         data <- data_rv$data
         data <- as.data.table(data)
         row <- data[.datamods_edit_update == input$update]
-        input_window(
+        edit_modal(
           .data = row,
           title = "Update row",
           id_validate = "update_row",
@@ -216,7 +221,7 @@ edit_data_server <- function(id,
 
 # Fonctions ---------------------------------------------------------------
 
-input_window <- function(.data = list(),
+edit_modal <- function(.data = list(),
                           id_validate = "add_row",
                           title = "Add a row",
                           datas,
@@ -236,7 +241,7 @@ input_window <- function(.data = list(),
     footer = NULL,
     size = "m",
     easyClose = TRUE,
-    line_input(.data = .data, datas, session = session),
+    edit_input_form(.data = .data, datas, session = session),
     actionButton(
       inputId = ns(id_validate),
       label = "Validate the entry",
@@ -246,72 +251,66 @@ input_window <- function(.data = list(),
 }
 
 
-line_input <- function(.data = list(), datas, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(.data = list(), datas, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
   tagList(
-    fluidRow(
-      style = css(fontSize = "smaller"),
-      column(
-        width = 6,
-        lapply(
-          X = seq_len(ncol(datas)),
-          FUN = function(i) {
-            variable_name <- names(datas)[i]
-            variable <- datas[[i]]
+    lapply(
+      X = seq_len(ncol(datas)),
+      FUN = function(i) {
+        variable_name <- names(datas)[i]
+        variable <- datas[[i]]
 
-            if (isTRUE((inherits(x = variable, what = "numeric")))) {
-              numericInput(
-                inputId = ns(variable_name),
-                label = paste0(variable_name, " : "),
-                value = .data$variable_name %||% 0,
-                width = "100%"
-              )
-            } else if (isTRUE((inherits(x = variable, what = "factor")))) {
-              virtualSelectInput(
-                inputId = ns(variable_name),
-                label = paste0(variable_name, " : "),
-                choices = unique(variable),
-                selected = .data$variable_name %||% unique(variable)[[1]],
-                width = "100%",
-                allowNewOption = TRUE
-              )
-            } else if (isTRUE((inherits(x = variable, what = "character")))) {
-              textInput(
-                inputId = ns(variable_name),
-                label = paste0(variable_name, " : "),
-                value = .data$variable_name %||% "",
-                width = "100%"
-              )
-            } else if (isTRUE((inherits(x = variable, what = "logical")))) {
-              prettyCheckbox(
-                inputId = ns("variable_name"),
-                label = paste0(variable_name, " : "),
-                value = .data$variable_name %||% FALSE,
-                icon = icon("check"),
-                status = "primary",
-                width = "100%"
-              )
-            } else if (isTRUE((inherits(x = variable, what = "Date")))) {
-              dateInput(
-                inputId = ns("variable_name"),
-                label = paste0(variable_name, " : "),
-                value = .data$variable_name %||% Sys.Date(),
-                width = "100%"
-              )
-            } else {
-              return(NULL)
-            }
-          }
-        )
-      )
+        if (isTRUE((inherits(x = variable, what = "numeric")))) {
+          numericInput(
+            inputId = ns(variable_name),
+            label = paste0(variable_name, " : "),
+            value = .data$variable_name %||% 0,
+            width = "100%"
+          )
+        } else if (isTRUE((inherits(x = variable, what = "factor")))) {
+          virtualSelectInput(
+            inputId = ns(variable_name),
+            label = paste0(variable_name, " : "),
+            choices = unique(variable),
+            selected = .data$variable_name %||% unique(variable)[[1]],
+            width = "100%",
+            allowNewOption = TRUE
+          )
+        } else if (isTRUE((inherits(x = variable, what = "character")))) {
+          textInput(
+            inputId = ns(variable_name),
+            label = paste0(variable_name, " : "),
+            value = .data$variable_name %||% "",
+            width = "100%"
+          )
+        } else if (isTRUE((inherits(x = variable, what = "logical")))) {
+          prettyCheckbox(
+            inputId = ns("variable_name"),
+            label = paste0(variable_name, " : "),
+            value = .data$variable_name %||% FALSE,
+            icon = icon("check"),
+            status = "primary",
+            width = "100%"
+          )
+        } else if (isTRUE((inherits(x = variable, what = "Date")))) {
+          dateInput(
+            inputId = ns("variable_name"),
+            label = paste0(variable_name, " : "),
+            value = .data$variable_name %||% Sys.Date(),
+            width = "100%"
+          )
+        } else {
+          return(NULL)
+        }
+      }
     )
   )
 }
 
 
-table <- function(data, updateInputId = NULL, deleteInputId = NULL) {
+table_display <- function(data, updateInputId = NULL, deleteInputId = NULL) {
   reactable(
     data = data,
     columns = list(
