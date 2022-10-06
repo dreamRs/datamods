@@ -87,7 +87,7 @@ import_ui <- function(id,
     importTab <- switch(
       from,
       "env" = import_globalenv_ui(id = ns("env")),
-      "file" = import_file_ui(id = ns("file")),
+      "file" = import_file_ui(id = ns("file"), file_extensions = file_extensions),
       "copypaste" = import_copypaste_ui(id = ns("copypaste")),
       "googlesheets" = import_googlesheets_ui(id = ns("googlesheets")),
       "url" = import_url_ui(id = ns("url")),
