@@ -1,4 +1,13 @@
 
+#' Function edit_data_ui()
+#'
+#' @param id Module ID
+#'
+#' @export
+#'
+#' @name module-data
+#'
+#' @examples
 edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -11,6 +20,21 @@ edit_data_ui <- function(id) {
   )
 }
 
+#' Function edit_data_server()
+#'
+#' @param id Module ID
+#' @param data_r data_r `reactive` function containing a `data.frame` to use in the module.
+#' @param add boolean, if TRUE, allows you to add a row in the table via a button at the top right
+#' @param update boolean, if TRUE, allows you to modify a row of the table via a button located in the table on the row you want to edit
+#' @param delete boolean, if true, allows a row to be deleted from the table via a button in the table
+#'
+#' @return the initial `data.frame` with the modifications applied
+#'
+#' @name module-data
+#'
+#' @export
+#'
+#' @examples
 edit_data_server <- function(id,
                              data_r = reactive(NULL), # reactive function with a data.frame
                              add = TRUE, # if true, allows you to add a row in the table via a button at the top right
@@ -62,7 +86,7 @@ edit_data_server <- function(id,
       observeEvent(input$add, {
         req(data_r())
         edit_modal(id_validate = "add_row",
-                     datas = data_rv$data)
+                   data = data_rv$data)
       })
 
       observeEvent(input$add_row, {
@@ -113,10 +137,10 @@ edit_data_server <- function(id,
         data <- as.data.table(data)
         row <- data[.datamods_edit_update == input$update]
         edit_modal(
-          .data = row,
+          default = row,
           title = "Update row",
           id_validate = "update_row",
-          datas = data
+          data = data
         )
       })
 
@@ -221,11 +245,23 @@ edit_data_server <- function(id,
 
 # Fonctions ---------------------------------------------------------------
 
-edit_modal <- function(.data = list(),
-                          id_validate = "add_row",
-                          title = "Add a row",
-                          datas,
-                          session = getDefaultReactiveDomain()) {
+#' Function edit_modal()
+#'
+#' @param default row on which to operate a modification or a deletion, otherwise empty list for an addition
+#' @param id_validate inputId of the actionButton()
+#' @param title title of the modalDialog()
+#' @param data `data.frame` to use
+#' @param session The `session` object passed to function given to shinyServer
+#'
+#' @return a modal input window with a validation button
+#' @export
+#'
+#' @examples
+edit_modal <- function(default = list(),
+                       id_validate = "add_row",
+                       title = "Add a row",
+                       data,
+                       session = getDefaultReactiveDomain()) {
   ns <- session$ns
   showModal(modalDialog(
     title = tagList(
@@ -241,7 +277,7 @@ edit_modal <- function(.data = list(),
     footer = NULL,
     size = "m",
     easyClose = TRUE,
-    edit_input_form(.data = .data, datas, session = session),
+    edit_input_form(default = default, data = data, session = session),
     actionButton(
       inputId = ns(id_validate),
       label = "Validate the entry",
@@ -251,22 +287,22 @@ edit_modal <- function(.data = list(),
 }
 
 
-edit_input_form <- function(.data = list(), datas, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(default = list(), data, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
   tagList(
     lapply(
-      X = seq_len(ncol(datas)),
+      X = seq_len(ncol(data)),
       FUN = function(i) {
-        variable_name <- names(datas)[i]
-        variable <- datas[[i]]
+        variable_name <- names(data)[i]
+        variable <- data[[i]]
 
         if (isTRUE((inherits(x = variable, what = "numeric")))) {
           numericInput(
             inputId = ns(variable_name),
             label = paste0(variable_name, " : "),
-            value = .data$variable_name %||% 0,
+            value = default$variable_name %||% 0,
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "factor")))) {
@@ -274,7 +310,7 @@ edit_input_form <- function(.data = list(), datas, session = getDefaultReactiveD
             inputId = ns(variable_name),
             label = paste0(variable_name, " : "),
             choices = unique(variable),
-            selected = .data$variable_name %||% unique(variable)[[1]],
+            selected = default$variable_name %||% unique(variable)[[1]],
             width = "100%",
             allowNewOption = TRUE
           )
@@ -282,14 +318,14 @@ edit_input_form <- function(.data = list(), datas, session = getDefaultReactiveD
           textInput(
             inputId = ns(variable_name),
             label = paste0(variable_name, " : "),
-            value = .data$variable_name %||% "",
+            value = default$variable_name %||% "",
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "logical")))) {
           prettyCheckbox(
             inputId = ns("variable_name"),
             label = paste0(variable_name, " : "),
-            value = .data$variable_name %||% FALSE,
+            value = default$variable_name %||% FALSE,
             icon = icon("check"),
             status = "primary",
             width = "100%"
@@ -298,7 +334,7 @@ edit_input_form <- function(.data = list(), datas, session = getDefaultReactiveD
           dateInput(
             inputId = ns("variable_name"),
             label = paste0(variable_name, " : "),
-            value = .data$variable_name %||% Sys.Date(),
+            value = default$variable_name %||% Sys.Date(),
             width = "100%"
           )
         } else {
