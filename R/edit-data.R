@@ -72,7 +72,8 @@ edit_data_server <- function(id,
                              delete = TRUE, # if true, allows a row to be deleted from the table via a button in the table
                              download_csv = TRUE,
                              download_excel = TRUE,
-                             file_name_export = "data"
+                             file_name_export = "data",
+                             var_r = NULL
 ) {
   moduleServer(
     id,
@@ -119,7 +120,8 @@ edit_data_server <- function(id,
       observeEvent(input$add, {
         req(data_r())
         edit_modal(id_validate = "add_row",
-                   data = data_rv$data)
+                   data = data_rv$data,
+                   var = var_r)
       })
 
       observeEvent(input$add_row, {
@@ -173,7 +175,8 @@ edit_data_server <- function(id,
           default = row,
           title = "Update row",
           id_validate = "update_row",
-          data = data
+          data = data,
+          var = var_r
         )
       })
 
@@ -337,8 +340,16 @@ edit_modal <- function(default = list(),
                        id_validate = "add_row",
                        title = "Add a row",
                        data,
+                       var,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
+
+  if (is.null(var)) {
+    data <- data
+  } else {
+    data <- data[, ..var]
+  }
+
   showModal(modalDialog(
     title = tagList(
       title,
