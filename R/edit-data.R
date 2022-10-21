@@ -12,6 +12,36 @@ edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
+    # Download data --
+    conditionalPanel(
+      condition = "output.download_csv == true",
+      ns = ns,
+      downloadButton(
+        outputId = ns("export_csv"),
+        label = tagList(
+          ph("download"),
+          "Export data in csv format"
+        ),
+        class = NULL,
+        icon = NULL,
+        width = "100%"
+      )
+    ),
+    conditionalPanel(
+      condition = "output.download_excel == true",
+      ns = ns,
+      downloadButton(
+        outputId = ns("export_excel"),
+        label = tagList(
+          ph("download"),
+          "Export data in excel format"
+        ),
+        class = NULL,
+        icon = NULL,
+        width = "100%"
+      )
+    ),
+
     # Add a row --
     uiOutput(outputId = ns("add_button")),
 
@@ -39,7 +69,10 @@ edit_data_server <- function(id,
                              data_r = reactive(NULL), # reactive function with a data.frame
                              add = TRUE, # if true, allows you to add a row in the table via a button at the top right
                              update = TRUE, # if true, allows you to modify a row of the table via a button located in the table on the row you want to edit
-                             delete = TRUE # if true, allows a row to be deleted from the table via a button in the table
+                             delete = TRUE, # if true, allows a row to be deleted from the table via a button in the table
+                             download_csv = TRUE,
+                             download_excel = TRUE,
+                             file_name_export = "data"
 ) {
   moduleServer(
     id,
@@ -234,6 +267,49 @@ edit_data_server <- function(id,
         )
         removeModal()
       })
+
+
+      # Download data ---
+      ## Csv
+      output[["download_csv"]] <- reactive({
+        return(download_csv)
+      })
+      outputOptions(output, "download_csv", suspendWhenHidden = FALSE)
+
+      output$export_csv <- downloadHandler(
+        filename = function() {
+          file_name <- file_name_export
+          paste0(file_name, ".csv")
+        },
+        content = function(file) {
+          req(data_r())
+          data <- data_rv$data
+          write.csv(
+            x = data,
+            file = file
+          )
+        }
+      )
+      ## Excel
+      output[["download_excel"]] <- reactive({
+        return(download_excel)
+      })
+      outputOptions(output, "download_excel", suspendWhenHidden = FALSE)
+
+      output$export_excel <- downloadHandler(
+        filename = function() {
+          file_name <- file_name_export
+          paste0(file_name, ".xlsx")
+        },
+        content = function(file) {
+          req(data_r())
+          data <- data_rv$data
+          write_xlsx(
+            x = list(data = req(data)),
+            path = file
+          )
+        }
+      )
 
       return(reactive(data_rv$data))
 
