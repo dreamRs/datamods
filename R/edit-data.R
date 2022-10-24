@@ -70,10 +70,11 @@ edit_data_server <- function(id,
                              add = TRUE, # if true, allows you to add a row in the table via a button at the top right
                              update = TRUE, # if true, allows you to modify a row of the table via a button located in the table on the row you want to edit
                              delete = TRUE, # if true, allows a row to be deleted from the table via a button in the table
-                             download_csv = TRUE,
-                             download_excel = TRUE,
-                             file_name_export = "data",
-                             var_r = NULL
+                             download_csv = TRUE, # if true, allows to export the table in csv format via a download button
+                             download_excel = TRUE, # if true, allows to export the table in excel format via a download button
+                             file_name_export = "data", # character that allows you to choose the export name of the downloaded file
+                             var_r = NULL, # vector of characters which allows to choose the names of the editable columns
+                             var_mandatory = NULL # vector of characters which allows to choose obligatory fields to fill
 ) {
   moduleServer(
     id,
@@ -82,6 +83,7 @@ edit_data_server <- function(id,
       ns <- session$ns
 
       data_rv <- reactiveValues(data = NULL)
+      #page_rv <- reactiveValues(page = NULL)
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       observeEvent(data_r(), {
@@ -103,6 +105,26 @@ edit_data_server <- function(id,
         )
       })
 
+      # Update reactable ---
+      #page <- reactive(getReactableState(outputId = "table", name = "page"))
+      # observeEvent(req(page()), {
+      #   updateReactable(outputId = "table", page = page())
+      #   print(page())
+      # })
+
+      #page <- reactive(getReactableState(outputId = "table", name = "page"))
+      # observe({
+      #   updateReactable(outputId = "table", page = page())
+      #   print(page())
+      # }) %>%
+      #   bindEvent(page())
+
+      # observe({
+      #   page <- req(getReactableState(outputId = "table", name = "page"))
+      #   updateReactable("table", page = page)
+      #   print(page)
+      # })
+
       # Add a row ---
       output$add_button <- renderUI({
         if (isTRUE(add)) {
@@ -121,7 +143,8 @@ edit_data_server <- function(id,
         req(data_r())
         edit_modal(id_validate = "add_row",
                    data = data_rv$data,
-                   var = var_r)
+                   var = var_r,
+                   var_mandatory = var_mandatory)
       })
 
       observeEvent(input$add_row, {
@@ -130,38 +153,53 @@ edit_data_server <- function(id,
         data <- as.data.table(data)
         removeModal()
         list_inputs <- reactiveValuesToList(input)
-        results_add <- try({
-          results_inputs <- lapply(
-            X = seq_len(ncol(data)),
-            FUN = function(i) {
-              inputs <- list()
-              input_name <- names(data)[i]
-              inputs[[i]] <- list_inputs[[input_name]]
-            }
-          )
-          results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
-          results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
 
-          new <- data.frame(results_inputs)
-          colnames(new) <- names(data)
-          new <- data.table(new)
-          data <- rbind(data, new, fill = TRUE)
-          data_rv$data <- data
-          #saveRDS(data, file = "datamods/data.rds") #changer nom
-        })
-        if (inherits(results_add, "try-error")) {
-          shinybusy::report_failure(
-            title = "Error",
-            text = "Unable to add the row, contact the platform administrator",
-            button = "Close"
-          )
+        if (!is.null(var_mandatory)) {
+          for (var in var_mandatory) {
+            if (!isTruthy(list_inputs[[var]])) {
+              shinybusy::report_failure(
+                title = "Required field",
+                text = "Please fill in the required fields",
+                button = "Close"
+              )
+            }
+          }
         } else {
-          shinybusy::report_success(
-            title = "Registered",
-            text = "Row has been saved",
-            button = "Close"
-          )
+          results_add <- try({
+            results_inputs <- lapply(
+              X = seq_len(ncol(data)),
+              FUN = function(i) {
+                inputs <- list()
+                input_name <- names(data)[i]
+                inputs[[i]] <- list_inputs[[input_name]]
+              }
+            )
+            results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
+            results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
+
+            new <- data.frame(results_inputs)
+            colnames(new) <- names(data)
+            new <- data.table(new)
+            data <- rbind(data, new, fill = TRUE)
+            data_rv$data <- data
+          })
+          if (inherits(results_add, "try-error")) {
+            shinybusy::report_failure(
+              title = "Error",
+              text = "Unable to add the row, contact the platform administrator",
+              button = "Close"
+            )
+          } else {
+            shinybusy::report_success(
+              title = "Registered",
+              text = "Row has been saved",
+              button = "Close"
+            )
+          }
         }
+        # page_rv$page <- req(getReactableState(outputId = "table", name = "page"))
+        # updateReactable("table", page = page_rv$page)
+        # print(page_rv$page)
       })
 
 
@@ -176,7 +214,8 @@ edit_data_server <- function(id,
           title = "Update row",
           id_validate = "update_row",
           data = data,
-          var = var_r
+          var = var_r,
+          var_mandatory = var_mandatory
         )
       })
 
@@ -186,7 +225,19 @@ edit_data_server <- function(id,
         data <- as.data.table(data)
         removeModal()
         list_inputs <- reactiveValuesToList(input)
-        results_update <- try({
+
+        if (!is.null(var_mandatory)) {
+          for (var in var_mandatory) {
+            if (!isTruthy(list_inputs[[var]])) {
+              shinybusy::report_failure(
+                title = "Required field",
+                text = "Please fill in the required fields",
+                button = "Close"
+              )
+            }
+          }
+        } else {
+          results_update <- try({
             results_inputs <- lapply(
               X = seq_len(ncol(data)),
               FUN = function(i) {
@@ -205,7 +256,6 @@ edit_data_server <- function(id,
             data <- rbind(data[.datamods_edit_update != input$update], modification, fill = TRUE)
             data <- data[order(.datamods_edit_update)]
             data_rv$data <- data
-            #saveRDS(data, file = "datamods/data.rds") #changer nom
           })
           if (inherits(results_update, "try-error")) {
             shinybusy::report_failure(
@@ -220,6 +270,10 @@ edit_data_server <- function(id,
               button = "Close"
             )
           }
+        }
+        # page_rv$page <- req(getReactableState(outputId = "table", name = "page"))
+        # updateReactable("table", page = page_rv$page)
+        # print(page_rv$page)
         })
 
 
@@ -245,7 +299,6 @@ edit_data_server <- function(id,
           data <- data[.datamods_edit_delete != input$delete]
           data <- data[order(.datamods_edit_update)]
           data_rv$data <- data
-          #saveRDS(data, file = "datamods/data.rds") #changer nom
         })
         if (inherits(results_delete, "try-error")) {
           shinybusy::report_failure(
@@ -341,6 +394,7 @@ edit_modal <- function(default = list(),
                        title = "Add a row",
                        data,
                        var,
+                       var_mandatory,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
@@ -364,7 +418,7 @@ edit_modal <- function(default = list(),
     footer = NULL,
     size = "m",
     easyClose = TRUE,
-    edit_input_form(default = default, data = data, session = session),
+    edit_input_form(default = default, data = data, var_mandatory = var_mandatory, session = session),
     actionButton(
       inputId = ns(id_validate),
       label = "Validate the entry",
@@ -374,7 +428,7 @@ edit_modal <- function(default = list(),
 }
 
 
-edit_input_form <- function(default = list(), data, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(default = list(), data, var_mandatory, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
@@ -385,17 +439,23 @@ edit_input_form <- function(default = list(), data, session = getDefaultReactive
         variable_name <- names(data)[i]
         variable <- data[[i]]
 
+        if (variable_name %in% var_mandatory) {
+          label <- tags$p(variable_name, tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : ")
+        } else {
+          label <- paste0(variable_name, " : ")
+        }
+
         if (isTRUE((inherits(x = variable, what = "numeric")))) {
           numericInput(
             inputId = ns(variable_name),
-            label = paste0(variable_name, " : "),
+            label = label,
             value = default$variable_name %||% 0,
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "factor")))) {
           virtualSelectInput(
             inputId = ns(variable_name),
-            label = paste0(variable_name, " : "),
+            label = label,
             choices = unique(variable),
             selected = default$variable_name %||% unique(variable)[[1]],
             width = "100%",
@@ -404,14 +464,14 @@ edit_input_form <- function(default = list(), data, session = getDefaultReactive
         } else if (isTRUE((inherits(x = variable, what = "character")))) {
           textInput(
             inputId = ns(variable_name),
-            label = paste0(variable_name, " : "),
+            label = label,
             value = default$variable_name %||% "",
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "logical")))) {
           prettyCheckbox(
             inputId = ns("variable_name"),
-            label = paste0(variable_name, " : "),
+            label = label,
             value = default$variable_name %||% FALSE,
             icon = icon("check"),
             status = "primary",
@@ -420,7 +480,7 @@ edit_input_form <- function(default = list(), data, session = getDefaultReactive
         } else if (isTRUE((inherits(x = variable, what = "Date")))) {
           dateInput(
             inputId = ns("variable_name"),
-            label = paste0(variable_name, " : "),
+            label = label,
             value = default$variable_name %||% Sys.Date(),
             width = "100%"
           )
