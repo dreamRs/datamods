@@ -466,7 +466,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
           numericInput(
             inputId = ns(variable_id),
             label = label,
-            value = default[[variable_id]] %||% 0,
+            value = default[[variable_id]] %||% NA_real_,
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "factor")))) {
@@ -474,9 +474,10 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
             inputId = ns(variable_id),
             label = label,
             choices = unique(variable),
-            selected = default[[variable_id]] %||% unique(variable)[[1]],
+            selected = default[[variable_id]] %||% "",
             width = "100%",
-            allowNewOption = TRUE
+            allowNewOption = TRUE,
+            autoSelectFirstOption = FALSE
           )
         } else if (isTRUE((inherits(x = variable, what = "character")))) {
           textInput(
