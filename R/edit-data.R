@@ -82,15 +82,18 @@ edit_data_server <- function(id,
 
       ns <- session$ns
 
-      data_rv <- reactiveValues(data = NULL, colnames = NULL)
+      data_rv <- reactiveValues(data = NULL, colnames = NULL, mandatory = NULL)
       #page_rv <- reactiveValues(page = NULL)
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       observeEvent(data_r(), {
         data <- data_r()
+        if (is.reactive(var_mandatory))
+          var_mandatory <- var_mandatory()
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
         setnames(data, paste0("col_", seq_along(data)))
+        data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
         data <- data[, .datamods_edit_update := seq_len(.N)]
         data <- data[, .datamods_edit_delete := seq_len(.N)]
         data_rv$data <- data
@@ -130,6 +133,9 @@ edit_data_server <- function(id,
 
       # Add a row ---
       output$add_button <- renderUI({
+        if (is.reactive(add)) {
+          add <- add()
+        }
         if (isTRUE(add)) {
           tagList(
             actionButton(
@@ -157,52 +163,49 @@ edit_data_server <- function(id,
         req(data_r())
         data <- data_rv$data
         data <- as.data.table(data)
-        removeModal()
-        list_inputs <- reactiveValuesToList(input)
 
-        if (!is.null(var_mandatory)) {
-          for (var in var_mandatory) {
-            if (!isTruthy(list_inputs[[var]])) {
-              shinybusy::report_failure(
-                title = "Required field",
-                text = "Please fill in the required fields",
-                button = "Close"
-              )
-            }
-          }
-        } else {
-          results_add <- try({
-            results_inputs <- lapply(
-              X = seq_len(ncol(data)),
-              FUN = function(i) {
-                inputs <- list()
-                input_name <- names(data)[i]
-                inputs[[i]] <- list_inputs[[input_name]]
-              }
-            )
-            results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
-            results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
-
-            new <- data.frame(results_inputs)
-            colnames(new) <- names(data)
-            new <- data.table(new)
-            data <- rbind(data, new, fill = TRUE)
-            data_rv$data <- data
-          })
-          if (inherits(results_add, "try-error")) {
+        for (var in data_rv$mandatory) {
+          if (!isTruthy(input[[var]])) {
             shinybusy::report_failure(
-              title = "Error",
-              text = "Unable to add the row, contact the platform administrator",
+              title = "Required field",
+              text = "Please fill in the required fields",
               button = "Close"
             )
-          } else {
-            shinybusy::report_success(
-              title = "Registered",
-              text = "Row has been saved",
-              button = "Close"
-            )
+            return(NULL)
           }
         }
+
+        removeModal()
+
+        results_add <- try({
+          results_inputs <- lapply(
+            X = seq_along(data),
+            FUN = function(i) {
+              input[[colnames(data)[i]]] %||% NA
+            }
+          )
+          results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
+          results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
+
+          new <- as.data.table(results_inputs)
+          setnames(new, colnames(data))
+          data <- rbind(data, new, fill = TRUE)
+          data_rv$data <- data
+        })
+        if (inherits(results_add, "try-error")) {
+          shinybusy::report_failure(
+            title = "Error",
+            text = "Unable to add the row, contact the platform administrator",
+            button = "Close"
+          )
+        } else {
+          shinybusy::report_success(
+            title = "Registered",
+            text = "Row has been saved",
+            button = "Close"
+          )
+        }
+
         # page_rv$page <- req(getReactableState(outputId = "table", name = "page"))
         # updateReactable("table", page = page_rv$page)
         # print(page_rv$page)
@@ -449,6 +452,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
     lapply(
       X = seq_len(ncol(data)),
       FUN = function(i) {
+        variable_id <- colnames(data)[i]
         variable_name <- colnames[i]
         variable <- data[[i]]
 
@@ -460,14 +464,14 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
 
         if (isTRUE((inherits(x = variable, what = "numeric")))) {
           numericInput(
-            inputId = ns(variable_name),
+            inputId = ns(variable_id),
             label = label,
             value = default$variable_name %||% 0,
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "factor")))) {
           virtualSelectInput(
-            inputId = ns(variable_name),
+            inputId = ns(variable_id),
             label = label,
             choices = unique(variable),
             selected = default$variable_name %||% unique(variable)[[1]],
@@ -476,14 +480,14 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
           )
         } else if (isTRUE((inherits(x = variable, what = "character")))) {
           textInput(
-            inputId = ns(variable_name),
+            inputId = ns(variable_id),
             label = label,
             value = default$variable_name %||% "",
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "logical")))) {
           prettyCheckbox(
-            inputId = ns("variable_name"),
+            inputId = ns(variable_id),
             label = label,
             value = default$variable_name %||% FALSE,
             icon = icon("check"),
@@ -492,7 +496,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
           )
         } else if (isTRUE((inherits(x = variable, what = "Date")))) {
           dateInput(
-            inputId = ns("variable_name"),
+            inputId = ns(variable_id),
             label = label,
             value = default$variable_name %||% Sys.Date(),
             width = "100%"
