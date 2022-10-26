@@ -82,13 +82,15 @@ edit_data_server <- function(id,
 
       ns <- session$ns
 
-      data_rv <- reactiveValues(data = NULL)
+      data_rv <- reactiveValues(data = NULL, colnames = NULL)
       #page_rv <- reactiveValues(page = NULL)
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       observeEvent(data_r(), {
         data <- data_r()
         data <- as.data.table(data)
+        data_rv$colnames <- copy(colnames(data))
+        setnames(data, paste0("col_", seq_along(data)))
         data <- data[, .datamods_edit_update := seq_len(.N)]
         data <- data[, .datamods_edit_delete := seq_len(.N)]
         data_rv$data <- data
@@ -100,6 +102,7 @@ edit_data_server <- function(id,
         data <- data_rv$data
         table_display(
           data = data,
+          colnames = data_rv$colnames,
           updateInputId = if (isTRUE(update)) ns("update"),
           deleteInputId = if (isTRUE(delete)) ns("delete")
         )
@@ -141,10 +144,13 @@ edit_data_server <- function(id,
 
       observeEvent(input$add, {
         req(data_r())
-        edit_modal(id_validate = "add_row",
-                   data = data_rv$data,
-                   var = var_r,
-                   var_mandatory = var_mandatory)
+        edit_modal(
+          id_validate = "add_row",
+          data = data_rv$data,
+          colnames = data_rv$colnames,
+          var = var_r,
+          var_mandatory = var_mandatory
+        )
       })
 
       observeEvent(input$add_row, {
@@ -393,6 +399,7 @@ edit_modal <- function(default = list(),
                        id_validate = "add_row",
                        title = "Add a row",
                        data,
+                       colnames = names(data),
                        var,
                        var_mandatory,
                        session = getDefaultReactiveDomain()) {
@@ -418,7 +425,13 @@ edit_modal <- function(default = list(),
     footer = NULL,
     size = "m",
     easyClose = TRUE,
-    edit_input_form(default = default, data = data, var_mandatory = var_mandatory, session = session),
+    edit_input_form(
+      default = default,
+      data = data,
+      colnames = colnames,
+      var_mandatory = var_mandatory,
+      session = session
+    ),
     actionButton(
       inputId = ns(id_validate),
       label = "Validate the entry",
@@ -428,7 +441,7 @@ edit_modal <- function(default = list(),
 }
 
 
-edit_input_form <- function(default = list(), data, var_mandatory, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(default = list(), data, colnames, var_mandatory, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
@@ -436,7 +449,7 @@ edit_input_form <- function(default = list(), data, var_mandatory, session = get
     lapply(
       X = seq_len(ncol(data)),
       FUN = function(i) {
-        variable_name <- names(data)[i]
+        variable_name <- colnames[i]
         variable <- data[[i]]
 
         if (variable_name %in% var_mandatory) {
@@ -493,14 +506,17 @@ edit_input_form <- function(default = list(), data, var_mandatory, session = get
 }
 
 
-table_display <- function(data, updateInputId = NULL, deleteInputId = NULL) {
+table_display <- function(data, colnames = NULL, updateInputId = NULL, deleteInputId = NULL) {
+  cols <- list()
+  for (i in seq_along(data)) {
+    cols[[names(data)[i]]] <- colDef(name = colnames[i])
+  }
+  cols$.datamods_edit_update = col_def_update(updateInputId)
+  cols$.datamods_edit_delete = col_def_delete(deleteInputId)
   reactable(
     data = data,
-    columns = list(
-      .datamods_edit_update = col_def_update(updateInputId),
-      .datamods_edit_delete = col_def_delete(deleteInputId)
-      )
-    )
+    columns = cols
+  )
 }
 
 col_def_update <- function(inputId) {
