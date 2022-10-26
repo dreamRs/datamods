@@ -94,20 +94,28 @@ edit_data_server <- function(id,
         data_rv$colnames <- copy(colnames(data))
         setnames(data, paste0("col_", seq_along(data)))
         data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
-        data <- data[, .datamods_edit_update := seq_len(.N)]
-        data <- data[, .datamods_edit_delete := seq_len(.N)]
+
+        data[, .datamods_id := seq_len(.N)]
+
+        if (isTRUE(update)) {
+          data[, .datamods_edit_update := as.character(seq_len(.N))]
+          data[, .datamods_edit_update := lapply(.datamods_edit_update, btn_update(ns("update")))]
+        } else {
+          data[, .datamods_edit_update := NA]
+        }
+
+        data[, .datamods_edit_delete := as.character(seq_len(.N))]
+        data[, .datamods_edit_delete := lapply(.datamods_edit_delete, btn_delete(ns("delete")))]
+
         data_rv$data <- data
       })
 
       # Table ---
       output$table <- renderReactable({
-        req(data_r())
-        data <- data_rv$data
+        data <- req(data_rv$data)
         table_display(
           data = data,
-          colnames = data_rv$colnames,
-          updateInputId = if (isTRUE(update)) ns("update"),
-          deleteInputId = if (isTRUE(delete)) ns("delete")
+          colnames = data_rv$colnames
         )
       })
 
@@ -184,13 +192,20 @@ edit_data_server <- function(id,
               input[[colnames(data)[i]]] %||% NA
             }
           )
-          results_inputs[[ncol(data) - 1]] <- max(data$.datamods_edit_update) + 1
-          results_inputs[[ncol(data)]] <- max(data$.datamods_edit_delete) + 1
+          id <- max(data$.datamods_id) + 1
+          results_inputs[[ncol(data) - 2]] <- id
+          results_inputs[[ncol(data) - 1]] <- if (update) list(btn_update(ns("update"))(id)) else NA
+          results_inputs[[ncol(data)]] <- list(btn_delete(ns("delete"))(id))
 
           new <- as.data.table(results_inputs)
           setnames(new, colnames(data))
+
+          # browser()
+
           data <- rbind(data, new, fill = TRUE)
-          data_rv$data <- data
+          # data_rv$data <- data
+          page <- getReactableState(outputId = "table", name = "page")
+          updateReactable("table", data = data, page = page)
         })
         if (inherits(results_add, "try-error")) {
           shinybusy::report_failure(
@@ -510,75 +525,86 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
 }
 
 
-table_display <- function(data, colnames = NULL, updateInputId = NULL, deleteInputId = NULL) {
+table_display <- function(data, colnames = NULL) {
   cols <- list()
   for (i in seq_along(data)) {
     cols[[names(data)[i]]] <- colDef(name = colnames[i])
   }
-  cols$.datamods_edit_update = col_def_update(updateInputId)
-  cols$.datamods_edit_delete = col_def_delete(deleteInputId)
+  if (all(is.na(data$.datamods_edit_update))) {
+    cols$.datamods_edit_update = colDef(show = FALSE)
+  } else {
+    cols$.datamods_edit_update = col_def_update()
+  }
+
+  if (hasName(data, ".datamods_edit_delete"))
+    cols$.datamods_edit_delete = col_def_delete()
+  cols$.datamods_id <- colDef(show = FALSE)
   reactable(
     data = data,
     columns = cols
   )
 }
 
-col_def_update <- function(inputId) {
-  if (is.null(inputId))
-    return(reactable::colDef(show = FALSE))
+col_def_update <- function() {
   reactable::colDef(
     name = "Update",
     width = 82,
     sortable = FALSE,
     html = TRUE,
-    filterable = FALSE,
-    cell = function(value) {
-      tags$button(
-        class = "btn btn-outline-primary rounded-circle",
-        style = htmltools::css(
-          height = "40px",
-          width = "40px",
-          padding = 0
-        ),
-        onClick = sprintf(
-          "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
-          inputId, value
-        ),
-        title = "Click to edit",
-        ph("pencil-simple-line", height = "1.2em")
-      ) %>%
-        htmltools::doRenderTags()
-    }
+    filterable = FALSE
+    # cell = btn_update(inputId)
   )
 }
 
-col_def_delete <- function(inputId) {
-  if (is.null(inputId))
-    return(reactable::colDef(show = FALSE))
+btn_update <- function(inputId) {
+  function(value) {
+    tags$button(
+      class = "btn btn-outline-primary rounded-circle",
+      style = htmltools::css(
+        height = "40px",
+        width = "40px",
+        padding = 0
+      ),
+      onClick = sprintf(
+        "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
+        inputId, value
+      ),
+      title = "Click to edit",
+      ph("pencil-simple-line", height = "1.2em")
+    ) %>%
+      htmltools::doRenderTags()
+  }
+}
+
+col_def_delete <- function() {
   reactable::colDef(
     name = "Delete",
     width = 96,
     sortable = FALSE,
     html = TRUE,
-    filterable = FALSE,
-    cell = function(value) {
-      tags$button(
-        class = "btn btn-outline-danger rounded-circle",
-        style = htmltools::css(
-          height = "40px",
-          width = "40px",
-          padding = 0
-        ),
-        onClick = sprintf(
-          "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
-          inputId, value
-        ),
-        title = "Click to delete",
-        ph("x", height = "1.2em")
-      ) %>%
-        htmltools::doRenderTags()
-    }
+    filterable = FALSE
+    # cell = btn_delete(inputId)
   )
+}
+
+btn_delete <- function(inputId) {
+  function(value) {
+    tags$button(
+      class = "btn btn-outline-danger rounded-circle",
+      style = htmltools::css(
+        height = "40px",
+        width = "40px",
+        padding = 0
+      ),
+      onClick = sprintf(
+        "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
+        inputId, value
+      ),
+      title = "Click to delete",
+      ph("x", height = "1.2em")
+    ) %>%
+      htmltools::doRenderTags()
+  }
 }
 
 
