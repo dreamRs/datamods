@@ -12,35 +12,11 @@ edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
-    # Download data --
-    conditionalPanel(
-      condition = "output.download_csv == true",
-      ns = ns,
-      downloadButton(
-        outputId = ns("export_csv"),
-        label = tagList(
-          ph("download"),
-          "Export data in csv format"
-        ),
-        class = NULL,
-        icon = NULL,
-        width = "100%"
-      )
-    ),
-    conditionalPanel(
-      condition = "output.download_excel == true",
-      ns = ns,
-      downloadButton(
-        outputId = ns("export_excel"),
-        label = tagList(
-          ph("download"),
-          "Export data in excel format"
-        ),
-        class = NULL,
-        icon = NULL,
-        width = "100%"
-      )
-    ),
+    # Download data in Excel format --
+    uiOutput(outputId = ns("download_excel")),
+
+    # Download data in csv format --
+    uiOutput(outputId = ns("download_csv")),
 
     # Add a row --
     uiOutput(outputId = ns("add_button")),
@@ -73,7 +49,7 @@ edit_data_server <- function(id,
                              download_csv = TRUE, # if true, allows to export the table in csv format via a download button
                              download_excel = TRUE, # if true, allows to export the table in excel format via a download button
                              file_name_export = "data", # character that allows you to choose the export name of the downloaded file
-                             var_r = NULL, # vector of characters which allows to choose the names of the editable columns
+                             var_edit = NULL, # vector of characters which allows to choose the names of the editable columns
                              var_mandatory = NULL # vector of characters which allows to choose obligatory fields to fill
 ) {
   moduleServer(
@@ -82,26 +58,36 @@ edit_data_server <- function(id,
 
       ns <- session$ns
 
-      data_rv <- reactiveValues(data = NULL, colnames = NULL, mandatory = NULL)
-      #page_rv <- reactiveValues(page = NULL)
+      data_rv <- reactiveValues(data = NULL, colnames = NULL, mandatory = NULL, edit = NULL)
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       data_init_r <- eventReactive(data_r(), {
         data <- data_r()
         if (is.reactive(var_mandatory))
           var_mandatory <- var_mandatory()
+        if (is.reactive(var_edit))
+          var_edit <- var_edit()
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
         setnames(data, paste0("col_", seq_along(data)))
         data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
+        data_rv$edit <- colnames(data)[which(data_rv$colnames %in% var_edit)]
 
         data[, .datamods_id := seq_len(.N)]
+
+        if (is.reactive(update)) {
+          update <- update()
+        }
 
         if (isTRUE(update)) {
           data[, .datamods_edit_update := as.character(seq_len(.N))]
           data[, .datamods_edit_update := lapply(.datamods_edit_update, btn_update(ns("update")))]
         } else {
           data[, .datamods_edit_update := NA]
+        }
+
+        if (is.reactive(delete)) {
+          delete <- delete()
         }
 
         if (isTRUE(delete)) {
@@ -114,6 +100,7 @@ edit_data_server <- function(id,
         data_rv$data <- data
         return(data)
       })
+
 
       # Table ---
       output$table <- renderReactable({
@@ -148,7 +135,8 @@ edit_data_server <- function(id,
           id_validate = "add_row",
           data = data_rv$data,
           colnames = data_rv$colnames,
-          var = var_r,
+          var_edit = data_rv$edit, #var_edit,
+          #edit = data_rv$edit, #var_edit,
           var_mandatory = var_mandatory
         )
       })
@@ -182,12 +170,9 @@ edit_data_server <- function(id,
           results_inputs[[ncol(data) - 2]] <- id
           results_inputs[[ncol(data) - 1]] <- if (update) list(btn_update(ns("update"))(id)) else NA
           results_inputs[[ncol(data)]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
-          #results_inputs[[ncol(data)]] <- list(btn_delete(ns("delete"))(id))
 
           new <- as.data.table(results_inputs)
           setnames(new, colnames(data))
-
-          # browser()
 
           data <- rbind(data, new, fill = TRUE)
           data_rv$data <- data
@@ -221,7 +206,7 @@ edit_data_server <- function(id,
           id_validate = "update_row",
           data = data,
           colnames = data_rv$colnames,
-          var = var_r,
+          var_edit = data_rv$edit,
           var_mandatory = var_mandatory
         )
       })
@@ -334,32 +319,24 @@ edit_data_server <- function(id,
       })
 
 
-      # Download data ---
-      ## Csv
-      output[["download_csv"]] <- reactive({
-        return(download_csv)
-      })
-      outputOptions(output, "download_csv", suspendWhenHidden = FALSE)
-
-      output$export_csv <- downloadHandler(
-        filename = function() {
-          file_name <- file_name_export
-          paste0(file_name, ".csv")
-        },
-        content = function(file) {
-          req(data_r())
-          data <- data_rv$data
-          write.csv(
-            x = data,
-            file = file
+      # Download data in Excel format ---
+      output$download_excel <- renderUI({
+        if (is.reactive(download_excel)) {
+          download_excel <- download_excel()
+        }
+        if (isTRUE(download_excel)) {
+          tagList(
+            downloadButton(
+              outputId = ns("export_excel"),
+              label = tagList(ph("download"), "Export data in excel format"),
+              class = NULL,
+              icon = NULL,
+              width = "100%"
+            ),
+            tags$div(class = "clearfix")
           )
         }
-      )
-      ## Excel
-      output[["download_excel"]] <- reactive({
-        return(download_excel)
       })
-      outputOptions(output, "download_excel", suspendWhenHidden = FALSE)
 
       output$export_excel <- downloadHandler(
         filename = function() {
@@ -367,11 +344,46 @@ edit_data_server <- function(id,
           paste0(file_name, ".xlsx")
         },
         content = function(file) {
-          req(data_r())
           data <- data_rv$data
+          data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
+          setnames(data, data_rv$colnames)
           write_xlsx(
-            x = list(data = req(data)),
+            x = list(data = data),
             path = file
+          )
+        }
+      )
+
+      # Download data in csv format ---
+      output$download_csv <- renderUI({
+        if (is.reactive(download_csv)) {
+          download_csv <- download_csv()
+        }
+        if (isTRUE(download_csv)) {
+          tagList(
+            downloadButton(
+              outputId = ns("export_csv"),
+              label = tagList(ph("download"), "Export data in csv format"),
+              class = NULL,
+              icon = NULL,
+              width = "100%"
+            ),
+            tags$div(class = "clearfix")
+          )
+        }
+      })
+      output$export_csv <- downloadHandler(
+        filename = function() {
+          file_name <- file_name_export
+          paste0(file_name, ".csv")
+        },
+        content = function(file) {
+          data <- data_rv$data
+          data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
+          setnames(data, data_rv$colnames)
+          write.csv(
+            x = data,
+            file = file
           )
         }
       )
@@ -403,15 +415,17 @@ edit_modal <- function(default = list(),
                        title = "Add a row",
                        data,
                        colnames = names(data),
-                       var,
+                       var_edit,
                        var_mandatory,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
-  if (is.null(var)) {
+  if (identical(x = var_edit, y = character(0))) {
     data <- data
+    position_var_edit <- seq_len(ncol(data))
   } else {
-    data <- data[, ..var]
+    data <- data[, ..var_edit]
+    position_var_edit <- as.numeric(gsub("col_", "", var_edit))
   }
 
   showModal(modalDialog(
@@ -426,13 +440,14 @@ edit_modal <- function(default = list(),
       )
     ),
     footer = NULL,
-    size = "m",
+    size = "xl",
     easyClose = TRUE,
     edit_input_form(
       default = default,
       data = data,
       colnames = colnames,
       var_mandatory = var_mandatory,
+      position_var_edit =  position_var_edit,
       session = session
     ),
     actionButton(
@@ -444,7 +459,7 @@ edit_modal <- function(default = list(),
 }
 
 
-edit_input_form <- function(default = list(), data, colnames, var_mandatory, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(default = list(), data, colnames, var_mandatory, position_var_edit, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
@@ -453,7 +468,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, ses
       X = seq_len(ncol(data)),
       FUN = function(i) {
         variable_id <- colnames(data)[i]
-        variable_name <- colnames[i]
+        variable_name <- colnames[position_var_edit[i]]
         variable <- data[[i]]
 
         if (variable_name %in% var_mandatory) {
@@ -527,8 +542,6 @@ table_display <- function(data, colnames = NULL) {
   } else {
     cols$.datamods_edit_delete = col_def_delete()
   }
-  # if (hasName(data, ".datamods_edit_delete"))
-  #   cols$.datamods_edit_delete = col_def_delete()
 
   cols$.datamods_id <- colDef(show = FALSE)
   reactable(
