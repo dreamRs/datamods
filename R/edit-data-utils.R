@@ -24,7 +24,7 @@ edit_modal <- function(default = list(),
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
-  if (identical(x = var_edit, y = character(0))) {
+  if (identical(x = var_edit, y = character(0)) | identical(x = var_edit, y = NULL)) {
     data <- data
     position_var_edit <- seq_len(ncol(data))
   } else {
