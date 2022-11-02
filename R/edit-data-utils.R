@@ -157,7 +157,9 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
 #' @param colnames `data.frame` column names
 #'
 #' @return the `data.frame` in reactable format
-#' @export
+#' @noRd
+#'
+#' @importFrom reactable reactable colDef
 #'
 #' @examples
 table_display <- function(data, colnames = NULL) {
@@ -192,7 +194,7 @@ table_display <- function(data, colnames = NULL) {
 #'
 #' @examples
 col_def_update <- function() {
-  reactable::colDef(
+  colDef(
     name = "Update",
     width = 82,
     sortable = FALSE,

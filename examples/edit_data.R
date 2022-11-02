@@ -1,12 +1,5 @@
 library(shiny)
-library(phosphoricons)
-library(htmltools)
-library(data.table)
-library(reactable)
-library(shinyWidgets)
-library(dplyr)
-library(rlang)
-library(writexl)
+library(datamods)
 library(bslib)
 
 ui <- fluidPage(
@@ -14,13 +7,14 @@ ui <- fluidPage(
     version = 5
     ),
   tags$h2("Edit data", align = "center"),
-  edit_data_ui("id")
+  edit_data_ui("id"),
+  verbatimTextOutput("result")
 )
 
 
 server <- function(input, output, session) {
 
-  edit_data_server(
+  edited_r <- edit_data_server(
     "id",
     data_r = reactive(iris),
     add = TRUE,
@@ -30,7 +24,12 @@ server <- function(input, output, session) {
     download_excel = TRUE,
     file_name_export = "datas",
     var_edit = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Species"),
-    var_mandatory = c("Sepal.Length", "Sepal.Width"))
+    var_mandatory = c("Sepal.Length", "Sepal.Width")
+  )
+
+  output$result <- renderPrint({
+    str(edited_r())
+  })
 }
 
 if (interactive())

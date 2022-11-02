@@ -11,19 +11,21 @@
 #'
 #' @name edit-data
 #'
-#' @examples examples/edit_data.R
+#' @example examples/edit_data.R
 edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
     # Download data in Excel format --
-    uiOutput(outputId = ns("download_excel")),
+    uiOutput(outputId = ns("download_excel"), style = "display: inline;"),
 
     # Download data in csv format --
-    uiOutput(outputId = ns("download_csv")),
+    uiOutput(outputId = ns("download_csv"), style = "display: inline;"),
 
     # Add a row --
-    uiOutput(outputId = ns("add_button")),
+    uiOutput(outputId = ns("add_button"), style = "display: inline;"),
+
+    tags$div(class = "clearfix mb-2"),
 
     # Table --
     reactableOutput(outputId = ns("table"))
@@ -47,9 +49,11 @@ edit_data_ui <- function(id) {
 #'
 #' @name edit-data
 #'
+#' @importFrom shiny moduleServer eventReactive reactiveValues
+#' @importFrom data.table copy as.data.table :=
+#'
 #' @export
 #'
-#' @examples
 edit_data_server <- function(id,
                              data_r = reactive(NULL),
                              add = TRUE,
@@ -127,13 +131,10 @@ edit_data_server <- function(id,
           add <- add()
         }
         if (isTRUE(add)) {
-          tagList(
-            actionButton(
-              inputId = ns("add"),
-              label = tagList(ph("plus"), "Add a row"),
-              class = "btn-outline-primary float-end"
-            ),
-            tags$div(class = "clearfix")
+          actionButton(
+            inputId = ns("add"),
+            label = tagList(ph("plus"), "Add a row"),
+            class = "btn-outline-primary float-end"
           )
         }
       })
@@ -334,15 +335,11 @@ edit_data_server <- function(id,
           download_excel <- download_excel()
         }
         if (isTRUE(download_excel)) {
-          tagList(
-            downloadButton(
-              outputId = ns("export_excel"),
-              label = tagList(ph("download"), "Export data in excel format"),
-              class = NULL,
-              icon = NULL,
-              width = "100%"
-            ),
-            tags$div(class = "clearfix")
+          downloadButton(
+            outputId = ns("export_excel"),
+            label = tagList(ph("download"), "Excel"),
+            icon = NULL,
+            class = "btn-datamods-export"
           )
         }
       })
@@ -369,15 +366,11 @@ edit_data_server <- function(id,
           download_csv <- download_csv()
         }
         if (isTRUE(download_csv)) {
-          tagList(
-            downloadButton(
-              outputId = ns("export_csv"),
-              label = tagList(ph("download"), "Export data in csv format"),
-              class = NULL,
-              icon = NULL,
-              width = "100%"
-            ),
-            tags$div(class = "clearfix")
+          downloadButton(
+            outputId = ns("export_csv"),
+            label = tagList(ph("download"), "CSV"),
+            icon = NULL,
+            class = "btn-datamods-export"
           )
         }
       })
