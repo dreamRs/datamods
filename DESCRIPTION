@@ -38,12 +38,15 @@ Imports:
     shiny (>= 1.5.0),
     shinyWidgets (>= 0.5.3),
     tibble,
-    tools
+    tools,
+    shinybusy,
+    writexl
 Suggests: 
     jsonlite,
     knitr,
     MASS,
     rmarkdown,
     testthat,
-    validate
+    validate,
+    bslib
 VignetteBuilder: knitr

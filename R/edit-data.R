@@ -7,6 +7,10 @@
 #'
 #' @param id Module ID
 #'
+#' @importFrom shiny uiOutput
+#' @importFrom htmltools tagList tags
+#' @importFrom reactable reactableOutput
+#'
 #' @export
 #'
 #' @name edit-data
@@ -49,8 +53,14 @@ edit_data_ui <- function(id) {
 #'
 #' @name edit-data
 #'
-#' @importFrom shiny moduleServer eventReactive reactiveValues
-#' @importFrom data.table copy as.data.table :=
+#' @importFrom shiny moduleServer eventReactive reactiveValues is.reactive reactive renderUI actionButton observeEvent isTruthy showModal removeModal downloadButton downloadHandler
+#' @importFrom data.table copy as.data.table := copy setnames as.data.table
+#' @importFrom reactable renderReactable reactableOutput getReactableState updateReactable
+#' @importFrom phosphoricons ph
+#' @importFrom shinybusy report_failure report_success report_info
+#' @importFrom writexl write_xlsx
+#' @importFrom utils write.csv
+#' @importFrom htmltools tagList
 #'
 #' @export
 #'
@@ -145,8 +155,7 @@ edit_data_server <- function(id,
           id_validate = "add_row",
           data = data_rv$data,
           colnames = data_rv$colnames,
-          var_edit = data_rv$edit, #var_edit,
-          #edit = data_rv$edit, #var_edit,
+          var_edit = data_rv$edit,
           var_mandatory = var_mandatory
         )
       })
@@ -225,8 +234,6 @@ edit_data_server <- function(id,
         req(data_r())
         data <- data_rv$data
         data <- as.data.table(data)
-        #removeModal()
-        #list_inputs <- reactiveValuesToList(input)
 
         for (var in data_rv$mandatory) {
           if (!isTruthy(input[[var]])) {
