@@ -1,6 +1,6 @@
 
-test_that("edit_mydata_ui works", {
-  expect_is(edit_mydata_ui("ID"), "shiny.tag.list")
+test_that("edit_data_ui works", {
+  expect_is(edit_data_ui("ID"), "shiny.tag.list")
 })
 
 

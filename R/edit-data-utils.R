@@ -1,16 +1,20 @@
 
 
-# Functions ---------------------------------------------------------------
-
-#' Function edit_modal()
+#' @title Edit modal
+#'
+#' @description The `edit_modal` function generates a modal window with the variables to edit
+#'
+#' @return a modal window with the variables to edit
 #'
 #' @param default row on which to operate a modification or a deletion, otherwise empty list for an addition
 #' @param id_validate inputId of the actionButton()
 #' @param title title of the modalDialog()
 #' @param data `data.frame` to use
+#' @param colnames `data.frame` column names
+#' @param var_edit vector of `character` which allows to choose the editable columns
+#' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param session The `session` object passed to function given to shinyServer
 #'
-#' @return a modal input window with a validation button
 #' @export
 #'
 #' @examples
@@ -63,6 +67,21 @@ edit_modal <- function(default = list(),
 }
 
 
+#' @title Edit input form
+#'
+#' @description The `edit_input_form` function allows to correctly generate the variables to be edited in the modal window according to their respective class
+#'
+#' @param default default row on which to operate a modification or a deletion, otherwise empty list for an addition
+#' @param data `data.frame` to use
+#' @param colnames `data.frame` column names
+#' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
+#' @param position_var_edit position of editable columns in order to retrieve their name
+#' @param session The `session` object passed to function given to shinyServer
+#'
+#' @return different shiny widgets with edited columns according to their respective class
+#' @export
+#'
+#' @examples
 edit_input_form <- function(default = list(), data, colnames, var_mandatory, position_var_edit, session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
@@ -130,6 +149,17 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
 }
 
 
+#' @title Table display
+#'
+#' @description The `table_display` function allows you to display the table in reactable format with columns to edit and delete rows
+#'
+#' @param data `data.frame` to use
+#' @param colnames `data.frame` column names
+#'
+#' @return the `data.frame` in reactable format
+#' @export
+#'
+#' @examples
 table_display <- function(data, colnames = NULL) {
   cols <- list()
   for (i in seq_along(data)) {
@@ -154,6 +184,13 @@ table_display <- function(data, colnames = NULL) {
   )
 }
 
+
+#' @title The update column definition
+#'
+#' @return A column definition object that can be used to customize the update column in reactable().
+#' @export
+#'
+#' @examples
 col_def_update <- function() {
   reactable::colDef(
     name = "Update",
@@ -165,6 +202,14 @@ col_def_update <- function() {
   )
 }
 
+#' The update button
+#'
+#' @param inputId ID
+#'
+#' @return the update button
+#' @export
+#'
+#' @examples
 btn_update <- function(inputId) {
   function(value) {
     tags$button(
@@ -185,6 +230,13 @@ btn_update <- function(inputId) {
   }
 }
 
+
+#' @title The delete column definition
+#'
+#' @return A column definition object that can be used to customize the delete column in reactable().
+#' @export
+#'
+#' @examples
 col_def_delete <- function() {
   reactable::colDef(
     name = "Delete",
@@ -196,6 +248,14 @@ col_def_delete <- function() {
   )
 }
 
+#' The delete button
+#'
+#' @param inputId ID
+#'
+#' @return the delete button
+#' @export
+#'
+#' @examples
 btn_delete <- function(inputId) {
   function(value) {
     tags$button(
@@ -217,6 +277,16 @@ btn_delete <- function(inputId) {
 }
 
 
+#' Confirmation window
+#'
+#' @param inputId ID
+#' @param ... optional additional elements to add in the ui
+#' @param title title of the confirmation window
+#'
+#' @return a confirmation window
+#' @export
+#'
+#' @examples
 confirmation_window <- function(inputId, ..., title = NULL) {
   modalDialog(
     title = tagList(

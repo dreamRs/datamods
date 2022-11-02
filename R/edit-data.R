@@ -1,13 +1,17 @@
 
-#' Function edit_data_ui()
+
+#' @title Shiny module to interactively edit a `data.frame`
+#'
+#' @description The module generates different options to edit a `data.frame`: adding, deleting and modifying rows, exporting data (csv and excel), choosing editable columns, choosing mandatory columns.
+#' This module returns the edited table with the user modifications.
 #'
 #' @param id Module ID
 #'
 #' @export
 #'
-#' @name module-data
+#' @name edit-data
 #'
-#' @examples
+#' @examples examples/edit_data.R
 edit_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -26,31 +30,36 @@ edit_data_ui <- function(id) {
   )
 }
 
-#' Function edit_data_server()
+#' @title Shiny module to interactively edit a `data.frame`
 #'
 #' @param id Module ID
 #' @param data_r data_r `reactive` function containing a `data.frame` to use in the module.
-#' @param add boolean, if TRUE, allows you to add a row in the table via a button at the top right
-#' @param update boolean, if TRUE, allows you to modify a row of the table via a button located in the table on the row you want to edit
-#' @param delete boolean, if true, allows a row to be deleted from the table via a button in the table
+#' @param add `boolean`, if `TRUE`, allows you to add a row in the table via a button at the top right
+#' @param update `boolean`, if `TRUE`, allows you to modify a row of the table via a button located in the table on the row you want to edit
+#' @param delete `boolean`, if `TRUE`, allows a row to be deleted from the table via a button in the table
+#' @param download_csv if `TRUE`, allows to export the table in csv format via a download button
+#' @param download_excel if `TRUE`, allows to export the table in excel format via a download button
+#' @param file_name_export `character` that allows you to choose the export name of the downloaded file
+#' @param var_edit vector of `character` which allows to choose the names of the editable columns
+#' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #'
-#' @return the initial `data.frame` with the modifications applied
+#' @return the edited `data.frame` in reactable format with the user modifications
 #'
-#' @name module-data
+#' @name edit-data
 #'
 #' @export
 #'
 #' @examples
 edit_data_server <- function(id,
-                             data_r = reactive(NULL), # reactive function with a data.frame
-                             add = TRUE, # if true, allows you to add a row in the table via a button at the top right
-                             update = TRUE, # if true, allows you to modify a row of the table via a button located in the table on the row you want to edit
-                             delete = TRUE, # if true, allows a row to be deleted from the table via a button in the table
-                             download_csv = TRUE, # if true, allows to export the table in csv format via a download button
-                             download_excel = TRUE, # if true, allows to export the table in excel format via a download button
-                             file_name_export = "data", # character that allows you to choose the export name of the downloaded file
-                             var_edit = NULL, # vector of characters which allows to choose the names of the editable columns
-                             var_mandatory = NULL # vector of characters which allows to choose obligatory fields to fill
+                             data_r = reactive(NULL),
+                             add = TRUE,
+                             update = TRUE,
+                             delete = TRUE,
+                             download_csv = TRUE,
+                             download_excel = TRUE,
+                             file_name_export = "data",
+                             var_edit = NULL,
+                             var_mandatory = NULL
 ) {
   moduleServer(
     id,
