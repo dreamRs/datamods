@@ -16,7 +16,7 @@ server <- function(input, output, session) {
 
   edited_r <- edit_data_server(
     "id",
-    data_r = reactive(iris),
+    data_r = reactive(demo_mod_edit_data),
     add = TRUE,
     update = TRUE,
     delete = TRUE,
