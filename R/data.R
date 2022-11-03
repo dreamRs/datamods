@@ -2,7 +2,7 @@
 #'
 #' A subset of fake customer credit card information inspired by the {charlatan} package.
 #'
-#' @format ## `demo_mod_edit_data`
+#' @format ## `demo_edit`
 #' A data frame with 20 rows and 6 columns:
 #' \describe{
 #'   \item{name}{Customer name}
@@ -13,4 +13,4 @@
 #'   \item{contactless_card}{Contactless card}
 #' }
 #' @source <https://cran.r-project.org/web/packages/charlatan/charlatan.pdf>
-"demo_mod_edit_data"
+"demo_edit"

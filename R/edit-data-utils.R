@@ -17,7 +17,7 @@
 #'
 #' @importFrom shiny showModal modalDialog actionButton
 #' @importFrom phosphoricons ph
-#' @importFrom htmltools tagList tags
+#' @importFrom htmltools tagList tags css
 #'
 #' @noRd
 #'

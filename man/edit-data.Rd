@@ -68,15 +68,15 @@ server <- function(input, output, session) {
 
   edited_r <- edit_data_server(
     "id",
-    data_r = reactive(demo_mod_edit_data),
+    data_r = reactive(demo_edit),
     add = TRUE,
     update = TRUE,
     delete = TRUE,
     download_csv = TRUE,
     download_excel = TRUE,
     file_name_export = "datas",
-    var_edit = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Species"),
-    var_mandatory = c("Sepal.Length", "Sepal.Width")
+    var_edit = NULL, #c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    var_mandatory = c("name", "job")
   )
 
   output$result <- renderPrint({
