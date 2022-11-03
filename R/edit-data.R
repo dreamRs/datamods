@@ -397,6 +397,14 @@ edit_data_server <- function(id,
         }
       )
 
+      observe({
+        data <- data_rv$data
+        data <- as.data.table(data)
+        data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
+        setnames(data, data_rv$colnames)
+        data_rv$data <- data
+      })
+
       return(reactive(data_rv$data))
 
     }
