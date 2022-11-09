@@ -222,21 +222,24 @@ col_def_update <- function() {
 #'
 btn_update <- function(inputId) {
   function(value) {
-    tags$button(
-      class = "btn btn-outline-primary rounded-circle",
-      style = htmltools::css(
-        height = "40px",
-        width = "40px",
-        padding = 0
-      ),
-      onClick = sprintf(
-        "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
-        inputId, value
-      ),
-      title = "Click to edit",
-      ph("pencil-simple-line", height = "1.2em")
-    ) %>%
-      htmltools::doRenderTags()
+    htmltools::doRenderTags(
+      tags$button(
+        class = "btn btn-outline-primary rounded-circle",
+        style = htmltools::css(
+          height = "40px",
+          width = "40px",
+          padding = 0
+        ),
+        onClick = sprintf(
+          "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
+          inputId,
+          value
+        ),
+        title = "Click to edit",
+        ph("pencil-simple-line", height = "1.2em")
+      )
+   )
+
   }
 }
 
@@ -270,21 +273,23 @@ col_def_delete <- function() {
 #'
 btn_delete <- function(inputId) {
   function(value) {
-    tags$button(
-      class = "btn btn-outline-danger rounded-circle",
-      style = htmltools::css(
-        height = "40px",
-        width = "40px",
-        padding = 0
-      ),
-      onClick = sprintf(
-        "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
-        inputId, value
-      ),
-      title = "Click to delete",
-      ph("x", height = "1.2em")
-    ) %>%
-      htmltools::doRenderTags()
+    htmltools::doRenderTags(
+      tags$button(
+        class = "btn btn-outline-danger rounded-circle",
+        style = htmltools::css(
+          height = "40px",
+          width = "40px",
+          padding = 0
+        ),
+        onClick = sprintf(
+          "Shiny.setInputValue(\'%s\', %s,  {priority: \'event\'})",
+          inputId,
+          value
+        ),
+        title = "Click to delete",
+        ph("x", height = "1.2em")
+      )
+   )
   }
 }
 
