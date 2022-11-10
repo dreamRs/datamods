@@ -59,15 +59,14 @@ ui <- fluidPage(
     version = 5
     ),
   tags$h2("Edit data", align = "center"),
-  edit_data_ui("id"),
-  verbatimTextOutput("result")
+  edit_data_ui(id = "id")
 )
 
 
 server <- function(input, output, session) {
 
   edited_r <- edit_data_server(
-    "id",
+    id = "id",
     data_r = reactive(demo_edit),
     add = TRUE,
     update = TRUE,
@@ -75,13 +74,10 @@ server <- function(input, output, session) {
     download_csv = TRUE,
     download_excel = TRUE,
     file_name_export = "datas",
-    var_edit = NULL, #c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job")
   )
 
-  output$result <- renderPrint({
-    str(edited_r())
-  })
 }
 
 if (interactive())

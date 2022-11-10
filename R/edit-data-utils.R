@@ -206,7 +206,6 @@ col_def_update <- function() {
     sortable = FALSE,
     html = TRUE,
     filterable = FALSE
-    # cell = btn_update(inputId)
   )
 }
 
@@ -257,7 +256,6 @@ col_def_delete <- function() {
     sortable = FALSE,
     html = TRUE,
     filterable = FALSE
-    # cell = btn_delete(inputId)
   )
 }
 
