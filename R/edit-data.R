@@ -48,6 +48,7 @@ edit_data_ui <- function(id) {
 #' @param file_name_export `character` that allows you to choose the export name of the downloaded file
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
+#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble)
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
 #'
@@ -73,7 +74,8 @@ edit_data_server <- function(id,
                              download_excel = TRUE,
                              file_name_export = "data",
                              var_edit = NULL,
-                             var_mandatory = NULL
+                             var_mandatory = NULL,
+                             return_class = c("data.frame", "data.table", "tbl_df")
 ) {
   moduleServer(
     id,
@@ -361,6 +363,7 @@ edit_data_server <- function(id,
         },
         content = function(file) {
           data <- data_rv$data
+          data <- as.data.table(data)
           data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
           write_xlsx(
@@ -391,6 +394,7 @@ edit_data_server <- function(id,
         },
         content = function(file) {
           data <- data_rv$data
+          data <- as.data.table(data)
           data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
           write.csv(
@@ -407,7 +411,7 @@ edit_data_server <- function(id,
           data <- as.data.table(data)
           data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
-          data
+          as_out(data, return_class)
         })
       )
 
