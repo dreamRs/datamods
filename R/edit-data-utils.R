@@ -101,7 +101,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
         variable <- data[[i]]
 
         if (variable_name %in% var_mandatory) {
-          label <- tags$p(variable_name, tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : ")
+          label <- tagList(variable_name, tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : ")
         } else {
           label <- paste0(variable_name, " : ")
         }
