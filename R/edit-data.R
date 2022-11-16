@@ -85,6 +85,7 @@ edit_data_server <- function(id,
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       data_init_r <- eventReactive(data_r(), {
+        req(data_r())
         data <- data_r()
         if (is.reactive(var_mandatory))
           var_mandatory <- var_mandatory()
@@ -92,7 +93,9 @@ edit_data_server <- function(id,
           var_edit <- var_edit()
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
-        setnames(data, paste0("col_", seq_along(data)))
+        if (!isTRUE(identical(x = seq_along(data), y = integer(0)))) {
+          setnames(data, paste0("col_", seq_along(data)))
+        }
         data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
         data_rv$edit <- colnames(data)[which(data_rv$colnames %in% var_edit)]
 
@@ -399,6 +402,7 @@ edit_data_server <- function(id,
 
       return(
         reactive({
+          req(data_rv$data)
           data <- data_rv$data
           data <- as.data.table(data)
           data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
