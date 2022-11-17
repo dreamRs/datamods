@@ -2,9 +2,9 @@
 # Subset data -------------------------------------------------------------
 
 library(shiny)
+library(datamods)
 library(shinyWidgets)
 
-data("mpg", package = "ggplot2")
 
 ui <- fluidPage(
   fluidRow(
@@ -14,7 +14,7 @@ ui <- fluidPage(
       panel(
         pickerInput(
           inputId = "car_select",
-          choices = unique(mpg$manufacturer),
+          choices = unique(MASS::Cars93$Manufacturer),
           options = list(
             `live-search` = TRUE,
             title = "None selected"
@@ -23,10 +23,10 @@ ui <- fluidPage(
         select_group_ui(
           id = "my-filters",
           params = list(
-            manufacturer = list(inputId = "manufacturer", title = "Manufacturer:"),
-            model = list(inputId = "model", title = "Model:"),
-            trans = list(inputId = "trans", title = "Trans:"),
-            class = list(inputId = "class", title = "Class:")
+            list(inputId = "Manufacturer", label = "Manufacturer:"),
+            list(inputId = "Type", label = "Type:"),
+            list(inputId = "AirBags", label = "AirBags:"),
+            list(inputId = "DriveTrain", label = "DriveTrain:")
           )
         ),
         status = "primary"
@@ -38,14 +38,14 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  mpg_filter <- reactive({
-    subset(mpg, manufacturer %in% input$car_select)
+  cars_r <- reactive({
+    subset(MASS::Cars93, Manufacturer %in% input$car_select)
   })
 
   res_mod <- select_group_server(
     id = "my-filters",
-    data = mpg_filter,
-    vars = c("manufacturer", "model", "trans", "class")
+    data = cars_r,
+    vars = c("Manufacturer", "Type", "AirBags", "DriveTrain")
   )
 
   output$table <- reactable::renderReactable({

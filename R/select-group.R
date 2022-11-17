@@ -1,24 +1,37 @@
 
-#' @title Select Group
+#' @title Select Group Input Module
 #'
 #' @description Group of mutually dependent select menus for filtering `data.frame`'s columns (like in Excel).
 #'
 #' @param id Module's id.
-#' @param params A named list of parameters passed to each `selectizeInput`, you can use :
-#'  `inputId` (obligatory, must be variable name), `label`, `placeholder`.
+#' @param params A list of parameters passed to each [shinyWidgets::virtualSelectInput()],
+#'  you can use :
+#'   * `inputId`: mandatory, must correspond to variable name.
+#'   * `label`: Display label for the control.
+#'   * `placeholder`: Text to show when no options selected.
 #' @param label Character, global label on top of all labels.
 #' @param btn_label Character, reset button label.
-#' @param inline If `TRUE` (the default), select menus are horizontally positioned, otherwise vertically.
+#' @param inline If `TRUE` (the default),
+#'  select menus are horizontally positioned, otherwise vertically.
+#' @param vs_args Arguments passed to all [shinyWidgets::virtualSelectInput()] created.
 #'
-#' @return a [shiny::reactive()] function containing data filtered.
+#' @return A [shiny::reactive()] function containing data filtered.
 #' @export
 #'
 #' @name select-group
 #'
+#' @importFrom utils modifyList
 #' @importFrom htmltools tagList tags css
 #' @importFrom shiny NS actionLink icon singleton
+#' @importFrom shinyWidgets virtualSelectInput
 #'
-select_group_ui <- function(id, params, label = NULL, btn_label = "Reset filters", inline = TRUE) {
+#' @example examples/select-group-default.R
+select_group_ui <- function(id,
+                            params,
+                            label = NULL,
+                            btn_label = "Reset filters",
+                            inline = TRUE,
+                            vs_args = list()) {
 
   ns <- NS(id)
 
@@ -31,6 +44,34 @@ select_group_ui <- function(id, params, label = NULL, btn_label = "Reset filters
   label_tag <- if (!is.null(label))
     tags$b(label, class = "select-group-label")
 
+  sel_tag <- lapply(
+    X = seq_along(params),
+    FUN = function(x) {
+      input <- params[[x]]
+      vs_args <- modifyList(
+        x = vs_args,
+        val = list(
+          inputId = ns(input$inputId),
+          label = input$label,
+          placeholder = input$placeholder,
+          choices = NULL,
+          selected = NULL,
+          multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
+          width = "100%",
+          showValueAsTags = TRUE,
+          zIndex = 10,
+          disableSelectAll = TRUE
+        ),
+        keep.null = TRUE
+      )
+      tags$div(
+        class = "select-group-item",
+        id = ns(paste0("container-", input$inputId)),
+        do.call(shinyWidgets::virtualSelectInput, vs_args)
+      )
+    }
+  )
+
   if (isTRUE(inline)) {
     sel_tag <- tags$div(
       class = "select-group-container",
@@ -39,49 +80,7 @@ select_group_ui <- function(id, params, label = NULL, btn_label = "Reset filters
         gridTemplateColumns = sprintf("repeat(%s, 1fr)", length(params)),
         gridColumnGap = "5px"
       ),
-      lapply(
-        X = seq_along(params),
-        FUN = function(x) {
-          input <- params[[x]]
-          tags$div(
-            class = "select-group-item",
-            id = ns(paste0("container-", input$inputId)),
-            shinyWidgets::virtualSelectInput(
-              inputId = ns(input$inputId),
-              label = input$label %||% input$title,
-              choices = input$choices,
-              selected = input$selected,
-              multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
-              width = "100%",
-              showValueAsTags = TRUE,
-              zIndex = 10,
-              disableSelectAll = TRUE
-            )
-          )
-        }
-      )
-    )
-  } else {
-    sel_tag <- lapply(
-      X = seq_along(params),
-      FUN = function(x) {
-        input <- params[[x]]
-        tags$div(
-          class = "select-group-item",
-          id = ns(paste0("container-", input$inputId)),
-          shinyWidgets::virtualSelectInput(
-            inputId = ns(input$inputId),
-            label = input$label %||% input$title,
-            choices = input$choices,
-            selected = input$selected,
-            multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
-            width = "100%",
-            showValueAsTags = TRUE,
-            zIndex = 10,
-            disableSelectAll = TRUE
-          )
-        )
-      }
+      sel_tag
     )
   }
 
@@ -106,6 +105,7 @@ select_group_ui <- function(id, params, label = NULL, btn_label = "Reset filters
 #'
 #' @rdname select-group
 #' @importFrom shiny observeEvent reactiveValues reactive is.reactive isolate
+#' @importFrom shinyWidgets updateVirtualSelect
 select_group_server <- function(id, data_r, vars_r) {
   moduleServer(
     id = id,
