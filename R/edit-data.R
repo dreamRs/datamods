@@ -148,7 +148,7 @@ edit_data_server <- function(id,
         if (isTRUE(add)) {
           actionButton(
             inputId = ns("add"),
-            label = tagList(ph("plus"), "Add a row"),
+            label = tagList(ph("plus"), i18n("Add a row")),
             class = "btn-outline-primary float-end"
           )
         }
@@ -173,9 +173,9 @@ edit_data_server <- function(id,
         for (var in data_rv$mandatory) {
           if (!isTruthy(input[[var]])) {
             shinybusy::report_failure(
-              title = "Required field",
-              text = "Please fill in the required fields",
-              button = "Close"
+              title = i18n("Required field"),
+              text = i18n("Please fill in the required fields"),
+              button = i18n("Close")
             )
             return(NULL)
           }
@@ -205,15 +205,15 @@ edit_data_server <- function(id,
         })
         if (inherits(results_add, "try-error")) {
           shinybusy::report_failure(
-            title = "Error",
-            text = "Unable to add the row, contact the platform administrator",
-            button = "Close"
+            title = i18n("Error"),
+            text = i18n("Unable to add the row, contact the platform administrator"),
+            button = i18n("Close")
           )
         } else {
           shinybusy::report_success(
-            title = "Registered",
-            text = "Row has been saved",
-            button = "Close"
+            title = i18n("Registered"),
+            text = i18n("Row has been saved"),
+            button = i18n("Close")
           )
         }
       })
@@ -226,7 +226,7 @@ edit_data_server <- function(id,
         row <- data[.datamods_id == input$update]
         edit_modal(
           default = row,
-          title = "Update row",
+          title = i18n("Update row"),
           id_validate = "update_row",
           data = data,
           colnames = data_rv$colnames,
@@ -243,9 +243,9 @@ edit_data_server <- function(id,
         for (var in data_rv$mandatory) {
           if (!isTruthy(input[[var]])) {
             shinybusy::report_failure(
-              title = "Required field",
-              text = "Please fill in the required fields",
-              button = "Close"
+              title = i18n("Required field"),
+              text = i18n("Please fill in the required fields"),
+              button = i18n("Close")
             )
             return(NULL)
           }
@@ -277,15 +277,15 @@ edit_data_server <- function(id,
         })
         if (inherits(results_update, "try-error")) {
           shinybusy::report_failure(
-            title = "Error",
-            text = "Unable to modify the item, contact the platform administrator",
-            button = "Close"
+            title = i18n("Error"),
+            text = i18n("Unable to modify the item, contact the platform administrator"),
+            button = i18n("Close")
           )
         } else {
           shinybusy::report_success(
-            title = "Registered",
-            text = "Item has been modified",
-            button = "Close"
+            title = i18n("Registered"),
+            text = i18n("Item has been modified"),
+            button = i18n("Close")
           )
         }
       })
@@ -300,8 +300,8 @@ edit_data_server <- function(id,
         removeModal()
         showModal(confirmation_window(
           inputId = ns("confirmation_delete_row"),
-          title = "Delete",
-          "Do you want to delete the selected row ?"
+          title = i18n("Delete"),
+          i18n("Do you want to delete the selected row ?")
         ))
       })
       observeEvent(input$confirmation_delete_row_yes, {
@@ -318,24 +318,24 @@ edit_data_server <- function(id,
         })
         if (inherits(results_delete, "try-error")) {
           shinybusy::report_failure(
-            title = "Error",
-            text = "Unable to delete the row, contact platform administrator",
-            button = "Close"
+            title = i18n("Error"),
+            text = i18n("Unable to delete the row, contact platform administrator"),
+            button = i18n("Close")
           )
         } else {
           shinybusy::report_success(
-            title = "Registered",
-            text = "The row has been deleted",
-            button = "Close"
+            title = i18n("Registered"),
+            text = i18n("The row has been deleted"),
+            button = i18n("Close")
           )
         }
         removeModal()
       })
       observeEvent(input$confirmation_delete_row_no, {
         shinybusy::report_info(
-          title = "Information",
-          text = "Row was not deleted",
-          button = "Close"
+          title = i18n("Information"),
+          text = i18n("Row was not deleted"),
+          button = i18n("Close")
         )
         removeModal()
       })

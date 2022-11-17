@@ -18,7 +18,8 @@ edit_data_server(
   download_excel = TRUE,
   file_name_export = "data",
   var_edit = NULL,
-  var_mandatory = NULL
+  var_mandatory = NULL,
+  return_class = c("data.frame", "data.table", "tbl_df")
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ edit_data_server(
 \item{var_edit}{vector of \code{character} which allows to choose the names of the editable columns}
 
 \item{var_mandatory}{vector of \code{character} which allows to choose obligatory fields to fill}
+
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble)}
 }
 \value{
 the edited \code{data.frame} in reactable format with the user modifications
@@ -58,8 +61,10 @@ ui <- fluidPage(
   theme = bs_theme(
     version = 5
     ),
-  tags$h2("Edit data", align = "center"),
-  edit_data_ui(id = "id")
+  tags$h2(i18n("Edit data"), align = "center"),
+  edit_data_ui(id = "id"),
+
+  verbatimTextOutput("result")
 )
 
 
@@ -74,9 +79,13 @@ server <- function(input, output, session) {
     download_csv = TRUE,
     download_excel = TRUE,
     file_name_export = "datas",
-    var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    #var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job")
   )
+
+  output$result <- renderPrint({
+    str(edited_r())
+  })
 
 }
 

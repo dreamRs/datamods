@@ -23,7 +23,7 @@
 #'
 edit_modal <- function(default = list(),
                        id_validate = "add_row",
-                       title = "Add a row",
+                       title = i18n("Add a row"),
                        data,
                        colnames = names(data),
                        var_edit,
@@ -43,7 +43,7 @@ edit_modal <- function(default = list(),
     title = tagList(
       title,
       tags$button(
-        phosphoricons::ph("x", title = "Close", height = "2em"),
+        phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-bs-dismiss` = "modal",
@@ -63,7 +63,7 @@ edit_modal <- function(default = list(),
     ),
     actionButton(
       inputId = ns(id_validate),
-      label = "Validate the entry",
+      label = i18n("Validate the entry"),
       class = "btn-outline-primary float-end"
     )
   ))
@@ -201,7 +201,7 @@ table_display <- function(data, colnames = NULL) {
 #'
 col_def_update <- function() {
   colDef(
-    name = "Update",
+    name = i18n("Update"),
     width = 82,
     sortable = FALSE,
     html = TRUE,
@@ -234,7 +234,7 @@ btn_update <- function(inputId) {
           inputId,
           value
         ),
-        title = "Click to edit",
+        title = i18n("Click to edit"),
         ph("pencil-simple-line", height = "1.2em")
       )
    )
@@ -251,7 +251,7 @@ btn_update <- function(inputId) {
 #'
 col_def_delete <- function() {
   reactable::colDef(
-    name = "Delete",
+    name = i18n("Delete"),
     width = 96,
     sortable = FALSE,
     html = TRUE,
@@ -284,7 +284,7 @@ btn_delete <- function(inputId) {
           inputId,
           value
         ),
-        title = "Click to delete",
+        title = i18n("Click to delete"),
         ph("x", height = "1.2em")
       )
    )
@@ -309,7 +309,7 @@ confirmation_window <- function(inputId, ..., title = NULL) {
   modalDialog(
     title = tagList(
       tags$button(
-        phosphoricons::ph("x", title = "Close", height = "2em"),
+        phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-bs-dismiss` = "modal",
@@ -321,19 +321,19 @@ confirmation_window <- function(inputId, ..., title = NULL) {
     size = "m",
     footer = tagList(
       tags$button(
-        "Cancel",
+        i18n("Cancel"),
         class = "btn btn-outline-secondary",
         `data-bs-dismiss` = "modal"
       ),
       actionButton(
         inputId = paste0(inputId, "_no"),
-        label = "No",
+        label = i18n("No"),
         class = "btn-outline-danger",
         `data-bs-dismiss` = "modal"
       ),
       actionButton(
         inputId = paste0(inputId, "_yes"),
-        label = "Yes",
+        label = i18n("Yes"),
         class = "btn-outline-primary"
       )
     )
