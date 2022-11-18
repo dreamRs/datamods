@@ -5,7 +5,7 @@
 #' @description The `sample_n` function returns the sample of a dataset from a number of rows chosen by the user.
 #'
 #' @param data `data.frame`
-#' @param n vecteur de type `numeric`
+#' @param n vector of type `numeric`
 #'
 #' @return the sample of a dataset in the form of `data.table`
 #'
@@ -27,7 +27,7 @@ sample_n <- function(data, n) {
 #' @description The `sample_prop` function returns the sample of a dataset from a percentage chosen by the user.
 #'
 #' @param data `data.frame`
-#' @param percentage vecteur de type `numeric`
+#' @param percentage vector of type `numeric`
 #'
 #' @return the sample of a dataset in the form of `data.table`
 #'
