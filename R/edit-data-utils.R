@@ -121,7 +121,8 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
             selected = default[[variable_id]] %||% "",
             width = "100%",
             allowNewOption = TRUE,
-            autoSelectFirstOption = FALSE
+            autoSelectFirstOption = FALSE,
+            placeholder = i18n("Select")
           )
         } else if (isTRUE((inherits(x = variable, what = "character")))) {
           textInput(

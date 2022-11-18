@@ -61,8 +61,9 @@ ui <- fluidPage(
   theme = bs_theme(
     version = 5
     ),
-  tags$h2("Edit data", align = "center"),
-  edit_data_ui(id = "id")
+  tags$h2(i18n("Edit data"), align = "center"),
+  edit_data_ui(id = "id"),
+  verbatimTextOutput("result")
 )
 
 
@@ -80,6 +81,10 @@ server <- function(input, output, session) {
     var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job")
   )
+
+  output$result <- renderPrint({
+    str(edited_r())
+  })
 
 }
 
