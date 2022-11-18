@@ -122,9 +122,11 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
 
 <dt>read_fns</dt>
 <dd><p>Named list with custom function(s) to read data:</p><ul><li><p>the name must be the extension of the files to which the function will be applied</p></li>
-<li><p>the value must be a function that can have 4 arguments, passed by user through the interface:</p><ul><li><p><code>file</code>: path to the file</p></li>
+<li><p>the value must be a function that can have 5 arguments (you can ignore some of them, but you have to use the same names),
+passed by user through the interface:</p><ul><li><p><code>file</code>: path to the file</p></li>
 <li><p><code>sheet</code>: for Excel files, sheet to read</p></li>
 <li><p><code>skip</code>: number of row to skip</p></li>
+<li><p><code>dec</code>: decimal separator</p></li>
 <li><p><code>encoding</code>: file encoding</p></li>
 </ul></li>
 </ul></dd>
