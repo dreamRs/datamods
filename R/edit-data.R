@@ -93,6 +93,8 @@ edit_data_server <- function(id,
           var_mandatory <- var_mandatory()
         if (is.reactive(var_edit))
           var_edit <- var_edit()
+        if (is.null(var_edit))
+          var_edit <- names(data)
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
         if (!isTRUE(identical(x = seq_along(data), y = integer(0)))) {
@@ -254,24 +256,12 @@ edit_data_server <- function(id,
         removeModal()
 
         results_update <- try({
-          results_inputs <- lapply(
-            X = seq_along(data),
-            FUN = function(i) {
-              input[[colnames(data)[i]]] %||% NA
-            }
-          )
-
           id <- input$update
-          results_inputs[[ncol(data) - 2]] <- id
-          results_inputs[[ncol(data) - 1]] <- if (update) list(btn_update(ns("update"))(id)) else NA
-          results_inputs[[ncol(data)]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
-
-          modification <- as.data.table(results_inputs)
-          setnames(modification, colnames(data))
-
-          data <- rbind(data[.datamods_id != input$update], modification, fill = TRUE)
+          data[.datamods_id == id, (data_rv$edit) := lapply(data_rv$edit, function(x) {
+            input[[x]] %||% NA
+          })]
           data <- data[order(.datamods_id)]
-          data_rv$data <- data
+          data_rv$data <- copy(data)
           page <- getReactableState(outputId = "table", name = "page")
           updateReactable("table", data = data, page = page)
         })

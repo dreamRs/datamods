@@ -61,10 +61,8 @@ ui <- fluidPage(
   theme = bs_theme(
     version = 5
     ),
-  tags$h2(i18n("Edit data"), align = "center"),
-  edit_data_ui(id = "id"),
-
-  verbatimTextOutput("result")
+  tags$h2("Edit data", align = "center"),
+  edit_data_ui(id = "id")
 )
 
 
@@ -79,13 +77,9 @@ server <- function(input, output, session) {
     download_csv = TRUE,
     download_excel = TRUE,
     file_name_export = "datas",
-    #var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job")
   )
-
-  output$result <- renderPrint({
-    str(edited_r())
-  })
 
 }
 
