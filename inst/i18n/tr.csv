@@ -60,3 +60,26 @@ label,translation,comment
 "No data to display.","Gösterilecek veri yok.",
 "Close","Kapat",
 "Add a label to data","Veriyi etiketle",
+"Add a row","satır ekle"
+"Required field","gerekli alan"
+"Please fill in the required fields","Lütfen gerekli alanları doldurunuz"
+"Unable to add the row, contact the platform administrator","Satır eklenemiyor, platform yöneticisiyle iletişime geçin"
+"Registered","Kayıtlı"
+"Row has been saved","Satır kaydedildi"
+"Update row","Satırı güncelle"
+"Unable to modify the item, contact the platform administrator","Öğe değiştirilemiyor, platform yöneticisiyle iletişime geçin"
+"Item has been modified","Öğe değiştirildi"
+"Delete","Silmek"
+"Do you want to delete the selected row ?","Seçilen satırı silmek istiyor musunuz?"
+"Unable to delete the row, contact platform administrator",
+"The row has been deleted","Satır silinemiyor, platform yöneticisiyle iletişime geçin"
+"Information","Bilgi"
+"Row was not deleted","Satır silinmedi"
+"Validate the entry","Girişi doğrula"
+"Click to edit","Düzenlemek için tıkla"
+"Click to delete","silmek için tıklayın"
+"Cancel","İptal"
+"No","Numara"
+"Yes","Evet"
+"Edit data","Verileri düzenle"
+"Select","Seçme"

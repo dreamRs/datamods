@@ -14,3 +14,4 @@
 ^man-roxygen$
 ^README\.Rmd$
 ^CRAN-SUBMISSION$
+^data-raw$
