@@ -72,7 +72,7 @@
 <span>  btn_show_data <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  show_data_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"popup"</span>, <span class="st">"modal"</span><span class="op">)</span>,</span>
 <span>  trigger_return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"button"</span>, <span class="st">"change"</span><span class="op">)</span>,</span>
-<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span><span class="op">)</span>,</span>
+<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  reset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -111,7 +111,7 @@ use <code>NULL</code> for no title or a <code>shiny.tag</code> for a custom one.
 
 
 <dt>return_class</dt>
-<dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code> or <code>tbl_df</code> (tibble).</p></dd>
+<dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code>, <code>tbl_df</code> (tibble) or <code>raw</code>.</p></dd>
 
 
 <dt>reset</dt>

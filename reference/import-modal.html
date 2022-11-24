@@ -71,7 +71,7 @@
 <span>  <span class="va">id</span>,</span>
 <span>  validation_opts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  allowed_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OK"</span>, <span class="st">"Failed"</span>, <span class="st">"Error"</span><span class="op">)</span>,</span>
-<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span><span class="op">)</span>,</span>
+<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  read_fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -110,7 +110,7 @@ if you want that all validation rules are successful before importing data use <
 
 
 <dt>return_class</dt>
-<dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code> or <code>tbl_df</code> (tibble).</p></dd>
+<dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code>, <code>tbl_df</code> (tibble) or <code>raw</code>.</p></dd>
 
 
 <dt>read_fns</dt>
