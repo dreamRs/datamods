@@ -18,7 +18,8 @@ import_server(
   id,
   validation_opts = NULL,
   allowed_status = c("OK", "Failed", "Error"),
-  return_class = c("data.frame", "data.table", "tbl_df")
+  return_class = c("data.frame", "data.table", "tbl_df"),
+  read_fns = list()
 )
 
 import_modal(
@@ -44,6 +45,18 @@ There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets",
 if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.}
 
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
+
+\item{read_fns}{Named list with custom function(s) to read data:
+\itemize{
+\item the name must be the extension of the files to which the function will be applied
+\item the value must be a function that can have 4 arguments, passed by user through the interface:
+\itemize{
+\item \code{file}: path to the file
+\item \code{sheet}: for Excel files, sheet to read
+\item \code{skip}: number of row to skip
+\item \code{encoding}: file encoding
+}
+}}
 
 \item{title}{Modal window title.}
 
