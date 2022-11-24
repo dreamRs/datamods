@@ -47,6 +47,7 @@ edit_modal <- function(default = list(),
         class = "btn btn-link",
         style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
         `data-bs-dismiss` = "modal",
+        `data-dismiss` = "modal",
         `aria-label` = "Close"
       )
     ),

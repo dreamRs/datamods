@@ -5,7 +5,7 @@ library(bslib)
 ui <- fluidPage(
   theme = bs_theme(
     version = 5
-    ),
+  ),
   tags$h2(i18n("Edit data"), align = "center"),
   edit_data_ui(id = "id"),
   verbatimTextOutput("result")
