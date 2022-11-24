@@ -82,8 +82,8 @@ edit_modal <- function(default = list(),
 #' @param position_var_edit position of editable columns in order to retrieve their name
 #' @param session The `session` object passed to function given to shinyServer
 #'
-#' @importFrom shiny numericInput textInput dateInput
-#' @importFrom shinyWidgets virtualSelectInput prettyCheckbox
+#' @importFrom shiny numericInput textInput
+#' @importFrom shinyWidgets virtualSelectInput prettyCheckbox airDatepickerInput
 #' @importFrom htmltools tagList tags
 #'
 #' @return different shiny widgets with edited columns according to their respective class
@@ -142,10 +142,11 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
             width = "100%"
           )
         } else if (isTRUE((inherits(x = variable, what = "Date")))) {
-          dateInput(
+          airDatepickerInput(
             inputId = ns(variable_id),
             label = label,
             value = default[[variable_id]] %||% Sys.Date(),
+            inline = TRUE,
             width = "100%"
           )
         } else {
@@ -339,5 +340,40 @@ confirmation_window <- function(inputId, ..., title = NULL) {
         class = "btn-outline-primary"
       )
     )
+  )
+}
+
+
+#' @importFrom shinybusy notify_failure notify_success notify_info notify_warning
+notification_failure <- function(title, text) {
+  shinybusy::notify_failure(
+    title = title,
+    text = text,
+    position = "center-top",
+    clickToClose = TRUE
+  )
+}
+notification_warning <- function(title, text) {
+  shinybusy::notify_warning(
+    title = title,
+    text = text,
+    position = "center-top",
+    clickToClose = TRUE
+  )
+}
+notification_success <- function(title, text) {
+  shinybusy::notify_success(
+    title = title,
+    text = text,
+    position = "center-top",
+    clickToClose = TRUE
+  )
+}
+notification_info <- function(title, text) {
+  shinybusy::notify_info(
+    title = title,
+    text = text,
+    position = "center-top",
+    clickToClose = TRUE
   )
 }

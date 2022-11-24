@@ -10,6 +10,7 @@
 #' @importFrom shiny uiOutput
 #' @importFrom htmltools tagList tags
 #' @importFrom reactable reactableOutput
+#' @importFrom utils getFromNamespace
 #'
 #' @export
 #'
@@ -18,7 +19,12 @@
 #' @example examples/edit_data.R
 edit_data_ui <- function(id) {
   ns <- NS(id)
+
+  notify_dep <- getFromNamespace("html_dependency_notify", "shinybusy")
+
   tagList(
+
+    notify_dep(),
 
     # Download data in Excel format --
     uiOutput(outputId = ns("download_excel"), style = "display: inline;"),
@@ -58,7 +64,6 @@ edit_data_ui <- function(id) {
 #' @importFrom data.table copy as.data.table := copy setnames as.data.table
 #' @importFrom reactable renderReactable reactableOutput getReactableState updateReactable
 #' @importFrom phosphoricons ph
-#' @importFrom shinybusy report_failure report_success report_info
 #' @importFrom writexl write_xlsx
 #' @importFrom utils write.csv
 #' @importFrom htmltools tagList
@@ -174,10 +179,9 @@ edit_data_server <- function(id,
 
         for (var in data_rv$mandatory) {
           if (!isTruthy(input[[var]])) {
-            shinybusy::report_failure(
+            notification_warning(
               title = i18n("Required field"),
-              text = i18n("Please fill in the required fields"),
-              button = i18n("Close")
+              text = i18n("Please fill in the required fields")
             )
             return(NULL)
           }
@@ -187,18 +191,17 @@ edit_data_server <- function(id,
 
         results_add <- try({
           results_inputs <- lapply(
-            X = seq_along(data),
-            FUN = function(i) {
-              input[[colnames(data)[i]]] %||% NA
+            X = setNames(data_rv$edit, data_rv$edit),
+            FUN = function(x) {
+              input[[x]] %||% NA
             }
           )
           id <- max(data$.datamods_id) + 1
-          results_inputs[[ncol(data) - 2]] <- id
-          results_inputs[[ncol(data) - 1]] <- if (update) list(btn_update(ns("update"))(id)) else NA
-          results_inputs[[ncol(data)]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
+          results_inputs[[".datamods_id"]] <- id
+          results_inputs[[".datamods_edit_update"]] <- if (update) list(btn_update(ns("update"))(id)) else NA
+          results_inputs[[".datamods_edit_delete"]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
 
           new <- as.data.table(results_inputs)
-          setnames(new, colnames(data))
 
           data <- rbind(data, new, fill = TRUE)
           data_rv$data <- data
@@ -206,16 +209,14 @@ edit_data_server <- function(id,
           updateReactable("table", data = data, page = page)
         })
         if (inherits(results_add, "try-error")) {
-          shinybusy::report_failure(
+          notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to add the row, contact the platform administrator"),
-            button = i18n("Close")
+            text = i18n("Unable to add the row, contact the platform administrator")
           )
         } else {
-          shinybusy::report_success(
+          notification_success(
             title = i18n("Registered"),
-            text = i18n("Row has been saved"),
-            button = i18n("Close")
+            text = i18n("Row has been saved")
           )
         }
       })
@@ -244,10 +245,9 @@ edit_data_server <- function(id,
 
         for (var in data_rv$mandatory) {
           if (!isTruthy(input[[var]])) {
-            shinybusy::report_failure(
+            notification_failure(
               title = i18n("Required field"),
-              text = i18n("Please fill in the required fields"),
-              button = i18n("Close")
+              text = i18n("Please fill in the required fields")
             )
             return(NULL)
           }
@@ -266,16 +266,14 @@ edit_data_server <- function(id,
           updateReactable("table", data = data, page = page)
         })
         if (inherits(results_update, "try-error")) {
-          shinybusy::report_failure(
+          notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to modify the item, contact the platform administrator"),
-            button = i18n("Close")
+            text = i18n("Unable to modify the item, contact the platform administrator")
           )
         } else {
-          shinybusy::report_success(
+          notification_success(
             title = i18n("Registered"),
-            text = i18n("Item has been modified"),
-            button = i18n("Close")
+            text = i18n("Item has been modified")
           )
         }
       })
@@ -307,25 +305,22 @@ edit_data_server <- function(id,
           updateReactable("table", data = data, page = page)
         })
         if (inherits(results_delete, "try-error")) {
-          shinybusy::report_failure(
+          notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to delete the row, contact platform administrator"),
-            button = i18n("Close")
+            text = i18n("Unable to delete the row, contact platform administrator")
           )
         } else {
-          shinybusy::report_success(
+          notification_success(
             title = i18n("Registered"),
-            text = i18n("The row has been deleted"),
-            button = i18n("Close")
+            text = i18n("The row has been deleted")
           )
         }
         removeModal()
       })
       observeEvent(input$confirmation_delete_row_no, {
-        shinybusy::report_info(
+        notification_info(
           title = i18n("Information"),
-          text = i18n("Row was not deleted"),
-          button = i18n("Close")
+          text = i18n("Row was not deleted")
         )
         removeModal()
       })

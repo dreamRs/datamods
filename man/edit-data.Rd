@@ -78,7 +78,7 @@ server <- function(input, output, session) {
     download_csv = TRUE,
     download_excel = TRUE,
     file_name_export = "datas",
-    var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job")
   )
 
