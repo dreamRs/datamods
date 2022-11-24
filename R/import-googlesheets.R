@@ -81,10 +81,11 @@ import_googlesheets_server <- function(id,
                                        btn_show_data = TRUE,
                                        show_data_in = c("popup", "modal"),
                                        trigger_return = c("button", "change"),
-                                       return_class = c("data.frame", "data.table", "tbl_df"),
+                                       return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                                        reset = reactive(NULL)) {
 
   trigger_return <- match.arg(trigger_return)
+  return_class <- match.arg(return_class)
 
   module <- function(input, output, session) {
 

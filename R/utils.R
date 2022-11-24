@@ -78,10 +78,12 @@ search_obj <- function(what = "data.frame", env = globalenv()) {
 
 #' @importFrom data.table as.data.table
 #' @importFrom tibble as_tibble
-as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
+as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df", "raw")) {
   if (is.null(x))
     return(NULL)
   return_class <- match.arg(return_class)
+  if (identical(return_class, "raw"))
+    return(x)
   is_sf <- inherits(x, "sf")
   x <- if (identical(return_class, "data.frame")) {
     as.data.frame(x)

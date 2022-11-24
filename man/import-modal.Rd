@@ -18,7 +18,7 @@ import_server(
   id,
   validation_opts = NULL,
   allowed_status = c("OK", "Failed", "Error"),
-  return_class = c("data.frame", "data.table", "tbl_df"),
+  return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   read_fns = list()
 )
 
@@ -44,7 +44,7 @@ There are 5 options to choose from. ("env", "file", "copypaste", "googlesheets",
 \item{allowed_status}{Vector of statuses allowed to confirm dataset imported,
 if you want that all validation rules are successful before importing data use \code{allowed_status = "OK"}.}
 
-\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table}, \code{tbl_df} (tibble) or \code{raw}.}
 
 \item{read_fns}{Named list with custom function(s) to read data:
 \itemize{

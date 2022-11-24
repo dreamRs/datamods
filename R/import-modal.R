@@ -199,7 +199,7 @@ import_ui <- function(id,
 #' @param validation_opts `list` of arguments passed to [validation_server().
 #' @param allowed_status Vector of statuses allowed to confirm dataset imported,
 #'  if you want that all validation rules are successful before importing data use `allowed_status = "OK"`.
-#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble).
+#' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #'
 #' @export
 #' @rdname import-modal
@@ -209,9 +209,10 @@ import_ui <- function(id,
 import_server <- function(id,
                           validation_opts = NULL,
                           allowed_status = c("OK", "Failed", "Error"),
-                          return_class = c("data.frame", "data.table", "tbl_df"),
+                          return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                           read_fns = list()) {
   allowed_status <- match.arg(allowed_status, several.ok = TRUE)
+  return_class <- match.arg(return_class)
   if (length(read_fns) > 0) {
     if (!is_named(read_fns))
       stop("import_file_server: `read_fns` must be a named list.", call. = FALSE)

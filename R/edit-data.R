@@ -48,7 +48,7 @@ edit_data_ui <- function(id) {
 #' @param file_name_export `character` that allows you to choose the export name of the downloaded file
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
-#' @param return_class Class of returned data: `data.frame`, `data.table` or `tbl_df` (tibble)
+#' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
 #'
@@ -75,8 +75,8 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
-                             return_class = c("data.frame", "data.table", "tbl_df")
-) {
+                             return_class = c("data.frame", "data.table", "tbl_df", "raw")) {
+  return_class <- match.arg(return_class)
   moduleServer(
     id,
     function(input, output, session) {

@@ -13,7 +13,7 @@ import_url_server(
   btn_show_data = TRUE,
   show_data_in = c("popup", "modal"),
   trigger_return = c("button", "change"),
-  return_class = c("data.frame", "data.table", "tbl_df"),
+  return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   reset = reactive(NULL)
 )
 }
@@ -31,7 +31,7 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \code{"button"} (when user click on button) or
 \code{"change"} (each time user select a dataset in the list).}
 
-\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble).}
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table}, \code{tbl_df} (tibble) or \code{raw}.}
 
 \item{reset}{A \code{reactive} function that when triggered resets the data.}
 }
@@ -74,9 +74,13 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
-  imported <- import_url_server("myid")
-  
+
+  imported <- import_url_server(
+    "myid",
+    btn_show_data = FALSE,
+    return_class = "raw"
+  )
+
   output$status <- renderPrint({
     imported$status()
   })
@@ -86,7 +90,7 @@ server <- function(input, output, session) {
   output$data <- renderPrint({
     imported$data()
   })
-  
+
 }
 
 if (interactive())

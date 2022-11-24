@@ -22,9 +22,13 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
-  imported <- import_url_server("myid")
-  
+
+  imported <- import_url_server(
+    "myid",
+    btn_show_data = FALSE,
+    return_class = "raw"
+  )
+
   output$status <- renderPrint({
     imported$status()
   })
@@ -34,7 +38,7 @@ server <- function(input, output, session) {
   output$data <- renderPrint({
     imported$data()
   })
-  
+
 }
 
 if (interactive())

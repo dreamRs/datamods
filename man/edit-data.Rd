@@ -19,7 +19,7 @@ edit_data_server(
   file_name_export = "data",
   var_edit = NULL,
   var_mandatory = NULL,
-  return_class = c("data.frame", "data.table", "tbl_df")
+  return_class = c("data.frame", "data.table", "tbl_df", "raw")
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ edit_data_server(
 
 \item{var_mandatory}{vector of \code{character} which allows to choose obligatory fields to fill}
 
-\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table} or \code{tbl_df} (tibble)}
+\item{return_class}{Class of returned data: \code{data.frame}, \code{data.table}, \code{tbl_df} (tibble) or \code{raw}.}
 }
 \value{
 the edited \code{data.frame} in reactable format with the user modifications
