@@ -60,6 +60,7 @@ label,translation,comment
 "No data to display.","Pas de données à afficher."
 "Close","Fermer"
 "Add a label to data","Ajouter un libellé aux données"
+"URL","URL"
 "Add a row","Ajouter une ligne"
 "Required field","Champs requis"
 "Please fill in the required fields","Merci de remplir les champs obligatoires"
