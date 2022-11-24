@@ -100,7 +100,9 @@ import_url_server <- function(id,
     observeEvent(input$link, {
       req(input$link)
 
-      imported <- try(rio::import(input$link, format = "json"), silent = TRUE)
+      imported <- try(rio::import(input$link), silent = TRUE)
+      if (inherits(imported, "try-error")) # retry with explicit json format
+        imported <- try(rio::import(input$link, format = "json"), silent = TRUE)
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
         toggle_widget(inputId = "confirm", enable = FALSE)
