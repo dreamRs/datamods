@@ -135,7 +135,7 @@ update_variables_server <- function(id, data, height = NULL) {
         # variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
         variables <- set_input_text(variables, "name", ns(paste("name", tok, sep = "-")))
         variables <- set_input_class(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
-        update_variables_reactable(variables, height = height)
+        update_variables_reactable(variables, height = height, elementId = ns("table"))
       })
 
       observeEvent(input$validate, {
@@ -411,7 +411,7 @@ set_input_class <- function(data, variable, id = "classes", width = "100%") {
 
 
 
-update_variables_reactable <- function(data, height = NULL) {
+update_variables_reactable <- function(data, height = NULL, elementId = NULL) {
   if (is.null(height)) {
     height <- if (NROW(data) > 8) "400px" else "auto"
   }
@@ -435,7 +435,15 @@ update_variables_reactable <- function(data, height = NULL) {
     striped = TRUE,
     wrap = FALSE
   )
-  htmlwidgets::onRender(tble, jsCode = "function() {Shiny.bindAll();}")
+  if (is.null(elementId)) {
+    htmlwidgets::onRender(tble, jsCode = "function() {Shiny.bindAll();}")
+  } else {
+    htmlwidgets::onRender(tble, jsCode = sprintf(
+      "function() {Shiny.bindAll(document.getElementById('%s'));}",
+      elementId
+    ))
+  }
+
 }
 
 
