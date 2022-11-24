@@ -1,6 +1,6 @@
 #' Customer Credit Card Information
 #'
-#' A subset of fake customer credit card information inspired by the {charlatan} package.
+#' A subset of fake customer credit card information inspired by the `{charlatan}` package.
 #'
 #' @format ## `demo_edit`
 #' A data frame with 20 rows and 6 columns:
@@ -12,5 +12,5 @@
 #'   \item{date_obtained}{Date of obtaining the credit card}
 #'   \item{contactless_card}{Contactless card}
 #' }
-#' @source <https://cran.r-project.org/web/packages/charlatan/charlatan.pdf>
+#' @source <https://CRAN.R-project.org/package=charlatan>
 "demo_edit"

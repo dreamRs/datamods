@@ -19,12 +19,12 @@ A data frame with 20 rows and 6 columns:
 }
 }
 \source{
-\url{https://cran.r-project.org/web/packages/charlatan/charlatan.pdf}
+\url{https://CRAN.R-project.org/package=charlatan}
 }
 \usage{
 demo_edit
 }
 \description{
-A subset of fake customer credit card information inspired by the {charlatan} package.
+A subset of fake customer credit card information inspired by the \code{{charlatan}} package.
 }
 \keyword{datasets}
