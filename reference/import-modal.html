@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4.9100</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,9 +115,11 @@ if you want that all validation rules are successful before importing data use <
 
 <dt>read_fns</dt>
 <dd><p>Named list with custom function(s) to read data:</p><ul><li><p>the name must be the extension of the files to which the function will be applied</p></li>
-<li><p>the value must be a function that can have 4 arguments, passed by user through the interface:</p><ul><li><p><code>file</code>: path to the file</p></li>
+<li><p>the value must be a function that can have 5 arguments (you can ignore some of them, but you have to use the same names),
+passed by user through the interface:</p><ul><li><p><code>file</code>: path to the file</p></li>
 <li><p><code>sheet</code>: for Excel files, sheet to read</p></li>
 <li><p><code>skip</code>: number of row to skip</p></li>
+<li><p><code>dec</code>: decimal separator</p></li>
 <li><p><code>encoding</code>: file encoding</p></li>
 </ul></li>
 </ul></dd>
