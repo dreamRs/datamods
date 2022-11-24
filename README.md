@@ -9,10 +9,9 @@
 <!-- badges: start -->
 
 [![version](http://www.r-pkg.org/badges/version/datamods)](https://CRAN.R-project.org/package=datamods)
-[![R build
-status](https://github.com/dreamRs/datamods/workflows/R-CMD-check/badge.svg)](https://github.com/dreamRs/datamods/actions)
 [![codecov](https://app.codecov.io/gh/dreamRs/datamods/branch/master/graphs/badge.svg)](https://app.codecov.io/gh/dreamRs/datamods)
 [![cranlogs](https://cranlogs.r-pkg.org/badges/datamods)](https://cran.r-project.org/package=datamods)
+[![R-CMD-check](https://github.com/dreamRs/datamods/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dreamRs/datamods/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ### Overview

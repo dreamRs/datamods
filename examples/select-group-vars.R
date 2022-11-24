@@ -2,9 +2,8 @@
 # Select variables --------------------------------------------------------
 
 library(shiny)
+library(datamods)
 library(shinyWidgets)
-
-data("mpg", package = "ggplot2")
 
 ui <- fluidPage(
   fluidRow(
@@ -15,17 +14,17 @@ ui <- fluidPage(
         checkboxGroupInput(
           inputId = "vars",
           label = "Variables to use:",
-          choices = c("manufacturer", "model", "trans", "class"),
-          selected = c("manufacturer", "model", "trans", "class"),
+          choices = c("Manufacturer", "Type", "AirBags", "DriveTrain"),
+          selected = c("Manufacturer", "Type", "AirBags", "DriveTrain"),
           inline = TRUE
         ),
         select_group_ui(
           id = "my-filters",
           params = list(
-            manufacturer = list(inputId = "manufacturer", title = "Manufacturer:"),
-            model = list(inputId = "model", title = "Model:"),
-            trans = list(inputId = "trans", title = "Trans:"),
-            class = list(inputId = "class", title = "Class:")
+            list(inputId = "Manufacturer", label = "Manufacturer:"),
+            list(inputId = "Type", label = "Type:"),
+            list(inputId = "AirBags", label = "AirBags:"),
+            list(inputId = "DriveTrain", label = "DriveTrain:")
           ),
           inline = TRUE
         ),
@@ -44,7 +43,7 @@ server <- function(input, output, session) {
 
   res_mod <- select_group_server(
     id = "my-filters",
-    data = mpg,
+    data = MASS::Cars93,
     vars = vars_r
   )
 

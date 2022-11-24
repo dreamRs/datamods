@@ -4,14 +4,15 @@
 \alias{select-group}
 \alias{select_group_ui}
 \alias{select_group_server}
-\title{Select Group}
+\title{Select Group Input Module}
 \usage{
 select_group_ui(
   id,
   params,
   label = NULL,
   btn_label = "Reset filters",
-  inline = TRUE
+  inline = TRUE,
+  vs_args = list()
 )
 
 select_group_server(id, data_r, vars_r)
@@ -19,14 +20,22 @@ select_group_server(id, data_r, vars_r)
 \arguments{
 \item{id}{Module's id.}
 
-\item{params}{A named list of parameters passed to each \code{selectizeInput}, you can use :
-\code{inputId} (obligatory, must be variable name), \code{label}, \code{placeholder}.}
+\item{params}{A list of parameters passed to each \code{\link[shinyWidgets:virtualSelectInput]{shinyWidgets::virtualSelectInput()}},
+you can use :
+\itemize{
+\item \code{inputId}: mandatory, must correspond to variable name.
+\item \code{label}: Display label for the control.
+\item \code{placeholder}: Text to show when no options selected.
+}}
 
 \item{label}{Character, global label on top of all labels.}
 
 \item{btn_label}{Character, reset button label.}
 
-\item{inline}{If \code{TRUE} (the default), select menus are horizontally positioned, otherwise vertically.}
+\item{inline}{If \code{TRUE} (the default),
+select menus are horizontally positioned, otherwise vertically.}
+
+\item{vs_args}{Arguments passed to all \code{\link[shinyWidgets:virtualSelectInput]{shinyWidgets::virtualSelectInput()}} created.}
 
 \item{data_r}{Either a \code{\link[=data.frame]{data.frame()}} or a \code{\link[shiny:reactive]{shiny::reactive()}}
 function returning a \code{data.frame} (do not use parentheses).}
@@ -36,8 +45,53 @@ must correspond to variables listed in \code{params}. Can be a
 \code{\link[shiny:reactive]{shiny::reactive()}} function, but values must be included in the initial ones (in \code{params}).}
 }
 \value{
-a \code{\link[shiny:reactive]{shiny::reactive()}} function containing data filtered.
+A \code{\link[shiny:reactive]{shiny::reactive()}} function containing data filtered.
 }
 \description{
 Group of mutually dependent select menus for filtering \code{data.frame}'s columns (like in Excel).
+}
+\examples{
+# Default -----------------------------------------------------------------
+
+library(shiny)
+library(datamods)
+library(shinyWidgets)
+
+
+ui <- fluidPage(
+  # theme = bslib::bs_theme(version = 5L),
+  fluidRow(
+    column(
+      width = 10, offset = 1,
+      tags$h3("Filter data with select group module"),
+      shinyWidgets::panel(
+        select_group_ui(
+          id = "my-filters",
+          params = list(
+            list(inputId = "Manufacturer", label = "Manufacturer:"),
+            list(inputId = "Type", label = "Type:"),
+            list(inputId = "AirBags", label = "AirBags:"),
+            list(inputId = "DriveTrain", label = "DriveTrain:")
+          )
+        ),
+        status = "primary"
+      ),
+      reactable::reactableOutput(outputId = "table")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  res_mod <- select_group_server(
+    id = "my-filters",
+    data = reactive(MASS::Cars93),
+    vars = reactive(c("Manufacturer", "Type", "AirBags", "DriveTrain"))
+  )
+  output$table <- reactable::renderReactable({
+    reactable::reactable(res_mod())
+  })
+}
+
+if (interactive())
+  shinyApp(ui, server)
 }

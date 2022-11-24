@@ -209,8 +209,16 @@ import_ui <- function(id,
 import_server <- function(id,
                           validation_opts = NULL,
                           allowed_status = c("OK", "Failed", "Error"),
-                          return_class = c("data.frame", "data.table", "tbl_df")) {
+                          return_class = c("data.frame", "data.table", "tbl_df"),
+                          read_fns = list()) {
   allowed_status <- match.arg(allowed_status, several.ok = TRUE)
+  if (length(read_fns) > 0) {
+    if (!is_named(read_fns))
+      stop("import_file_server: `read_fns` must be a named list.", call. = FALSE)
+    if (!all(vapply(read_fns, is_function, logical(1))))
+      stop("import_file_server: `read_fns` must be list of function(s).", call. = FALSE)
+  }
+
   moduleServer(
     id,
     function(input, output, session) {
@@ -246,7 +254,8 @@ import_server <- function(id,
         id = "file",
         trigger_return = "change",
         btn_show_data = FALSE,
-        reset = reactive(input$hidden)
+        reset = reactive(input$hidden),
+        read_fns = read_fns
       )
       from_copypaste <- import_copypaste_server(
         id = "copypaste",
