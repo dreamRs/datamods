@@ -27,15 +27,7 @@ show_data <- function(data,
   data <- as.data.frame(data)
   if (isTRUE(show_classes)) {
     defaultColDef <- reactable::colDef(
-      header = function(value) {
-        if (!value %in% names(data))
-          return("")
-        classes <- tags$div(
-          style = "font-style: italic; font-weight: normal; font-size: small;",
-          get_classes(data[, value, drop = FALSE])
-        )
-        tags$div(title = value, value, classes)
-      }
+      header = header_with_classes
     )
   } else {
     defaultColDef <- NULL

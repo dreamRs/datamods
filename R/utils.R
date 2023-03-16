@@ -131,3 +131,14 @@ makeId <- function(x) {
     rep_len(FALSE, length(x))
   }
 }
+
+
+header_with_classes <- function(value) {
+  if (!hasName(data, value))
+    return("")
+  classes <- tags$div(
+    style = "font-style: italic; font-weight: normal; font-size: small;",
+    get_classes(data[, value, drop = FALSE])
+  )
+  tags$div(title = value, value, classes)
+}
