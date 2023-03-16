@@ -328,7 +328,7 @@ import_server <- function(id,
         reactable::reactable(
           data,
           defaultColDef = reactable::colDef(
-            header = header_with_classes
+            header = header_with_classes(data)
           ),
           columns = list(),
           bordered = TRUE,

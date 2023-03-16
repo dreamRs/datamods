@@ -27,7 +27,7 @@ show_data <- function(data,
   data <- as.data.frame(data)
   if (isTRUE(show_classes)) {
     defaultColDef <- reactable::colDef(
-      header = header_with_classes
+      header = header_with_classes(data)
     )
   } else {
     defaultColDef <- NULL
