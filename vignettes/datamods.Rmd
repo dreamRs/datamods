@@ -283,3 +283,37 @@ result_sample <- sample_server("myID", reactive(iris))
 <img src="figures/datamods-sample.png" style="width:100%"></img>
 
 
+
+## Edit
+
+Interactively edit a `data.frame`, this module also allow to :
+
+* **adding**, **deleting** and **modifying** rows
+* choosing **editable columns** and choosing **mandatory columns**
+* **exporting data** (csv and Excel)
+
+
+```{r}
+# UI
+edit_data_ui(id = "id")
+
+# Server
+  res_edited <- edit_data_server(
+    id = "id",
+    data_r = reactive(demo_edit),
+    add = TRUE,
+    update = TRUE,
+    delete = TRUE,
+    download_csv = TRUE,
+    download_excel = TRUE,
+    file_name_export = "datas",
+    var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
+    var_mandatory = c("name", "job")
+  )
+```
+
+<img src="figures/datamods-edit-data.png" style="width:100%"></img>
+
+
+This module returns the edited table with the user modifications.
+See ?demo_edit to see the data created for this data edit example.
