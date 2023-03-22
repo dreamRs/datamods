@@ -72,7 +72,8 @@
 
 
 
-<script src="datamods_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Getting started with datamods</h1>
             
@@ -85,13 +86,16 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span></code></pre></div>
-<p>The {datamods} package contains modules to work with data in Shiny application, currently the following modules are implemented :</p>
+<p>The {datamods} package contains modules to work with data in Shiny
+application, currently the following modules are implemented :</p>
 <ul>
 <li>Import modules : import data from various sources</li>
-<li>Update table structure: select columns to keep, rename variable and convert from a class to anoter (e.g. numeric to character)</li>
+<li>Update table structure: select columns to keep, rename variable and
+convert from a class to anoter (e.g. numeric to character)</li>
 <li>Filter data : interactively filter a <code>data.frame</code>
 </li>
-<li>Validate : check that data respect some expectations (with <a href="https://cran.r-project.org/package=validate" class="external-link">package {validate}</a>)</li>
+<li>Validate : check that data respect some expectations (with <a href="https://cran.r-project.org/package=validate" class="external-link">package
+{validate}</a>)</li>
 <li>Sample data: interactively sample a <code>data.frame</code>.</li>
 </ul>
 <div class="section level2">
@@ -100,7 +104,9 @@
 <div class="section level3">
 <h3 id="from-environment">From environment<a class="anchor" aria-label="anchor" href="#from-environment"></a>
 </h3>
-<p>Imports data from the user’s global environment or a package environment to retrieve included in it. It searches for data sets in the global environment and lets the user choose the data to use.</p>
+<p>Imports data from the user’s global environment or a package
+environment to retrieve included in it. It searches for data sets in the
+global environment and lets the user choose the data to use.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/import-globalenv.html">import_globalenv_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span>
@@ -112,7 +118,9 @@
 <div class="section level3">
 <h3 id="from-file">From file<a class="anchor" aria-label="anchor" href="#from-file"></a>
 </h3>
-<p>Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package <a href="https://github.com/leeper/rio" class="external-link">rio</a>. In case of Excel files, it gives an option to choose the sheet.</p>
+<p>Imports data from an external file. The file can be of any format,
+csv, xlsx, tsv etc.. Import is performed by package <a href="https://github.com/leeper/rio" class="external-link">rio</a>. In case of Excel files, it
+gives an option to choose the sheet.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/import-file.html">import_file_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span>
@@ -124,7 +132,8 @@
 <div class="section level3">
 <h3 id="from-clipboard">From clipboard<a class="anchor" aria-label="anchor" href="#from-clipboard"></a>
 </h3>
-<p>Imports data via copy/paste. Simply copy and paste data from any source.</p>
+<p>Imports data via copy/paste. Simply copy and paste data from any
+source.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/import-copypaste.html">import_copypaste_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span>
@@ -136,7 +145,8 @@
 <div class="section level3">
 <h3 id="from-googlesheet">From Googlesheet<a class="anchor" aria-label="anchor" href="#from-googlesheet"></a>
 </h3>
-<p>Imports data from a Googlesheet. Use the shareable link to read data.</p>
+<p>Imports data from a Googlesheet. Use the shareable link to read
+data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/import-googlesheets.html">import_googlesheets_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span>
@@ -148,7 +158,8 @@
 <div class="section level3">
 <h3 id="from-url">From URL<a class="anchor" aria-label="anchor" href="#from-url"></a>
 </h3>
-<p>Imports data from a URL. Only flat data in any format supported by <a href="https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats" class="external-link">package rio</a>.</p>
+<p>Imports data from a URL. Only flat data in any format supported by <a href="https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats" class="external-link">package
+rio</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/import-url.html">import_url_ui</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span>
@@ -159,7 +170,8 @@
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<p>All modules are used in the same way in a Shiny application, here is an example:</p>
+<p>All modules are used in the same way in a Shiny application, here is
+an example:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span>
@@ -194,14 +206,19 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span>  </span></code></pre></div>
-<p>All modules have the same return value server-side, a <code>list</code> with three slots:</p>
+<p>All modules have the same return value server-side, a
+<code>list</code> with three slots:</p>
 <ul>
 <li>
-<strong>status</strong>: a <code>reactive</code> function returning the status: <code>NULL</code>, <code>error</code> or <code>success</code>.</li>
+<strong>status</strong>: a <code>reactive</code> function returning
+the status: <code>NULL</code>, <code>error</code> or
+<code>success</code>.</li>
 <li>
-<strong>name</strong>: a <code>reactive</code> function returning the name of the imported data as <code>character</code>.</li>
+<strong>name</strong>: a <code>reactive</code> function returning
+the name of the imported data as <code>character</code>.</li>
 <li>
-<strong>data</strong>: a <code>reactive</code> function returning the imported <code>data.frame</code>.</li>
+<strong>data</strong>: a <code>reactive</code> function returning
+the imported <code>data.frame</code>.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -223,15 +240,21 @@
 <div class="section level2">
 <h2 id="update-modules">Update Modules<a class="anchor" aria-label="anchor" href="#update-modules"></a>
 </h2>
-<p>This module allow to dynamically select, rename and convert variables of a dataset.</p>
+<p>This module allow to dynamically select, rename and convert variables
+of a dataset.</p>
 <p><img src="figures/datamods-update-2.png" style="width:100%"></p>
-<p>Some options for converting to date and numeric are available in a dropdown menu.</p>
-<p>Return value of the module is a <code>reactive</code> function with the update data.</p>
+<p>Some options for converting to date and numeric are available in a
+dropdown menu.</p>
+<p>Return value of the module is a <code>reactive</code> function with
+the update data.</p>
 </div>
 <div class="section level2">
 <h2 id="validate">Validate<a class="anchor" aria-label="anchor" href="#validate"></a>
 </h2>
-<p>When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, … This module allow to validate rules defined with package <a href="https://github.com/data-cleaning/validate" class="external-link">validate</a>.</p>
+<p>When importing data into an application it can be useful to check
+that data respect some expectations: number of rows/columns, existence
+of a variable, … This module allow to validate rules defined with
+package <a href="https://github.com/data-cleaning/validate" class="external-link">validate</a>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/validation.html">validation_ui</a></span><span class="op">(</span><span class="st">"validation"</span>, display <span class="op">=</span> <span class="st">"inline"</span><span class="op">)</span></span>
@@ -265,19 +288,23 @@
 <span><span class="op">)</span></span>
 <span><span class="co"># you can also add a description()</span></span></code></pre></div>
 <p><img src="figures/datamods-validation-2.png" style="width:100%"></p>
-<p>Validation results can be displayed in a dropdown menu (above left) or inline where the module is called.</p>
+<p>Validation results can be displayed in a dropdown menu (above left)
+or inline where the module is called.</p>
 <p>The return value server-side is a list with the following items:</p>
 <ul>
 <li>
-<strong>status</strong>: a reactive function returning the best status available between “OK”, “Failed” or “Error”.</li>
+<strong>status</strong>: a reactive function returning the best
+status available between “OK”, “Failed” or “Error”.</li>
 <li>
-<strong>details</strong>: a reactive function returning a list with validation details.</li>
+<strong>details</strong>: a reactive function returning a list with
+validation details.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="filter">Filter<a class="anchor" aria-label="anchor" href="#filter"></a>
 </h2>
-<p>Interactively filter a <code>data.frame</code> and generate code to reproduce filters applied:</p>
+<p>Interactively filter a <code>data.frame</code> and generate code to
+reproduce filters applied:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/filter-data.html">filter_data_ui</a></span><span class="op">(</span><span class="st">"filtering"</span>, max_height <span class="op">=</span> <span class="st">"500px"</span><span class="op">)</span></span>
@@ -292,22 +319,27 @@
 <span>  widget_date <span class="op">=</span> <span class="st">"slider"</span>,</span>
 <span>  label_na <span class="op">=</span> <span class="st">"Missing"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>You can select variables for which to create a filter and choose widgets used to create the UI filter.</p>
+<p>You can select variables for which to create a filter and choose
+widgets used to create the UI filter.</p>
 <p><img src="figures/datamods-filter-2.png" style="width:100%"></p>
 <p>The return value server-side is a list with the following items:</p>
 <ul>
 <li>
-<strong>filtered</strong>: a <code>reactive</code> function returning the data filtered.</li>
+<strong>filtered</strong>: a <code>reactive</code> function
+returning the data filtered.</li>
 <li>
-<strong>code</strong>: a <code>reactive</code> function returning the dplyr pipeline to filter data.</li>
+<strong>code</strong>: a <code>reactive</code> function returning
+the dplyr pipeline to filter data.</li>
 <li>
-<strong>expr</strong>: a <code>reactive</code> function returning an expression to filter data.</li>
+<strong>expr</strong>: a <code>reactive</code> function returning an
+expression to filter data.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="sample">Sample<a class="anchor" aria-label="anchor" href="#sample"></a>
 </h2>
-<p>Interactively sample a <code>data.frame</code> to keep only part of the data, depending on the number or proportion of rows to keep.</p>
+<p>Interactively sample a <code>data.frame</code> to keep only part of
+the data, depending on the number or proportion of rows to keep.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># UI</span></span>
 <span><span class="fu"><a href="../reference/module-sample.html">sample_ui</a></span><span class="op">(</span><span class="st">"myID"</span><span class="op">)</span></span>
@@ -319,11 +351,14 @@
 <div class="section level2">
 <h2 id="edit">Edit<a class="anchor" aria-label="anchor" href="#edit"></a>
 </h2>
-<p>Interactively edit a <code>data.frame</code>, this module also allow to :</p>
+<p>Interactively edit a <code>data.frame</code>, this module also allow
+to :</p>
 <ul>
 <li>
-<strong>adding</strong>, <strong>deleting</strong> and <strong>modifying</strong> rows</li>
-<li>choosing <strong>editable columns</strong> and choosing <strong>mandatory columns</strong>
+<strong>adding</strong>, <strong>deleting</strong> and
+<strong>modifying</strong> rows</li>
+<li>choosing <strong>editable columns</strong> and choosing
+<strong>mandatory columns</strong>
 </li>
 <li>
 <strong>exporting data</strong> (csv and Excel)</li>
@@ -346,7 +381,8 @@
 <span>    var_mandatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="figures/datamods-edit-data.png" style="width:100%"></p>
-<p>This module returns the edited table with the user modifications. See ?demo_edit to see the data created for this data edit example.</p>
+<p>This module returns the edited table with the user modifications. See
+?demo_edit to see the data created for this data edit example.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

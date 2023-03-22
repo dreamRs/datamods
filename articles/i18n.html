@@ -72,7 +72,8 @@
 
 
 
-<script src="i18n_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Internationalization</h1>
             
@@ -85,7 +86,9 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dreamRs/datamods" class="external-link">datamods</a></span><span class="op">)</span></span></code></pre></div>
-<p>When using {datamods} modules, a simple way to modify labels display is provided for using a different language or simply use other labels. There are 4 different ways to use new labels:</p>
+<p>When using {datamods} modules, a simple way to modify labels display
+is provided for using a different language or simply use other labels.
+There are 4 different ways to use new labels:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using a supported language</span></span>
 <span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"fr"</span><span class="op">)</span></span>
@@ -103,65 +106,79 @@
 </h2>
 <p>The following languages are integrated in {datamods} :</p>
 <ul>
-<li><p><img src="figures/i18n/gb.svg" style="height:16px"> english, the default.</p></li>
-<li><p><img src="figures/i18n/fr.svg" style="height:16px"> french, activate with:</p></li>
+<li><p><img src="figures/i18n/gb.svg" style="height:16px"> english,
+the default.</p></li>
+<li><p><img src="figures/i18n/fr.svg" style="height:16px"> french,
+activate with:</p></li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"fr"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/mk.svg" style="height:16px"> macedonian, activate with:</li>
+<img src="figures/i18n/mk.svg" style="height:16px"> macedonian,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"mk"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/br.svg" style="height:16px"><img src="figures/i18n/pt.svg" style="height:16px"> brazilian portuguese, activate with:</li>
+<img src="figures/i18n/br.svg" style="height:16px"><img src="figures/i18n/pt.svg" style="height:16px"> brazilian portuguese,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"pt"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/al.svg" style="height:16px"> albanian, activate with:</li>
+<img src="figures/i18n/al.svg" style="height:16px"> albanian,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"al"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/cn.svg" style="height:16px"> chinese, activate with:</li>
+<img src="figures/i18n/cn.svg" style="height:16px"> chinese,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"cn"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/es.svg" style="height:16px"> spanish, activate with:</li>
+<img src="figures/i18n/es.svg" style="height:16px"> spanish,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"es"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/de.svg" style="height:16px"> german, activate with:</li>
+<img src="figures/i18n/de.svg" style="height:16px"> german,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"de"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/tr.svg" style="height:16px"> turkish, activate with:</li>
+<img src="figures/i18n/tr.svg" style="height:16px"> turkish,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"tr"</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
-<img src="figures/i18n/kr.svg" style="height:16px"> korean, activate with:</li>
+<img src="figures/i18n/kr.svg" style="height:16px"> korean,
+activate with:</li>
 </ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"kr"</span><span class="op">)</span></span></code></pre></div>
-<p>If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in <code>inst/i18n</code> folder in the package, you can see it <a href="https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv" class="external-link">here on GitHub</a>).</p>
+<p>If you want another language to be supported, you can submit a Pull
+Request to add a CSV file like the one used for french (file is located
+in <code>inst/i18n</code> folder in the package, you can see it <a href="https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv" class="external-link">here
+on GitHub</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="using-a-list">Using a list<a class="anchor" aria-label="anchor" href="#using-a-list"></a>
 </h2>
-<p>You can change labels with a named <code>list</code>, where names correspond to the labels and values to the translation to use:</p>
+<p>You can change labels with a named <code>list</code>, where names
+correspond to the labels and values to the translation to use:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"datamods.i18n"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Import a dataset from an environment"</span> <span class="op">=</span> <span class="st">"Importer un jeu de données depuis l'environnement global"</span>,</span>
@@ -172,7 +189,9 @@
 <div class="section level2">
 <h2 id="using-a-data-frame">Using a data.frame<a class="anchor" aria-label="anchor" href="#using-a-data-frame"></a>
 </h2>
-<p>You can change labels with a <code>data.frame</code> with two columns <code>label</code> (the original label) and <code>translation</code> (the new label to display):</p>
+<p>You can change labels with a <code>data.frame</code> with two columns
+<code>label</code> (the original label) and <code>translation</code>
+(the new label to display):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Import a dataset from an environment"</span>, <span class="st">"Select a data.frame:"</span>, <span class="va">...</span><span class="op">)</span>,</span>
@@ -182,7 +201,8 @@
 <div class="section level2">
 <h2 id="using-a-file">Using a file<a class="anchor" aria-label="anchor" href="#using-a-file"></a>
 </h2>
-<p>Use a CSV file with same structure than <code>data.frame</code> above:</p>
+<p>Use a CSV file with same structure than <code>data.frame</code>
+above:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/i18n.html">set_i18n</a></span><span class="op">(</span><span class="st">"path/to/file.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>An example of file is shown below.</p>
@@ -190,7 +210,8 @@
 <div class="section level2">
 <h2 id="all-labels">All labels<a class="anchor" aria-label="anchor" href="#all-labels"></a>
 </h2>
-<p>Here’s the file used for french translation with all labels used in the package:</p>
+<p>Here’s the file used for french translation with all labels used in
+the package:</p>
 <pre><code>label,translation,comment
 "Import a dataset from an environment","Importer un jeu de données depuis l'environnement global"
 "Select a data.frame:","Sélectionner un data.frame :"
