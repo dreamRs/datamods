@@ -133,3 +133,9 @@ Interactively filter a `data.frame`, this module also generates the code to repr
 Interactively sample a `data.frame`:
 
 ![](man/figures/datamods-sample.png)
+
+### Edit
+
+Interactively edit a `data.frame`:
+
+![](man/figures/datamods-edit-data.png)

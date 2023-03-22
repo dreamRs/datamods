@@ -45,9 +45,7 @@ german,
 <img src="man/figures/i18n/tr.svg" height="16" style="height:16px"/>
 turkish,
 <img src="man/figures/i18n/kr.svg" height="16" style="height:16px"/>
-korean,
-<img src="man/figures/i18n/pl.svg" height="16" style="height:16px"/>
-polish.
+korean.
 
 If you want another language to be supported, you can submit a Pull
 Request to add a CSV file like the one used for french (file is located
@@ -126,3 +124,9 @@ to reproduce the filters.
 Interactively sample a `data.frame`:
 
 ![](man/figures/datamods-sample.png)
+
+### Edit
+
+Interactively edit a `data.frame`:
+
+![](man/figures/datamods-edit-data.png)
