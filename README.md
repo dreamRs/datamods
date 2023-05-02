@@ -45,7 +45,9 @@ german,
 <img src="man/figures/i18n/tr.svg" height="16" style="height:16px"/>
 turkish,
 <img src="man/figures/i18n/kr.svg" height="16" style="height:16px"/>
-korean.
+korean,
+<img src="man/figures/i18n/pl.svg" height="16" style="height:16px"/>
+polish.
 
 If you want another language to be supported, you can submit a Pull
 Request to add a CSV file like the one used for french (file is located
@@ -75,13 +77,13 @@ remotes::install_github("dreamRs/datamods")
 
 Import data from:
 
--   **environment**: such as Global environment or from a package
--   **file**: text files, Excel, SAS or SPSS format… anything that
-    package [rio](https://github.com/leeper/rio) can handle
--   **copy/paste**: paste data from an other source like Excel or text
-    file
--   **Google Sheet**: use the URL to import the Googlesheet
--   **URL**: use a URL to import from a flat table
+- **environment**: such as Global environment or from a package
+- **file**: text files, Excel, SAS or SPSS format… anything that package
+  [rio](https://github.com/leeper/rio) can handle
+- **copy/paste**: paste data from an other source like Excel or text
+  file
+- **Google Sheet**: use the URL to import the Googlesheet
+- **URL**: use a URL to import from a flat table
 
 Each module is available in the form `import_file_ui()` /
 `import_file_server()` and can be use independently.
@@ -97,10 +99,10 @@ This module also allow to view imported data and to update variables.
 
 Module `update_variables_ui()` / `update_variables_server()` allow to:
 
--   **select** variables of interest in a dataset
--   **rename** variables to be used in application after that
--   **convert** variables to change their class, from character to
-    numeric for example
+- **select** variables of interest in a dataset
+- **rename** variables to be used in application after that
+- **convert** variables to change their class, from character to numeric
+  for example
 
 ![](man/figures/datamods-update.png)
 
