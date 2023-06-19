@@ -315,7 +315,7 @@ create_filters <- function(data,
       } else {
         choices <- unique(as.character(sort(var)))
         if ("" %in% choices)
-          choices <- append(choices, "<empty field>")
+          choices <- append(choices, .empty_field_char)
         choices <- tryCatch(choices[trimws(choices) != ""], error = function(e) {
           Encoding(choices[!validEnc(choices)]) <- "unknown"
           choices
@@ -356,7 +356,8 @@ create_filters <- function(data,
               width = width,
               showValueAsTags = TRUE,
               zIndex = 9999,
-              dropboxWrapper = ".datamods-filters-container"
+              dropboxWrapper = ".datamods-filters-container",
+              html = TRUE
             )
           )
         } else {
@@ -473,8 +474,8 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
         }
       } else {
         data_values <- unique(as.character(data_values))
-        if ("<empty field>" %in% values)
-          values[which(values == "<empty field>")] <- ""
+        if (.empty_field_char %in% values)
+          values[which(values == .empty_field_char)] <- ""
         if (!identical(sort(values), sort(data_values))) {
           if (length(values) == 0) {
             if (isTRUE(nas)) {
@@ -620,3 +621,5 @@ match_class <- function(x, y) {
   return(FALSE)
 }
 
+
+.empty_field_char <- "\u3008 \U0001d626\U0001d62e\U0001d631\U0001d635\U0001d63a \U0001d627\U0001d62a\U0001d626\U0001d62d\U0001d625 \u3009"
