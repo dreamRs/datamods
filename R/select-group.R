@@ -104,7 +104,7 @@ select_group_ui <- function(id,
 #' @export
 #'
 #' @rdname select-group
-#' @importFrom shiny observeEvent reactiveValues reactive is.reactive isolate
+#' @importFrom shiny observeEvent observe reactiveValues reactive is.reactive isolate isTruthy
 #' @importFrom shinyWidgets updateVirtualSelect
 select_group_server <- function(id, data_r, vars_r) {
   moduleServer(
@@ -196,7 +196,7 @@ select_group_server <- function(id, data_r, vars_r) {
               }
 
               for (i in ovars) {
-                if (is.null(input[[i]])) {
+                if (!isTruthy(input[[i]])) {
                   shinyWidgets::updateVirtualSelect(
                     session = session,
                     inputId = i,
@@ -205,7 +205,7 @@ select_group_server <- function(id, data_r, vars_r) {
                 }
               }
 
-              if (is.null(input[[x]])) {
+              if (!isTruthy(input[[x]])) {
                 shinyWidgets::updateVirtualSelect(
                   session = session,
                   inputId = x,
