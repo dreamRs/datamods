@@ -1,3 +1,14 @@
+# datamods 1.4.1
+
+* i18n: polish translations added, thanks to [@jakub-jedrusiak](https://github.com/jakub-jedrusiak).
+
+### Bug fixes
+* Fixed displaying variable class in View tab (fix [#64](https://github.com/dreamRs/datamods/issues/64)).
+* `select_group_server()` : fix update inputs when `multiple = FALSE`.
+* `filter_data_server()` : sorting choices in select menus (select, picker and virtual) (fix [#66](https://github.com/dreamRs/datamods/issues/64))).
+* `filter_data_server()` : don't use `<`/`>` for empty field to not confuse to an HTMl tag (fix [#65](https://github.com/dreamRs/datamods/issues/65))).
+
+
 # datamods 1.4.0
 
 * New module : `edit_data_ui()` / `edit_data_server()` to interactively edit a `data.frame`, thanks to [@ggsamra](https://github.com/ggsamra).
