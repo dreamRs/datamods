@@ -313,14 +313,14 @@ create_filters <- function(data,
           )
         }
       } else {
-        choices <- unique(as.character(var))
+        choices <- unique(as.character(sort(var)))
         if ("" %in% choices)
           choices <- append(choices, "<empty field>")
         choices <- tryCatch(choices[trimws(choices) != ""], error = function(e) {
           Encoding(choices[!validEnc(choices)]) <- "unknown"
           choices
         })
-        selected = choices
+        selected <- choices
         if(!is.null(defaults) && label %in% names(defaults)){
           selected = defaults[[label]]
         }
@@ -336,6 +336,7 @@ create_filters <- function(data,
               multiple = TRUE,
               width = width,
               options = pickerOptions(
+                container = "body",
                 actionsBox = TRUE,
                 selectedTextFormat = "count",
                 liveSearch = TRUE
