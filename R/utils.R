@@ -132,7 +132,7 @@ makeId <- function(x) {
   }
 }
 
-
+#' @importFrom utils hasName
 header_with_classes <- function(data) {
   function(value) {
     if (!hasName(data, value))
