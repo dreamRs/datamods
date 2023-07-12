@@ -1,4 +1,4 @@
-# datamods 1.4.3
+# datamods 1.4.2
 
 * i18n: japanese translations added, thanks to [@nissinbo](https://github.com/nissinbo).
 
