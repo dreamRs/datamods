@@ -47,7 +47,9 @@ turkish,
 <img src="man/figures/i18n/kr.svg" height="16" style="height:16px"/>
 korean,
 <img src="man/figures/i18n/pl.svg" height="16" style="height:16px"/>
-polish.
+polish,
+<img src="man/figures/i18n/ja.svg" height="16" style="height:16px"/>
+Japanese.
 
 If you want another language to be supported, you can submit a Pull
 Request to add a CSV file like the one used for french (file is located
