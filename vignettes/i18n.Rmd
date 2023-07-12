@@ -97,6 +97,18 @@ set_i18n("tr")
 set_i18n("kr")
 ```
 
+* ![](figures/i18n/pl.svg){height=16, style="height:16px"} polish, activate with:
+
+```{r}
+set_i18n("pl")
+```
+
+* ![](figures/i18n/ja.svg){height=16, style="height:16px"} japanese, activate with:
+
+```{r}
+set_i18n("ja")
+```
+
 If you want another language to be supported, you can submit a Pull Request to add a CSV file like the one used for french (file is located in `inst/i18n` folder in the package, you can see it [here on GitHub](https://github.com/dreamRs/datamods/blob/master/inst/i18n/fr.csv)).
 
 
