@@ -10,7 +10,7 @@
 #'   * `label`: Display label for the control.
 #'   * `placeholder`: Text to show when no options selected.
 #' @param label Character, global label on top of all labels.
-#' @param btn_label Character, reset button label.
+#' @param btn_reset_label Character, reset button label. If `NULL` no button is added.
 #' @param inline If `TRUE` (the default),
 #'  select menus are horizontally positioned, otherwise vertically.
 #' @param vs_args Arguments passed to all [shinyWidgets::virtualSelectInput()] created.
@@ -29,18 +29,23 @@
 select_group_ui <- function(id,
                             params,
                             label = NULL,
-                            btn_label = "Reset filters",
+                            btn_reset_label = "Reset filters",
                             inline = TRUE,
                             vs_args = list()) {
 
   ns <- NS(id)
 
-  button_reset <- actionLink(
-    inputId = ns("reset_all"),
-    label = tagList(phosphoricons::ph("x"), btn_label),
-    icon = NULL,
-    style = "float: right;"
-  )
+  button_reset <- if (!is.null(btn_reset_label)) {
+    actionLink(
+      inputId = ns("reset_all"),
+      label = tagList(
+        phosphoricons::ph("x", title = btn_reset_label),
+        btn_reset_label
+      ),
+      icon = NULL,
+      style = "float: right;"
+    )
+  }
   label_tag <- if (!is.null(label))
     tags$b(label, class = "select-group-label")
 

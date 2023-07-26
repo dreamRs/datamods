@@ -10,7 +10,7 @@ select_group_ui(
   id,
   params,
   label = NULL,
-  btn_label = "Reset filters",
+  btn_reset_label = "Reset filters",
   inline = TRUE,
   vs_args = list()
 )
@@ -30,7 +30,7 @@ you can use :
 
 \item{label}{Character, global label on top of all labels.}
 
-\item{btn_label}{Character, reset button label.}
+\item{btn_reset_label}{Character, reset button label. If \code{NULL} no button is added.}
 
 \item{inline}{If \code{TRUE} (the default),
 select menus are horizontally positioned, otherwise vertically.}
