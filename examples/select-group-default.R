@@ -23,7 +23,9 @@ ui <- fluidPage(
         ),
         status = "primary"
       ),
-      reactable::reactableOutput(outputId = "table")
+      reactable::reactableOutput(outputId = "table"),
+      tags$b("Inputs values:"),
+      verbatimTextOutput("inputs")
     )
   )
 )
@@ -34,8 +36,13 @@ server <- function(input, output, session) {
     data = reactive(MASS::Cars93),
     vars = reactive(c("Manufacturer", "Type", "AirBags", "DriveTrain"))
   )
+
   output$table <- reactable::renderReactable({
     reactable::reactable(res_mod())
+  })
+
+  output$inputs <- renderPrint({
+    attr(res_mod(), "inputs")
   })
 }
 

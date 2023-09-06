@@ -15,7 +15,7 @@
 #'  select menus are horizontally positioned, otherwise vertically.
 #' @param vs_args Arguments passed to all [shinyWidgets::virtualSelectInput()] created.
 #'
-#' @return A [shiny::reactive()] function containing data filtered.
+#' @return A [shiny::reactive()] function containing data filtered with an attribute `inputs` containing a named list of selected inputs.
 #' @export
 #'
 #' @name select-group
@@ -235,6 +235,10 @@ select_group_server <- function(id, data_r, vars_r) {
         )
         indicator <- Reduce(f = `&`, x = indicator)
         data <- data[indicator, ]
+        attr(data, "inputs") <- lapply(
+          X = setNames(vars, vars),
+          FUN = function(x) input[[x]]
+        )
         return(data)
       }))
 

@@ -1,6 +1,7 @@
 # datamods 1.4.2
 
 * i18n: japanese translations added, thanks to [@nissinbo](https://github.com/nissinbo).
+* `select_group_server()` : output value now have an `inputs` attribute with a named list of selected inputs values.
 
 
 # datamods 1.4.1
