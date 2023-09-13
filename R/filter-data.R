@@ -279,9 +279,11 @@ create_filters <- function(data,
           )
         }
       } else if (inherits(x = var, what = c("Date", "POSIXct"))) {
+        # browser()
+        var <- pretty(var)
         range_var <- range(var)
-        if(!is.null(defaults) && label %in% names(defaults)){
-          range_var = defaults[[label]]
+        if(!is.null(defaults) && label %in% names(defaults)) {
+          range_var <- defaults[[label]]
         }
         if (identical(widget_date, "slider")) {
           tags$div(
@@ -289,8 +291,8 @@ create_filters <- function(data,
             tag_label,
             set_slider_attr(sliderInput(
               inputId = ns(id),
-              min = min(var),
-              max = max(var),
+              min = range_var[1],
+              max = range_var[2],
               value = range_var,
               label = NULL,
               width = width,
@@ -298,13 +300,14 @@ create_filters <- function(data,
             ))
           )
         } else {
+          range_var <- format(range_var, format = "%Y-%m-%d")
           tags$div(
             style = "position: relative;",
             tag_label,
             dateRangeInput(
               inputId = ns(id),
-              min = min(var),
-              max = max(var),
+              min = range_var[1],
+              max = range_var[2],
               start = range_var[1],
               end = range_var[2],
               label = NULL,
@@ -450,14 +453,16 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
           }
         }
       } else if (inherits(x = values, what = c("Date", "POSIXct"))) {
-        values <- if (inherits(values, "Date")) {
-          format(values)
+        date_fmt <- if (inherits(values, "Date")) {
+          "%Y-%m-%d"
         } else {
-          format(values, tz = format(data_values[1], format = "%Z"))
+          "%Y-%m-%d %H:%M:%S"
         }
+        data_values <- pretty(data_values)
         data_range <- range(data_values, na.rm = TRUE)
-        data_range <- format(data_range)
-        if (!identical(values, data_range)) {
+        data_range <- format(data_range, format = date_fmt, tz = "UTC")
+        if (!identical(format(values, format = date_fmt, tz = "UTC"), data_range)) {
+          values <- format(values, format = date_fmt)
           if (isTRUE(nas)) {
             if (anyNA(data_values)) {
               values_expr <- expr(!!sym(var) >= !!values[1] & !!sym(var) <= !!values[2] | is.na(!!sym(var)))
@@ -517,6 +522,17 @@ make_expr_filter <- function(filters, filters_na, data, data_name) {
       } else {
         values_expr
       }
+    }
+  )
+  expressions <- lapply(
+    X = expressions,
+    FUN = function(expr) {
+      res_expr <- try(eval_tidy(expr = expr, data = data), silent = TRUE)
+      if (inherits(res_expr, "try-error"))
+        return(expr)
+      if (isTRUE(all(res_expr)))
+        return(NULL)
+      expr
     }
   )
   expressions <- dropNullsOrEmpty(expressions)
