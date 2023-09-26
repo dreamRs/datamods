@@ -49,7 +49,7 @@ imported <- import_globalenv_server("myid")
 
 ### From file
 
-Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package [rio](https://github.com/leeper/rio).
+Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package [rio](https://github.com/gesistsa/rio).
 In case of Excel files, it gives an option to choose the sheet. 
 
 ```{r}
