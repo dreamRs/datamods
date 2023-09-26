@@ -91,7 +91,7 @@ remotes::install_github("dreamRs/datamods")
 Import data from:
 
 * **environment**: such as Global environment or from a package
-* **file**: text files, Excel, SAS or SPSS format... anything that package [rio](https://github.com/leeper/rio) can handle
+* **file**: text files, Excel, SAS or SPSS format... anything that package [rio](https://github.com/gesistsa/rio#supported-file-formats) can handle
 * **copy/paste**: paste data from an other source like Excel or text file
 * **Google Sheet**: use the URL to import the Googlesheet
 * **URL**: use a URL to import from a flat table
