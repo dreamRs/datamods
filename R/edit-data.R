@@ -116,7 +116,9 @@ edit_data_server <- function(id,
 
         if (isTRUE(update)) {
           data[, .datamods_edit_update := as.character(seq_len(.N))]
-          data[, .datamods_edit_update := lapply(.datamods_edit_update, btn_update(ns("update")))]
+          data[, .datamods_edit_update := list(
+            lapply(.datamods_edit_update, btn_update(ns("update")))
+          )]
         } else {
           data[, .datamods_edit_update := NA]
         }
@@ -127,7 +129,9 @@ edit_data_server <- function(id,
 
         if (isTRUE(delete)) {
         data[, .datamods_edit_delete := as.character(seq_len(.N))]
-        data[, .datamods_edit_delete := lapply(.datamods_edit_delete, btn_delete(ns("delete")))]
+        data[, .datamods_edit_delete := list(
+          lapply(.datamods_edit_delete, btn_delete(ns("delete")))
+        )]
         } else {
           data[, .datamods_edit_delete := NA]
         }
@@ -202,7 +206,7 @@ edit_data_server <- function(id,
           results_inputs[[".datamods_edit_delete"]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
 
           new <- as.data.table(results_inputs)
-
+# browser()
           data <- rbind(data, new, fill = TRUE)
           data_rv$data <- data
           page <- getReactableState(outputId = "table", name = "page")

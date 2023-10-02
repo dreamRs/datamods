@@ -31,7 +31,7 @@ edit_modal <- function(default = list(),
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
-  if (identical(x = var_edit, y = character(0)) | identical(x = var_edit, y = NULL)) {
+  if (identical(var_edit, character(0)) | identical(var_edit, NULL)) {
     data <- data
     position_var_edit <- seq_len(ncol(data))
   } else {
@@ -89,7 +89,12 @@ edit_modal <- function(default = list(),
 #' @return different shiny widgets with edited columns according to their respective class
 #' @noRd
 #'
-edit_input_form <- function(default = list(), data, colnames, var_mandatory, position_var_edit, session = getDefaultReactiveDomain()) {
+edit_input_form <- function(default = list(),
+                            data,
+                            colnames,
+                            var_mandatory,
+                            position_var_edit,
+                            session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
@@ -102,19 +107,22 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
         variable <- data[[i]]
 
         if (variable_name %in% var_mandatory) {
-          label <- tagList(variable_name, tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : ")
+          label <- tagList(
+            variable_name,
+            tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : "
+          )
         } else {
           label <- paste0(variable_name, " : ")
         }
 
-        if (isTRUE((inherits(x = variable, what = "numeric")))) {
+        if (isTRUE(inherits(variable, c("numeric", "integer")))) {
           numericInput(
             inputId = ns(variable_id),
             label = label,
             value = default[[variable_id]] %||% NA_real_,
             width = "100%"
           )
-        } else if (isTRUE((inherits(x = variable, what = "factor")))) {
+        } else if (isTRUE((inherits(variable, "factor")))) {
           virtualSelectInput(
             inputId = ns(variable_id),
             label = label,
@@ -125,14 +133,14 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
             autoSelectFirstOption = FALSE,
             placeholder = i18n("Select")
           )
-        } else if (isTRUE((inherits(x = variable, what = "character")))) {
+        } else if (isTRUE((inherits(variable, "character")))) {
           textInput(
             inputId = ns(variable_id),
             label = label,
             value = default[[variable_id]] %||% "",
             width = "100%"
           )
-        } else if (isTRUE((inherits(x = variable, what = "logical")))) {
+        } else if (isTRUE((inherits(variable, "logical")))) {
           prettyCheckbox(
             inputId = ns(variable_id),
             label = label,
@@ -141,7 +149,7 @@ edit_input_form <- function(default = list(), data, colnames, var_mandatory, pos
             status = "primary",
             width = "100%"
           )
-        } else if (isTRUE((inherits(x = variable, what = "Date")))) {
+        } else if (isTRUE((inherits(variable, "Date")))) {
           airDatepickerInput(
             inputId = ns(variable_id),
             label = label,
