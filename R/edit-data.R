@@ -80,7 +80,8 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
-                             return_class = c("data.frame", "data.table", "tbl_df", "raw")) {
+                             return_class = c("data.frame", "data.table", "tbl_df", "raw"),
+                             reactableOptions = NULL) {
   return_class <- match.arg(return_class)
   moduleServer(
     id,
@@ -146,8 +147,14 @@ edit_data_server <- function(id,
         data <- req(data_init_r())
         table_display(
           data = data,
-          colnames = data_rv$colnames
+          colnames = data_rv$colnames,
+          reactableOptions = reactableOptions
         )
+      })
+      
+      # Retrieve selected row(s)
+      selected_r <- reactive({
+        getReactableState("table", "selected")
       })
 
 
@@ -393,6 +400,7 @@ edit_data_server <- function(id,
         }
       )
 
+
       return(
         reactive({
           req(data_rv$data)
@@ -401,6 +409,7 @@ edit_data_server <- function(id,
           data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
           as_out(data, return_class)
+          setattr(data, "selected", selected_r())
         })
       )
 

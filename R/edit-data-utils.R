@@ -157,6 +157,15 @@ edit_input_form <- function(default = list(),
             inline = TRUE,
             width = "100%"
           )
+        } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
+          airDatepickerInput(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% Sys.time(),
+            inline = TRUE,
+            timepicker = TRUE,
+            width = "100%"
+          )
         } else {
           return(NULL)
         }
@@ -178,7 +187,7 @@ edit_input_form <- function(default = list(),
 #'
 #' @importFrom reactable reactable colDef
 #'
-table_display <- function(data, colnames = NULL) {
+table_display <- function(data, colnames = NULL, reactableOptions = NULL) {
   cols <- list()
   for (i in seq_along(data)) {
     cols[[names(data)[i]]] <- colDef(name = colnames[i])
@@ -196,10 +205,19 @@ table_display <- function(data, colnames = NULL) {
   }
 
   cols$.datamods_id <- colDef(show = FALSE)
-  reactable(
-    data = data,
-    columns = cols
-  )
+  
+  if (is.null(reactableOptions))
+    reactableOptions <- list()
+  reactableOptions <- reactableOptions
+  reactableOptions$data <- data 
+  reactableOptions$columns <- cols
+  
+  rlang::exec(reactable::reactable, !!!reactableOptions)
+  
+  # reactable(
+  #   data = data,
+  #   columns = cols
+  # )
 }
 
 
@@ -385,3 +403,4 @@ notification_info <- function(title, text) {
     clickToClose = TRUE
   )
 }
+
