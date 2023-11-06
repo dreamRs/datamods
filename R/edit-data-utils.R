@@ -59,7 +59,7 @@ edit_modal <- function(default = list(),
       data = data,
       colnames = colnames,
       var_mandatory = var_mandatory,
-      position_var_edit =  position_var_edit,
+      position_var_edit = position_var_edit,
       session = session
     ),
     actionButton(
@@ -172,34 +172,53 @@ edit_input_form <- function(default = list(),
 #'
 #' @param data `data.frame` to use
 #' @param colnames `data.frame` column names
+#' @param options Arguments passed to [reactable::reactable()].
 #'
 #' @return the `data.frame` in reactable format
 #' @noRd
 #'
 #' @importFrom reactable reactable colDef
 #'
-table_display <- function(data, colnames = NULL) {
-  cols <- list()
-  for (i in seq_along(data)) {
-    cols[[names(data)[i]]] <- colDef(name = colnames[i])
+table_display <- function(data, colnames = NULL, options = NULL) {
+  if (is.null(options)) {
+    options <- list()
   }
+
+  options <- modifyList(x = options, val = list(
+    bordered = TRUE,
+    compact = TRUE,
+    striped = TRUE
+  ))
+
+  cols <- list()
+  if (is.null(options$columns)) {
+    options$columns <- list()
+  }
+
   if (all(is.na(data$.datamods_edit_update))) {
-    cols$.datamods_edit_update = colDef(show = FALSE)
+    cols$.datamods_edit_update <- colDef(show = FALSE)
   } else {
-    cols$.datamods_edit_update = col_def_update()
+    cols$.datamods_edit_update <- col_def_update()
   }
 
   if (all(is.na(data$.datamods_edit_delete))) {
-    cols$.datamods_edit_delete = colDef(show = FALSE)
+    cols$.datamods_edit_delete <- colDef(show = FALSE)
   } else {
-    cols$.datamods_edit_delete = col_def_delete()
+    cols$.datamods_edit_delete <- col_def_delete()
   }
 
   cols$.datamods_id <- colDef(show = FALSE)
-  reactable(
-    data = data,
-    columns = cols
-  )
+
+  options$data <- data
+  for (i in seq_along(colnames)) {
+    data.table::setnames(x = data, old = names(data)[i], new = colnames[i])
+  }
+
+  options$columns <- modifyList(x = options$columns, val = cols)
+
+  table <- rlang::exec(reactable::reactable, !!!options)
+
+  return(table)
 }
 
 

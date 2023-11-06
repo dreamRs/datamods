@@ -55,6 +55,7 @@ edit_data_ui <- function(id) {
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
+#' @param options Arguments passed to [reactable::reactable()].
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
 #'
@@ -80,12 +81,12 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
-                             return_class = c("data.frame", "data.table", "tbl_df", "raw")) {
+                             return_class = c("data.frame", "data.table", "tbl_df", "raw"),
+                             options = NULL) {
   return_class <- match.arg(return_class)
   moduleServer(
     id,
     function(input, output, session) {
-
       ns <- session$ns
 
       data_rv <- reactiveValues(data = NULL, colnames = NULL, mandatory = NULL, edit = NULL)
@@ -94,12 +95,15 @@ edit_data_server <- function(id,
       data_init_r <- eventReactive(data_r(), {
         req(data_r())
         data <- data_r()
-        if (is.reactive(var_mandatory))
+        if (is.reactive(var_mandatory)) {
           var_mandatory <- var_mandatory()
-        if (is.reactive(var_edit))
+        }
+        if (is.reactive(var_edit)) {
           var_edit <- var_edit()
-        if (is.null(var_edit))
+        }
+        if (is.null(var_edit)) {
           var_edit <- names(data)
+        }
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
         if (!isTRUE(identical(x = seq_along(data), y = integer(0)))) {
@@ -146,7 +150,8 @@ edit_data_server <- function(id,
         data <- req(data_init_r())
         table_display(
           data = data,
-          colnames = data_rv$colnames
+          colnames = data_rv$colnames,
+          options = options
         )
       })
 
@@ -407,4 +412,3 @@ edit_data_server <- function(id,
     }
   )
 }
-

@@ -54,6 +54,27 @@ test_that("confirmation_window works", {
   expect_is(confirmation_window(inputId = "input", title = "titre"), "shiny.tag")
 })
 
+test_that("reactable options works",{
 
+  mydata <- iris
+  mydata <- as.data.table(mydata)
+
+  mydata[, .datamods_edit_update := as.character(seq_len(.N))]
+  mydata[, .datamods_edit_delete := as.character(seq_len(.N))]
+  mydata[, .datamods_id := seq_len(.N)]
+
+  table <-
+    table_display(mydata, colnames = NULL,
+                options = list(columns = list(Species = colDef(name = "Spec.")),
+                               searchable = TRUE,
+                               pagination = FALSE,
+                               height = 500))
+
+  expect_true(table$x$tag$attribs$searchable)
+  expect_false(table$x$tag$attribs$pagination)
+  expect_equal(table$height, "500px")
+  expect_equal(table$x$tag$attribs$columns[[5]]$name, "Spec.")
+
+})
 
 
