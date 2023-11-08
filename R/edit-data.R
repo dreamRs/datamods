@@ -408,8 +408,8 @@ edit_data_server <- function(id,
           data <- as.data.table(data)
           data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
-          as_out(data, return_class)
           setattr(data, "selected", selected_r())
+          as_out(data, return_class)
         })
       )
 
