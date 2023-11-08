@@ -1,6 +1,7 @@
 library(shiny)
 library(datamods)
 library(bslib)
+library(reactable)
 
 ui <- fluidPage(
   theme = bs_theme(
@@ -25,8 +26,9 @@ server <- function(input, output, session) {
     file_name_export = "datas",
     # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job"),
-    reactableOptions = list(
+    reactable_options = list(
       defaultColDef = colDef(filterable = TRUE),
+      selection = "single",
       columns = list(
         name = colDef(name = "Name", style = list(fontWeight = "bold")),
         credit_card_security_code = colDef(name = "Credit card security code"),

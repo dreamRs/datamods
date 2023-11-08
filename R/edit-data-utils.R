@@ -181,119 +181,52 @@ edit_input_form <- function(default = list(),
 #'
 #' @param data `data.frame` to use
 #' @param colnames `data.frame` column names
-#' @param reactableOptions `list` allowing you to add reactable options
+#' @param reactable_options `list` allowing you to add reactable options
 #'
 #' @return the `data.frame` in reactable format
 #' @noRd
 #'
 #' @importFrom reactable reactable colDef
-#'
-table_display <- function(data, colnames = NULL, reactableOptions = NULL) {
+#' @importFrom data.table copy setnames
+table_display <- function(data, colnames = NULL, reactable_options = NULL) {
 
-# Table des correspondances des noms de colonnes de "data"
-matches <- data.frame(
-  name_temp = setdiff(names(data), c(".datamods_edit_update", ".datamods_edit_delete", ".datamods_id")),
-  name_real = colnames
-)
+  data <- copy(data)
+  if (!is.null(colnames)) {
+    setnames(data, old = seq_along(colnames), new = colnames)
+  }
 
-# cols <- list()
-if (!is.null(reactableOptions$columns)) {
-  cols <- reactableOptions$columns
-  
-  # Pour les colonnes qui sont éditées par l'utilisateur dans l'argument reactableOptions (dans reactableOptions$columns) :
-  # * si le "name" de colDef() d'une colonne est éditée par l'utilisateur : on ne fait rien
-  # * sinon on affecte le vrai nom initial de la colonne dans le "name" de colDef() de cette colonne
-  for (col in names(cols)) {
-    if (!("name" %in% names(cols[[col]]))) {
-      name_col <- col
-      cols[[col]][["name"]] <- name_col
-    } else {
-      NULL
-    }
+  cols <- reactable_options$columns %||% list()
+  if (all(is.na(data$.datamods_edit_update))) {
+    cols$.datamods_edit_update <- colDef(show = FALSE)
+  } else {
+    cols$.datamods_edit_update <- col_def_update()
   }
-  
-  # Pour les colonnes qui ne sont pas éditées par l'utilisateur dans l'argument reactableOptions (dans reactableOptions$columns) :
-  # * leur affecter uniquement leur vrai nom initial de colonne dans le "name" de colDef()
-  unedited_columns <- setdiff(
-    matches$name_real[!matches$name_real %in% c(".datamods_edit_update", ".datamods_edit_delete", ".datamods_id")],
-    names(cols)
-  )
-  for (i in seq_along(unedited_columns)) {
-    cols[[unedited_columns[i]]] <- colDef(name = unedited_columns[i])
+
+  if (all(is.na(data$.datamods_edit_delete))) {
+    cols$.datamods_edit_delete <- colDef(show = FALSE)
+  } else {
+    cols$.datamods_edit_delete <- col_def_delete()
   }
-  
-  # Remettre les noms temporaires : "col_1" , "col_2", ... pour le bon fonctionnement du module
-  for (i in seq_along(cols)) {
-    name_col <- names(cols)[i]
-    name_temp <- matches$name_temp[matches$name_real == name_col]
-    names(cols)[i] <- name_temp
-  }
-  
-} else {
-  cols <- list()
-  for (i in seq_along(data)) {
-    cols[[names(data)[i]]] <- colDef(name = colnames[i])
-  }
+
+  cols$.datamods_id <- colDef(show = FALSE)
+
+  if (is.null(reactable_options))
+    reactable_options <- list()
+  reactable_options <- reactable_options
+  reactable_options$data <- data
+  reactable_options$columns <- cols
+
+  rlang::exec(reactable::reactable, !!!reactable_options)
 }
 
-
-if (all(is.na(data$.datamods_edit_update))) {
-  cols$.datamods_edit_update = colDef(show = FALSE)
-} else {
-  cols$.datamods_edit_update = col_def_update()
+#' @importFrom reactable updateReactable getReactableState
+#' @importFrom data.table copy setnames
+update_table <- function(data, colnames) {
+  data <- copy(data)
+  setnames(data, old = seq_along(colnames), new = colnames)
+  page <- getReactableState(outputId = "table", name = "page")
+  updateReactable("table", data = data, page = page)
 }
-
-if (all(is.na(data$.datamods_edit_delete))) {
-  cols$.datamods_edit_delete = colDef(show = FALSE)
-} else {
-  cols$.datamods_edit_delete = col_def_delete()
-}
-
-cols$.datamods_id <- colDef(show = FALSE)
-
-
-if (is.null(reactableOptions))
-  reactableOptions <- list()
-reactableOptions <- reactableOptions 
-reactableOptions$data <- data 
-reactableOptions$columns <- cols 
-
-rlang::exec(reactable::reactable, !!!reactableOptions)
-
-}
-# table_display <- function(data, colnames = NULL, reactableOptions = NULL) {
-#   cols <- list()
-#   for (i in seq_along(data)) {
-#     cols[[names(data)[i]]] <- colDef(name = colnames[i])
-#   }
-#   if (all(is.na(data$.datamods_edit_update))) {
-#     cols$.datamods_edit_update = colDef(show = FALSE)
-#   } else {
-#     cols$.datamods_edit_update = col_def_update()
-#   }
-# 
-#   if (all(is.na(data$.datamods_edit_delete))) {
-#     cols$.datamods_edit_delete = colDef(show = FALSE)
-#   } else {
-#     cols$.datamods_edit_delete = col_def_delete()
-#   }
-# 
-#   cols$.datamods_id <- colDef(show = FALSE)
-#   
-#   if (is.null(reactableOptions))
-#     reactableOptions <- list()
-#   reactableOptions <- reactableOptions
-#   reactableOptions$data <- data 
-#   reactableOptions$columns <- cols
-#   
-#   rlang::exec(reactable::reactable, !!!reactableOptions)
-#   
-#   # reactable(
-#   #   data = data,
-#   #   columns = cols
-#   # )
-# }
-
 
 #' @title The update column definition
 #'
