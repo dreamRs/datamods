@@ -70,6 +70,12 @@ import_file_ui <- function(id,
             icon = list("n =")
           ),
           textInputIcon(
+            inputId = ns("na_label"),
+            label = i18n("Na label:"),
+            value = "",
+            icon = list("NAs : ")
+          ),
+          textInputIcon(
             inputId = ns("dec"),
             label = i18n("Decimal separator:"),
             value = ".",
@@ -196,7 +202,8 @@ import_file_server <- function(id,
       input$sheet,
       input$skip_rows,
       input$dec,
-      input$encoding
+      input$encoding,
+      input$na_label
     ), {
       req(input$file)
       req(input$skip_rows)
@@ -207,7 +214,8 @@ import_file_server <- function(id,
           sheet = input$sheet,
           skip = input$skip_rows,
           dec = input$dec,
-          encoding = input$encoding
+          encoding = input$encoding,
+          na.strings = input$na_label
         )
         parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
         imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
@@ -217,7 +225,8 @@ import_file_server <- function(id,
           parameters <- list(
             file = input$file$datapath,
             which = input$sheet,
-            skip = input$skip_rows
+            skip = input$skip_rows,
+            na = input$na_label
           )
         } else if (is_sas(input$file$datapath)) {
           parameters <- list(
