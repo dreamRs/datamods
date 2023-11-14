@@ -76,7 +76,8 @@ This module returns the edited table with the user modifications.</p>
 <span>  file_name_export <span class="op">=</span> <span class="st">"data"</span>,</span>
 <span>  var_edit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var_mandatory <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span>, <span class="st">"raw"</span><span class="op">)</span></span>
+<span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  reactable_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,6 +126,10 @@ This module returns the edited table with the user modifications.</p>
 <dt>return_class</dt>
 <dd><p>Class of returned data: <code>data.frame</code>, <code>data.table</code>, <code>tbl_df</code> (tibble) or <code>raw</code>.</p></dd>
 
+
+<dt>reactable_options</dt>
+<dd><p>Options passed to <code><a href="https://glin.github.io/reactable/reference/reactable.html" class="external-link">reactable::reactable()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -143,6 +148,7 @@ This module returns the edited table with the user modifications.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:utils’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     page</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://glin.github.io/reactable/" class="external-link">reactable</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  theme <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bs_theme.html" class="external-link">bs_theme</a></span><span class="op">(</span></span></span>
@@ -166,7 +172,43 @@ This module returns the edited table with the user modifications.</p>
 <span class="r-in"><span>    download_excel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    file_name_export <span class="op">=</span> <span class="st">"datas"</span>,</span></span>
 <span class="r-in"><span>    <span class="co"># var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),</span></span></span>
-<span class="r-in"><span>    var_mandatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    var_mandatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    reactable_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      defaultColDef <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span>filterable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      selection <span class="op">=</span> <span class="st">"single"</span>,</span></span>
+<span class="r-in"><span>      columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        name <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Name"</span>, style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fontWeight <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        credit_card_security_code <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Credit card security code"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        date_obtained <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Date obtained"</span>, format <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colFormat.html" class="external-link">colFormat</a></span><span class="op">(</span>date <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        contactless_card <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>          name <span class="op">=</span> <span class="st">"Contactless Card"</span>,</span></span>
+<span class="r-in"><span>          cell <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>            <span class="co"># Render as an X mark or check mark</span></span></span>
+<span class="r-in"><span>            <span class="kw">if</span> <span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="st">"\u274c No"</span> <span class="kw">else</span> <span class="st">"\u2714\ufe0f Yes"</span></span></span>
+<span class="r-in"><span>        <span class="op">}</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        credit_card_provider <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>          name <span class="op">=</span> <span class="st">"Credit card provider"</span>,</span></span>
+<span class="r-in"><span>          style <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>            <span class="kw">if</span> <span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="st">"Mastercard"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>              <span class="va">color</span> <span class="op">&lt;-</span> <span class="st">"#e06631"</span></span></span>
+<span class="r-in"><span>            <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="st">"VISA 16 digit"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>              <span class="va">color</span> <span class="op">&lt;-</span> <span class="st">"#0c13cf"</span></span></span>
+<span class="r-in"><span>            <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="st">"American Express"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>              <span class="va">color</span> <span class="op">&lt;-</span> <span class="st">"#4d8be8"</span></span></span>
+<span class="r-in"><span>            <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="st">"JCB 16 digit"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>              <span class="va">color</span> <span class="op">&lt;-</span> <span class="st">"#23c45e"</span></span></span>
+<span class="r-in"><span>            <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>              <span class="va">color</span> <span class="op">&lt;-</span> <span class="st">"#777"</span></span></span>
+<span class="r-in"><span>            <span class="op">}</span></span></span>
+<span class="r-in"><span>            <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">color</span>, fontWeight <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>          <span class="op">}</span></span></span>
+<span class="r-in"><span>        <span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span>,</span></span>
+<span class="r-in"><span>      bordered <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      compact <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      searchable <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      highlight <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="op">{</span></span></span>
