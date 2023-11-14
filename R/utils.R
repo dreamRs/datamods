@@ -144,3 +144,10 @@ header_with_classes <- function(data) {
     tags$div(title = value, value, classes)
   }
 }
+
+
+split_char <- function(x, split = ",") {
+  if (is.null(x))
+    return(NULL)
+  unlist(strsplit(x, split = split))
+}

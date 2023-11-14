@@ -14,8 +14,9 @@
 #' @name import-file
 #'
 #' @importFrom shiny NS fileInput tableOutput actionButton icon
-#' @importFrom htmltools tags tagAppendAttributes css
+#' @importFrom htmltools tags tagAppendAttributes css tagAppendChild
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
+#' @importFrom phosphoricons ph
 #'
 #' @example examples/from-file.R
 import_file_ui <- function(id,
@@ -68,6 +69,15 @@ import_file_ui <- function(id,
             value = 0,
             min = 0,
             icon = list("n =")
+          ),
+          tagAppendChild(
+            textInputIcon(
+              inputId = ns("na_label"),
+              label = i18n("Missing values character(s):"),
+              value = ",NA",
+              icon = list("NA")
+            ),
+            shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
           ),
           textInputIcon(
             inputId = ns("dec"),
@@ -128,6 +138,7 @@ import_file_ui <- function(id,
 #'    + `skip`: number of row to skip
 #'    + `dec`: decimal separator
 #'    + `encoding`: file encoding
+#'    + `na.strings`: character(s) to interpret as missing values.
 #'
 #' @export
 #'
@@ -196,7 +207,8 @@ import_file_server <- function(id,
       input$sheet,
       input$skip_rows,
       input$dec,
-      input$encoding
+      input$encoding,
+      input$na_label
     ), {
       req(input$file)
       req(input$skip_rows)
@@ -207,7 +219,8 @@ import_file_server <- function(id,
           sheet = input$sheet,
           skip = input$skip_rows,
           dec = input$dec,
-          encoding = input$encoding
+          encoding = input$encoding,
+          na.strings = split_char(input$na_label)
         )
         parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
         imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
@@ -217,7 +230,8 @@ import_file_server <- function(id,
           parameters <- list(
             file = input$file$datapath,
             which = input$sheet,
-            skip = input$skip_rows
+            skip = input$skip_rows,
+            na = split_char(input$na_label)
           )
         } else if (is_sas(input$file$datapath)) {
           parameters <- list(
@@ -231,7 +245,7 @@ import_file_server <- function(id,
             skip = input$skip_rows,
             dec = input$dec,
             encoding = input$encoding,
-            na.strings = c("NA", "")
+            na.strings = split_char(input$na_label)
           )
         }
         imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
