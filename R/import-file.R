@@ -69,11 +69,14 @@ import_file_ui <- function(id,
             min = 0,
             icon = list("n =")
           ),
-          textInputIcon(
-            inputId = ns("na_label"),
-            label = i18n("Na label:"),
-            value = "",
-            icon = list("NAs : ")
+          htmltools::tagAppendChild(
+            textInputIcon(
+              inputId = ns("na_label"),
+              label = i18n("Missing values character(s):"),
+              value = ",NA",
+              icon = list("NA")
+            ),
+            shiny::helpText("if several use a ',' to separate them")
           ),
           textInputIcon(
             inputId = ns("dec"),
@@ -134,6 +137,7 @@ import_file_ui <- function(id,
 #'    + `skip`: number of row to skip
 #'    + `dec`: decimal separator
 #'    + `encoding`: file encoding
+#'    + `na.strings`: character(s) to interpret as missing values.
 #'
 #' @export
 #'
@@ -215,7 +219,7 @@ import_file_server <- function(id,
           skip = input$skip_rows,
           dec = input$dec,
           encoding = input$encoding,
-          na.strings = input$na_label
+          na.strings = split_char(input$na_label)
         )
         parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
         imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
@@ -226,7 +230,7 @@ import_file_server <- function(id,
             file = input$file$datapath,
             which = input$sheet,
             skip = input$skip_rows,
-            na = input$na_label
+            na = split_char(input$na_label)
           )
         } else if (is_sas(input$file$datapath)) {
           parameters <- list(
@@ -240,7 +244,7 @@ import_file_server <- function(id,
             skip = input$skip_rows,
             dec = input$dec,
             encoding = input$encoding,
-            na.strings = c("NA", "")
+            na.strings = split_char(input$na_label)
           )
         }
         imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
