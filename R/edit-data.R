@@ -55,14 +55,15 @@ edit_data_ui <- function(id) {
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
+#' @param reactable_options Options passed to [reactable::reactable()].
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
 #'
 #' @name edit-data
 #'
 #' @importFrom shiny moduleServer eventReactive reactiveValues is.reactive reactive renderUI actionButton observeEvent isTruthy showModal removeModal downloadButton downloadHandler
-#' @importFrom data.table copy as.data.table := copy setnames as.data.table
-#' @importFrom reactable renderReactable reactableOutput getReactableState updateReactable
+#' @importFrom data.table copy as.data.table := copy setnames as.data.table setattr
+#' @importFrom reactable renderReactable reactableOutput getReactableState
 #' @importFrom phosphoricons ph
 #' @importFrom writexl write_xlsx
 #' @importFrom utils write.csv
@@ -80,7 +81,8 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
-                             return_class = c("data.frame", "data.table", "tbl_df", "raw")) {
+                             return_class = c("data.frame", "data.table", "tbl_df", "raw"),
+                             reactable_options = NULL) {
   return_class <- match.arg(return_class)
   moduleServer(
     id,
@@ -146,8 +148,14 @@ edit_data_server <- function(id,
         data <- req(data_init_r())
         table_display(
           data = data,
-          colnames = data_rv$colnames
+          colnames = data_rv$colnames,
+          reactable_options = reactable_options
         )
+      })
+
+      # Retrieve selected row(s)
+      selected_r <- reactive({
+        getReactableState("table", "selected")
       })
 
 
@@ -209,8 +217,7 @@ edit_data_server <- function(id,
 # browser()
           data <- rbind(data, new, fill = TRUE)
           data_rv$data <- data
-          page <- getReactableState(outputId = "table", name = "page")
-          updateReactable("table", data = data, page = page)
+          update_table(data, data_rv$colnames)
         })
         if (inherits(results_add, "try-error")) {
           notification_failure(
@@ -266,8 +273,7 @@ edit_data_server <- function(id,
           })]
           data <- data[order(.datamods_id)]
           data_rv$data <- copy(data)
-          page <- getReactableState(outputId = "table", name = "page")
-          updateReactable("table", data = data, page = page)
+          update_table(data, data_rv$colnames)
         })
         if (inherits(results_update, "try-error")) {
           notification_failure(
@@ -305,8 +311,7 @@ edit_data_server <- function(id,
           data <- data[.datamods_id != input$delete]
           data <- data[order(.datamods_id)]
           data_rv$data <- data
-          page <- getReactableState(outputId = "table", name = "page")
-          updateReactable("table", data = data, page = page)
+          update_table(data, data_rv$colnames)
         })
         if (inherits(results_delete, "try-error")) {
           notification_failure(
@@ -393,6 +398,7 @@ edit_data_server <- function(id,
         }
       )
 
+
       return(
         reactive({
           req(data_rv$data)
@@ -400,6 +406,7 @@ edit_data_server <- function(id,
           data <- as.data.table(data)
           data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
           setnames(data, data_rv$colnames)
+          setattr(data, "selected", selected_r())
           as_out(data, return_class)
         })
       )

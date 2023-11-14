@@ -157,6 +157,15 @@ edit_input_form <- function(default = list(),
             inline = TRUE,
             width = "100%"
           )
+        } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
+          airDatepickerInput(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% Sys.time(),
+            inline = TRUE,
+            timepicker = TRUE,
+            width = "100%"
+          )
         } else {
           return(NULL)
         }
@@ -172,36 +181,52 @@ edit_input_form <- function(default = list(),
 #'
 #' @param data `data.frame` to use
 #' @param colnames `data.frame` column names
+#' @param reactable_options `list` allowing you to add reactable options
 #'
 #' @return the `data.frame` in reactable format
 #' @noRd
 #'
 #' @importFrom reactable reactable colDef
-#'
-table_display <- function(data, colnames = NULL) {
-  cols <- list()
-  for (i in seq_along(data)) {
-    cols[[names(data)[i]]] <- colDef(name = colnames[i])
+#' @importFrom data.table copy setnames
+table_display <- function(data, colnames = NULL, reactable_options = NULL) {
+
+  data <- copy(data)
+  if (!is.null(colnames)) {
+    setnames(data, old = seq_along(colnames), new = colnames)
   }
+
+  cols <- reactable_options$columns %||% list()
   if (all(is.na(data$.datamods_edit_update))) {
-    cols$.datamods_edit_update = colDef(show = FALSE)
+    cols$.datamods_edit_update <- colDef(show = FALSE)
   } else {
-    cols$.datamods_edit_update = col_def_update()
+    cols$.datamods_edit_update <- col_def_update()
   }
 
   if (all(is.na(data$.datamods_edit_delete))) {
-    cols$.datamods_edit_delete = colDef(show = FALSE)
+    cols$.datamods_edit_delete <- colDef(show = FALSE)
   } else {
-    cols$.datamods_edit_delete = col_def_delete()
+    cols$.datamods_edit_delete <- col_def_delete()
   }
 
   cols$.datamods_id <- colDef(show = FALSE)
-  reactable(
-    data = data,
-    columns = cols
-  )
+
+  if (is.null(reactable_options))
+    reactable_options <- list()
+  reactable_options <- reactable_options
+  reactable_options$data <- data
+  reactable_options$columns <- cols
+
+  rlang::exec(reactable::reactable, !!!reactable_options)
 }
 
+#' @importFrom reactable updateReactable getReactableState
+#' @importFrom data.table copy setnames
+update_table <- function(data, colnames) {
+  data <- copy(data)
+  setnames(data, old = seq_along(colnames), new = colnames)
+  page <- getReactableState(outputId = "table", name = "page")
+  updateReactable("table", data = data, page = page)
+}
 
 #' @title The update column definition
 #'
@@ -385,3 +410,4 @@ notification_info <- function(title, text) {
     clickToClose = TRUE
   )
 }
+
