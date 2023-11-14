@@ -14,7 +14,8 @@ test_that("import_file_server works", {
       skip_rows = 0,
       confirm = 0,
       dec = ".",
-      encoding = "UTF-8"
+      encoding = "UTF-8",
+      na_label = ",NA"
     )
     expect_is(imported_rv$data, "data.frame")
     expect_is(session$getReturned()$data(), "data.frame")

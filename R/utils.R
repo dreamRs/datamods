@@ -147,5 +147,7 @@ header_with_classes <- function(data) {
 
 
 split_char <- function(x, split = ",") {
+  if (is.null(x))
+    return(NULL)
   unlist(strsplit(x, split = split))
 }

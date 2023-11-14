@@ -57,6 +57,7 @@ passed by user through the interface:
 \item \code{skip}: number of row to skip
 \item \code{dec}: decimal separator
 \item \code{encoding}: file encoding
+\item \code{na.strings}: character(s) to interpret as missing values.
 }
 }}
 

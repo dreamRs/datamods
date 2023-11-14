@@ -14,8 +14,9 @@
 #' @name import-file
 #'
 #' @importFrom shiny NS fileInput tableOutput actionButton icon
-#' @importFrom htmltools tags tagAppendAttributes css
+#' @importFrom htmltools tags tagAppendAttributes css tagAppendChild
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
+#' @importFrom phosphoricons ph
 #'
 #' @example examples/from-file.R
 import_file_ui <- function(id,
@@ -69,14 +70,14 @@ import_file_ui <- function(id,
             min = 0,
             icon = list("n =")
           ),
-          htmltools::tagAppendChild(
+          tagAppendChild(
             textInputIcon(
               inputId = ns("na_label"),
               label = i18n("Missing values character(s):"),
               value = ",NA",
               icon = list("NA")
             ),
-            shiny::helpText("if several use a ',' to separate them")
+            shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
           ),
           textInputIcon(
             inputId = ns("dec"),
