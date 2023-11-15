@@ -106,13 +106,14 @@ edit_input_form <- function(default = list(),
         variable_name <- colnames[position_var_edit[i]]
         variable <- data[[i]]
 
+        suffix <- if (isTRUE((inherits(variable, "logical")))) "" else " : "
         if (variable_name %in% var_mandatory) {
           label <- tagList(
             variable_name,
-            tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), " : "
+            tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), suffix
           )
         } else {
-          label <- paste0(variable_name, " : ")
+          label <- paste0(variable_name, suffix)
         }
 
         if (isTRUE(inherits(variable, c("numeric", "integer")))) {
