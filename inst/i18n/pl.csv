@@ -1,4 +1,4 @@
-﻿label,translation,comment
+label,translation,comment
 Import a dataset from an environment,Importuj dane ze środowiska,
 Select a data.frame:,Wybierz data.frame:,
 List of data.frame...,Lista obiektów data.frame...,
@@ -83,5 +83,6 @@ Cancel,Anuluj,
 No,Nie,
 Yes,Tak,
 Edit data,Edytuj dane,
-Select,,
-,,
+Select,Wybierz,
+"Missing values character(s):","Brakujące znaki wartości:"
+"if several use a comma (',') to separate them","jeśli kilka z nich oddziela je przecinkiem („,”)"

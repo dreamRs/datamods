@@ -84,3 +84,5 @@ label,translation,comment
 "Yes","はい"
 "Edit data","データを編集"
 "Select", "選択"
+"Missing values character(s):","欠損値文字:"
+"if several use a comma (',') to separate them","複数の場合はカンマ (「,」) を使用して区切ります"

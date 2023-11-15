@@ -83,3 +83,5 @@ label,translation,comment
 "Yes","Да"
 "Edit data","Уредете податоци"
 "Select","изберете"
+"Missing values character(s):","Недостасуваат знаци за вредности:"
+"if several use a comma (',') to separate them","ако неколку користат запирка (',') за да ги разделат"

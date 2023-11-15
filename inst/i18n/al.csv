@@ -83,3 +83,5 @@ Close,Мbyll,
 "Yes","po"
 "Edit data","Redakto të dhënat"
 "Select","Zgjidhni"
+"Missing values character(s):","Karakteret e vlerave që mungojnë:"
+"if several use a comma (',') to separate them","nëse disa përdorin presje (',') për t'i ndarë"

@@ -83,3 +83,5 @@ label,translation,comment
 "Yes","是的"
 "Edit data","编辑数据"
 "Select","选择"
+"Missing values character(s):","缺失值字符："
+"if several use a comma (',') to separate them","如果多个使用逗号（','）分隔"

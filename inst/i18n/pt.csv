@@ -83,3 +83,5 @@ Close,Fechar
 "Yes","Sim"
 "Edit data","Editar dados"
 "Select","Selecionar"
+"Missing values character(s):","Caractere(s) de valores ausentes:"
+"if several use a comma (',') to separate them","se vários usam uma vírgula (',') para separá-los"

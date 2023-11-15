@@ -83,3 +83,5 @@ label,translation,comment
 "Yes","Ja"
 "Edit data","Daten bearbeiten"
 "Select","Auswählen"
+"Missing values character(s):","Fehlende Wertezeichen:"
+"if several use a comma (',') to separate them","Bei mehreren werden diese durch ein Komma (',') getrennt"

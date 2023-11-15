@@ -83,3 +83,5 @@ label,translation,comment
 "Yes","Evet"
 "Edit data","Verileri düzenle"
 "Select","Seçme"
+"Missing values character(s):","Eksik değer karakter(ler)i:"
+"if several use a comma (',') to separate them","birkaçı onları ayırmak için virgül (',') kullanıyorsa"

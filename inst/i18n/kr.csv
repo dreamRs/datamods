@@ -83,3 +83,5 @@ No data.frame here...,여기에 data.frame이 없습니다...
 "Yes","예"
 "Edit data","데이터 수정"
 "Select","고르다"
+"Missing values character(s):","누락된 값 문자:"
+"if several use a comma (',') to separate them","여러 명이 있는 경우에는 쉼표(',')를 사용하여 구분합니다."

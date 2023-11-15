@@ -159,3 +159,5 @@ label,translation
 "Yes","Sí"
 "Edit data","Editar datos"
 "Select","Seleccione"
+"Missing values character(s):","Caracteres de valores faltantes:"
+"if several use a comma (',') to separate them","Si varias usan una coma (',') para separarlas"
