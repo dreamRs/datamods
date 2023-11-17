@@ -127,7 +127,7 @@ edit_input_form <- function(default = list(),
           virtualSelectInput(
             inputId = ns(variable_id),
             label = label,
-            choices = unique(variable),
+            choices = unique(c(as.character(variable), levels(variable))),
             selected = default[[variable_id]] %||% "",
             width = "100%",
             allowNewOption = TRUE,
