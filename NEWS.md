@@ -1,3 +1,11 @@
+# datamods 1.4.3
+
+* `edit_data_server()` : pass reactable option + selection to the table [#82](https://github.com/dreamRs/datamods/pull/82)
+* `edit-data` module : use factor levels and sort theme in edit input forma for factors (sorting also applies for characters), thanks to [@Felixmil](https://github.com/Felixmil).
+* `import-file` module : allow to specify string used to identify `NA`, thanks to [@DrFabach](https://github.com/DrFabach).
+* `filter_data_server()` : argument `drop_ids` can now be set via option `datamods.filter.drop_ids` and can be a list like `list(p = 0.9, n = 50)` to specify threshold values to remove IDs columns.
+
+
 # datamods 1.4.2
 
 * i18n: japanese translations added, thanks to [@nissinbo](https://github.com/nissinbo).

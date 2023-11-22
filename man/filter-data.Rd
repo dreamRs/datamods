@@ -14,7 +14,7 @@ filter_data_server(
   vars = reactive(NULL),
   name = reactive("data"),
   defaults = reactive(NULL),
-  drop_ids = TRUE,
+  drop_ids = getOption("datamods.filter.drop_ids", default = TRUE),
   widget_char = c("virtualSelect", "select", "picker"),
   widget_num = c("slider", "range"),
   widget_date = c("slider", "range"),
@@ -43,7 +43,8 @@ If a named \code{list}, names are used as labels.}
 \item{defaults}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a
 named \code{list} of variable:value pairs which will be used to set the filters.}
 
-\item{drop_ids}{Drop columns containing more than 90\% of unique values, or than 50 distinct values.}
+\item{drop_ids}{Drop columns containing more than 90\% of unique values, or than 50 distinct values.
+Use \code{FALSE} to disable or use \code{list(p = 0.9, n = 50)} to customize threshold values.}
 
 \item{widget_char}{Widget to use for \code{character} variables: \code{\link[shinyWidgets:pickerInput]{shinyWidgets::pickerInput()}}
 or \code{\link[shiny:selectInput]{shiny::selectInput()}} (default).}
