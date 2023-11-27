@@ -56,6 +56,13 @@ edit_data_ui <- function(id) {
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
+#' @param callback_add,callback_update,callback_delete Functions to be executed just before an action (add, update or delete) is performed on the data.
+#'  Functions used must be like `function(data, row) {...}` where :
+#'    * `data` wil be the data in the table at the moment the function is called
+#'    * `row` will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
+#'
+#'  If the return value of a callback function is not truthy (see [shiny::isTruthy()]) then the action is cancelled.
+#'
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
 #'
@@ -68,6 +75,7 @@ edit_data_ui <- function(id) {
 #' @importFrom writexl write_xlsx
 #' @importFrom utils write.csv
 #' @importFrom htmltools tagList
+#' @importFrom rlang is_function
 #'
 #' @export
 #'
@@ -82,8 +90,18 @@ edit_data_server <- function(id,
                              var_edit = NULL,
                              var_mandatory = NULL,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
-                             reactable_options = NULL) {
+                             reactable_options = NULL,
+                             callback_add = NULL,
+                             callback_update = NULL,
+                             callback_delete = NULL) {
   return_class <- match.arg(return_class)
+  callback_default <- function(...) return(TRUE)
+  if (!is_function(callback_add))
+    callback_add <- callback_default
+  if (!is_function(callback_update))
+    callback_update <- callback_default
+  if (!is_function(callback_add))
+    callback_delete <- callback_delete
   moduleServer(
     id,
     function(input, output, session) {
@@ -214,12 +232,27 @@ edit_data_server <- function(id,
           results_inputs[[".datamods_edit_delete"]] <- if (delete) list(btn_delete(ns("delete"))(id)) else NA
 
           new <- as.data.table(results_inputs)
-# browser()
-          data <- rbind(data, new, fill = TRUE)
-          data_rv$data <- data
-          update_table(data, data_rv$colnames)
+
+          res_callback <- callback_add(
+            format_edit_data(data, data_rv$colnames),
+            format_edit_data(new, data_rv$colnames)
+          )
+
+          if (isTruthy(res_callback)) {
+            data <- rbind(data, new, fill = TRUE)
+            data_rv$data <- data
+            update_table(data, data_rv$colnames)
+          } else {
+            NULL
+          }
         })
-        if (inherits(results_add, "try-error")) {
+
+        if (is.null(results_add)) {
+          notification_warning(
+            title = i18n("Warning"),
+            text = i18n("The row wasn't added to the data")
+          )
+        } else if (inherits(results_add, "try-error")) {
           notification_failure(
             title = i18n("Error"),
             text = i18n("Unable to add the row, contact the platform administrator")
@@ -268,14 +301,30 @@ edit_data_server <- function(id,
 
         results_update <- try({
           id <- input$update
-          data[.datamods_id == id, (data_rv$edit) := lapply(data_rv$edit, function(x) {
-            input[[x]] %||% NA
-          })]
-          data <- data[order(.datamods_id)]
-          data_rv$data <- copy(data)
-          update_table(data, data_rv$colnames)
+
+          res_callback <- callback_update(
+            format_edit_data(data, data_rv$colnames),
+            format_edit_data(lapply(data_rv$edit, function(x) {input[[x]] %||% NA}), data_rv$colnames)
+          )
+
+          if (isTruthy(res_callback)) {
+            data[.datamods_id == id, (data_rv$edit) := lapply(data_rv$edit, function(x) {
+              input[[x]] %||% NA
+            })]
+
+            data <- data[order(.datamods_id)]
+            data_rv$data <- copy(data)
+            update_table(data, data_rv$colnames)
+          } else {
+            NULL
+          }
         })
-        if (inherits(results_update, "try-error")) {
+        if (is.null(results_update)) {
+          notification_warning(
+            title = i18n("Warning"),
+            text = i18n("Data wasn't updated")
+          )
+        } else if (inherits(results_update, "try-error")) {
           notification_failure(
             title = i18n("Error"),
             text = i18n("Unable to modify the item, contact the platform administrator")
@@ -306,14 +355,29 @@ edit_data_server <- function(id,
         req(data_r())
         data <- data_rv$data
         data <- as.data.table(data)
-        row <- data[.datamods_id == input$delete]
+
         results_delete <- try({
-          data <- data[.datamods_id != input$delete]
-          data <- data[order(.datamods_id)]
-          data_rv$data <- data
-          update_table(data, data_rv$colnames)
+
+          res_callback <- callback_delete(
+            format_edit_data(data, data_rv$colnames),
+            format_edit_data(data[.datamods_id == input$delete], data_rv$colnames)
+          )
+
+          if (isTruthy(res_callback)) {
+            data <- data[.datamods_id != input$delete]
+            data <- data[order(.datamods_id)]
+            data_rv$data <- data
+            update_table(data, data_rv$colnames)
+          } else {
+            NULL
+          }
         })
-        if (inherits(results_delete, "try-error")) {
+        if (is.null(results_delete)) {
+          notification_warning(
+            title = i18n("Warning"),
+            text = i18n("Data wasn't deleted")
+          )
+        } else if (inherits(results_delete, "try-error")) {
           notification_failure(
             title = i18n("Error"),
             text = i18n("Unable to delete the row, contact platform administrator")
@@ -356,10 +420,7 @@ edit_data_server <- function(id,
           paste0(file_name, ".xlsx")
         },
         content = function(file) {
-          data <- data_rv$data
-          data <- as.data.table(data)
-          data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
-          setnames(data, data_rv$colnames)
+          data <- format_edit_data(data_rv$data, data_rv$colnames)
           write_xlsx(
             x = list(data = data),
             path = file
@@ -387,10 +448,7 @@ edit_data_server <- function(id,
           paste0(file_name, ".csv")
         },
         content = function(file) {
-          data <- data_rv$data
-          data <- as.data.table(data)
-          data <- data[, -c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
-          setnames(data, data_rv$colnames)
+          data <- format_edit_data(data_rv$data, data_rv$colnames)
           write.csv(
             x = data,
             file = file
@@ -402,10 +460,7 @@ edit_data_server <- function(id,
       return(
         reactive({
           req(data_rv$data)
-          data <- data_rv$data
-          data <- as.data.table(data)
-          data <- data[,-c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete")]
-          setnames(data, data_rv$colnames)
+          data <- format_edit_data(data_rv$data, data_rv$colnames)
           setattr(data, "selected", selected_r())
           as_out(data, return_class)
         })

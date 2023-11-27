@@ -227,6 +227,15 @@ update_table <- function(data, colnames) {
   setnames(data, old = seq_along(colnames), new = colnames)
   page <- getReactableState(outputId = "table", name = "page")
   updateReactable("table", data = data, page = page)
+  return(data)
+}
+
+format_edit_data <- function(data, colnames) {
+  data <- as.data.table(data)
+  vars_datamods_edit <- intersect(c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete"), names(data))
+  data <- data[, -..vars_datamods_edit]
+  setnames(data, old = seq_along(colnames), new = colnames)
+  data[]
 }
 
 #' @title The update column definition

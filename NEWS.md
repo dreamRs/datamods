@@ -1,5 +1,6 @@
 # datamods 1.4.3
 
+* `edit_data_server()` : added the ability to specify callbacks functions to be executed before performing an action on the table (add, update or delete).
 * `edit_data_server()` : pass reactable option + selection to the table [#82](https://github.com/dreamRs/datamods/pull/82)
 * `edit-data` module : use factor levels and sort theme in edit input forma for factors (sorting also applies for characters), thanks to [@Felixmil](https://github.com/Felixmil).
 * `import-file` module : allow to specify string used to identify `NA`, thanks to [@DrFabach](https://github.com/DrFabach).

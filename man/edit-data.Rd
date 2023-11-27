@@ -20,7 +20,10 @@ edit_data_server(
   var_edit = NULL,
   var_mandatory = NULL,
   return_class = c("data.frame", "data.table", "tbl_df", "raw"),
-  reactable_options = NULL
+  reactable_options = NULL,
+  callback_add = NULL,
+  callback_update = NULL,
+  callback_delete = NULL
 )
 }
 \arguments{
@@ -47,6 +50,15 @@ edit_data_server(
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table}, \code{tbl_df} (tibble) or \code{raw}.}
 
 \item{reactable_options}{Options passed to \code{\link[reactable:reactable]{reactable::reactable()}}.}
+
+\item{callback_add, callback_update, callback_delete}{Functions to be executed just before an action (add, update or delete) is performed on the data.
+Functions used must be like \code{function(data, row) {...}} where :
+\itemize{
+\item \code{data} wil be the data in the table at the moment the function is called
+\item \code{row} will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
+}
+
+If the return value of a callback function is not truthy (see \code{\link[shiny:isTruthy]{shiny::isTruthy()}}) then the action is cancelled.}
 }
 \value{
 the edited \code{data.frame} in reactable format with the user modifications
