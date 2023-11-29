@@ -230,13 +230,16 @@ update_table <- function(data, colnames) {
   return(data)
 }
 
-format_edit_data <- function(data, colnames) {
+format_edit_data <- function(data, colnames, internal_colnames = NULL) {
   data <- as.data.table(data)
   vars_datamods_edit <- intersect(c(".datamods_id", ".datamods_edit_update", ".datamods_edit_delete"), names(data))
   data <- data[, -..vars_datamods_edit]
-  setnames(data, old = seq_along(colnames), new = colnames)
+  if (is.null(internal_colnames))
+    internal_colnames <- seq_along(colnames)
+  setnames(data, old = internal_colnames, new = colnames, skip_absent = TRUE)
   data[]
 }
+
 
 #' @title The update column definition
 #'

@@ -122,8 +122,9 @@ edit_data_server <- function(id,
           var_edit <- names(data)
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
-        if (!isTRUE(identical(x = seq_along(data), y = integer(0)))) {
+        if (ncol(data) > 0) {
           setnames(data, paste0("col_", seq_along(data)))
+          data_rv$internal_colnames <- copy(colnames(data))
         }
         data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
         data_rv$edit <- colnames(data)[which(data_rv$colnames %in% var_edit)]
@@ -204,7 +205,7 @@ edit_data_server <- function(id,
 
       observeEvent(input$add_row, {
         req(data_r())
-        data <- data_rv$data
+        data <- copy(data_rv$data)
         data <- as.data.table(data)
 
         for (var in data_rv$mandatory) {
@@ -235,7 +236,7 @@ edit_data_server <- function(id,
 
           res_callback <- callback_add(
             format_edit_data(data, data_rv$colnames),
-            format_edit_data(new, data_rv$colnames)
+            format_edit_data(new, data_rv$colnames, data_rv$internal_colnames)
           )
 
           if (isTruthy(res_callback)) {
@@ -268,7 +269,7 @@ edit_data_server <- function(id,
 
       # Update a row ---
       observeEvent(input$update, {
-        data <- data_rv$data
+        data <- copy(data_rv$data)
         data <- as.data.table(data)
         row <- data[.datamods_id == input$update]
         edit_modal(
@@ -284,7 +285,7 @@ edit_data_server <- function(id,
 
       observeEvent(input$update_row, {
         req(data_r())
-        data <- data_rv$data
+        data <- copy(data_rv$data)
         data <- as.data.table(data)
 
         for (var in data_rv$mandatory) {
@@ -302,19 +303,24 @@ edit_data_server <- function(id,
         results_update <- try({
           id <- input$update
 
+          data_updated <- copy(data)
+          data_updated[.datamods_id == id, (data_rv$edit) := lapply(data_rv$edit, function(x) {
+            input[[x]] %||% NA
+          })]
+
           res_callback <- callback_update(
             format_edit_data(data, data_rv$colnames),
-            format_edit_data(lapply(data_rv$edit, function(x) {input[[x]] %||% NA}), data_rv$colnames)
+            format_edit_data(
+              data_updated[.datamods_id == id],
+              data_rv$colnames,
+              data_rv$internal_colnames
+            )
           )
 
           if (isTruthy(res_callback)) {
-            data[.datamods_id == id, (data_rv$edit) := lapply(data_rv$edit, function(x) {
-              input[[x]] %||% NA
-            })]
-
-            data <- data[order(.datamods_id)]
-            data_rv$data <- copy(data)
-            update_table(data, data_rv$colnames)
+            data_updated <- data_updated[order(.datamods_id)]
+            data_rv$data <- copy(data_updated)
+            update_table(data_updated, data_rv$colnames)
           } else {
             NULL
           }
@@ -341,7 +347,7 @@ edit_data_server <- function(id,
       # Delete a row ---
       observeEvent(input$delete, {
         req(data_r())
-        data <- data_rv$data
+        data <- copy(data_rv$data)
         data <- as.data.table(data)
         row <- data[.datamods_id == input$delete]
         removeModal()
@@ -353,14 +359,18 @@ edit_data_server <- function(id,
       })
       observeEvent(input$confirmation_delete_row_yes, {
         req(data_r())
-        data <- data_rv$data
+        data <- copy(data_rv$data)
         data <- as.data.table(data)
 
         results_delete <- try({
 
           res_callback <- callback_delete(
             format_edit_data(data, data_rv$colnames),
-            format_edit_data(data[.datamods_id == input$delete], data_rv$colnames)
+            format_edit_data(
+              data[.datamods_id == input$delete],
+              data_rv$colnames,
+              data_rv$internal_colnames
+            )
           )
 
           if (isTruthy(res_callback)) {
