@@ -56,9 +56,11 @@ edit_data_ui <- function(id) {
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
+#' @param modal_size `character` which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.
+#' @param modal_easy_close `boolean` If TRUE, modalDialog can be dismissed by clicking outside the dialog box, or be pressing the Escape key. If FALSE (the default), modalDialog can't be dismissed in those ways; instead it must be dismissed by clicking on a modalButton(), or from a call to removeModal() on the server.
 #' @param callback_add,callback_update,callback_delete Functions to be executed just before an action (add, update or delete) is performed on the data.
 #'  Functions used must be like `function(data, row) {...}` where :
-#'    * `data` wil be the data in the table at the moment the function is called
+#'    * `data` will be the data in the table at the moment the function is called
 #'    * `row` will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
 #'
 #'  If the return value of a callback function is not truthy (see [shiny::isTruthy()]) then the action is cancelled.
@@ -91,10 +93,13 @@ edit_data_server <- function(id,
                              var_mandatory = NULL,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                              reactable_options = NULL,
+                             modal_size = c("m", "s", "l", "xl"),
+                             modal_easy_close = TRUE,
                              callback_add = NULL,
                              callback_update = NULL,
                              callback_delete = NULL) {
   return_class <- match.arg(return_class)
+  modal_size <- match.arg(modal_size)
   callback_default <- function(...) return(TRUE)
   if (!is_function(callback_add))
     callback_add <- callback_default
@@ -199,7 +204,9 @@ edit_data_server <- function(id,
           data = data_rv$data,
           colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory
+          var_mandatory = var_mandatory,
+          modal_size = modal_size,
+          modal_easy_close = modal_easy_close
         )
       })
 
@@ -279,7 +286,9 @@ edit_data_server <- function(id,
           data = data,
           colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory
+          var_mandatory = var_mandatory,
+          modal_size = modal_size,
+          modal_easy_close = modal_easy_close
         )
       })
 
