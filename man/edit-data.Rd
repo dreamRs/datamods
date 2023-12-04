@@ -21,6 +21,8 @@ edit_data_server(
   var_mandatory = NULL,
   return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   reactable_options = NULL,
+  modal_size = c("m", "s", "l", "xl"),
+  modal_easy_close = TRUE,
   callback_add = NULL,
   callback_update = NULL,
   callback_delete = NULL
@@ -51,10 +53,14 @@ edit_data_server(
 
 \item{reactable_options}{Options passed to \code{\link[reactable:reactable]{reactable::reactable()}}.}
 
+\item{modal_size}{\code{character} which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.}
+
+\item{modal_easy_close}{\code{boolean} If TRUE, modalDialog can be dismissed by clicking outside the dialog box, or be pressing the Escape key. If FALSE (the default), modalDialog can't be dismissed in those ways; instead it must be dismissed by clicking on a modalButton(), or from a call to removeModal() on the server.}
+
 \item{callback_add, callback_update, callback_delete}{Functions to be executed just before an action (add, update or delete) is performed on the data.
 Functions used must be like \code{function(data, row) {...}} where :
 \itemize{
-\item \code{data} wil be the data in the table at the moment the function is called
+\item \code{data} will be the data in the table at the moment the function is called
 \item \code{row} will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
 }
 
@@ -96,6 +102,8 @@ server <- function(input, output, session) {
     file_name_export = "datas",
     # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job"),
+    modal_size = "l",
+    modal_easy_close = TRUE,
     reactable_options = list(
       defaultColDef = colDef(filterable = TRUE),
       selection = "single",
