@@ -225,8 +225,6 @@ edit_data_server <- function(id,
           }
         }
 
-        removeModal()
-
         results_add <- try({
           results_inputs <- lapply(
             X = setNames(data_rv$edit, data_rv$edit),
@@ -250,6 +248,7 @@ edit_data_server <- function(id,
             data <- rbind(data, new, fill = TRUE)
             data_rv$data <- data
             update_table(data, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -307,8 +306,6 @@ edit_data_server <- function(id,
           }
         }
 
-        removeModal()
-
         results_update <- try({
           id <- input$update
 
@@ -330,6 +327,7 @@ edit_data_server <- function(id,
             data_updated <- data_updated[order(.datamods_id)]
             data_rv$data <- copy(data_updated)
             update_table(data_updated, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -387,6 +385,7 @@ edit_data_server <- function(id,
             data <- data[order(.datamods_id)]
             data_rv$data <- data
             update_table(data, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -407,7 +406,6 @@ edit_data_server <- function(id,
             text = i18n("The row has been deleted")
           )
         }
-        removeModal()
       })
       observeEvent(input$confirmation_delete_row_no, {
         notification_info(
