@@ -25,7 +25,9 @@ edit_data_server(
   modal_easy_close = TRUE,
   callback_add = NULL,
   callback_update = NULL,
-  callback_delete = NULL
+  callback_delete = NULL,
+  only_callback = FALSE,
+  use_notify = TRUE
 )
 }
 \arguments{
@@ -62,7 +64,11 @@ Functions used must be like \code{function(data, row) {...}} where :
 \itemize{
 \item \code{data} will be the data in the table at the moment the function is called
 \item \code{row} will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
-}
+}}
+
+\item{only_callback}{Only use callbacks, don't alter data within the module.}
+
+\item{use_notify}{Display information or not to user through \code{\link[shinybusy:notify]{shinybusy::notify()}}.
 
 If the return value of a callback function is not truthy (see \code{\link[shiny:isTruthy]{shiny::isTruthy()}}) then the action is cancelled.}
 }

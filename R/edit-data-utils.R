@@ -290,7 +290,7 @@ btn_update <- function(inputId) {
         title = i18n("Click to edit"),
         ph("pencil-simple-line", height = "1.2em")
       )
-   )
+    )
 
   }
 }
@@ -340,7 +340,7 @@ btn_delete <- function(inputId) {
         title = i18n("Click to delete"),
         ph("x", height = "1.2em")
       )
-   )
+    )
   }
 }
 
@@ -395,36 +395,44 @@ confirmation_window <- function(inputId, ..., title = NULL) {
 
 
 #' @importFrom shinybusy notify_failure notify_success notify_info notify_warning
-notification_failure <- function(title, text) {
-  shinybusy::notify_failure(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_failure <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_failure(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_warning <- function(title, text) {
-  shinybusy::notify_warning(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_warning <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_warning(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_success <- function(title, text) {
-  shinybusy::notify_success(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_success <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_success(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_info <- function(title, text) {
-  shinybusy::notify_info(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_info <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_info(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
 
