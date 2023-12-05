@@ -110,8 +110,8 @@ edit_data_server <- function(id,
     callback_add <- callback_default
   if (!is_function(callback_update))
     callback_update <- callback_default
-  if (!is_function(callback_add))
-    callback_delete <- callback_delete
+  if (!is_function(callback_delete))
+    callback_delete <- callback_default
   moduleServer(
     id,
     function(input, output, session) {
