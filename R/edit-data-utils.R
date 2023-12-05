@@ -13,6 +13,8 @@
 #' @param colnames `data.frame` column names
 #' @param var_edit vector of `character` which allows to choose the editable columns
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
+#' @param modal_size `character` which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.
+#' @param modal_easy_close `boolean` If TRUE, modalDialog can be dismissed by clicking outside the dialog box, or be pressing the Escape key. If FALSE (the default), modalDialog can't be dismissed in those ways; instead it must be dismissed by clicking on a modalButton(), or from a call to removeModal() on the server.
 #' @param session The `session` object passed to function given to shinyServer
 #'
 #' @importFrom shiny showModal modalDialog actionButton
@@ -28,6 +30,8 @@ edit_modal <- function(default = list(),
                        colnames = names(data),
                        var_edit,
                        var_mandatory,
+                       modal_size = "m",
+                       modal_easy_close = FALSE,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
@@ -52,8 +56,8 @@ edit_modal <- function(default = list(),
       )
     ),
     footer = NULL,
-    size = "m",
-    easyClose = TRUE,
+    size = modal_size,
+    easyClose = modal_easy_close,
     edit_input_form(
       default = default,
       data = data,
@@ -286,7 +290,7 @@ btn_update <- function(inputId) {
         title = i18n("Click to edit"),
         ph("pencil-simple-line", height = "1.2em")
       )
-   )
+    )
 
   }
 }
@@ -336,7 +340,7 @@ btn_delete <- function(inputId) {
         title = i18n("Click to delete"),
         ph("x", height = "1.2em")
       )
-   )
+    )
   }
 }
 
@@ -391,36 +395,44 @@ confirmation_window <- function(inputId, ..., title = NULL) {
 
 
 #' @importFrom shinybusy notify_failure notify_success notify_info notify_warning
-notification_failure <- function(title, text) {
-  shinybusy::notify_failure(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_failure <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_failure(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_warning <- function(title, text) {
-  shinybusy::notify_warning(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_warning <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_warning(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_success <- function(title, text) {
-  shinybusy::notify_success(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_success <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_success(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
-notification_info <- function(title, text) {
-  shinybusy::notify_info(
-    title = title,
-    text = text,
-    position = "center-top",
-    clickToClose = TRUE
-  )
+notification_info <- function(title, text, use_notify = TRUE) {
+  if (isTRUE(use_notify)) {
+    shinybusy::notify_info(
+      title = title,
+      text = text,
+      position = "center-top",
+      clickToClose = TRUE
+    )
+  }
 }
 

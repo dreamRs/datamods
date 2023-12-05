@@ -56,12 +56,17 @@ edit_data_ui <- function(id) {
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
+#' @param modal_size `character` which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.
+#' @param modal_easy_close `boolean` If TRUE, modalDialog can be dismissed by clicking outside the dialog box, or be pressing the Escape key. If FALSE (the default), modalDialog can't be dismissed in those ways; instead it must be dismissed by clicking on a modalButton(), or from a call to removeModal() on the server.
 #' @param callback_add,callback_update,callback_delete Functions to be executed just before an action (add, update or delete) is performed on the data.
 #'  Functions used must be like `function(data, row) {...}` where :
-#'    * `data` wil be the data in the table at the moment the function is called
+#'    * `data` will be the data in the table at the moment the function is called
 #'    * `row` will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
 #'
 #'  If the return value of a callback function is not truthy (see [shiny::isTruthy()]) then the action is cancelled.
+#' @param only_callback Only use callbacks, don't alter data within the module.
+#' @param use_notify Display information or not to user through [shinybusy::notify()].
+#'
 #'
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
@@ -91,17 +96,22 @@ edit_data_server <- function(id,
                              var_mandatory = NULL,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                              reactable_options = NULL,
+                             modal_size = c("m", "s", "l", "xl"),
+                             modal_easy_close = TRUE,
                              callback_add = NULL,
                              callback_update = NULL,
-                             callback_delete = NULL) {
+                             callback_delete = NULL,
+                             only_callback = FALSE,
+                             use_notify = TRUE) {
   return_class <- match.arg(return_class)
+  modal_size <- match.arg(modal_size)
   callback_default <- function(...) return(TRUE)
   if (!is_function(callback_add))
     callback_add <- callback_default
   if (!is_function(callback_update))
     callback_update <- callback_default
-  if (!is_function(callback_add))
-    callback_delete <- callback_delete
+  if (!is_function(callback_delete))
+    callback_delete <- callback_default
   moduleServer(
     id,
     function(input, output, session) {
@@ -199,7 +209,9 @@ edit_data_server <- function(id,
           data = data_rv$data,
           colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory
+          var_mandatory = var_mandatory,
+          modal_size = modal_size,
+          modal_easy_close = modal_easy_close
         )
       })
 
@@ -212,13 +224,12 @@ edit_data_server <- function(id,
           if (!isTruthy(input[[var]])) {
             notification_warning(
               title = i18n("Required field"),
-              text = i18n("Please fill in the required fields")
+              text = i18n("Please fill in the required fields"),
+              use_notify = use_notify
             )
             return(NULL)
           }
         }
-
-        removeModal()
 
         results_add <- try({
           results_inputs <- lapply(
@@ -239,10 +250,11 @@ edit_data_server <- function(id,
             format_edit_data(new, data_rv$colnames, data_rv$internal_colnames)
           )
 
-          if (isTruthy(res_callback)) {
+          if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data <- rbind(data, new, fill = TRUE)
             data_rv$data <- data
             update_table(data, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -251,17 +263,20 @@ edit_data_server <- function(id,
         if (is.null(results_add)) {
           notification_warning(
             title = i18n("Warning"),
-            text = i18n("The row wasn't added to the data")
+            text = i18n("The row wasn't added to the data"),
+            use_notify = use_notify
           )
         } else if (inherits(results_add, "try-error")) {
           notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to add the row, contact the platform administrator")
+            text = i18n("Unable to add the row, contact the platform administrator"),
+            use_notify = use_notify
           )
         } else {
           notification_success(
             title = i18n("Registered"),
-            text = i18n("Row has been saved")
+            text = i18n("Row has been saved"),
+            use_notify = use_notify
           )
         }
       })
@@ -279,7 +294,9 @@ edit_data_server <- function(id,
           data = data,
           colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory
+          var_mandatory = var_mandatory,
+          modal_size = modal_size,
+          modal_easy_close = modal_easy_close
         )
       })
 
@@ -292,13 +309,12 @@ edit_data_server <- function(id,
           if (!isTruthy(input[[var]])) {
             notification_failure(
               title = i18n("Required field"),
-              text = i18n("Please fill in the required fields")
+              text = i18n("Please fill in the required fields"),
+              use_notify = use_notify
             )
             return(NULL)
           }
         }
-
-        removeModal()
 
         results_update <- try({
           id <- input$update
@@ -317,10 +333,11 @@ edit_data_server <- function(id,
             )
           )
 
-          if (isTruthy(res_callback)) {
+          if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data_updated <- data_updated[order(.datamods_id)]
             data_rv$data <- copy(data_updated)
             update_table(data_updated, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -328,17 +345,20 @@ edit_data_server <- function(id,
         if (is.null(results_update)) {
           notification_warning(
             title = i18n("Warning"),
-            text = i18n("Data wasn't updated")
+            text = i18n("Data wasn't updated"),
+            use_notify = use_notify
           )
         } else if (inherits(results_update, "try-error")) {
           notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to modify the item, contact the platform administrator")
+            text = i18n("Unable to modify the item, contact the platform administrator"),
+            use_notify = use_notify
           )
         } else {
           notification_success(
             title = i18n("Registered"),
-            text = i18n("Item has been modified")
+            text = i18n("Item has been modified"),
+            use_notify = use_notify
           )
         }
       })
@@ -373,11 +393,12 @@ edit_data_server <- function(id,
             )
           )
 
-          if (isTruthy(res_callback)) {
+          if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data <- data[.datamods_id != input$delete]
             data <- data[order(.datamods_id)]
             data_rv$data <- data
             update_table(data, data_rv$colnames)
+            removeModal()
           } else {
             NULL
           }
@@ -385,25 +406,28 @@ edit_data_server <- function(id,
         if (is.null(results_delete)) {
           notification_warning(
             title = i18n("Warning"),
-            text = i18n("Data wasn't deleted")
+            text = i18n("Data wasn't deleted"),
+            use_notify = use_notify
           )
         } else if (inherits(results_delete, "try-error")) {
           notification_failure(
             title = i18n("Error"),
-            text = i18n("Unable to delete the row, contact platform administrator")
+            text = i18n("Unable to delete the row, contact platform administrator"),
+            use_notify = use_notify
           )
         } else {
           notification_success(
             title = i18n("Registered"),
-            text = i18n("The row has been deleted")
+            text = i18n("The row has been deleted"),
+            use_notify = use_notify
           )
         }
-        removeModal()
       })
       observeEvent(input$confirmation_delete_row_no, {
         notification_info(
           title = i18n("Information"),
-          text = i18n("Row was not deleted")
+          text = i18n("Row was not deleted"),
+          use_notify = use_notify
         )
         removeModal()
       })

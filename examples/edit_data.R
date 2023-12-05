@@ -26,6 +26,8 @@ server <- function(input, output, session) {
     file_name_export = "datas",
     # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job"),
+    modal_size = "l",
+    modal_easy_close = TRUE,
     reactable_options = list(
       defaultColDef = colDef(filterable = TRUE),
       selection = "single",
