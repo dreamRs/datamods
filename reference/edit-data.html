@@ -78,9 +78,13 @@ This module returns the edited table with the user modifications.</p>
 <span>  var_mandatory <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  return_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data.frame"</span>, <span class="st">"data.table"</span>, <span class="st">"tbl_df"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  reactable_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  modal_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"m"</span>, <span class="st">"s"</span>, <span class="st">"l"</span>, <span class="st">"xl"</span><span class="op">)</span>,</span>
+<span>  modal_easy_close <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  callback_add <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  callback_update <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  callback_delete <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  callback_delete <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  only_callback <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_notify <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -134,11 +138,27 @@ This module returns the edited table with the user modifications.</p>
 <dd><p>Options passed to <code><a href="https://glin.github.io/reactable/reference/reactable.html" class="external-link">reactable::reactable()</a></code>.</p></dd>
 
 
+<dt>modal_size</dt>
+<dd><p><code>character</code> which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.</p></dd>
+
+
+<dt>modal_easy_close</dt>
+<dd><p><code>boolean</code> If TRUE, modalDialog can be dismissed by clicking outside the dialog box, or be pressing the Escape key. If FALSE (the default), modalDialog can't be dismissed in those ways; instead it must be dismissed by clicking on a modalButton(), or from a call to removeModal() on the server.</p></dd>
+
+
 <dt>callback_add, callback_update, callback_delete</dt>
 <dd><p>Functions to be executed just before an action (add, update or delete) is performed on the data.
-Functions used must be like <code>function(data, row) {...}</code> where :</p><ul><li><p><code>data</code> wil be the data in the table at the moment the function is called</p></li>
+Functions used must be like <code>function(data, row) {...}</code> where :</p><ul><li><p><code>data</code> will be the data in the table at the moment the function is called</p></li>
 <li><p><code>row</code> will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).</p></li>
 </ul><p>If the return value of a callback function is not truthy (see <code><a href="https://rdrr.io/pkg/shiny/man/isTruthy.html" class="external-link">shiny::isTruthy()</a></code>) then the action is cancelled.</p></dd>
+
+
+<dt>only_callback</dt>
+<dd><p>Only use callbacks, don't alter data within the module.</p></dd>
+
+
+<dt>use_notify</dt>
+<dd><p>Display information or not to user through <code><a href="https://rdrr.io/pkg/shinybusy/man/notify.html" class="external-link">shinybusy::notify()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -183,6 +203,8 @@ Functions used must be like <code>function(data, row) {...}</code> where :</p><u
 <span class="r-in"><span>    file_name_export <span class="op">=</span> <span class="st">"datas"</span>,</span></span>
 <span class="r-in"><span>    <span class="co"># var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),</span></span></span>
 <span class="r-in"><span>    var_mandatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    modal_size <span class="op">=</span> <span class="st">"l"</span>,</span></span>
+<span class="r-in"><span>    modal_easy_close <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    reactable_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      defaultColDef <span class="op">=</span> <span class="fu"><a href="https://glin.github.io/reactable/reference/colDef.html" class="external-link">colDef</a></span><span class="op">(</span>filterable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      selection <span class="op">=</span> <span class="st">"single"</span>,</span></span>
