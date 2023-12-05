@@ -64,13 +64,13 @@ Functions used must be like \code{function(data, row) {...}} where :
 \itemize{
 \item \code{data} will be the data in the table at the moment the function is called
 \item \code{row} will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
-}}
+}
+
+If the return value of a callback function is not truthy (see \code{\link[shiny:isTruthy]{shiny::isTruthy()}}) then the action is cancelled.}
 
 \item{only_callback}{Only use callbacks, don't alter data within the module.}
 
-\item{use_notify}{Display information or not to user through \code{\link[shinybusy:notify]{shinybusy::notify()}}.
-
-If the return value of a callback function is not truthy (see \code{\link[shiny:isTruthy]{shiny::isTruthy()}}) then the action is cancelled.}
+\item{use_notify}{Display information or not to user through \code{\link[shinybusy:notify]{shinybusy::notify()}}.}
 }
 \value{
 the edited \code{data.frame} in reactable format with the user modifications

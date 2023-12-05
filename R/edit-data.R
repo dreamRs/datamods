@@ -62,10 +62,11 @@ edit_data_ui <- function(id) {
 #'  Functions used must be like `function(data, row) {...}` where :
 #'    * `data` will be the data in the table at the moment the function is called
 #'    * `row` will contain either a new row of data (add), an updated row (update) or the row that will be deleted (delete).
+#'
+#'  If the return value of a callback function is not truthy (see [shiny::isTruthy()]) then the action is cancelled.
 #' @param only_callback Only use callbacks, don't alter data within the module.
 #' @param use_notify Display information or not to user through [shinybusy::notify()].
 #'
-#'  If the return value of a callback function is not truthy (see [shiny::isTruthy()]) then the action is cancelled.
 #'
 #'
 #' @return the edited `data.frame` in reactable format with the user modifications
