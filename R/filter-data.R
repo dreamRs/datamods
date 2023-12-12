@@ -225,7 +225,7 @@ create_filters <- function(data,
     } else {
       labels <- vars
     }
-    vars_display <- intersect(names(data), vars)
+    vars_display <- intersect(vars, names(data))
     labels <- labels[vars %in% vars_display]
     vars <- vars_display
   }
