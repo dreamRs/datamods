@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   datamods: datamods.html
   i18n: i18n.html
-last_built: 2023-12-05T13:41Z
+last_built: 2023-12-12T12:14Z
 urls:
   reference: https://dreamrs.github.io/datamods/reference
   article: https://dreamrs.github.io/datamods/articles
