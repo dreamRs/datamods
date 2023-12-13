@@ -22,21 +22,29 @@ Shiny.addCustomMessageHandler("datamods-toggleWidget", function(data) {
 
 // Hide or show UI component
 Shiny.addCustomMessageHandler("datamods-showUI", function(data) {
+  var sel = data.selector;
+  if (data.hasOwnProperty("id")) {
+    sel = "#" + $.escapeSelector(data.id);
+  }
   if (data.inline) {
-    $(data.selector).addClass("show-inline");
-    $(data.selector).removeClass("hidden");
+    $(sel).addClass("show-inline");
+    $(sel).removeClass("hidden");
   } else {
-    $(data.selector).addClass("show");
-    $(data.selector).removeClass("hidden");
+    $(sel).addClass("show");
+    $(sel).removeClass("hidden");
   }
 });
 Shiny.addCustomMessageHandler("datamods-hideUI", function(data) {
+  var sel = data.selector;
+  if (data.hasOwnProperty("id")) {
+    sel = "#" + $.escapeSelector(data.id);
+  }
   if (data.inline) {
-    $(data.selector).addClass("hidden");
-    $(data.selector).removeClass("show-inline");
+    $(sel).addClass("hidden");
+    $(sel).removeClass("show-inline");
   } else {
-    $(data.selector).addClass("hidden");
-    $(data.selector).removeClass("show");
+    $(sel).addClass("hidden");
+    $(sel).removeClass("show");
   }
 });
 

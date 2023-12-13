@@ -136,9 +136,9 @@ select_group_server <- function(id, data_r, vars_r) {
         }
         for (var in names(rv$data)) {
           if (var %in% rv$vars) {
-            showUI(selector = paste0("#", ns(paste0("container-", var))))
+            showUI(id = paste0("container-", var))
           } else {
-            hideUI(selector = paste0("#", ns(paste0("container-", var))))
+            hideUI(id = paste0("container-", var))
           }
         }
       })

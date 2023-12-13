@@ -56,17 +56,35 @@ insert_alert <- function(selector, ...) {
 
 
 
-showUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactiveDomain()) {
+showUI <- function(selector = NULL,
+                   inline = FALSE,
+                   id = NULL,
+                   session = shiny::getDefaultReactiveDomain()) {
+  if (!is.null(id))
+    id <- session$ns(id)
   session$sendCustomMessage(
     type = "datamods-showUI",
-    message = list(selector = selector, inline = inline)
+    message = dropNulls(list(
+      selector = selector,
+      inline = inline,
+      id = id
+    ))
   )
 }
 
-hideUI <- function(selector, inline = FALSE, session = shiny::getDefaultReactiveDomain()) {
+hideUI <- function(selector = NULL,
+                   inline = FALSE,
+                   id = NULL,
+                   session = shiny::getDefaultReactiveDomain()) {
+  if (!is.null(id))
+    id <- session$ns(id)
   session$sendCustomMessage(
     type = "datamods-hideUI",
-    message = list(selector = selector, inline = inline)
+    message = dropNulls(list(
+      selector = selector,
+      inline = inline,
+      id = id
+    ))
   )
 }
 
