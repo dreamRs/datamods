@@ -364,7 +364,7 @@ create_filters <- function(data,
               width = width,
               showValueAsTags = TRUE,
               zIndex = 9999,
-              dropboxWrapper = ".datamods-filters-container",
+              dropboxWrapper = paste0("#", ns("placeholder_filters"), " .datamods-filters-container"),
               html = TRUE
             )
           )
