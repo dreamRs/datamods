@@ -244,6 +244,13 @@ format_edit_data <- function(data, colnames, internal_colnames = NULL) {
   data[]
 }
 
+rename_edit <- function(data, var_labels) {
+  for(i in seq_along(names(var_labels))) {
+    names(data)[names(data) == names(var_labels)[i]] <- var_labels[[i]]
+  }
+  data
+}
+
 
 #' @title The update column definition
 #'

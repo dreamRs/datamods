@@ -94,6 +94,7 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
+                             var_labels = NULL,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                              reactable_options = NULL,
                              modal_size = c("m", "s", "l", "xl"),
@@ -124,6 +125,11 @@ edit_data_server <- function(id,
       data_init_r <- eventReactive(data_r(), {
         req(data_r())
         data <- data_r()
+        if (is.reactive(var_labels))
+          var_labels <- var_labels()
+        if (is.null(var_labels))
+          var_labels <- names(data)
+        data <- rename_edit(data = data, var_labels = var_labels)
         if (is.reactive(var_mandatory))
           var_mandatory <- var_mandatory()
         if (is.reactive(var_edit))
@@ -332,7 +338,6 @@ edit_data_server <- function(id,
               data_rv$internal_colnames
             )
           )
-
           if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data_updated <- data_updated[order(.datamods_id)]
             data_rv$data <- copy(data_updated)
