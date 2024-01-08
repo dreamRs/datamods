@@ -46,14 +46,15 @@ edit_data_ui <- function(id) {
 #'
 #' @param id Module ID
 #' @param data_r data_r `reactive` function containing a `data.frame` to use in the module.
-#' @param add `boolean`, if `TRUE`, allows you to add a row in the table via a button at the top right
-#' @param update `boolean`, if `TRUE`, allows you to modify a row of the table via a button located in the table on the row you want to edit
-#' @param delete `boolean`, if `TRUE`, allows a row to be deleted from the table via a button in the table
-#' @param download_csv if `TRUE`, allows to export the table in csv format via a download button
-#' @param download_excel if `TRUE`, allows to export the table in excel format via a download button
-#' @param file_name_export `character` that allows you to choose the export name of the downloaded file
-#' @param var_edit vector of `character` which allows to choose the names of the editable columns
-#' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill
+#' @param add `boolean`, if `TRUE`, allows you to add a row in the table via a button at the top right.
+#' @param update `boolean`, if `TRUE`, allows you to modify a row of the table via a button located in the table on the row you want to edit.
+#' @param delete `boolean`, if `TRUE`, allows a row to be deleted from the table via a button in the table.
+#' @param download_csv if `TRUE`, allows to export the table in csv format via a download button.
+#' @param download_excel if `TRUE`, allows to export the table in excel format via a download button.
+#' @param file_name_export `character` that allows you to choose the export name of the downloaded file.
+#' @param var_edit vector of `character` which allows to choose the names of the editable columns.
+#' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill.
+#' @param var_labels named list, where names are colnames and values are labels to be used in edit modal.
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
 #' @param modal_size `character` which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.
@@ -80,7 +81,7 @@ edit_data_ui <- function(id) {
 #' @importFrom writexl write_xlsx
 #' @importFrom utils write.csv
 #' @importFrom htmltools tagList
-#' @importFrom rlang is_function
+#' @importFrom rlang is_function is_list
 #'
 #' @export
 #'
@@ -125,13 +126,10 @@ edit_data_server <- function(id,
       data_init_r <- eventReactive(data_r(), {
         req(data_r())
         data <- data_r()
-        if (is.reactive(var_labels))
-          var_labels <- var_labels()
-        if (is.null(var_labels))
-          var_labels <- names(data)
-        data <- rename_edit(data = data, var_labels = var_labels)
         if (is.reactive(var_mandatory))
           var_mandatory <- var_mandatory()
+        if (is.reactive(var_labels))
+          var_labels <- var_labels()
         if (is.reactive(var_edit))
           var_edit <- var_edit()
         if (is.null(var_edit))
@@ -142,8 +140,9 @@ edit_data_server <- function(id,
           setnames(data, paste0("col_", seq_along(data)))
           data_rv$internal_colnames <- copy(colnames(data))
         }
-        data_rv$mandatory <- colnames(data)[which(data_rv$colnames %in% var_mandatory)]
-        data_rv$edit <- colnames(data)[which(data_rv$colnames %in% var_edit)]
+        data_rv$mandatory <- data_rv$internal_colnames[data_rv$colnames %in% var_mandatory]
+        data_rv$edit <- data_rv$internal_colnames[data_rv$colnames %in% var_edit]
+        data_rv$labels <- get_variables_labels(var_labels, data_rv$colnames, data_rv$internal_colnames)
 
         data[, .datamods_id := seq_len(.N)]
 
@@ -213,9 +212,9 @@ edit_data_server <- function(id,
         edit_modal(
           id_validate = "add_row",
           data = data_rv$data,
-          colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory,
+          var_mandatory = data_rv$mandatory,
+          var_labels = data_rv$labels,
           modal_size = modal_size,
           modal_easy_close = modal_easy_close
         )
@@ -298,9 +297,9 @@ edit_data_server <- function(id,
           title = i18n("Update row"),
           id_validate = "update_row",
           data = data,
-          colnames = data_rv$colnames,
           var_edit = data_rv$edit,
-          var_mandatory = var_mandatory,
+          var_mandatory = data_rv$mandatory,
+          var_labels = data_rv$labels,
           modal_size = modal_size,
           modal_easy_close = modal_easy_close
         )

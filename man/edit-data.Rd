@@ -19,6 +19,7 @@ edit_data_server(
   file_name_export = "data",
   var_edit = NULL,
   var_mandatory = NULL,
+  var_labels = NULL,
   return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   reactable_options = NULL,
   modal_size = c("m", "s", "l", "xl"),
@@ -35,21 +36,23 @@ edit_data_server(
 
 \item{data_r}{data_r \code{reactive} function containing a \code{data.frame} to use in the module.}
 
-\item{add}{\code{boolean}, if \code{TRUE}, allows you to add a row in the table via a button at the top right}
+\item{add}{\code{boolean}, if \code{TRUE}, allows you to add a row in the table via a button at the top right.}
 
-\item{update}{\code{boolean}, if \code{TRUE}, allows you to modify a row of the table via a button located in the table on the row you want to edit}
+\item{update}{\code{boolean}, if \code{TRUE}, allows you to modify a row of the table via a button located in the table on the row you want to edit.}
 
-\item{delete}{\code{boolean}, if \code{TRUE}, allows a row to be deleted from the table via a button in the table}
+\item{delete}{\code{boolean}, if \code{TRUE}, allows a row to be deleted from the table via a button in the table.}
 
-\item{download_csv}{if \code{TRUE}, allows to export the table in csv format via a download button}
+\item{download_csv}{if \code{TRUE}, allows to export the table in csv format via a download button.}
 
-\item{download_excel}{if \code{TRUE}, allows to export the table in excel format via a download button}
+\item{download_excel}{if \code{TRUE}, allows to export the table in excel format via a download button.}
 
-\item{file_name_export}{\code{character} that allows you to choose the export name of the downloaded file}
+\item{file_name_export}{\code{character} that allows you to choose the export name of the downloaded file.}
 
-\item{var_edit}{vector of \code{character} which allows to choose the names of the editable columns}
+\item{var_edit}{vector of \code{character} which allows to choose the names of the editable columns.}
 
-\item{var_mandatory}{vector of \code{character} which allows to choose obligatory fields to fill}
+\item{var_mandatory}{vector of \code{character} which allows to choose obligatory fields to fill.}
+
+\item{var_labels}{named list, where names are colnames and values are labels to be used in edit modal.}
 
 \item{return_class}{Class of returned data: \code{data.frame}, \code{data.table}, \code{tbl_df} (tibble) or \code{raw}.}
 
@@ -108,6 +111,13 @@ server <- function(input, output, session) {
     file_name_export = "datas",
     # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job"),
+    var_labels = list(
+      name = "Name",
+      credit_card_security_code = "Credit card security code",
+      date_obtained = "Date obtained",
+      contactless_card = "Contactless Card",
+      credit_card_provider = "Credit card provider"
+    ),
     modal_size = "l",
     modal_easy_close = TRUE,
     reactable_options = list(
@@ -122,7 +132,7 @@ server <- function(input, output, session) {
           cell = function(value) {
             # Render as an X mark or check mark
             if (value == FALSE) "\u274c No" else "\u2714\ufe0f Yes"
-        }),
+          }),
         credit_card_provider = colDef(
           name = "Credit card provider",
           style = function(value) {

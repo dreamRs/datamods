@@ -39,14 +39,17 @@ server <- function(input, output, session) {
       defaultColDef = colDef(filterable = TRUE),
       selection = "single",
       columns = list(
-        name = colDef(style = list(fontWeight = "bold")),
-        date_obtained = colDef(format = colFormat(date = TRUE)),
+        name = colDef(name = "Name", style = list(fontWeight = "bold")),
+        credit_card_security_code = colDef(name = "Credit card security code"),
+        date_obtained = colDef(name = "Date obtained", format = colFormat(date = TRUE)),
         contactless_card = colDef(
+          name = "Contactless Card",
           cell = function(value) {
             # Render as an X mark or check mark
             if (value == FALSE) "\u274c No" else "\u2714\ufe0f Yes"
-        }),
+          }),
         credit_card_provider = colDef(
+          name = "Credit card provider",
           style = function(value) {
             if (value == "Mastercard") {
               color <- "#e06631"
