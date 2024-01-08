@@ -340,8 +340,8 @@ edit_data_server <- function(id,
           if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data_updated <- data_updated[order(.datamods_id)]
             data_rv$data <- copy(data_updated)
-            update_table(data_updated, data_rv$colnames)
             removeModal()
+            update_table(data_updated, data_rv$colnames)
           } else {
             NULL
           }
@@ -401,8 +401,8 @@ edit_data_server <- function(id,
             data <- data[.datamods_id != input$delete]
             data <- data[order(.datamods_id)]
             data_rv$data <- data
-            update_table(data, data_rv$colnames)
             removeModal()
+            update_table(data, data_rv$colnames)
           } else {
             NULL
           }
