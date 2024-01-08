@@ -253,7 +253,7 @@ rename_edit <- function(data, var_labels) {
 }
 
 
-#' @importFrom rlang set_names is_null as_list is_list is_named
+#' @importFrom rlang set_names is_null is_list is_named
 get_variables_labels <- function(labels, column_names, internal_names) {
   if (is_null(labels)) {
     labels <- column_names
@@ -262,14 +262,14 @@ get_variables_labels <- function(labels, column_names, internal_names) {
       stopifnot(
         "If `var_labels` is an unnamed vector, it must have same length as `colnames(data)`" = length(labels) == length(column_names)
       )
-      labels <- set_names(as_list(labels), column_names)
+      labels <- set_names(as.list(labels), column_names)
     }
     stopifnot(
       "`var_labels` must be a named list" = is_named(labels)
     )
     names(labels) <- internal_names[match(names(labels), column_names)]
     labels <- modifyList(
-      x = set_names(as_list(column_names), internal_names),
+      x = set_names(as.list(column_names), internal_names),
       val = labels
     )
   }
