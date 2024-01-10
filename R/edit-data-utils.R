@@ -126,56 +126,84 @@ edit_input_form <- function(default = list(),
       }
 
       if (isTRUE(inherits(variable, c("numeric", "integer")))) {
-        numericInput(
-          inputId = ns(variable_id),
-          label = label,
-          value = default[[variable_id]] %||% NA_real_,
-          width = "100%"
+        opts <- getOption("datamods.edit.input.numeric", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% NA_real_,
+            width = "100%"
+          )
         )
+        do.call(numericInput, opts)
       } else if (isTRUE((inherits(variable, "factor")))) {
-        virtualSelectInput(
-          inputId = ns(variable_id),
-          label = label,
-          choices = sort(unique(c(as.character(variable), levels(variable)))),
-          selected = default[[variable_id]] %||% "",
-          width = "100%",
-          allowNewOption = TRUE,
-          autoSelectFirstOption = FALSE,
-          placeholder = i18n("Select")
+        opts <- getOption("datamods.edit.input.factor", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            choices = sort(unique(c(as.character(variable), levels(variable)))),
+            selected = default[[variable_id]] %||% "",
+            width = "100%",
+            allowNewOption = TRUE,
+            autoSelectFirstOption = FALSE,
+            placeholder = i18n("Select")
+          )
         )
+        do.call(virtualSelectInput, opts)
       } else if (isTRUE((inherits(variable, "character")))) {
-        textInput(
-          inputId = ns(variable_id),
-          label = label,
-          value = default[[variable_id]] %||% "",
-          width = "100%"
+        opts <- getOption("datamods.edit.input.character", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% "",
+            width = "100%"
+          )
         )
+        do.call(textInput, opts)
       } else if (isTRUE((inherits(variable, "logical")))) {
-        prettyCheckbox(
-          inputId = ns(variable_id),
-          label = label,
-          value = default[[variable_id]] %||% FALSE,
-          icon = icon("check"),
-          status = "primary",
-          width = "100%"
+        opts <- getOption("datamods.edit.input.logical", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% FALSE,
+            icon = icon("check"),
+            status = "primary",
+            width = "100%"
+          )
         )
+        do.call(prettyCheckbox, opts)
       } else if (isTRUE((inherits(variable, "Date")))) {
-        airDatepickerInput(
-          inputId = ns(variable_id),
-          label = label,
-          value = default[[variable_id]] %||% Sys.Date(),
-          inline = TRUE,
-          width = "100%"
+        opts <- getOption("datamods.edit.input.Date", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% Sys.Date(),
+            width = "100%"
+          )
         )
+        do.call(airDatepickerInput, opts)
       } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
-        airDatepickerInput(
-          inputId = ns(variable_id),
-          label = label,
-          value = default[[variable_id]] %||% Sys.time(),
-          inline = TRUE,
-          timepicker = TRUE,
-          width = "100%"
+        opts <- getOption("datamods.edit.input.POSIXt", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% Sys.time(),
+            timepicker = TRUE,
+            width = "100%"
+          )
         )
+        do.call(airDatepickerInput, opts)
       } else {
         return(NULL)
       }
