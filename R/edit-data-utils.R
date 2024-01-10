@@ -32,6 +32,7 @@ edit_modal <- function(default = list(),
                        var_labels = colnames(data),
                        modal_size = "m",
                        modal_easy_close = FALSE,
+                       n_column = 1,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
@@ -59,6 +60,7 @@ edit_modal <- function(default = list(),
       data = data,
       var_mandatory = var_mandatory,
       var_labels = var_labels,
+      n_column = n_column,
       session = session
     ),
     actionButton(
@@ -93,6 +95,7 @@ edit_input_form <- function(default = list(),
                             data,
                             var_mandatory = NULL,
                             var_labels = colnames(data),
+                            n_column = 1,
                             session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
@@ -101,80 +104,92 @@ edit_input_form <- function(default = list(),
     var_labels <- setNames(var_labels, unlist(var_labels))
   }
 
-  tagList(
+  widgets <- lapply(
+    X = seq_len(ncol(data)),
+    FUN = function(i) {
+      variable_id <- colnames(data)[i]
+      variable_label <- var_labels[which(names(var_labels) == variable_id)]
+      if (length(variable_label) < 1)
+        variable_label <- variable_id
+      variable <- data[[i]]
+
+      suffix <- if (isTRUE((inherits(variable, "logical")))) "" else " : "
+      if (variable_id %in% var_mandatory) {
+        label <- tagList(
+          variable_label,
+          tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), suffix
+        )
+      } else {
+        label <- paste0(variable_label, suffix)
+      }
+
+      if (isTRUE(inherits(variable, c("numeric", "integer")))) {
+        numericInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% NA_real_,
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "factor")))) {
+        virtualSelectInput(
+          inputId = ns(variable_id),
+          label = label,
+          choices = sort(unique(c(as.character(variable), levels(variable)))),
+          selected = default[[variable_id]] %||% "",
+          width = "100%",
+          allowNewOption = TRUE,
+          autoSelectFirstOption = FALSE,
+          placeholder = i18n("Select")
+        )
+      } else if (isTRUE((inherits(variable, "character")))) {
+        textInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% "",
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "logical")))) {
+        prettyCheckbox(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% FALSE,
+          icon = icon("check"),
+          status = "primary",
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "Date")))) {
+        airDatepickerInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% Sys.Date(),
+          inline = TRUE,
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
+        airDatepickerInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% Sys.time(),
+          inline = TRUE,
+          timepicker = TRUE,
+          width = "100%"
+        )
+      } else {
+        return(NULL)
+      }
+    }
+  )
+  fluidRow(
     lapply(
-      X = seq_len(ncol(data)),
+      X = split(
+        x = seq_along(widgets),
+        f = rep(seq_len(n_column), each = ceiling(length(widgets)/n_column))[seq_along(widgets)]
+      ),
       FUN = function(i) {
-        variable_id <- colnames(data)[i]
-        variable_label <- var_labels[which(names(var_labels) == variable_id)]
-        if (length(variable_label) < 1)
-          variable_label <- variable_id
-        variable <- data[[i]]
-
-        suffix <- if (isTRUE((inherits(variable, "logical")))) "" else " : "
-        if (variable_id %in% var_mandatory) {
-          label <- tagList(
-            variable_label,
-            tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), suffix
-          )
-        } else {
-          label <- paste0(variable_label, suffix)
-        }
-
-        if (isTRUE(inherits(variable, c("numeric", "integer")))) {
-          numericInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% NA_real_,
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "factor")))) {
-          virtualSelectInput(
-            inputId = ns(variable_id),
-            label = label,
-            choices = sort(unique(c(as.character(variable), levels(variable)))),
-            selected = default[[variable_id]] %||% "",
-            width = "100%",
-            allowNewOption = TRUE,
-            autoSelectFirstOption = FALSE,
-            placeholder = i18n("Select")
-          )
-        } else if (isTRUE((inherits(variable, "character")))) {
-          textInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% "",
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "logical")))) {
-          prettyCheckbox(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% FALSE,
-            icon = icon("check"),
-            status = "primary",
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "Date")))) {
-          airDatepickerInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% Sys.Date(),
-            inline = TRUE,
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
-          airDatepickerInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% Sys.time(),
-            inline = TRUE,
-            timepicker = TRUE,
-            width = "100%"
-          )
-        } else {
-          return(NULL)
-        }
+        column(
+          width = 12 / n_column,
+          widgets[i]
+        )
       }
     )
   )

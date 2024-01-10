@@ -55,6 +55,7 @@ edit_data_ui <- function(id) {
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns.
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill.
 #' @param var_labels named list, where names are colnames and values are labels to be used in edit modal.
+#' @param n_column Number of column in the edit modal window, must be a number that divide 12 since it use Bootstrap grid system with [shiny::column()].
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
 #' @param modal_size `character` which allows to choose the size of the modalDialog. One of "s" for small, "m" (the default) for medium, "l" for large, or "xl" for extra large.
@@ -96,6 +97,7 @@ edit_data_server <- function(id,
                              var_edit = NULL,
                              var_mandatory = NULL,
                              var_labels = NULL,
+                             n_column = 1,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                              reactable_options = NULL,
                              modal_size = c("m", "s", "l", "xl"),
@@ -216,7 +218,8 @@ edit_data_server <- function(id,
           var_mandatory = data_rv$mandatory,
           var_labels = data_rv$labels,
           modal_size = modal_size,
-          modal_easy_close = modal_easy_close
+          modal_easy_close = modal_easy_close,
+          n_column = n_column
         )
       })
 
@@ -301,7 +304,8 @@ edit_data_server <- function(id,
           var_mandatory = data_rv$mandatory,
           var_labels = data_rv$labels,
           modal_size = modal_size,
-          modal_easy_close = modal_easy_close
+          modal_easy_close = modal_easy_close,
+          n_column = n_column
         )
       })
 

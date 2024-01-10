@@ -33,6 +33,7 @@ server <- function(input, output, session) {
       contactless_card = "Contactless Card",
       credit_card_provider = "Credit card provider"
     ),
+    n_column = 2,
     modal_size = "l",
     modal_easy_close = TRUE,
     reactable_options = list(
