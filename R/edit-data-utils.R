@@ -65,7 +65,9 @@ edit_modal <- function(default = list(),
     ),
     actionButton(
       inputId = ns(id_validate),
-      label = i18n("Validate the entry"),
+      label = tagList(
+        ph("floppy-disk"), i18n("Save")
+      ),
       class = "btn-outline-primary float-end"
     )
   ))
