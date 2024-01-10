@@ -149,7 +149,8 @@ edit_input_form <- function(default = list(),
             width = "100%",
             allowNewOption = TRUE,
             autoSelectFirstOption = FALSE,
-            placeholder = i18n("Select")
+            placeholder = i18n("Select"),
+            zIndex = 999
           )
         )
         do.call(virtualSelectInput, opts)
