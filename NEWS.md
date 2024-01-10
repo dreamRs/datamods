@@ -21,7 +21,7 @@
 * Fixed displaying variable class in View tab (fix [#64](https://github.com/dreamRs/datamods/issues/64)).
 * `select_group_server()` : fix update inputs when `multiple = FALSE`.
 * `filter_data_server()` : sorting choices in select menus (select, picker and virtual) (fix [#66](https://github.com/dreamRs/datamods/issues/64))).
-* `filter_data_server()` : don't use `<`/`>` for empty field to not confuse to an HTMl tag (fix [#65](https://github.com/dreamRs/datamods/issues/65))).
+* `filter_data_server()` : don't use `<`/`>` for empty field to not confuse to an HTML tag (fix [#65](https://github.com/dreamRs/datamods/issues/65))).
 
 
 # datamods 1.4.0
@@ -66,7 +66,7 @@
 * `import_copypaste_server()`: new argument `fread_args` to pass arguments to `data.table::fread`.
 * i18n: chinese translations added, thanks to [@xmusphlkg](https://github.com/xmusphlkg).
 * i18n: spanish translations added, thanks to [@dnldelarosa](https://github.com/dnldelarosa).
-* i18n: german translations added, thanks to [@SteEcker](https://github.com/SteEcker) and [@joerghenkebuero](https://github.com/joerghenkebuero).
+* i18n: german translations added, thanks to [@SteEcker](https://github.com/SteEcker) and joerghenkebuero.
 
 
 
