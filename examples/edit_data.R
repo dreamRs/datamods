@@ -26,6 +26,14 @@ server <- function(input, output, session) {
     file_name_export = "datas",
     # var_edit = c("name", "job", "credit_card_provider", "credit_card_security_code"),
     var_mandatory = c("name", "job"),
+    var_labels = list(
+      name = "Name",
+      credit_card_security_code = "Credit card security code",
+      date_obtained = "Date obtained",
+      contactless_card = "Contactless Card",
+      credit_card_provider = "Credit card provider"
+    ),
+    n_column = 2,
     modal_size = "l",
     modal_easy_close = TRUE,
     reactable_options = list(
@@ -40,7 +48,7 @@ server <- function(input, output, session) {
           cell = function(value) {
             # Render as an X mark or check mark
             if (value == FALSE) "\u274c No" else "\u2714\ufe0f Yes"
-        }),
+          }),
         credit_card_provider = colDef(
           name = "Credit card provider",
           style = function(value) {

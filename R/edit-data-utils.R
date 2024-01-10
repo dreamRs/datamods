@@ -27,20 +27,17 @@ edit_modal <- function(default = list(),
                        id_validate = "add_row",
                        title = i18n("Add a row"),
                        data,
-                       colnames = names(data),
-                       var_edit,
-                       var_mandatory,
+                       var_edit = NULL,
+                       var_mandatory = NULL,
+                       var_labels = colnames(data),
                        modal_size = "m",
                        modal_easy_close = FALSE,
+                       n_column = 1,
                        session = getDefaultReactiveDomain()) {
   ns <- session$ns
 
-  if (identical(var_edit, character(0)) | identical(var_edit, NULL)) {
-    data <- data
-    position_var_edit <- seq_len(ncol(data))
-  } else {
+  if (length(var_edit) > 0) {
     data <- data[, ..var_edit]
-    position_var_edit <- as.numeric(gsub("col_", "", var_edit))
   }
 
   showModal(modalDialog(
@@ -61,9 +58,9 @@ edit_modal <- function(default = list(),
     edit_input_form(
       default = default,
       data = data,
-      colnames = colnames,
       var_mandatory = var_mandatory,
-      position_var_edit =  position_var_edit,
+      var_labels = var_labels,
+      n_column = n_column,
       session = session
     ),
     actionButton(
@@ -89,91 +86,110 @@ edit_modal <- function(default = list(),
 #' @importFrom shiny numericInput textInput
 #' @importFrom shinyWidgets virtualSelectInput prettyCheckbox airDatepickerInput
 #' @importFrom htmltools tagList tags
+#' @importFrom rlang is_vector is_named
 #'
 #' @return different shiny widgets with edited columns according to their respective class
 #' @noRd
 #'
 edit_input_form <- function(default = list(),
                             data,
-                            colnames,
-                            var_mandatory,
-                            position_var_edit,
+                            var_mandatory = NULL,
+                            var_labels = colnames(data),
+                            n_column = 1,
                             session = getDefaultReactiveDomain()) {
 
   ns <- session$ns
 
-  tagList(
+  if (is_vector(var_labels) & !is_named(var_labels)) {
+    var_labels <- setNames(var_labels, unlist(var_labels))
+  }
+
+  widgets <- lapply(
+    X = seq_len(ncol(data)),
+    FUN = function(i) {
+      variable_id <- colnames(data)[i]
+      variable_label <- var_labels[which(names(var_labels) == variable_id)]
+      if (length(variable_label) < 1)
+        variable_label <- variable_id
+      variable <- data[[i]]
+
+      suffix <- if (isTRUE((inherits(variable, "logical")))) "" else " : "
+      if (variable_id %in% var_mandatory) {
+        label <- tagList(
+          variable_label,
+          tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), suffix
+        )
+      } else {
+        label <- paste0(variable_label, suffix)
+      }
+
+      if (isTRUE(inherits(variable, c("numeric", "integer")))) {
+        numericInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% NA_real_,
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "factor")))) {
+        virtualSelectInput(
+          inputId = ns(variable_id),
+          label = label,
+          choices = sort(unique(c(as.character(variable), levels(variable)))),
+          selected = default[[variable_id]] %||% "",
+          width = "100%",
+          allowNewOption = TRUE,
+          autoSelectFirstOption = FALSE,
+          placeholder = i18n("Select")
+        )
+      } else if (isTRUE((inherits(variable, "character")))) {
+        textInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% "",
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "logical")))) {
+        prettyCheckbox(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% FALSE,
+          icon = icon("check"),
+          status = "primary",
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, "Date")))) {
+        airDatepickerInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% Sys.Date(),
+          inline = TRUE,
+          width = "100%"
+        )
+      } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
+        airDatepickerInput(
+          inputId = ns(variable_id),
+          label = label,
+          value = default[[variable_id]] %||% Sys.time(),
+          inline = TRUE,
+          timepicker = TRUE,
+          width = "100%"
+        )
+      } else {
+        return(NULL)
+      }
+    }
+  )
+  fluidRow(
     lapply(
-      X = seq_len(ncol(data)),
+      X = split(
+        x = seq_along(widgets),
+        f = rep(seq_len(n_column), each = ceiling(length(widgets)/n_column))[seq_along(widgets)]
+      ),
       FUN = function(i) {
-        variable_id <- colnames(data)[i]
-        variable_name <- colnames[position_var_edit[i]]
-        variable <- data[[i]]
-
-        suffix <- if (isTRUE((inherits(variable, "logical")))) "" else " : "
-        if (variable_name %in% var_mandatory) {
-          label <- tagList(
-            variable_name,
-            tags$span(HTML("&#42;"), class = "asterisk", style = "color: red;"), suffix
-          )
-        } else {
-          label <- paste0(variable_name, suffix)
-        }
-
-        if (isTRUE(inherits(variable, c("numeric", "integer")))) {
-          numericInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% NA_real_,
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "factor")))) {
-          virtualSelectInput(
-            inputId = ns(variable_id),
-            label = label,
-            choices = sort(unique(c(as.character(variable), levels(variable)))),
-            selected = default[[variable_id]] %||% "",
-            width = "100%",
-            allowNewOption = TRUE,
-            autoSelectFirstOption = FALSE,
-            placeholder = i18n("Select")
-          )
-        } else if (isTRUE((inherits(variable, "character")))) {
-          textInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% "",
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "logical")))) {
-          prettyCheckbox(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% FALSE,
-            icon = icon("check"),
-            status = "primary",
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, "Date")))) {
-          airDatepickerInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% Sys.Date(),
-            inline = TRUE,
-            width = "100%"
-          )
-        } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
-          airDatepickerInput(
-            inputId = ns(variable_id),
-            label = label,
-            value = default[[variable_id]] %||% Sys.time(),
-            inline = TRUE,
-            timepicker = TRUE,
-            width = "100%"
-          )
-        } else {
-          return(NULL)
-        }
+        column(
+          width = 12 / n_column,
+          widgets[i]
+        )
       }
     )
   )
@@ -242,6 +258,37 @@ format_edit_data <- function(data, colnames, internal_colnames = NULL) {
     internal_colnames <- seq_along(colnames)
   setnames(data, old = internal_colnames, new = colnames, skip_absent = TRUE)
   data[]
+}
+
+rename_edit <- function(data, var_labels) {
+  for(i in seq_along(names(var_labels))) {
+    names(data)[names(data) == names(var_labels)[i]] <- var_labels[[i]]
+  }
+  data
+}
+
+
+#' @importFrom rlang set_names is_null is_list is_named
+get_variables_labels <- function(labels, column_names, internal_names) {
+  if (is_null(labels)) {
+    labels <- column_names
+  } else {
+    if (!is_list(labels)) {
+      stopifnot(
+        "If `var_labels` is an unnamed vector, it must have same length as `colnames(data)`" = length(labels) == length(column_names)
+      )
+      labels <- set_names(as.list(labels), column_names)
+    }
+    stopifnot(
+      "`var_labels` must be a named list" = is_named(labels)
+    )
+    names(labels) <- internal_names[match(names(labels), column_names)]
+    labels <- modifyList(
+      x = set_names(as.list(column_names), internal_names),
+      val = labels
+    )
+  }
+  return(labels)
 }
 
 
