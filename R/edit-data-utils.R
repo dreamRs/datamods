@@ -322,6 +322,13 @@ get_variables_labels <- function(labels, column_names, internal_names) {
   return(labels)
 }
 
+get_variables_default <- function(default, column_names, internal_names) {
+  default <- default[column_names]
+  idx <- match(names(default), column_names, nomatch = 0L)
+  names(default)[idx > 0] <- internal_names[idx]
+  default
+}
+
 
 #' @title The update column definition
 #'
