@@ -20,6 +20,7 @@ edit_data_server(
   var_edit = NULL,
   var_mandatory = NULL,
   var_labels = NULL,
+  add_default_values = list(),
   n_column = 1,
   return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   reactable_options = NULL,
@@ -54,6 +55,8 @@ edit_data_server(
 \item{var_mandatory}{vector of \code{character} which allows to choose obligatory fields to fill.}
 
 \item{var_labels}{named list, where names are colnames and values are labels to be used in edit modal.}
+
+\item{add_default_values}{Default values to use for input control when adding new data, e.g. \code{list(my_var_text = "Default text to display")}.}
 
 \item{n_column}{Number of column in the edit modal window, must be a number that divide 12 since it use Bootstrap grid system with \code{\link[shiny:column]{shiny::column()}}.}
 
@@ -120,6 +123,10 @@ server <- function(input, output, session) {
       date_obtained = "Date obtained",
       contactless_card = "Contactless Card",
       credit_card_provider = "Credit card provider"
+    ),
+    add_default_values = list(
+      name = "Please enter your name here",
+      date_obtained = Sys.Date()
     ),
     n_column = 2,
     modal_size = "l",

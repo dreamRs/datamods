@@ -33,6 +33,10 @@ server <- function(input, output, session) {
       contactless_card = "Contactless Card",
       credit_card_provider = "Credit card provider"
     ),
+    add_default_values = list(
+      name = "Please enter your name here",
+      date_obtained = Sys.Date()
+    ),
     n_column = 2,
     modal_size = "l",
     modal_easy_close = TRUE,

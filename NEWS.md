@@ -1,8 +1,13 @@
+# datamods 1.4.4
+
+* `edit_data_server()` : added argument `add_default_values = list(...)` to specify default value for input widget when adding a new entry in the table.
+
+
 # datamods 1.4.3
 
 * `edit_data_server()` : added the ability to specify callbacks functions to be executed before performing an action on the table (add, update or delete).
 * `edit_data_server()` : pass reactable option + selection to the table [#82](https://github.com/dreamRs/datamods/pull/82)
-* `edit-data` module : use factor levels and sort theme in edit input forma for factors (sorting also applies for characters), thanks to [@Felixmil](https://github.com/Felixmil).
+* `edit-data` module : use factor levels and sort theme in edit input form for factors (sorting also applies for characters), thanks to [@Felixmil](https://github.com/Felixmil).
 * `import-file` module : allow to specify string used to identify `NA`, thanks to [@DrFabach](https://github.com/DrFabach).
 * `filter_data_server()` : argument `drop_ids` can now be set via option `datamods.filter.drop_ids` and can be a list like `list(p = 0.9, n = 50)` to specify threshold values to remove IDs columns.
 

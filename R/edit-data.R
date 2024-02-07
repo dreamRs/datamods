@@ -55,6 +55,7 @@ edit_data_ui <- function(id) {
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns.
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill.
 #' @param var_labels named list, where names are colnames and values are labels to be used in edit modal.
+#' @param add_default_values Default values to use for input control when adding new data, e.g. `list(my_var_text = "Default text to display")`.
 #' @param n_column Number of column in the edit modal window, must be a number that divide 12 since it use Bootstrap grid system with [shiny::column()].
 #' @param return_class Class of returned data: `data.frame`, `data.table`, `tbl_df` (tibble) or `raw`.
 #' @param reactable_options Options passed to [reactable::reactable()].
@@ -97,6 +98,7 @@ edit_data_server <- function(id,
                              var_edit = NULL,
                              var_mandatory = NULL,
                              var_labels = NULL,
+                             add_default_values = list(),
                              n_column = 1,
                              return_class = c("data.frame", "data.table", "tbl_df", "raw"),
                              reactable_options = NULL,
@@ -212,6 +214,11 @@ edit_data_server <- function(id,
       observeEvent(input$add, {
         req(data_r())
         edit_modal(
+          default = get_variables_default(
+            add_default_values,
+            data_rv$colnames,
+            data_rv$internal_colnames
+          ),
           id_validate = "add_row",
           data = data_rv$data,
           var_edit = data_rv$edit,
@@ -259,7 +266,7 @@ edit_data_server <- function(id,
           )
 
           if (isTruthy(res_callback) & !isTRUE(only_callback)) {
-            data <- rbind(data, new, fill = TRUE)
+            data <- rbind(data, new[, .SD, .SDcols = !anyNA], use.names = TRUE, fill = TRUE)
             data_rv$data <- data
             update_table(data, data_rv$colnames)
             removeModal()
