@@ -134,6 +134,8 @@ edit_data_server <- function(id,
           var_mandatory <- var_mandatory()
         if (is.reactive(var_labels))
           var_labels <- var_labels()
+        if (is.null(var_labels))
+          var_labels <- setNames(as.list(names(data)), names(data))
         if (is.reactive(var_edit))
           var_edit <- var_edit()
         if (is.null(var_edit))
