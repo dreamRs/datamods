@@ -1,3 +1,9 @@
+# datamods 1.4.5
+
+* `edit_data_server()` : fixed default variable labels when `var_labels = NULL`.
+
+
+
 # datamods 1.4.4
 
 * `edit_data_server()` : added argument `add_default_values = list(...)` to specify default value for input widget when adding a new entry in the table.

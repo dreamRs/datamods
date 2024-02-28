@@ -72,7 +72,7 @@ ui <- fluidPage(
             list(inputId = "Type", label = "Type:"),
             list(inputId = "AirBags", label = "AirBags:"),
             list(inputId = "DriveTrain", label = "DriveTrain:")
-          )
+          ), vs_args = list(disableSelectAll = FALSE)
         ),
         status = "primary"
       ),
