@@ -62,13 +62,16 @@ select_group_ui <- function(id,
           choices = NULL,
           selected = NULL,
           multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
-          width = "100%",
-          showValueAsTags = TRUE,
-          zIndex = 10,
-          disableSelectAll = TRUE
+          width = "100%"
         ),
         keep.null = TRUE
       )
+      if (is.null(vs_args$showValueAsTags))
+        vs_args$showValueAsTags <- TRUE
+      if (is.null(vs_args$zIndex))
+        vs_args$zIndex <- 10
+      if (is.null(vs_args$disableSelectAll))
+        vs_args$disableSelectAll <- TRUE
       tags$div(
         class = "select-group-item",
         id = ns(paste0("container-", input$inputId)),
