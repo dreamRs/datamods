@@ -270,8 +270,8 @@ edit_data_server <- function(id,
           if (isTruthy(res_callback) & !isTRUE(only_callback)) {
             data <- rbind(data, new[, .SD, .SDcols = !anyNA], use.names = TRUE, fill = TRUE)
             data_rv$data <- data
-            update_table(data, data_rv$colnames)
             removeModal()
+            update_table(data, data_rv$colnames)
           } else {
             NULL
           }
