@@ -4,7 +4,7 @@ library(datamods)
 
 ui <- fluidPage(
   # Try with different Bootstrap version
-  # theme = bslib::bs_theme(version = 4),
+  theme = bslib::bs_theme(version = 5),
   fluidRow(
     column(
       width = 4,
@@ -20,7 +20,8 @@ ui <- fluidPage(
       width = 8,
       tags$b("Imported data:"),
       verbatimTextOutput(outputId = "name"),
-      verbatimTextOutput(outputId = "data")
+      verbatimTextOutput(outputId = "data"),
+      verbatimTextOutput(outputId = "str_data")
     )
   )
 )
@@ -47,6 +48,12 @@ server <- function(input, output, session) {
     req(imported$data())
     imported$data()
   })
+
+  output$str_data <- renderPrint({
+    req(imported$data())
+    str(imported$data())
+  })
+
 }
 
 if (interactive())

@@ -95,6 +95,7 @@ update_variables_ui <- function(id, title = TRUE) {
 #' @rdname update-variables
 #'
 #' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need
+#' @importFrom rlang call2 expr
 update_variables_server <- function(id, data, height = NULL) {
   moduleServer(
     id = id,
@@ -139,6 +140,8 @@ update_variables_server <- function(id, data, height = NULL) {
       })
 
       observeEvent(input$validate, {
+        updated_data$list_rename <- NULL
+        updated_data$list_select <- NULL
         data <- data_r()
         tok <- isolate(token$x)
         new_selections <- reactable::getReactableState("table", "selected")
@@ -160,10 +163,19 @@ update_variables_server <- function(id, data, height = NULL) {
               dec = input$dec
             )
           }
+
           # rename
+          list_rename <- setNames(
+            as.list(names(data)),
+            unlist(new_names, use.names = FALSE)
+          )
+          list_rename <- list_rename[names(list_rename) != unlist(list_rename, use.names = FALSE)]
           names(data) <- unlist(new_names, use.names = FALSE)
+
           # select
+          list_select <- setdiff(names(data), names(data)[new_selections])
           data <- data[, new_selections, drop = FALSE]
+
         }, silent = TRUE)
 
         if (inherits(res_update, "try-error")) {
@@ -175,11 +187,22 @@ update_variables_server <- function(id, data, height = NULL) {
             tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
           )
           updated_data$x <- data
+          updated_data$list_rename <- list_rename
+          updated_data$list_select <- list_select
         }
 
       })
 
-      return(reactive(updated_data$x))
+      return(reactive({
+        data <- updated_data$x
+        if (!is.null(data) && isTruthy(updated_data$list_rename) && length(updated_data$list_rename) > 0) {
+          attr(data, "code_01_rename") <- call2("rename", !!!updated_data$list_rename)
+        }
+        if (!is.null(data) && isTruthy(updated_data$list_select) && length(updated_data$list_select) > 0) {
+          attr(data, "code_02_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
+        }
+        return(data)
+      }))
     }
   )
 }
