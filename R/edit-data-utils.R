@@ -137,7 +137,7 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(numericInput, opts)
-      } else if (isTRUE((inherits(variable, "factor")))) {
+      } else if (inherits(variable, "factor")) {
         opts <- getOption("datamods.edit.input.factor", list())
         opts <- modifyList(
           x = opts,
@@ -154,7 +154,7 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(virtualSelectInput, opts)
-      } else if (isTRUE((inherits(variable, "character")))) {
+      } else if (inherits(variable, "character")) {
         opts <- getOption("datamods.edit.input.character", list())
         opts <- modifyList(
           x = opts,
@@ -166,7 +166,7 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(textInput, opts)
-      } else if (isTRUE((inherits(variable, "logical")))) {
+      } else if (inherits(variable, "logical")) {
         opts <- getOption("datamods.edit.input.logical", list())
         opts <- modifyList(
           x = opts,
@@ -180,7 +180,7 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(prettyCheckbox, opts)
-      } else if (isTRUE((inherits(variable, "Date")))) {
+      } else if (inherits(variable, "Date")) {
         opts <- getOption("datamods.edit.input.Date", list())
         opts <- modifyList(
           x = opts,
@@ -192,7 +192,7 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(airDatepickerInput, opts)
-      } else if (isTRUE((inherits(variable, c("POSIXct", "POSIXt"))))) {
+      } else if (inherits(variable, c("POSIXct", "POSIXt"))) {
         opts <- getOption("datamods.edit.input.POSIXt", list())
         opts <- modifyList(
           x = opts,
