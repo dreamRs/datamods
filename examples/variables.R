@@ -14,6 +14,7 @@ testdata <- data.frame(
 )
 
 ui <- fluidPage(
+  theme = bslib::bs_theme(version = 5L),
   tags$h3("Select, rename and convert variables"),
   fluidRow(
     column(
