@@ -25,23 +25,16 @@ show_data <- function(data,
                       width = "80%") { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
-  if (isTRUE(show_classes)) {
-    defaultColDef <- reactable::colDef(
-      header = header_with_classes(data)
-    )
-  } else {
-    defaultColDef <- NULL
-  }
+
   if (is.null(options))
     options <- list()
-  options <- modifyList(x = options, val = list(
-    bordered = TRUE,
-    compact = TRUE,
-    striped = TRUE
-  ))
+
+  options$height <- "500px"
+  # options$bodyHeight <- "400px"
   options$data <- data
-  options$defaultColDef <- defaultColDef
-  datatable <- rlang::exec(reactable::reactable, !!!options)
+  if (isTRUE(show_classes))
+    options$summary <- construct_col_summary(data)
+  datatable <- rlang::exec(toastui::datagrid, !!!options)
   if (identical(type, "popup")) {
     show_alert(
       title = NULL,
@@ -74,7 +67,11 @@ show_data <- function(data,
         ),
         title
       ),
-      reactable::renderReactable(datatable),
+      tags$div(
+        style = css(minHeight = options$height),
+        toastui::renderDatagrid(datatable)
+      ),
+      # datatable,
       size = "l",
       footer = NULL,
       easyClose = TRUE

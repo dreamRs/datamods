@@ -96,7 +96,7 @@ update_variables_ui <- function(id, title = TRUE) {
 #'
 #' @rdname update-variables
 #'
-#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need
+#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need reactiveVal
 #' @importFrom rlang call2 expr
 #' @importFrom data.table setorderv
 update_variables_server <- function(id, data, height = NULL) {

@@ -32,7 +32,8 @@ server <- function(input, output, session) {
       data = mtcars,
       title = "My data",
       show_classes = FALSE,
-      options = list(searchable = TRUE, highlight = TRUE)
+      options = list(pagination = 10),
+      type = "modal"
     )
   })
 }
