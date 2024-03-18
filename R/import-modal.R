@@ -133,6 +133,7 @@ import_ui <- function(id,
   tags$div(
     class = "datamods-imports",
     html_dependency_datamods(),
+    tags$style(".tui-grid-cell-summary {vertical-align: baseline;}"),
     tabsetPanel(
       type = "tabs",
       id = ns("tabs-mode"),
@@ -151,7 +152,10 @@ import_ui <- function(id,
         ),
         value = "view",
         tags$br(),
-        reactable::reactableOutput(outputId = ns("view"))
+        tags$div(
+          style = css(minHeight = "600px"),
+          toastui::datagridOutput(outputId = ns("view"), height = "500px")
+        )
       ),
       tabPanel(
         title = tagList(
@@ -323,17 +327,12 @@ import_server <- function(id,
         }
       })
 
-      output$view <- reactable::renderReactable({
+      output$view <- toastui::renderDatagrid({
         data <- req(data_rv$data)
-        reactable::reactable(
-          data,
-          defaultColDef = reactable::colDef(
-            header = header_with_classes(data)
-          ),
-          columns = list(),
-          bordered = TRUE,
-          compact = TRUE,
-          striped = TRUE
+        toastui::datagrid(
+          data = data,
+          summary = construct_col_summary(data),
+          colwidths = "guess"
         )
       })
 

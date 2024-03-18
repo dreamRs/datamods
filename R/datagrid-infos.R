@@ -10,7 +10,7 @@ describe_col_char <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(),
+        tags$hr(style = css(margin = "5px 0")),
         tags$div(
           "Unique:", length(unique(x))
         ),
@@ -43,7 +43,7 @@ describe_col_num <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(),
+        tags$hr(style = css(margin = "5px 0")),
         tags$div(
           "Min:", min(x, na.rm = TRUE)
         ),
@@ -72,7 +72,7 @@ describe_col_date <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(),
+        tags$hr(style = css(margin = "5px 0")),
         tags$div(
           "Min:", min(x, na.rm = TRUE)
         ),
@@ -100,7 +100,7 @@ describe_col_datetime <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(),
+        tags$hr(style = css(margin = "5px 0")),
         tags$div(
           "Min:", min(x, na.rm = TRUE)
         ),
@@ -124,12 +124,12 @@ describe_col_other <- function(x, with_summary = TRUE) {
     style = css(padding = "5px 0", fontSize = "smaller"),
     tags$div(
       style = css(fontStyle = "italic"),
-      phosphoricons::ph("clock"),
+      # phosphoricons::ph("clock"),
       paste(class(x), collapse = ", ")
     ),
     if (with_summary) {
       tagList(
-        tags$hr(),
+        tags$hr(style = css(margin = "5px 0")),
         tags$div(
           "Unique:", length(unique(x))
         ),
