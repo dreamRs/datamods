@@ -147,6 +147,7 @@ update_variables_server <- function(id, data, height = NULL) {
         if (ignit > 0) {
           updated_data$list_rename <- NULL
           updated_data$list_select <- NULL
+          updated_data$list_mutate <- NULL
           data <- data_r()
           new_selections <- input$row_selected
           if (length(new_selections) < 1)
@@ -180,6 +181,7 @@ update_variables_server <- function(id, data, height = NULL) {
                 dec = input$dec
               )
             }
+            list_mutate <- attr(data, "code_03_convert")
 
             # rename
             list_rename <- setNames(
@@ -206,6 +208,7 @@ update_variables_server <- function(id, data, height = NULL) {
             updated_data$x <- data
             updated_data$list_rename <- list_rename
             updated_data$list_select <- list_select
+            updated_data$list_mutate <- list_mutate
           }
         }
         rv_ignit(1)
@@ -213,11 +216,14 @@ update_variables_server <- function(id, data, height = NULL) {
 
       return(reactive({
         data <- updated_data$x
+        if (!is.null(data) && isTruthy(updated_data$list_mutate) && length(updated_data$list_mutate) > 0) {
+          attr(data, "code_01_mutate") <- call2("mutate", !!!updated_data$list_mutate)
+        }
         if (!is.null(data) && isTruthy(updated_data$list_rename) && length(updated_data$list_rename) > 0) {
-          attr(data, "code_01_rename") <- call2("rename", !!!updated_data$list_rename)
+          attr(data, "code_02_rename") <- call2("rename", !!!updated_data$list_rename)
         }
         if (!is.null(data) && isTruthy(updated_data$list_select) && length(updated_data$list_select) > 0) {
-          attr(data, "code_02_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
+          attr(data, "code_03_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
         }
         return(data)
       }))
@@ -413,6 +419,7 @@ update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, b
 #' @noRd
 #'
 #' @importFrom utils type.convert
+#' @importFrom rlang sym expr
 #'
 #' @examples
 #' dat <- data.frame(
@@ -444,6 +451,7 @@ convert_to <- function(data,
                        ...) {
   new_class <- match.arg(new_class, several.ok = TRUE)
   stopifnot(length(new_class) == length(variable))
+  args <- list(...)
   if (length(variable) > 1) {
     for (i in seq_along(variable)) {
       data <- convert_to(data, variable[i], new_class[i], ...)
@@ -452,16 +460,40 @@ convert_to <- function(data,
   }
   if (identical(new_class, "character")) {
     data[[variable]] <- as.character(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.character(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "factor")) {
     data[[variable]] <- as.factor(x = data[[variable]])
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.factor(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "numeric")) {
     data[[variable]] <- as.numeric(type.convert(data[[variable]], as.is = TRUE, ...))
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.numeric(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "integer")) {
     data[[variable]] <- as.integer(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.integer(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "date")) {
     data[[variable]] <- as.Date(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.Date(!!sym(variable), origin = !!args$origin))), variable)
+    )
   } else if (identical(new_class, "datetime")) {
     data[[variable]] <- as.POSIXct(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"), 
+      setNames(list(expr(as.POSIXct(!!sym(variable)))), variable)
+    )
   }
   return(data)
 }
