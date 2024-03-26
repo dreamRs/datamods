@@ -1,7 +1,11 @@
+# datamods 1.4.6
+
+* New module `create_column_ui()` / `create_column_server()` to add new column based on an expression to a `data.frame`.
+
+
 # datamods 1.4.5
 
 * `edit_data_server()` : fixed default variable labels when `var_labels = NULL`.
-
 
 
 # datamods 1.4.4
