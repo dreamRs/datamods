@@ -10,7 +10,7 @@ show_data(
   options = NULL,
   show_classes = TRUE,
   type = c("popup", "modal"),
-  width = "80\%"
+  width = "65\%"
 )
 }
 \arguments{

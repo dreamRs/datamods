@@ -22,16 +22,44 @@ show_data <- function(data,
                       options = NULL,
                       show_classes = TRUE,
                       type = c("popup", "modal"),
-                      width = "80%") { # nocov start
+                      width = "65%") { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
+
+  session <- shiny::getDefaultReactiveDomain()
+  if (!is.null(session)) {
+    theme <- session$getCurrentTheme()
+    gridTheme <- getOption("datagrid.theme")
+    if (!is.null(theme) & length(gridTheme) < 1) {
+      toastui::set_grid_theme(
+        row.even.background = unname(bslib::bs_get_variables(theme, varnames = "body-secondary-bg")),
+        cell.normal.showVerticalBorder = FALSE,
+        cell.normal.showHorizontalBorder = TRUE,
+        area.header.border = FALSE,
+        area.summary.border = TRUE,
+        cell.summary.border = TRUE,
+        cell.normal.border = "#FFF",
+        cell.header.background = "#FFF",
+        cell.header.text = unname(bslib::bs_get_variables(theme, varnames = "secondary")),
+        cell.header.border = FALSE,
+        cell.header.showHorizontalBorder = TRUE,
+        cell.header.showVerticalBorder = FALSE,
+        cell.rowHeader.showVerticalBorder = FALSE,
+        cell.rowHeader.showHorizontalBorder = TRUE,
+        cell.selectedHeader.background = "#013ADF",
+        cell.focused.border = "#013ADF"
+      )
+      on.exit(toastui::reset_grid_theme())
+    }
+  }
 
   if (is.null(options))
     options <- list()
 
-  options$height <- "500px"
-  # options$bodyHeight <- "400px"
+  options$height <- 700
+  options$minBodyHeight <- 700
   options$data <- data
+  options$theme <- "striped"
   if (isTRUE(show_classes))
     options$summary <- construct_col_summary(data)
   datatable <- rlang::exec(toastui::datagrid, !!!options)
@@ -68,10 +96,10 @@ show_data <- function(data,
         title
       ),
       tags$div(
-        style = css(minHeight = options$height),
-        toastui::renderDatagrid(datatable)
+        style = css(minHeight = validateCssUnit(options$height)),
+        renderDatagrid2(datatable)
+        # datatasble
       ),
-      # datatable,
       size = "l",
       footer = NULL,
       easyClose = TRUE
@@ -79,4 +107,11 @@ show_data <- function(data,
   }
 } # nocov end
 
-
+#
+renderDatagrid2 <- function(expr, env = parent.frame(), quoted = FALSE) {
+  if (!quoted) { expr <- substitute(expr) } # force quoted
+  htmlwidgets::shinyRenderWidget(expr, datagridOutput2, env, quoted = TRUE)
+}
+datagridOutput2 <- function(outputId, width = "100%", height = "auto") {
+  htmlwidgets::shinyWidgetOutput(outputId, "datagrid", width, height, package = "toastui", inline = FALSE)
+}

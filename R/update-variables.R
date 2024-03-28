@@ -395,7 +395,7 @@ update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, b
     grid_editor(
       column = "class_toset",
       type = "select",
-      choices = c("", "character", "factor", "numeric", "integer", "date", "datetime")
+      choices = c("Select new class", "character", "factor", "numeric", "integer", "date", "datetime")
     ) %>%
     grid_editor_opts(editingEvent = "click", actionButtonId = buttonId) %>%
     grid_selection_row(
@@ -461,37 +461,37 @@ convert_to <- function(data,
   if (identical(new_class, "character")) {
     data[[variable]] <- as.character(x = data[[variable]], ...)
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.character(!!sym(variable)))), variable)
     )
   } else if (identical(new_class, "factor")) {
     data[[variable]] <- as.factor(x = data[[variable]])
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.factor(!!sym(variable)))), variable)
     )
   } else if (identical(new_class, "numeric")) {
     data[[variable]] <- as.numeric(type.convert(data[[variable]], as.is = TRUE, ...))
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.numeric(!!sym(variable)))), variable)
     )
   } else if (identical(new_class, "integer")) {
     data[[variable]] <- as.integer(x = data[[variable]], ...)
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.integer(!!sym(variable)))), variable)
     )
   } else if (identical(new_class, "date")) {
     data[[variable]] <- as.Date(x = data[[variable]], ...)
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.Date(!!sym(variable), origin = !!args$origin))), variable)
     )
   } else if (identical(new_class, "datetime")) {
     data[[variable]] <- as.POSIXct(x = data[[variable]], ...)
     attr(data, "code_03_convert") <- c(
-      attr(data, "code_03_convert"), 
+      attr(data, "code_03_convert"),
       setNames(list(expr(as.POSIXct(!!sym(variable)))), variable)
     )
   }

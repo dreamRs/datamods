@@ -2,7 +2,7 @@
 #' @importFrom htmltools tagList tags css
 describe_col_char <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "smaller"),
+    style = css(padding = "5px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("text-aa"),
@@ -35,7 +35,7 @@ describe_col_char <- function(x, with_summary = TRUE) {
 
 describe_col_num <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "smaller"),
+    style = css(padding = "5px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("hash"),
@@ -45,13 +45,13 @@ describe_col_num <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "5px 0")),
         tags$div(
-          "Min:", min(x, na.rm = TRUE)
+          "Min:", round(min(x, na.rm = TRUE), 2)
         ),
         tags$div(
-          "Mean:", mean(x, na.rm = TRUE)
+          "Mean:", round(mean(x, na.rm = TRUE), 2)
         ),
         tags$div(
-          "Max:", max(x, na.rm = TRUE)
+          "Max:", round(max(x, na.rm = TRUE), 2)
         ),
         tags$div(
           "Missing:", sum(is.na(x))
@@ -64,7 +64,7 @@ describe_col_num <- function(x, with_summary = TRUE) {
 
 describe_col_date <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "smaller"),
+    style = css(padding = "5px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("calendar"),
@@ -92,7 +92,7 @@ describe_col_date <- function(x, with_summary = TRUE) {
 
 describe_col_datetime <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "smaller"),
+    style = css(padding = "5px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("clock"),
@@ -121,7 +121,7 @@ describe_col_datetime <- function(x, with_summary = TRUE) {
 
 describe_col_other <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "smaller"),
+    style = css(padding = "5px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       # phosphoricons::ph("clock"),
