@@ -51,7 +51,7 @@ create_column_ui <- function(id) {
       actionButton(
         inputId = ns("compute"),
         label = tagList(
-          ph("gear"), "Compute"
+          ph("gear"), "Create column"
         ),
         class = "btn-outline-primary",
         width = "100%"
@@ -179,7 +179,8 @@ list_allowed_operations <- function() {
     # getGroupMembers("Summary"),
     c("max", "min", "range", "prod", "sum", "any", "all"),
     "pmin", "pmax", "mean",
-    "paste", "paste0", "substr", "nchar", "trimws"
+    "paste", "paste0", "substr", "nchar", "trimws",
+    "gsub", "sub", "grepl", "ifelse"
   )
 }
 

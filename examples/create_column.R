@@ -22,7 +22,7 @@ server <- function(input, output, session) {
 
   data_r <- create_column_server(
     id = "col",
-    data_r = reactive(mtcars[, 1:5])
+    data_r = reactive(MASS::Cars93[, c(1, 3, 4, 5, 6, 10)])
   )
 
   output$table <- renderReactable({
