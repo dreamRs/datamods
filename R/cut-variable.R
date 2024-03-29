@@ -36,8 +36,18 @@ cut_variable_ui <- function(id) {
           inputId = ns("method"),
           label = "Method:",
           choices = c(
-            "sd", "equal", "pretty", "quantile", "kmeans",
-            "hclust", "bclust", "fisher", "jenks", "headtails", "maximum", "box"
+            "sd",
+            "equal",
+            "pretty",
+            "quantile",
+            # "kmeans",
+            # "hclust",
+            # "bclust",
+            # "fisher",
+            # "jenks",
+            "headtails",
+            "maximum",
+            "box"
           ),
           selected = "quantile",
           width = "100%"
@@ -69,7 +79,13 @@ cut_variable_ui <- function(id) {
       )
     ),
     plotOutput(outputId = ns("plot"), width = "100%"),
-    datagridOutput2(outputId = ns("count"))
+    datagridOutput2(outputId = ns("count")),
+    actionButton(
+      inputId = ns("create"),
+      label = tagList(ph("scissors"), "Create factor variable"),
+      class = "btn-outline-primary float-end"
+    ),
+    tags$div(class = "clearfix")
   )
 }
 
@@ -78,6 +94,7 @@ cut_variable_ui <- function(id) {
 #' @importFrom shiny moduleServer observeEvent reactive req bindEvent
 #' @importFrom shinyWidgets updateVirtualSelect
 #' @importFrom toastui renderDatagrid2 datagrid grid_colorbar
+#' @importFrom rlang %||%
 #'
 #' @rdname cut-variable
 cut_variable_server <- function(id, data_r = reactive(NULL)) {
@@ -85,14 +102,17 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
     id,
     function(input, output, session) {
 
+      rv <- reactiveValues(data = NULL)
+
       bindEvent(observe({
         data <- data_r()
+        rv$data <- data
         vars_num <- vapply(data, is.numeric, logical(1))
         vars_num <- names(vars_num)[vars_num]
         updateVirtualSelect(
           inputId = "variable",
           choices = vars_num,
-          selected = vars_num[1]
+          selected = if (isTruthy(input$variable)) input$variable else vars_num[1]
         )
       }), data_r(), input$hidden)
 
@@ -144,11 +164,14 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
             label_outside = TRUE,
             label_width = "40px",
             bar_bg = "#112466",
-            from = 0
+            from = c(0, max(count_data$count) + 1)
           )
       })
 
-      return(data_cutted_r)
+      data_returned_r <- observeEvent(input$create, {
+        rv$data <- data_cutted_r()
+      })
+      return(reactive(rv$data))
     }
   )
 }
