@@ -32,7 +32,6 @@ RoxygenNote: 7.3.1
 Imports: 
     data.table,
     htmltools,
-    htmlwidgets,
     phosphoricons,
     reactable,
     readxl,
@@ -41,6 +40,7 @@ Imports:
     shiny (>= 1.5.0),
     shinyWidgets (>= 0.7.3),
     tibble,
+    toastui (>= 0.3.3),
     tools,
     shinybusy,
     writexl

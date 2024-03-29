@@ -62,7 +62,7 @@ update_variables_ui <- function(id, title = TRUE) {
         )
       ),
       tags$br(),
-      reactable::reactableOutput(outputId = ns("table"))
+      toastui::datagridOutput(outputId = ns("table"))
     ),
     tags$br(),
     tags$div(
@@ -71,8 +71,10 @@ update_variables_ui <- function(id, title = TRUE) {
         id = ns("update-result"),
         status = "info",
         phosphoricons::ph("info"),
-        i18n(paste("Select, rename and convert variables in table above,",
-                   "then apply changes by clicking button below."))
+        i18n(paste(
+          "Select, rename and convert variables in table above,",
+          "then apply changes by clicking button below."
+        ))
       )
     ),
     actionButton(
@@ -94,8 +96,9 @@ update_variables_ui <- function(id, title = TRUE) {
 #'
 #' @rdname update-variables
 #'
-#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need
+#' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need reactiveVal
 #' @importFrom rlang call2 expr
+#' @importFrom data.table setorderv
 update_variables_server <- function(id, data, height = NULL) {
   moduleServer(
     id = id,
@@ -103,11 +106,10 @@ update_variables_server <- function(id, data, height = NULL) {
 
       ns <- session$ns
       updated_data <- reactiveValues(x = NULL)
-      token <- reactiveValues(x = genId())
+      rv_ignit <- reactiveVal(0)
 
       data_r <- reactive({
         if (is.reactive(data)) {
-          token$x <- genId()
           data()
         } else {
           data
@@ -129,77 +131,99 @@ update_variables_server <- function(id, data, height = NULL) {
         summary_vars(data)
       })
 
-      output$table <- reactable::renderReactable({
+      output$table <- toastui::renderDatagrid({
         req(variables_r())
-        tok <- isolate(token$x)
         variables <- variables_r()
-        # variables <- set_input_checkbox(variables, ns(paste("selection", tok, sep = "-")))
-        variables <- set_input_text(variables, "name", ns(paste("name", tok, sep = "-")))
-        variables <- set_input_class(variables, "class", ns(paste("class_to_set", tok, sep = "-")))
-        update_variables_reactable(variables, height = height, elementId = ns("table"))
+        update_variables_datagrid(
+          variables,
+          height = height,
+          selectionId = ns("row_selected"),
+          buttonId = "validate"
+        )
       })
 
-      observeEvent(input$validate, {
-        updated_data$list_rename <- NULL
-        updated_data$list_select <- NULL
-        data <- data_r()
-        tok <- isolate(token$x)
-        new_selections <- reactable::getReactableState("table", "selected")
-        new_names <- get_inputs(paste("name", tok, sep = "-"))
-        new_classes <- get_inputs(paste("class_to_set", tok, sep = "-"))
+      observeEvent(input$table_data, {
+        ignit <- rv_ignit()
+        if (ignit > 0) {
+          updated_data$list_rename <- NULL
+          updated_data$list_select <- NULL
+          updated_data$list_mutate <- NULL
+          data <- data_r()
+          new_selections <- input$row_selected
+          if (length(new_selections) < 1)
+            new_selections <- seq_along(data)
 
-        data_sv <- variables_r()
-        vars_to_change <- get_vars_to_convert(data_sv, new_classes)
+          data_inputs <- as.data.table(input$table_data)
+          setorderv(data_inputs, "rowKey")
 
-        res_update <- try({
-          # convert
-          if (nrow(vars_to_change) > 0) {
-            data <- convert_to(
-              data = data,
-              variable = vars_to_change$name,
-              new_class = vars_to_change$class_to_set,
-              origin = input$origin,
-              format = input$format,
-              dec = input$dec
+          old_names <- data_inputs$name
+          new_names <- data_inputs$name_toset
+          new_names[new_names == "Enter new name"] <- NA
+          new_names[is.na(new_names)] <- old_names[is.na(new_names)]
+          new_names[new_names == ""] <- old_names[new_names == ""]
+
+
+          new_classes <- data_inputs$class_toset
+          new_classes[new_classes == "Select new class"] <- NA
+
+          data_sv <- variables_r()
+          vars_to_change <- get_vars_to_convert(data_sv, setNames(as.list(new_classes), old_names))
+
+          res_update <- try({
+            # convert
+            if (nrow(vars_to_change) > 0) {
+              data <- convert_to(
+                data = data,
+                variable = vars_to_change$name,
+                new_class = vars_to_change$class_to_set,
+                origin = input$origin,
+                format = input$format,
+                dec = input$dec
+              )
+            }
+            list_mutate <- attr(data, "code_03_convert")
+
+            # rename
+            list_rename <- setNames(
+              as.list(old_names),
+              unlist(new_names, use.names = FALSE)
             )
+            list_rename <- list_rename[names(list_rename) != unlist(list_rename, use.names = FALSE)]
+            names(data) <- unlist(new_names, use.names = FALSE)
+
+            # select
+            list_select <- setdiff(names(data), names(data)[new_selections])
+            data <- data[, new_selections, drop = FALSE]
+
+          }, silent = FALSE)
+
+          if (inherits(res_update, "try-error")) {
+            insert_error(selector = "update")
+          } else {
+            insert_alert(
+              selector = ns("update"),
+              status = "success",
+              tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
+            )
+            updated_data$x <- data
+            updated_data$list_rename <- list_rename
+            updated_data$list_select <- list_select
+            updated_data$list_mutate <- list_mutate
           }
-
-          # rename
-          list_rename <- setNames(
-            as.list(names(data)),
-            unlist(new_names, use.names = FALSE)
-          )
-          list_rename <- list_rename[names(list_rename) != unlist(list_rename, use.names = FALSE)]
-          names(data) <- unlist(new_names, use.names = FALSE)
-
-          # select
-          list_select <- setdiff(names(data), names(data)[new_selections])
-          data <- data[, new_selections, drop = FALSE]
-
-        }, silent = TRUE)
-
-        if (inherits(res_update, "try-error")) {
-          insert_error(selector = "update")
-        } else {
-          insert_alert(
-            selector = ns("update"),
-            status = "success",
-            tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
-          )
-          updated_data$x <- data
-          updated_data$list_rename <- list_rename
-          updated_data$list_select <- list_select
         }
-
-      })
+        rv_ignit(1)
+      }, ignoreNULL = TRUE, ignoreInit = TRUE)
 
       return(reactive({
         data <- updated_data$x
+        if (!is.null(data) && isTruthy(updated_data$list_mutate) && length(updated_data$list_mutate) > 0) {
+          attr(data, "code_01_mutate") <- call2("mutate", !!!updated_data$list_mutate)
+        }
         if (!is.null(data) && isTruthy(updated_data$list_rename) && length(updated_data$list_rename) > 0) {
-          attr(data, "code_01_rename") <- call2("rename", !!!updated_data$list_rename)
+          attr(data, "code_02_rename") <- call2("rename", !!!updated_data$list_rename)
         }
         if (!is.null(data) && isTruthy(updated_data$list_select) && length(updated_data$list_select) > 0) {
-          attr(data, "code_02_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
+          attr(data, "code_03_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
         }
         return(data)
       }))
@@ -306,188 +330,81 @@ summary_vars <- function(data) {
 
 
 
-
-#' @title Convert to textInput
-#'
-#' @description Convert a variable to several text inputs to be displayed in a widget table.
-#'
-#' @param data a \code{data.frame}
-#' @param variable name of the variable to replace by text inputs
-#' @param id a common id to use for text inputs, will be suffixed by row number
-#' @param width width of input
-#'
-#' @return a \code{data.frame}
-#' @noRd
-#' @importFrom htmltools doRenderTags
-#' @importFrom shiny textInput
-set_input_text <- function(data, variable, id = "variable", width = "100%") {
-  values <- data[[variable]]
-  text_input <- mapply(
-    FUN = function(inputId, value) {
-      input <- textInput(
-        inputId = inputId,
-        label = NULL,
-        value = value,
-        width = width
-      )
-      input <- htmltools::tagAppendAttributes(input, style = "margin-bottom: 5px;")
-      doRenderTags(input)
-    },
-    inputId = paste(id, pad0(seq_along(values)), sep = "-"),
-    value = values,
-    SIMPLIFY = FALSE,
-    USE.NAMES = FALSE
-  )
-  data[[variable]] <- text_input
-  data
-}
-
-
-
-
-#' Convert rownames to checkboxes
-#'
-#' @param data a \code{data.frame}
-#' @param id a common id to use for text inputs, will be suffixed by row number
-#'
-#' @return a \code{data.frame}
-#' @noRd
-#'
-#' @importFrom htmltools tagAppendAttributes doRenderTags
-#' @importFrom shinyWidgets prettyCheckbox
-#'
-#' @note
-#' \code{shinyWidgets::prettyCheckbox} HTML dependency need to be included manually.
-set_input_checkbox <- function(data, id = "selection") {
-  checkboxes <- lapply(
-    FUN = function(i) {
-      tag <- prettyCheckbox(
-        inputId = paste(id, i, sep = "-"),
-        label = NULL,
-        value = TRUE,
-        status = "primary",
-        thick = TRUE,
-        outline = TRUE,
-        shape = "curve",
-        width = "100%"
-      )
-      tag <- tagAppendAttributes(tag, style = "margin-top: 5px; margin-bottom: 5px;")
-      doRenderTags(tag)
-    },
-    X = pad0(seq_len(nrow(data)))
-  )
-  rownames(data) <- unlist(checkboxes, use.names = FALSE)
-  data
-}
-
-
-
-
-
-
-#' Add select input to update class
-#'
-#' @param data a \code{data.frame}
-#' @param variable name of the variable containing variable's class
-#' @param id a common id to use for text inputs, will be suffixed by row number
-#' @param width width of input
-#'
-#' @return a \code{data.frame}
-#' @noRd
-#'
-#' @importFrom htmltools doRenderTags
-#' @importFrom shiny selectInput
-set_input_class <- function(data, variable, id = "classes", width = "100%") {
-  classes <- data[[variable]]
-  classes_up <- c("character", "factor", "numeric", "integer", "date", "datetime")
-  class_input <- mapply(
-    FUN = function(inputId, class) {
-      if (class %in% classes_up) {
-        input <- selectInput(
-          inputId = inputId,
-          label = NULL,
-          choices = classes_up,
-          selected = class,
-          width = width,
-          selectize = FALSE
-        )
-        input <- htmltools::tagAppendAttributes(input, style = "margin-bottom: 5px;")
-        doRenderTags(input)
-      } else {
-        ""
-      }
-    },
-    inputId = paste(id, pad0(seq_len(nrow(data))), sep = "-"),
-    class = classes,
-    SIMPLIFY = FALSE,
-    USE.NAMES = FALSE
-  )
+add_var_toset <- function(data, var_name, default = "") {
   datanames <- names(data)
   datanames <- append(
     x = datanames,
-    values = paste0(variable, "_toset"),
-    after = which(datanames == variable)
+    values = paste0(var_name, "_toset"),
+    after = which(datanames == var_name)
   )
-  data[[paste0(variable, "_toset")]] <- class_input
+  data[[paste0(var_name, "_toset")]] <- default
   data[, datanames]
 }
 
+#' @importFrom toastui datagrid grid_columns grid_format grid_style_column
+#'  grid_style_column grid_editor grid_editor_opts grid_selection_row
+update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, buttonId = NULL) {
 
+  data <- add_var_toset(data, "name", "Enter new name")
+  data <- add_var_toset(data, "class", "Select new class")
 
-update_variables_reactable <- function(data, height = NULL, elementId = NULL) {
-  if (is.null(height)) {
-    height <- if (NROW(data) > 8) "400px" else "auto"
-  }
-  tble <- reactable::reactable(
+  # session <- shiny::getDefaultReactiveDomain()
+  # if (!is.null(session)) {
+  #   theme <- session$getCurrentTheme()
+  #   gridTheme <- getOption("datagrid.theme")
+  #   if (!is.null(theme) & length(gridTheme) < 1) {
+  #     set_grid_theme(
+  #       row.even.background = bs_get_variables(theme, varnames = "primary-bg-subtle"),
+  #       cell.normal.border = "#9bc2e6",
+  #       cell.normal.showVerticalBorder = TRUE,
+  #       cell.normal.showHorizontalBorder = TRUE,
+  #       cell.header.background = bs_get_variables(theme, varnames = "primary"),
+  #       cell.header.text = "#FFF",
+  #       cell.selectedHeader.background = "#013ADF",
+  #       cell.focused.border = "#013ADF"
+  #     )
+  #   }
+  # }
+
+  datagrid(
     data = data,
-    defaultColDef = reactable::colDef(html = TRUE),
-    columns = list(
-      name = reactable::colDef(name = "Name"),
-      class = reactable::colDef(name = "Class"),
-      class_toset = reactable::colDef(name = "New class"),
-      n_missing = reactable::colDef(name = "Missing values"),
-      p_complete = reactable::colDef(name = "Complete obs.", format = reactable::colFormat(percent = TRUE, digits = 1)),
-      n_unique = reactable::colDef(name = "Unique values")
-    ),
-    height = height,
-    selection = "multiple",
-    defaultSelected = seq_len(nrow(data)),
-    pagination = FALSE,
-    bordered = TRUE,
-    compact = TRUE,
-    striped = TRUE,
-    wrap = FALSE
-  )
-  if (is.null(elementId)) {
-    htmlwidgets::onRender(tble, jsCode = "function() {Shiny.bindAll();}")
-  } else {
-    htmlwidgets::onRender(tble, jsCode = sprintf(
-      "function() {Shiny.bindAll(document.getElementById('%s'));}",
-      elementId
-    ))
-  }
-
+    theme = "striped",
+    colwidths = NULL
+  ) %>%
+    grid_columns(
+      columns = c("name", "name_toset", "class", "class_toset", "n_missing", "p_complete", "n_unique"),
+      header = c("Name", "New name", "Class", "New class", "Missing values", "Complete obs.", "Unique values"),
+      minWidth = 120
+    ) %>%
+    grid_format(
+      "p_complete",
+      formatter = toastui::JS("function(obj) {return (obj.value*100).toFixed(0) + '%';}")
+    ) %>%
+    grid_style_column(
+      column = "name_toset",
+      fontStyle = "italic"
+    ) %>%
+    grid_style_column(
+      column = "class_toset",
+      fontStyle = "italic"
+    ) %>%
+    grid_editor(
+      column = "name_toset",
+      type = "text"
+    ) %>%
+    grid_editor(
+      column = "class_toset",
+      type = "select",
+      choices = c("Select new class", "character", "factor", "numeric", "integer", "date", "datetime")
+    ) %>%
+    grid_editor_opts(editingEvent = "click", actionButtonId = buttonId) %>%
+    grid_selection_row(
+      inputId = selectionId,
+      type = "checkbox",
+      return = "index"
+    )
 }
 
-
-
-
-#' Retrieve all inputs according to pattern
-#'
-#' @param pattern Pattern to search for
-#' @param session Shiny session
-#'
-#' @return a list
-#' @noRd
-#'
-#' @importFrom shiny getDefaultReactiveDomain isolate
-#'
-get_inputs <- function(pattern, session = shiny::getDefaultReactiveDomain()) {
-  all_inputs <- isolate(reactiveValuesToList(session$input))
-  filtered <- sort(names(all_inputs))
-  filtered <- grep(pattern = pattern, x = filtered, value = TRUE)
-  all_inputs[filtered]
-}
 
 
 
@@ -502,6 +419,7 @@ get_inputs <- function(pattern, session = shiny::getDefaultReactiveDomain()) {
 #' @noRd
 #'
 #' @importFrom utils type.convert
+#' @importFrom rlang sym expr
 #'
 #' @examples
 #' dat <- data.frame(
@@ -533,6 +451,7 @@ convert_to <- function(data,
                        ...) {
   new_class <- match.arg(new_class, several.ok = TRUE)
   stopifnot(length(new_class) == length(variable))
+  args <- list(...)
   if (length(variable) > 1) {
     for (i in seq_along(variable)) {
       data <- convert_to(data, variable[i], new_class[i], ...)
@@ -541,49 +460,44 @@ convert_to <- function(data,
   }
   if (identical(new_class, "character")) {
     data[[variable]] <- as.character(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.character(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "factor")) {
     data[[variable]] <- as.factor(x = data[[variable]])
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.factor(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "numeric")) {
     data[[variable]] <- as.numeric(type.convert(data[[variable]], as.is = TRUE, ...))
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.numeric(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "integer")) {
     data[[variable]] <- as.integer(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.integer(!!sym(variable)))), variable)
+    )
   } else if (identical(new_class, "date")) {
     data[[variable]] <- as.Date(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.Date(!!sym(variable), origin = !!args$origin))), variable)
+    )
   } else if (identical(new_class, "datetime")) {
     data[[variable]] <- as.POSIXct(x = data[[variable]], ...)
+    attr(data, "code_03_convert") <- c(
+      attr(data, "code_03_convert"),
+      setNames(list(expr(as.POSIXct(!!sym(variable)))), variable)
+    )
   }
   return(data)
 }
 
-
-
-
-#' Extract variable ID from input names
-#'
-#' @param x Character vector
-#'
-#' @return a character vector
-#' @noRd
-#'
-#' @examples
-#' extract_id(c("class_to_set-01", "class_to_set-02",
-#'              "class_to_set-03", "class_to_set-04",
-#'              "class_to_set-05", "no-id-there"))
-extract_id <- function(x) {
-  match_reg <- regexec(pattern = "(?<=-)\\d+$", text = x, perl = TRUE)
-  result <- regmatches(x = x, m = match_reg)
-  result <- lapply(
-    X = result,
-    FUN = function(x) {
-      if (length(x) < 1) {
-        NA_character_
-      } else {
-        x
-      }
-    }
-  )
-  unlist(result)
-}
 
 
 
@@ -593,60 +507,81 @@ extract_id <- function(x) {
 
 #' Get variable(s) to convert
 #'
-#' @param vars Output of \code{summary_vars}
+#' @param vars Output of [summary_vars()]
 #' @param classes_input List of inputs containing new classes
 #'
-#' @return a \code{data.frame}.
+#' @return a `data.table`.
 #' @noRd
+#'
+#' @importFrom data.table data.table as.data.table
 #'
 #' @examples
 #' # 2 variables to convert
 #' new_classes <- list(
-#'   "class_to_set-1" = "numeric",
-#'   "class_to_set-2" = "numeric",
-#'   "class_to_set-3" = "character",
-#'   "class_to_set-4" = "numeric",
-#'   "class_to_set-5" = "character"
+#'   "Sepal.Length" = "numeric",
+#'   "Sepal.Width" = "numeric",
+#'   "Petal.Length" = "character",
+#'   "Petal.Width" = "numeric",
+#'   "Species" = "character"
 #' )
 #' get_vars_to_convert(summary_vars(iris), new_classes)
 #'
 #'
 #' # No changes
 #' new_classes <- list(
-#'   "class_to_set-1" = "numeric",
-#'   "class_to_set-2" = "numeric",
-#'   "class_to_set-3" = "numeric",
-#'   "class_to_set-4" = "numeric",
-#'   "class_to_set-5" = "factor"
+#'   "Sepal.Length" = "numeric",
+#'   "Sepal.Width" = "numeric",
+#'   "Petal.Length" = "numeric",
+#'   "Petal.Width" = "numeric",
+#'   "Species" = "factor"
 #' )
 #' get_vars_to_convert(summary_vars(iris), new_classes)
 #'
+#' # Not set = NA or ""
+#' new_classes <- list(
+#'   "Sepal.Length" = NA,
+#'   "Sepal.Width" = NA,
+#'   "Petal.Length" = NA,
+#'   "Petal.Width" = NA,
+#'   "Species" = NA
+#' )
+#' get_vars_to_convert(summary_vars(iris), new_classes)
+#'
+#' # Set for one var
+#' new_classes <- list(
+#'   "Sepal.Length" = "",
+#'   "Sepal.Width" = "",
+#'   "Petal.Length" = "",
+#'   "Petal.Width" = "",
+#'   "Species" = "character"
+#' )
+#' get_vars_to_convert(summary_vars(iris), new_classes)
 #'
 #' new_classes <- list(
-#'   "class_to_set-01" = "character",
-#'   "class_to_set-02" = "numeric",
-#'   "class_to_set-03" = "character",
-#'   "class_to_set-04" = "numeric",
-#'   "class_to_set-05" = "character",
-#'   "class_to_set-06" = "character",
-#'   "class_to_set-07" = "numeric",
-#'   "class_to_set-08" = "character",
-#'   "class_to_set-09" = "numeric",
-#'   "class_to_set-10" = "character",
-#'   "class_to_set-11" = "integer"
+#'   "mpg" = "character",
+#'   "cyl" = "numeric",
+#'   "disp" = "character",
+#'   "hp" = "numeric",
+#'   "drat" = "character",
+#'   "wt" = "character",
+#'   "qsec" = "numeric",
+#'   "vs" = "character",
+#'   "am" = "numeric",
+#'   "gear" = "character",
+#'   "carb" = "integer"
 #' )
 #' get_vars_to_convert(summary_vars(mtcars), new_classes)
 get_vars_to_convert <- function(vars, classes_input) {
-  classes_input <- data.frame(
-    id = names(classes_input),
+  vars <- as.data.table(vars)
+  classes_input <- data.table(
+    name = names(classes_input),
     class_to_set = unlist(classes_input, use.names = FALSE),
     stringsAsFactors = FALSE
   )
-  classes_input$id <- extract_id(classes_input$id)
-  vars$id <- pad0(seq_len(nrow(vars)))
-  classes_df <- merge(x = vars, y = classes_input, by = "id")
-  classes_df <- classes_df[!is.na(classes_df$class_to_set), ]
-  with(classes_df, classes_df[class != class_to_set, ])
+  classes_input <- classes_input[!is.na(class_to_set) & class_to_set != ""]
+  classes_df <- merge(x = vars, y = classes_input, by = "name")
+  classes_df <- classes_df[!is.na(class_to_set)]
+  classes_df[class != class_to_set]
 }
 
 

@@ -133,6 +133,7 @@ import_ui <- function(id,
   tags$div(
     class = "datamods-imports",
     html_dependency_datamods(),
+    tags$style(".tui-grid-cell-summary {vertical-align: baseline;}"),
     tabsetPanel(
       type = "tabs",
       id = ns("tabs-mode"),
@@ -151,7 +152,10 @@ import_ui <- function(id,
         ),
         value = "view",
         tags$br(),
-        reactable::reactableOutput(outputId = ns("view"))
+        tags$div(
+          style = css(minHeight = "600px"),
+          toastui::datagridOutput(outputId = ns("view"), height = "auto")
+        )
       ),
       tabPanel(
         title = tagList(
@@ -323,17 +327,39 @@ import_server <- function(id,
         }
       })
 
-      output$view <- reactable::renderReactable({
+      output$view <- toastui::renderDatagrid({
         data <- req(data_rv$data)
-        reactable::reactable(
-          data,
-          defaultColDef = reactable::colDef(
-            header = header_with_classes(data)
-          ),
-          columns = list(),
-          bordered = TRUE,
-          compact = TRUE,
-          striped = TRUE
+        session <- shiny::getDefaultReactiveDomain()
+        if (!is.null(session)) {
+          theme <- session$getCurrentTheme()
+          gridTheme <- getOption("datagrid.theme")
+          if (!is.null(theme) & length(gridTheme) < 1) {
+            toastui::set_grid_theme(
+              row.even.background = unname(bslib::bs_get_variables(theme, varnames = "body-secondary-bg")),
+              cell.normal.showVerticalBorder = FALSE,
+              cell.normal.showHorizontalBorder = TRUE,
+              area.header.border = FALSE,
+              area.summary.border = TRUE,
+              cell.summary.border = TRUE,
+              cell.normal.border = "#FFF",
+              cell.header.background = "#FFF",
+              cell.header.text = unname(bslib::bs_get_variables(theme, varnames = "secondary")),
+              cell.header.border = FALSE,
+              cell.header.showHorizontalBorder = TRUE,
+              cell.header.showVerticalBorder = FALSE,
+              cell.rowHeader.showVerticalBorder = FALSE,
+              cell.rowHeader.showHorizontalBorder = TRUE,
+              cell.selectedHeader.background = "#013ADF",
+              cell.focused.border = "#013ADF"
+            )
+            on.exit(toastui::reset_grid_theme())
+          }
+        }
+        toastui::datagrid(
+          data = data,
+          summary = construct_col_summary(data),
+          colwidths = "guess",
+          minBodyHeight = 500
         )
       })
 

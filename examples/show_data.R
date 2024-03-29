@@ -3,6 +3,7 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  theme = bslib::bs_theme(version = 5L),
   actionButton(
     inputId = "show1",
     label = "Show data in popup",
@@ -32,7 +33,8 @@ server <- function(input, output, session) {
       data = mtcars,
       title = "My data",
       show_classes = FALSE,
-      options = list(searchable = TRUE, highlight = TRUE)
+      options = list(pagination = 10),
+      type = "modal"
     )
   })
 }

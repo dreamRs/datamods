@@ -22,26 +22,47 @@ show_data <- function(data,
                       options = NULL,
                       show_classes = TRUE,
                       type = c("popup", "modal"),
-                      width = "80%") { # nocov start
+                      width = "65%") { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
-  if (isTRUE(show_classes)) {
-    defaultColDef <- reactable::colDef(
-      header = header_with_classes(data)
-    )
-  } else {
-    defaultColDef <- NULL
+
+  session <- shiny::getDefaultReactiveDomain()
+  if (!is.null(session)) {
+    theme <- session$getCurrentTheme()
+    gridTheme <- getOption("datagrid.theme")
+    if (!is.null(theme) & length(gridTheme) < 1) {
+      toastui::set_grid_theme(
+        row.even.background = unname(bslib::bs_get_variables(theme, varnames = "body-secondary-bg")),
+        cell.normal.showVerticalBorder = FALSE,
+        cell.normal.showHorizontalBorder = TRUE,
+        area.header.border = FALSE,
+        area.summary.border = TRUE,
+        cell.summary.border = TRUE,
+        cell.normal.border = "#FFF",
+        cell.header.background = "#FFF",
+        cell.header.text = unname(bslib::bs_get_variables(theme, varnames = "secondary")),
+        cell.header.border = FALSE,
+        cell.header.showHorizontalBorder = TRUE,
+        cell.header.showVerticalBorder = FALSE,
+        cell.rowHeader.showVerticalBorder = FALSE,
+        cell.rowHeader.showHorizontalBorder = TRUE,
+        cell.selectedHeader.background = "#013ADF",
+        cell.focused.border = "#013ADF"
+      )
+      on.exit(toastui::reset_grid_theme())
+    }
   }
+
   if (is.null(options))
     options <- list()
-  options <- modifyList(x = options, val = list(
-    bordered = TRUE,
-    compact = TRUE,
-    striped = TRUE
-  ))
+
+  options$height <- 500
+  options$minBodyHeight <- 400
   options$data <- data
-  options$defaultColDef <- defaultColDef
-  datatable <- rlang::exec(reactable::reactable, !!!options)
+  options$theme <- "striped"
+  if (isTRUE(show_classes))
+    options$summary <- construct_col_summary(data)
+  datatable <- rlang::exec(toastui::datagrid, !!!options)
   if (identical(type, "popup")) {
     show_alert(
       title = NULL,
@@ -74,12 +95,15 @@ show_data <- function(data,
         ),
         title
       ),
-      reactable::renderReactable(datatable),
+      tags$div(
+        style = css(minHeight = validateCssUnit(options$height)),
+        toastui::renderDatagrid2(datatable)
+        # datatasble
+      ),
       size = "l",
       footer = NULL,
       easyClose = TRUE
     ))
   }
 } # nocov end
-
 

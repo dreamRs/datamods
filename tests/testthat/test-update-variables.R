@@ -51,37 +51,13 @@ test_that("summary_vars works", {
 })
 
 
-test_that("set_input_* works", {
+
+test_that("update_variables_datagrid works", {
   variables <- summary_vars(iris)
-  variables <- set_input_checkbox(variables, id = "selection")
-  variables <- set_input_text(variables, "name", id = "text")
-  variables <- set_input_class(variables, "class", id = "class-to-set")
-
-  expect_true(all(grepl(pattern = "id=\"selection", x = rownames(variables))))
-  expect_true(!is.null(variables$class_toset))
-  expect_true(all(grepl(pattern = "id=\"class-to-set", x = variables$class_toset)))
-  expect_true(all(grepl(pattern = "id=\"text", x = variables$name)))
-})
-
-
-test_that("update_variables_reactable works", {
-  variables <- summary_vars(iris)
-  variables <- set_input_class(variables, "class", id = "class-to-set")
-  dt <- update_variables_reactable(variables)
+  dt <- update_variables_datagrid(variables)
   expect_is(dt, "htmlwidget")
 })
 
-
-test_that("get_inputs works", {
-
-  session <- shiny::MockShinySession$new()
-  session$setInputs("test-1" = 1, "test-2" = 2, "other" = "other")
-
-  get_inputs("test", session)
-
-  expect_is(get_inputs("test", session), "list")
-  expect_length(get_inputs("test", session), 2)
-})
 
 
 test_that("convert_to works", {
@@ -119,25 +95,15 @@ test_that("convert_to works", {
 })
 
 
-test_that("extract_id works", {
-  raw <- c("class_to_set-01", "class_to_set-02",
-           "class_to_set-03", "class_to_set-04",
-           "class_to_set-05", "no-id-there")
-  ids <- extract_id(raw)
-
-  expect_is(ids, "character")
-  expect_length(ids, length(raw))
-})
-
 
 test_that("get_vars_to_convert works", {
   # 2 variables to convert
   new_classes <- list(
-    "class_to_set-1" = "numeric",
-    "class_to_set-2" = "numeric",
-    "class_to_set-3" = "character",
-    "class_to_set-4" = "numeric",
-    "class_to_set-5" = "character"
+    "Sepal.Length" = "numeric",
+    "Sepal.Width" = "numeric",
+    "Petal.Length" = "character",
+    "Petal.Width" = "numeric",
+    "Species" = "character"
   )
   res <- get_vars_to_convert(summary_vars(iris), new_classes)
   expect_is(res, "data.frame")
@@ -145,11 +111,11 @@ test_that("get_vars_to_convert works", {
 
   # No changes
   new_classes <- list(
-    "class_to_set-1" = "numeric",
-    "class_to_set-2" = "numeric",
-    "class_to_set-3" = "numeric",
-    "class_to_set-4" = "numeric",
-    "class_to_set-5" = "factor"
+    "Sepal.Length" = "numeric",
+    "Sepal.Width" = "numeric",
+    "Petal.Length" = "numeric",
+    "Petal.Width" = "numeric",
+    "Species" = "factor"
   )
   res <- get_vars_to_convert(summary_vars(iris), new_classes)
   expect_is(res, "data.frame")
@@ -157,17 +123,17 @@ test_that("get_vars_to_convert works", {
 
 
   new_classes <- list(
-    "class_to_set-01" = "character",
-    "class_to_set-02" = "numeric",
-    "class_to_set-03" = "character",
-    "class_to_set-04" = "numeric",
-    "class_to_set-05" = "character",
-    "class_to_set-06" = "character",
-    "class_to_set-07" = "numeric",
-    "class_to_set-08" = "character",
-    "class_to_set-09" = "numeric",
-    "class_to_set-10" = "character",
-    "class_to_set-11" = "integer"
+    "mpg" = "character",
+    "cyl" = "numeric",
+    "disp" = "character",
+    "hp" = "numeric",
+    "drat" = "character",
+    "wt" = "character",
+    "qsec" = "numeric",
+    "vs" = "character",
+    "am" = "numeric",
+    "gear" = "character",
+    "carb" = "integer"
   )
   res <- get_vars_to_convert(summary_vars(mtcars), new_classes)
   expect_is(res, "data.frame")
