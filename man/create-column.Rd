@@ -71,15 +71,16 @@ library(reactable)
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
   tags$h2("Create new column"),
-  actionButton("modal", "Click here to open a modal to create a column"),
   fluidRow(
     column(
       width = 4,
-      create_column_ui("inline")
+      create_column_ui("inline"),
+      actionButton("modal", "Or click here to open a modal to create a column")
     ),
     column(
       width = 8,
-      reactableOutput(outputId = "table")
+      reactableOutput(outputId = "table"),
+      verbatimTextOutput("code")
     )
   )
 )
@@ -112,6 +113,10 @@ server <- function(input, output, session) {
       compact = TRUE,
       striped = TRUE
     )
+  })
+
+  output$code <- renderPrint({
+    attr(rv$data, "code")
   })
 }
 

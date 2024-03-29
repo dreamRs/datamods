@@ -190,7 +190,7 @@ modal_create_column <- function(id,
 }
 
 
-#' @importFrom rlang parse_expr eval_tidy
+#' @importFrom rlang parse_expr eval_tidy call2 set_names
 try_compute_column <- function(expression, name, rv, allowed_operations) {
   parsed <- try(parse(text = expression, keep.source = FALSE), silent = TRUE)
   if (inherits(parsed, "try-error")) {
@@ -211,6 +211,10 @@ try_compute_column <- function(expression, name, rv, allowed_operations) {
   if (inherits(adding_col, "try-error")) {
     return(alert_error(attr(adding_col, "condition")$message))
   }
+  attr(rv$data, "code") <- c(
+    attr(rv$data, "code"),
+    call2("mutate", !!!set_names(list(parse_expr(expression)), name))
+  )
   alert(
     status = "success",
     ph("check"), "Column added!"

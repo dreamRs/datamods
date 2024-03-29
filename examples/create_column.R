@@ -14,7 +14,8 @@ ui <- fluidPage(
     ),
     column(
       width = 8,
-      reactableOutput(outputId = "table")
+      reactableOutput(outputId = "table"),
+      verbatimTextOutput("code")
     )
   )
 )
@@ -47,6 +48,10 @@ server <- function(input, output, session) {
       compact = TRUE,
       striped = TRUE
     )
+  })
+
+  output$code <- renderPrint({
+    attr(rv$data, "code")
   })
 }
 
