@@ -9,7 +9,8 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 4,
-      create_column_ui("col")
+      create_column_ui("inline"),
+      actionButton("modal", "Or click here to open a modal to create a column")
     ),
     column(
       width = 8,
@@ -20,13 +21,26 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  data_r <- create_column_server(
-    id = "col",
-    data_r = reactive(MASS::Cars93[, c(1, 3, 4, 5, 6, 10)])
-  )
+  rv <- reactiveValues(data = MASS::Cars93[, c(1, 3, 4, 5, 6, 10)])
 
+  # inline mode
+  data_inline_r <- create_column_server(
+    id = "inline",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_inline_r(), rv$data <- data_inline_r())
+
+  # modal window mode
+  observeEvent(input$modal, modal_create_column("modal"))
+  data_modal_r <- create_column_server(
+    id = "modal",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # Show result
   output$table <- renderReactable({
-    data <- req(data_r())
+    data <- req(rv$data)
     reactable(
       data = data,
       bordered = TRUE,

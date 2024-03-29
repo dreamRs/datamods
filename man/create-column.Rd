@@ -5,6 +5,7 @@
 \alias{create_column_ui}
 \alias{create_column_server}
 \alias{list_allowed_operations}
+\alias{modal_create_column}
 \title{Create new column}
 \usage{
 create_column_ui(id)
@@ -16,6 +17,14 @@ create_column_server(
 )
 
 list_allowed_operations()
+
+modal_create_column(
+  id,
+  title = "Create a new column",
+  easyClose = TRUE,
+  size = "l",
+  footer = NULL
+)
 }
 \arguments{
 \item{id}{Module's ID.}
@@ -23,6 +32,22 @@ list_allowed_operations()
 \item{data_r}{A \code{\link[shiny:reactive]{shiny::reactive()}} function returning a \code{data.frame}.}
 
 \item{allowed_operations}{A \code{list} of allowed operations, see below for details.}
+
+\item{title}{An optional title for the dialog.}
+
+\item{easyClose}{If \code{TRUE}, the modal dialog can be dismissed by
+clicking outside the dialog box, or be pressing the Escape key. If
+\code{FALSE} (the default), the modal dialog can't be dismissed in those
+ways; instead it must be dismissed by clicking on a \code{modalButton()}, or
+from a call to \code{\link[shiny:removeModal]{removeModal()}} on the server.}
+
+\item{size}{One of \code{"s"} for small, \code{"m"} (the default) for medium,
+\code{"l"} for large, or \code{"xl"} for extra large. Note that \code{"xl"} only
+works with Bootstrap 4 and above (to opt-in to Bootstrap 4+,
+pass \code{\link[bslib:bs_theme]{bslib::bs_theme()}} to the \code{theme} argument of a page container
+like \code{\link[shiny:fluidPage]{fluidPage()}}).}
+
+\item{footer}{UI for footer. Use \code{NULL} for no footer.}
 }
 \value{
 A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the data.
@@ -46,10 +71,11 @@ library(reactable)
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
   tags$h2("Create new column"),
+  actionButton("modal", "Click here to open a modal to create a column"),
   fluidRow(
     column(
       width = 4,
-      create_column_ui("col")
+      create_column_ui("inline")
     ),
     column(
       width = 8,
@@ -60,13 +86,26 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  data_r <- create_column_server(
-    id = "col",
-    data_r = reactive(MASS::Cars93[, c(1, 3, 4, 5, 6, 10)])
-  )
+  rv <- reactiveValues(data = MASS::Cars93[, c(1, 3, 4, 5, 6, 10)])
 
+  # inline mode
+  data_inline_r <- create_column_server(
+    id = "inline",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_inline_r(), rv$data <- data_inline_r())
+
+  # modal window mode
+  observeEvent(input$modal, modal_create_column("modal"))
+  data_modal_r <- create_column_server(
+    id = "modal",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # Show result
   output$table <- renderReactable({
-    data <- req(data_r())
+    data <- req(rv$data)
     reactable(
       data = data,
       bordered = TRUE,

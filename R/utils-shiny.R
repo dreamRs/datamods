@@ -196,3 +196,18 @@ button_import <- function(session = shiny::getDefaultReactiveDomain()) {
     `aria-label` = i18n("Import data")
   )
 }
+
+
+
+button_close_modal <- function() {
+  tags$button(
+    phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
+    class = "btn btn-link",
+    style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
+    `data-dismiss` = "modal",
+    `data-bs-dismiss` = "modal",
+    `aria-label` = i18n("Close")
+  )
+}
+
+

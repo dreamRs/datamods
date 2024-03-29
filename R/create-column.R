@@ -168,6 +168,28 @@ list_allowed_operations <- function() {
 }
 
 
+#' @inheritParams shiny::modalDialog
+#' @export
+#'
+#' @importFrom shiny showModal modalDialog
+#' @importFrom htmltools tagList
+#'
+#' @rdname create-column
+modal_create_column <- function(id,
+                                title = "Create a new column",
+                                easyClose = TRUE,
+                                size = "l",
+                                footer = NULL) {
+  showModal(modalDialog(
+    title = tagList(title, button_close_modal()),
+    create_column_ui(id),
+    easyClose = easyClose,
+    size = size,
+    footer = footer
+  ))
+}
+
+
 #' @importFrom rlang parse_expr eval_tidy
 try_compute_column <- function(expression, name, rv, allowed_operations) {
   parsed <- try(parse(text = expression, keep.source = FALSE), silent = TRUE)
