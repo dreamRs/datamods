@@ -56,8 +56,8 @@ show_data <- function(data,
   if (is.null(options))
     options <- list()
 
-  options$height <- 700
-  options$minBodyHeight <- 700
+  options$height <- 500
+  options$minBodyHeight <- 400
   options$data <- data
   options$theme <- "striped"
   if (isTRUE(show_classes))
@@ -97,7 +97,7 @@ show_data <- function(data,
       ),
       tags$div(
         style = css(minHeight = validateCssUnit(options$height)),
-        renderDatagrid2(datatable)
+        toastui::renderDatagrid2(datatable)
         # datatasble
       ),
       size = "l",
@@ -107,11 +107,3 @@ show_data <- function(data,
   }
 } # nocov end
 
-#
-renderDatagrid2 <- function(expr, env = parent.frame(), quoted = FALSE) {
-  if (!quoted) { expr <- substitute(expr) } # force quoted
-  htmlwidgets::shinyRenderWidget(expr, datagridOutput2, env, quoted = TRUE)
-}
-datagridOutput2 <- function(outputId, width = "100%", height = "auto") {
-  htmlwidgets::shinyWidgetOutput(outputId, "datagrid", width, height, package = "toastui", inline = FALSE)
-}
