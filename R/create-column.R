@@ -10,6 +10,10 @@
 #' @return A [shiny::reactive()] function returning the data.
 #'
 #' @note User can only use a subset of function: `r paste(list_allowed_operations(), collapse=", ")`.
+#'  You can add more operations using the `allowed_operations` argument, for  example if you want to allow to use package lubridate, you can do:
+#'  ```r
+#'  c(list_allowed_operations(), getNamespaceExports("lubridate"))
+#'  ```
 #'
 #' @export
 #'
@@ -37,6 +41,7 @@ create_column_ui <- function(id) {
       rows = 6
     ),
     tags$i(
+      class = "d-block",
       ph("info"),
       "Click on a column to add it to the expression:"
     ),
@@ -70,6 +75,7 @@ create_column_ui <- function(id) {
 }
 
 #' @param data_r A [shiny::reactive()] function returning a `data.frame`.
+#' @param allowed_operations A `list` of allowed operations, see below for details.
 #'
 #' @export
 #'
@@ -78,7 +84,9 @@ create_column_ui <- function(id) {
 #' @importFrom shiny moduleServer reactiveValues observeEvent renderUI req
 #'  updateTextAreaInput reactive
 #' @importFrom shinyWidgets alert
-create_column_server <- function(id, data_r = reactive(NULL)) {
+create_column_server <- function(id,
+                                 data_r = reactive(NULL),
+                                 allowed_operations = list_allowed_operations()) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -117,7 +125,12 @@ create_column_server <- function(id, data_r = reactive(NULL)) {
         rv$data[[input$new_column]] <- NULL
       })
       observeEvent(input$compute, {
-        rv$feedback <- try_compute_column(input$expression, input$new_column, rv)
+        rv$feedback <- try_compute_column(
+          expression = input$expression,
+          name = input$new_column,
+          rv = rv,
+          allowed_operations = allowed_operations
+        )
       })
 
       return(reactive(rv$data))
@@ -125,39 +138,9 @@ create_column_server <- function(id, data_r = reactive(NULL)) {
   )
 }
 
-
-#' @importFrom rlang parse_expr eval_tidy
-try_compute_column <- function(expression, name, rv) {
-  parsed <- try(parse(text = expression, keep.source = FALSE), silent = TRUE)
-  if (inherits(parsed, "try-error")) {
-    return(alert_error(attr(parsed, "condition")$message))
-  }
-  funs <- unlist(c(extract_calls(parsed), lapply(parsed, extract_calls)), recursive = TRUE)
-  if (!are_allowed_operations(funs)) {
-    return(alert_error("Some operations are not allowed"))
-  }
-  result <- try(
-    eval_tidy(parse_expr(expression), data = rv$data),
-    silent = TRUE
-  )
-  if (inherits(result, "try-error")) {
-    return(alert_error(attr(result, "condition")$message))
-  }
-  adding_col <- try(rv$data[[name]] <- result, silent = TRUE)
-  if (inherits(adding_col, "try-error")) {
-    return(alert_error(attr(adding_col, "condition")$message))
-  }
-  alert(
-    status = "success",
-    ph("check"), "Column added!"
-  )
-}
-
-are_allowed_operations <- function(x) {
-  all(
-    x %in% list_allowed_operations()
-  )
-}
+#' @export
+#'
+#' @rdname create-column
 # @importFrom methods getGroupMembers
 list_allowed_operations <- function() {
   c(
@@ -183,6 +166,41 @@ list_allowed_operations <- function() {
     "gsub", "sub", "grepl", "ifelse"
   )
 }
+
+
+#' @importFrom rlang parse_expr eval_tidy
+try_compute_column <- function(expression, name, rv, allowed_operations) {
+  parsed <- try(parse(text = expression, keep.source = FALSE), silent = TRUE)
+  if (inherits(parsed, "try-error")) {
+    return(alert_error(attr(parsed, "condition")$message))
+  }
+  funs <- unlist(c(extract_calls(parsed), lapply(parsed, extract_calls)), recursive = TRUE)
+  if (!are_allowed_operations(funs, allowed_operations)) {
+    return(alert_error("Some operations are not allowed"))
+  }
+  result <- try(
+    eval_tidy(parse_expr(expression), data = rv$data),
+    silent = TRUE
+  )
+  if (inherits(result, "try-error")) {
+    return(alert_error(attr(result, "condition")$message))
+  }
+  adding_col <- try(rv$data[[name]] <- result, silent = TRUE)
+  if (inherits(adding_col, "try-error")) {
+    return(alert_error(attr(adding_col, "condition")$message))
+  }
+  alert(
+    status = "success",
+    ph("check"), "Column added!"
+  )
+}
+
+are_allowed_operations <- function(x, allowed_operations) {
+  all(
+    x %in% allowed_operations
+  )
+}
+
 
 extract_calls <- function(exp) {
   if (is.call(exp))
