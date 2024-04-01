@@ -366,43 +366,55 @@ update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, b
   #   }
   # }
 
-  datagrid(
+  grid <- datagrid(
     data = data,
     theme = "striped",
     colwidths = NULL
-  ) %>%
-    grid_columns(
-      columns = c("name", "name_toset", "class", "class_toset", "n_missing", "p_complete", "n_unique"),
-      header = c("Name", "New name", "Class", "New class", "Missing values", "Complete obs.", "Unique values"),
-      minWidth = 120
-    ) %>%
-    grid_format(
-      "p_complete",
-      formatter = toastui::JS("function(obj) {return (obj.value*100).toFixed(0) + '%';}")
-    ) %>%
-    grid_style_column(
-      column = "name_toset",
-      fontStyle = "italic"
-    ) %>%
-    grid_style_column(
-      column = "class_toset",
-      fontStyle = "italic"
-    ) %>%
-    grid_editor(
-      column = "name_toset",
-      type = "text"
-    ) %>%
-    grid_editor(
-      column = "class_toset",
-      type = "select",
-      choices = c("Select new class", "character", "factor", "numeric", "integer", "date", "datetime")
-    ) %>%
-    grid_editor_opts(editingEvent = "click", actionButtonId = buttonId) %>%
-    grid_selection_row(
-      inputId = selectionId,
-      type = "checkbox",
-      return = "index"
-    )
+  )
+  grid <- grid_columns(
+    grid = grid,
+    columns = c("name", "name_toset", "class", "class_toset", "n_missing", "p_complete", "n_unique"),
+    header = c("Name", "New name", "Class", "New class", "Missing values", "Complete obs.", "Unique values"),
+    minWidth = 120
+  )
+  grid <- grid_format(
+    grid = grid,
+    "p_complete",
+    formatter = toastui::JS("function(obj) {return (obj.value*100).toFixed(0) + '%';}")
+  )
+  grid <- grid_style_column(
+    grid = grid,
+    column = "name_toset",
+    fontStyle = "italic"
+  )
+  grid <- grid_style_column(
+    grid = grid,
+    column = "class_toset",
+    fontStyle = "italic"
+  )
+  grid <- grid_editor(
+    grid = grid,
+    column = "name_toset",
+    type = "text"
+  )
+  grid <- grid_editor(
+    grid = grid,
+    column = "class_toset",
+    type = "select",
+    choices = c("Select new class", "character", "factor", "numeric", "integer", "date", "datetime")
+  )
+  grid <- grid_editor_opts(
+    grid = grid,
+    editingEvent = "click",
+    actionButtonId = buttonId
+  )
+  grid <- grid_selection_row(
+    grid = grid,
+    inputId = selectionId,
+    type = "checkbox",
+    return = "index"
+  )
+  return(grid)
 }
 
 

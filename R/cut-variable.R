@@ -156,19 +156,20 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
           ),
           responseName = "count"
         )
-        datagrid(
+        grid <- datagrid(
           data = count_data,
           colwidths = "guess",
           theme = "striped",
           bodyHeight = "auto"
-        ) %>%
-          grid_colorbar(
-            column = "count",
-            label_outside = TRUE,
-            label_width = "40px",
-            bar_bg = "#112466",
-            from = c(0, max(count_data$count) + 1)
-          )
+        )
+        grid_colorbar(
+          grid,
+          column = "count",
+          label_outside = TRUE,
+          label_width = "40px",
+          bar_bg = "#112466",
+          from = c(0, max(count_data$count) + 1)
+        )
       })
 
       data_returned_r <- observeEvent(input$create, {
