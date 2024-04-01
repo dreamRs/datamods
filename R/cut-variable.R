@@ -89,12 +89,15 @@ cut_variable_ui <- function(id) {
   )
 }
 
+#' @param data_r A [shiny::reactive()] function returning a `data.frame`.
+#'
 #' @export
 #'
-#' @importFrom shiny moduleServer observeEvent reactive req bindEvent
+#' @importFrom shiny moduleServer observeEvent reactive req bindEvent renderPlot
 #' @importFrom shinyWidgets updateVirtualSelect
 #' @importFrom toastui renderDatagrid2 datagrid grid_colorbar
 #' @importFrom rlang %||%
+#' @importFrom classInt classIntervals
 #'
 #' @rdname cut-variable
 cut_variable_server <- function(id, data_r = reactive(NULL)) {
@@ -205,7 +208,7 @@ modal_cut_variable <- function(id,
 }
 
 
-
+#' @importFrom graphics abline axis hist par plot.new plot.window
 plot_histogram <- function(data, column, bins = 30, breaks = NULL) {
   x <- data[[column]]
   op <- par(mar = rep(1.5, 4)); on.exit(par(op))

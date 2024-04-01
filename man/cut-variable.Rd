@@ -22,6 +22,8 @@ modal_cut_variable(
 \arguments{
 \item{id}{Module ID.}
 
+\item{data_r}{A \code{\link[shiny:reactive]{shiny::reactive()}} function returning a \code{data.frame}.}
+
 \item{title}{An optional title for the dialog.}
 
 \item{easyClose}{If \code{TRUE}, the modal dialog can be dismissed by
