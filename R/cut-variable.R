@@ -156,12 +156,18 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
           ),
           responseName = "count"
         )
+        gridTheme <- getOption("datagrid.theme")
+        if (length(gridTheme) < 1) {
+          apply_grid_theme()
+        }
+        on.exit(toastui::reset_grid_theme())
         grid <- datagrid(
           data = count_data,
           colwidths = "guess",
-          theme = "striped",
+          theme = "default",
           bodyHeight = "auto"
         )
+        grid <- toastui::grid_columns(grid, className = "font-monospace")
         grid_colorbar(
           grid,
           column = "count",

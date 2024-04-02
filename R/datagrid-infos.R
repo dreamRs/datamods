@@ -33,6 +33,43 @@ describe_col_char <- function(x, with_summary = TRUE) {
   )
 }
 
+fmt_p <- function(val, tot) {
+  paste0(round(val / tot * 100, 1), "%")
+}
+
+describe_col_factor <- function(x, with_summary = TRUE) {
+  count <- sort(table(x, useNA = "always"), decreasing = TRUE)
+  total <- sum(count)
+  one <- count[!is.na(names(count))][1]
+  two <- count[!is.na(names(count))][2]
+  missing <- count[is.na(names(count))]
+  tags$div(
+    style = css(padding = "5px 0", fontSize = "x-small"),
+    tags$div(
+      style = css(fontStyle = "italic"),
+      phosphoricons::ph("list-bullets"),
+      "factor"
+    ),
+    if (with_summary) {
+      tagList(
+        tags$hr(style = css(margin = "5px 0")),
+        tags$div(
+          names(one), ":", fmt_p(one, total)
+        ),
+        tags$div(
+          names(two), ":", fmt_p(two, total)
+        ),
+        tags$div(
+          "Missing", ":", fmt_p(missing, total)
+        ),
+        tags$div(
+          "\u00A0"
+        )
+      )
+    }
+  )
+}
+
 describe_col_num <- function(x, with_summary = TRUE) {
   tags$div(
     style = css(padding = "5px 0", fontSize = "x-small"),
@@ -156,9 +193,11 @@ construct_col_summary <- function(data) {
       X = setNames(names(data), names(data)),
       FUN = function(col) {
         values <- data[[col]]
-        content <- if (inherits(values, c("character"," factor"))) {
+        content <- if (inherits(values, "character")) {
           describe_col_char(values)
-        } else if (inherits(values, c("numeric"," integer"))) {
+        } else if (inherits(values, "factor")) {
+          describe_col_factor(values)
+        } else if (inherits(values, c("numeric", "integer"))) {
           describe_col_num(values)
         } else if (inherits(values, c("Date"))) {
           describe_col_date(values)

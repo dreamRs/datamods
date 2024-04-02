@@ -26,32 +26,11 @@ show_data <- function(data,
   type <- match.arg(type)
   data <- as.data.frame(data)
 
-  session <- shiny::getDefaultReactiveDomain()
-  if (!is.null(session)) {
-    theme <- session$getCurrentTheme()
-    gridTheme <- getOption("datagrid.theme")
-    if (!is.null(theme) & length(gridTheme) < 1) {
-      toastui::set_grid_theme(
-        row.even.background = unname(bslib::bs_get_variables(theme, varnames = "body-secondary-bg")),
-        cell.normal.showVerticalBorder = FALSE,
-        cell.normal.showHorizontalBorder = TRUE,
-        area.header.border = FALSE,
-        area.summary.border = TRUE,
-        cell.summary.border = TRUE,
-        cell.normal.border = "#FFF",
-        cell.header.background = "#FFF",
-        cell.header.text = unname(bslib::bs_get_variables(theme, varnames = "secondary")),
-        cell.header.border = FALSE,
-        cell.header.showHorizontalBorder = TRUE,
-        cell.header.showVerticalBorder = FALSE,
-        cell.rowHeader.showVerticalBorder = FALSE,
-        cell.rowHeader.showHorizontalBorder = TRUE,
-        cell.selectedHeader.background = "#013ADF",
-        cell.focused.border = "#013ADF"
-      )
-      on.exit(toastui::reset_grid_theme())
-    }
+  gridTheme <- getOption("datagrid.theme")
+  if (length(gridTheme) < 1) {
+    apply_grid_theme()
   }
+  on.exit(toastui::reset_grid_theme())
 
   if (is.null(options))
     options <- list()
@@ -59,10 +38,13 @@ show_data <- function(data,
   options$height <- 500
   options$minBodyHeight <- 400
   options$data <- data
-  options$theme <- "striped"
+  options$theme <- "default"
+  options$colwidths <- "guess"
+  options$guess_colwidths_opts <- list(min_width = 90, max_width = 400, mul = 1, add = 10)
   if (isTRUE(show_classes))
     options$summary <- construct_col_summary(data)
   datatable <- rlang::exec(toastui::datagrid, !!!options)
+  datatable <- toastui::grid_columns(datatable, className = "font-monospace")
   if (identical(type, "popup")) {
     show_alert(
       title = NULL,

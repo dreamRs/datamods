@@ -134,10 +134,9 @@ import_ui <- function(id,
     class = "datamods-imports",
     html_dependency_datamods(),
     tags$style(".tui-grid-cell-summary {vertical-align: baseline;}"),
-    tabsetPanel(
-      type = "tabs",
+    bslib::navset_underline(
       id = ns("tabs-mode"),
-      tabPanel(
+      bslib::nav_panel(
         title = tagList(
           phosphoricons::ph("download-simple", title = i18n("Import")),
           i18n("Import")
@@ -145,7 +144,7 @@ import_ui <- function(id,
         value = "import",
         importTab
       ),
-      tabPanel(
+      bslib::nav_panel(
         title = tagList(
           phosphoricons::ph("table", title = i18n("View")),
           i18n("View")
@@ -157,7 +156,7 @@ import_ui <- function(id,
           toastui::datagridOutput(outputId = ns("view"), height = "auto")
         )
       ),
-      tabPanel(
+      bslib::nav_panel(
         title = tagList(
           phosphoricons::ph("gear-six", title = i18n("Update")),
           i18n("Update")
@@ -166,7 +165,7 @@ import_ui <- function(id,
         tags$br(),
         update_variables_ui(id = ns("update"), title = NULL)
       ),
-      tabPanel(
+      bslib::nav_panel(
         title = tagList(
           phosphoricons::ph("shield-check", title = i18n("Validate")),
           i18n("Validate")
@@ -330,37 +329,18 @@ import_server <- function(id,
       output$view <- toastui::renderDatagrid({
         data <- req(data_rv$data)
         session <- shiny::getDefaultReactiveDomain()
-        if (!is.null(session)) {
-          theme <- session$getCurrentTheme()
-          gridTheme <- getOption("datagrid.theme")
-          if (!is.null(theme) & length(gridTheme) < 1) {
-            toastui::set_grid_theme(
-              row.even.background = unname(bslib::bs_get_variables(theme, varnames = "body-secondary-bg")),
-              cell.normal.showVerticalBorder = FALSE,
-              cell.normal.showHorizontalBorder = TRUE,
-              area.header.border = FALSE,
-              area.summary.border = TRUE,
-              cell.summary.border = TRUE,
-              cell.normal.border = "#FFF",
-              cell.header.background = "#FFF",
-              cell.header.text = unname(bslib::bs_get_variables(theme, varnames = "secondary")),
-              cell.header.border = FALSE,
-              cell.header.showHorizontalBorder = TRUE,
-              cell.header.showVerticalBorder = FALSE,
-              cell.rowHeader.showVerticalBorder = FALSE,
-              cell.rowHeader.showHorizontalBorder = TRUE,
-              cell.selectedHeader.background = "#013ADF",
-              cell.focused.border = "#013ADF"
-            )
-            on.exit(toastui::reset_grid_theme())
-          }
+        gridTheme <- getOption("datagrid.theme")
+        if (length(gridTheme) < 1) {
+          apply_grid_theme()
         }
-        toastui::datagrid(
+        on.exit(toastui::reset_grid_theme())
+        grid <- toastui::datagrid(
           data = data,
           summary = construct_col_summary(data),
           colwidths = "guess",
           minBodyHeight = 500
         )
+        toastui::grid_columns(grid, className = "font-monospace")
       })
 
       updated_data <- update_variables_server(

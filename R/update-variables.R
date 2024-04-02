@@ -348,27 +348,15 @@ update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, b
   data <- add_var_toset(data, "name", "Enter new name")
   data <- add_var_toset(data, "class", "Select new class")
 
-  # session <- shiny::getDefaultReactiveDomain()
-  # if (!is.null(session)) {
-  #   theme <- session$getCurrentTheme()
-  #   gridTheme <- getOption("datagrid.theme")
-  #   if (!is.null(theme) & length(gridTheme) < 1) {
-  #     set_grid_theme(
-  #       row.even.background = bs_get_variables(theme, varnames = "primary-bg-subtle"),
-  #       cell.normal.border = "#9bc2e6",
-  #       cell.normal.showVerticalBorder = TRUE,
-  #       cell.normal.showHorizontalBorder = TRUE,
-  #       cell.header.background = bs_get_variables(theme, varnames = "primary"),
-  #       cell.header.text = "#FFF",
-  #       cell.selectedHeader.background = "#013ADF",
-  #       cell.focused.border = "#013ADF"
-  #     )
-  #   }
-  # }
+  gridTheme <- getOption("datagrid.theme")
+  if (length(gridTheme) < 1) {
+    apply_grid_theme()
+  }
+  on.exit(toastui::reset_grid_theme())
 
   grid <- datagrid(
     data = data,
-    theme = "striped",
+    theme = "default",
     colwidths = NULL
   )
   grid <- grid_columns(

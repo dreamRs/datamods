@@ -23,15 +23,15 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observeEvent(input$show1, {
-    show_data(mtcars, title = "My data")
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset")
   })
   observeEvent(input$show2, {
-    show_data(mtcars, title = "My data", type = "modal")
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "modal")
   })
   observeEvent(input$show3, {
     show_data(
-      data = mtcars,
-      title = "My data",
+      data = MASS::Cars93,
+      title = "MASS::Cars93 dataset",
       show_classes = FALSE,
       options = list(pagination = 10),
       type = "modal"
