@@ -46,6 +46,7 @@ create_column_ui <- function(id) {
           choices = NULL,
           multiple = TRUE,
           disableSelectAll = TRUE,
+          hasOptionDescription = TRUE,
           width = "100%"
         )
       )
@@ -116,7 +117,7 @@ create_column_server <- function(id,
         data <- data_r()
         updateVirtualSelect(
           inputId = "group_by",
-          choices = names(data)
+          choices = make_choices_with_infos(data)
         )
       }), data_r(), input$hidden)
 
@@ -312,6 +313,39 @@ btn_column <- function(label, inputId) {
       "Shiny.setInputValue('%s', '%s', {priority: 'event'})",
       inputId, label
     )
+  )
+}
+
+
+#' @importFrom data.table uniqueN
+#' @importFrom htmltools doRenderTags
+make_choices_with_infos <- function(data) {
+  lapply(
+    X = seq_along(data),
+    FUN = function(i) {
+      nm <- names(data)[i]
+      values <- data[[nm]]
+      icon <- if (inherits(values, "character")) {
+        phosphoricons::ph("text-aa")
+      } else if (inherits(values, "factor")) {
+        phosphoricons::ph("list-bullets")
+      } else if (inherits(values, c("numeric", "integer"))) {
+        phosphoricons::ph("hash")
+      } else if (inherits(values, c("Date"))) {
+        phosphoricons::ph("calendar")
+      } else if (inherits(values, c("POSIXt"))) {
+        phosphoricons::ph("clock")
+      } else {
+        NULL
+      }
+      list(
+        label = htmltools::doRenderTags(tagList(
+          icon, nm
+        )),
+        value = nm,
+        description = paste("Unique values:", data.table::uniqueN(values))
+      )
+    }
   )
 }
 
