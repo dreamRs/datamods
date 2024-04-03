@@ -20,6 +20,7 @@
 #' @importFrom htmltools tagList tags css
 #' @importFrom shiny NS textInput textAreaInput uiOutput actionButton
 #' @importFrom phosphoricons ph
+#' @importFrom shinyWidgets virtualSelectInput
 #'
 #' @name create-column
 #'
@@ -27,11 +28,27 @@
 create_column_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    textInput(
-      inputId = ns("new_column"),
-      label = "New column name:",
-      value = "new_column1",
-      width = "100%"
+    fluidRow(
+      column(
+        width = 6,
+        textInput(
+          inputId = ns("new_column"),
+          label = "New column name:",
+          value = "new_column1",
+          width = "100%"
+        )
+      ),
+      column(
+        width = 6,
+        virtualSelectInput(
+          inputId = ns("group_by"),
+          label = "Group calculation by:",
+          choices = NULL,
+          multiple = TRUE,
+          disableSelectAll = TRUE,
+          width = "100%"
+        )
+      )
     ),
     textAreaInput(
       inputId = ns("expression"),
@@ -83,7 +100,7 @@ create_column_ui <- function(id) {
 #'
 #' @importFrom shiny moduleServer reactiveValues observeEvent renderUI req
 #'  updateTextAreaInput reactive
-#' @importFrom shinyWidgets alert
+#' @importFrom shinyWidgets alert updateVirtualSelect
 create_column_server <- function(id,
                                  data_r = reactive(NULL),
                                  allowed_operations = list_allowed_operations()) {
@@ -94,6 +111,14 @@ create_column_server <- function(id,
       ns <- session$ns
 
       rv <- reactiveValues(data = NULL, feedback = NULL)
+
+      observeEvent(data_r(), {
+        data <- data_r()
+        updateVirtualSelect(
+          inputId = "group_by",
+          choices = names(data)
+        )
+      })
 
       observeEvent(data_r(), rv$data <- data_r())
 
@@ -129,7 +154,8 @@ create_column_server <- function(id,
           expression = input$expression,
           name = input$new_column,
           rv = rv,
-          allowed_operations = allowed_operations
+          allowed_operations = allowed_operations,
+          by = input$group_by
         )
       })
 
@@ -144,7 +170,7 @@ create_column_server <- function(id,
 # @importFrom methods getGroupMembers
 list_allowed_operations <- function() {
   c(
-    "(",
+    "(", "c",
     # getGroupMembers("Arith"),
     c("+", "-", "*", "^", "%%", "%/%", "/"),
     # getGroupMembers("Compare"),
@@ -190,8 +216,13 @@ modal_create_column <- function(id,
 }
 
 
-#' @importFrom rlang parse_expr eval_tidy call2 set_names
-try_compute_column <- function(expression, name, rv, allowed_operations) {
+#' @importFrom rlang parse_expr eval_tidy call2 set_names syms
+#' @importFrom data.table as.data.table :=
+try_compute_column <- function(expression,
+                               name,
+                               rv,
+                               allowed_operations,
+                               by = NULL) {
   parsed <- try(parse(text = expression, keep.source = FALSE), silent = TRUE)
   if (inherits(parsed, "try-error")) {
     return(alert_error(attr(parsed, "condition")$message))
@@ -200,10 +231,22 @@ try_compute_column <- function(expression, name, rv, allowed_operations) {
   if (!are_allowed_operations(funs, allowed_operations)) {
     return(alert_error("Some operations are not allowed"))
   }
-  result <- try(
-    eval_tidy(parse_expr(expression), data = rv$data),
-    silent = TRUE
-  )
+  if (!isTruthy(by)) {
+    result <- try(
+      eval_tidy(parse_expr(expression), data = rv$data),
+      silent = TRUE
+    )
+  } else {
+    result <- try(
+      {
+        dt <- as.data.table(rv$data)
+        new_col <- NULL
+        dt[, new_col := eval_tidy(parse_expr(expression), data = .SD), by = by]
+        dt$new_col
+      },
+      silent = TRUE
+    )
+  }
   if (inherits(result, "try-error")) {
     return(alert_error(attr(result, "condition")$message))
   }
@@ -211,10 +254,15 @@ try_compute_column <- function(expression, name, rv, allowed_operations) {
   if (inherits(adding_col, "try-error")) {
     return(alert_error(attr(adding_col, "condition")$message))
   }
-  attr(rv$data, "code") <- c(
-    attr(rv$data, "code"),
+  code <- if (!isTruthy(by)) {
     call2("mutate", !!!set_names(list(parse_expr(expression)), name))
-  )
+  } else {
+    expr(
+      !!expr(group_by(!!!syms(by))) %>%
+        !!call2("mutate", !!!set_names(list(parse_expr(expression)), name))
+    )
+  }
+  attr(rv$data, "code") <- c(attr(rv$data, "code"),  code)
   alert(
     status = "success",
     ph("check"), "Column added!"

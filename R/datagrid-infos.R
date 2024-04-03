@@ -2,7 +2,7 @@
 #' @importFrom htmltools tagList tags css
 describe_col_char <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("text-aa"),
@@ -10,7 +10,7 @@ describe_col_char <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           "Unique:", length(unique(x))
         ),
@@ -44,7 +44,7 @@ describe_col_factor <- function(x, with_summary = TRUE) {
   two <- count[!is.na(names(count))][2]
   missing <- count[is.na(names(count))]
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("list-bullets"),
@@ -52,7 +52,7 @@ describe_col_factor <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           names(one), ":", fmt_p(one, total)
         ),
@@ -72,7 +72,7 @@ describe_col_factor <- function(x, with_summary = TRUE) {
 
 describe_col_num <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("hash"),
@@ -80,7 +80,7 @@ describe_col_num <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           "Min:", round(min(x, na.rm = TRUE), 2)
         ),
@@ -101,7 +101,7 @@ describe_col_num <- function(x, with_summary = TRUE) {
 
 describe_col_date <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("calendar"),
@@ -109,7 +109,7 @@ describe_col_date <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           "Min:", min(x, na.rm = TRUE)
         ),
@@ -129,7 +129,7 @@ describe_col_date <- function(x, with_summary = TRUE) {
 
 describe_col_datetime <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       phosphoricons::ph("clock"),
@@ -137,7 +137,7 @@ describe_col_datetime <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           "Min:", min(x, na.rm = TRUE)
         ),
@@ -158,7 +158,7 @@ describe_col_datetime <- function(x, with_summary = TRUE) {
 
 describe_col_other <- function(x, with_summary = TRUE) {
   tags$div(
-    style = css(padding = "5px 0", fontSize = "x-small"),
+    style = css(padding = "3px 0", fontSize = "x-small"),
     tags$div(
       style = css(fontStyle = "italic"),
       # phosphoricons::ph("clock"),
@@ -166,7 +166,7 @@ describe_col_other <- function(x, with_summary = TRUE) {
     ),
     if (with_summary) {
       tagList(
-        tags$hr(style = css(margin = "5px 0")),
+        tags$hr(style = css(margin = "3px 0")),
         tags$div(
           "Unique:", length(unique(x))
         ),
@@ -188,7 +188,7 @@ describe_col_other <- function(x, with_summary = TRUE) {
 construct_col_summary <- function(data) {
   list(
     position = "top",
-    height = 40,
+    height = 90,
     columnContent = lapply(
       X = setNames(names(data), names(data)),
       FUN = function(col) {

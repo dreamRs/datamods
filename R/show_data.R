@@ -35,7 +35,7 @@ show_data <- function(data,
   if (is.null(options))
     options <- list()
 
-  options$height <- 500
+  options$height <- 550
   options$minBodyHeight <- 400
   options$data <- data
   options$theme <- "default"
