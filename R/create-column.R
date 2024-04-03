@@ -99,7 +99,7 @@ create_column_ui <- function(id) {
 #' @rdname create-column
 #'
 #' @importFrom shiny moduleServer reactiveValues observeEvent renderUI req
-#'  updateTextAreaInput reactive
+#'  updateTextAreaInput reactive bindEvent observe
 #' @importFrom shinyWidgets alert updateVirtualSelect
 create_column_server <- function(id,
                                  data_r = reactive(NULL),
@@ -112,13 +112,13 @@ create_column_server <- function(id,
 
       rv <- reactiveValues(data = NULL, feedback = NULL)
 
-      observeEvent(data_r(), {
+      bindEvent(observe({
         data <- data_r()
         updateVirtualSelect(
           inputId = "group_by",
           choices = names(data)
         )
-      })
+      }), data_r(), input$hidden)
 
       observeEvent(data_r(), rv$data <- data_r())
 
@@ -206,9 +206,14 @@ modal_create_column <- function(id,
                                 easyClose = TRUE,
                                 size = "l",
                                 footer = NULL) {
+  ns <- NS(id)
   showModal(modalDialog(
     title = tagList(title, button_close_modal()),
     create_column_ui(id),
+    tags$div(
+      style = "display: none;",
+      textInput(inputId = ns("hidden"), label = NULL, value = genId())
+    ),
     easyClose = easyClose,
     size = size,
     footer = footer
