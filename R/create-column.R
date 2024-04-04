@@ -190,7 +190,9 @@ list_allowed_operations <- function() {
     c("max", "min", "range", "prod", "sum", "any", "all"),
     "pmin", "pmax", "mean",
     "paste", "paste0", "substr", "nchar", "trimws",
-    "gsub", "sub", "grepl", "ifelse"
+    "gsub", "sub", "grepl", "ifelse", "length",
+    "as.numeric", "as.character", "as.integer", "as.Date", "as.POSIXct",
+    "as.factor", "factor"
   )
 }
 

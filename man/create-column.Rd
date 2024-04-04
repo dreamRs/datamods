@@ -56,7 +56,7 @@ A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the data.
 This module allow to enter an expression to create a new column in \code{data.frame}.
 }
 \note{
-User can only use a subset of function: (, c, +, -, *, ^, \%\%, \%/\%, /, ==, >, <, !=, <=, >=, &, |, abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod, cumsum, exp, expm1, log, log10, log2, log1p, cos, cosh, sin, sinh, tan, tanh, acos, acosh, asin, asinh, atan, atanh, cospi, sinpi, tanpi, gamma, lgamma, digamma, trigamma, round, signif, max, min, range, prod, sum, any, all, pmin, pmax, mean, paste, paste0, substr, nchar, trimws, gsub, sub, grepl, ifelse.
+User can only use a subset of function: (, c, +, -, *, ^, \%\%, \%/\%, /, ==, >, <, !=, <=, >=, &, |, abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod, cumsum, exp, expm1, log, log10, log2, log1p, cos, cosh, sin, sinh, tan, tanh, acos, acosh, asin, asinh, atan, atanh, cospi, sinpi, tanpi, gamma, lgamma, digamma, trigamma, round, signif, max, min, range, prod, sum, any, all, pmin, pmax, mean, paste, paste0, substr, nchar, trimws, gsub, sub, grepl, ifelse, length, as.numeric, as.character, as.integer, as.Date, as.POSIXct, as.factor, factor.
 You can add more operations using the \code{allowed_operations} argument, for  example if you want to allow to use package lubridate, you can do:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{c(list_allowed_operations(), getNamespaceExports("lubridate"))
