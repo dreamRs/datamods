@@ -22,7 +22,7 @@ server <- function(input, output, session) {
       print(data)
       print(row)
       if (row$Month == "September") {
-        shinybusy::notify_warning("You cannot delete September")
+        shinybusy::notify_warning(i18n("You cannot delete September"))
         return(FALSE)
       }
       return(TRUE)

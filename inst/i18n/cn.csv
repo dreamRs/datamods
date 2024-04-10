@@ -85,3 +85,56 @@ label,translation,comment
 "Select","选择"
 "Missing values character(s):","缺失值字符："
 "if several use a comma (',') to separate them","如果多个使用逗号（','）分隔"
+"Variable to cut:",“要剪切的变量：”
+"Method:",“方法：”
+"Number of breaks:",“休息次数：”
+"Close intervals on the right",“右边的间隔很近”
+"Include lowest value",“包括最低值”
+"Create factor variable",“创建因子变量”
+"Convert Numeric to Factor",“将数字转换为因子”
+"Or click here to open a modal to cut a variable",“或者单击此处打开模态来剪切变量”
+"If `var_labels` is an unnamed vector, it must have same length as `colnames(data)`",“如果 `var_labels` 是一个未命名的向量，它的长度必须与 `colnames(data)` 相同”
+"`var_labels` must be a named list",“`var_labels` 必须是命名列表”
+"The row wasn't added to the data",“该行未添加到数据中”
+"New column name:",“新列名称：”
+"Group calculation by:",“分组计算依据：”
+"Enter an expression to define new column:",“输入表达式来定义新列：”
+"Click on a column to add it to the expression:",“单击一列将其添加到表达式中：”
+"Create column",“创建专栏”
+"Some operations are not allowed",“有些操作是不允许的”
+"Column added!",“专栏已添加！”
+"Unique values:",“独特的价值观：”
+"New column name cannot be empty",“新列名不能为空”
+"character",“特点”
+"Unique:",“独特的：”
+"Missing:",“丢失的：”
+"Most Common:",“最常见的：”
+"factor",“因素”
+"numeric",“数字”
+"Min:",“敏：”
+"Mean:",平均值
+"Max:",“最大限度：”
+"date",“日期”
+"datetime",“约会时间”
+"Value must be equal or inferior to 20",“值必须等于或小于 20”
+"You cannot delete September",“你不能删除九月”
+"Last row updated:",“更新最后一行：”
+"Launch modal window",“启动模态窗口”
+"Imported data:",“导入的数据：”
+"Import data to be used in application",“导入要在应用程序中使用的数据”
+"Filter data with select group module",“使用选择组模块过滤数据”
+"Inputs values:",“输入值：”
+"Show data in popup",“在弹出窗口中显示数据”
+"Show data in modal",“以模式显示数据”
+"Show data without classes",“显示没有类的数据”
+"Select, rename and convert variables",“选择、重命名和转换变量”
+"original data:",“原始数据：”
+"Modified data:",“修改后的数据：”
+"Filter data.frame",“过滤数据.frame”
+"Code dplyr:",“代码 dplyr：”
+"Expression:",“表达：”
+"Filtered data:",“过滤后的数据：”
+"Save Filter Values",“保存过滤器值”
+"Load Filter Values",“加载过滤器值”
+"Data:",“数据：”
+"From",“从”

@@ -53,7 +53,7 @@ server <- function(input, output, session) {
   )
 
   output$row_updated <- renderPrint({
-    paste("Last row updated:", rv$row_updated)
+    paste(i18n("Last row updated:"), rv$row_updated)
   })
 
   output$custom_styles <- renderUI({

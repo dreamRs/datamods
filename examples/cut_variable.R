@@ -5,12 +5,12 @@ library(reactable)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
-  tags$h2("Convert Numeric to Factor"),
+  tags$h2(i18n("Convert Numeric to Factor")),
   fluidRow(
     column(
       width = 6,
       cut_variable_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to cut a variable")
+      actionButton("modal", i18n("Or click here to open a modal to cut a variable"))
     ),
     column(
       width = 6,

@@ -10,7 +10,7 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 10, offset = 1,
-      tags$h3("Filter data with select group module"),
+      tags$h3(i18n("Filter data with select group module")),
       shinyWidgets::panel(
         select_group_ui(
           id = "my-filters",
@@ -24,7 +24,7 @@ ui <- fluidPage(
         status = "primary"
       ),
       reactable::reactableOutput(outputId = "table"),
-      tags$b("Inputs values:"),
+      tags$b(i18n("Inputs values:")),
       verbatimTextOutput("inputs")
     )
   )
