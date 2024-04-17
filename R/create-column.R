@@ -111,16 +111,20 @@ create_column_server <- function(id,
 
       ns <- session$ns
 
+      info_alert <- alert(
+        status = "info",
+        ph("question"),
+        "Choose a name for the column to be created or modified,",
+        "then enter an expression before clicking on the button above to validate or on ",
+        ph("trash"), "to delete it."
+      )
+
       rv <- reactiveValues(
         data = NULL,
-        feedback = alert(
-          status = "info",
-          ph("question"),
-          "Choose a name for the column to be created or modified,",
-          "then enter an expression before clicking on the button above to validate or on ",
-          ph("trash"), "to delete it."
-        )
+        feedback =info_alert
       )
+
+      observeEvent(input$hidden, rv$feedback <- info_alert)
 
       bindEvent(observe({
         data <- data_r()
