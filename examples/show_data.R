@@ -44,7 +44,12 @@ server <- function(input, output, session) {
     )
   })
   observeEvent(input$show4, {
-    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "winbox")
+    show_data(
+      MASS::Cars93,
+      title = "MASS::Cars93 dataset",
+      type = "winbox",
+      wbOptions = shinyWidgets::wbOptions(background = "forestgreen")
+    )
   })
 }
 

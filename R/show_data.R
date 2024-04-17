@@ -8,6 +8,7 @@
 #'  in modal window with [shiny::showModal()] or in a WinBox window with [shinyWidgets::WinBox()].
 #' @param options Arguments passed to [toastui::datagrid()].
 #' @param width Width of the window, only used if `type = "popup"` or `type = "winbox"`.
+#' @param ... Additional options, such as `wbOptions = wbOptions()` or `wbControls = wbControls()`.
 #'
 #' @note
 #' If you use `type = "winbox"`, you'll need to use `shinyWidgets::html_dependency_winbox()` somewhere in your UI.
@@ -26,10 +27,11 @@ show_data <- function(data,
                       options = NULL,
                       show_classes = TRUE,
                       type = c("popup", "modal", "winbox"),
-                      width = "65%") { # nocov start
+                      width = "65%",
+                      ...) { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
-
+  args <- list(...)
   gridTheme <- getOption("datagrid.theme")
   if (length(gridTheme) < 1) {
     apply_grid_theme()
@@ -53,14 +55,33 @@ show_data <- function(data,
     stopifnot(
       "You need shinyWidgets >= 0.8.4" = packageVersion("shinyWidgets") >= "0.8.4"
     )
-    shinyWidgets::WinBox(
-      title = title,
-      ui = datatable,
-      options = shinyWidgets::wbOptions(
-        height = "610px",
+    wb_options <- if (is.null(args$wbOptions)) {
+      shinyWidgets::wbOptions(
+        height = "600px",
         width = width,
         modal = TRUE
       )
+    } else {
+      modifyList(
+        shinyWidgets::wbOptions(
+          height = "600px",
+          width = width,
+          modal = TRUE
+        ),
+        args$wbOptions
+      )
+    }
+    wb_controls <- if (is.null(args$wbControls)) {
+      shinyWidgets::wbControls()
+    } else {
+      args$wbControls
+    }
+    shinyWidgets::WinBox(
+      title = title,
+      ui = datatable,
+      options = wb_options,
+      controls = wb_controls,
+      padding = "0 5px"
     )
   } else if (identical(type, "popup")) {
     show_alert(

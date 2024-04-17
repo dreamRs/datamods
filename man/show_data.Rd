@@ -10,7 +10,8 @@ show_data(
   options = NULL,
   show_classes = TRUE,
   type = c("popup", "modal", "winbox"),
-  width = "65\%"
+  width = "65\%",
+  ...
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ show_data(
 in modal window with \code{\link[shiny:showModal]{shiny::showModal()}} or in a WinBox window with \code{\link[shinyWidgets:WinBox]{shinyWidgets::WinBox()}}.}
 
 \item{width}{Width of the window, only used if \code{type = "popup"} or \code{type = "winbox"}.}
+
+\item{...}{Additional options, such as \code{wbOptions = wbOptions()} or \code{wbControls = wbControls()}.}
 }
 \value{
 No value.
@@ -83,7 +86,12 @@ server <- function(input, output, session) {
     )
   })
   observeEvent(input$show4, {
-    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "winbox")
+    show_data(
+      MASS::Cars93,
+      title = "MASS::Cars93 dataset",
+      type = "winbox",
+      wbOptions = shinyWidgets::wbOptions(background = "forestgreen")
+    )
   })
 }
 
