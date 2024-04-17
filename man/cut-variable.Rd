@@ -5,6 +5,7 @@
 \alias{cut_variable_ui}
 \alias{cut_variable_server}
 \alias{modal_cut_variable}
+\alias{winbox_cut_variable}
 \title{Module to Convert Numeric to Factor}
 \usage{
 cut_variable_ui(id)
@@ -17,6 +18,13 @@ modal_cut_variable(
   easyClose = TRUE,
   size = "l",
   footer = NULL
+)
+
+winbox_cut_variable(
+  id,
+  title = "Convert Numeric to Factor",
+  options = shinyWidgets::wbOptions(),
+  controls = shinyWidgets::wbControls()
 )
 }
 \arguments{
@@ -39,6 +47,10 @@ pass \code{\link[bslib:bs_theme]{bslib::bs_theme()}} to the \code{theme} argumen
 like \code{\link[shiny:fluidPage]{fluidPage()}}).}
 
 \item{footer}{UI for footer. Use \code{NULL} for no footer.}
+
+\item{options}{List of options, see \code{\link[shinyWidgets:wbOptions]{wbOptions()}}.}
+
+\item{controls}{List of controls, see \code{\link[shinyWidgets:wbControls]{wbControls()}}.}
 }
 \value{
 A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the data.
@@ -54,12 +66,15 @@ library(reactable)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
+  shinyWidgets::html_dependency_winbox(),
   tags$h2("Convert Numeric to Factor"),
   fluidRow(
     column(
       width = 6,
       cut_variable_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to cut a variable")
+      actionButton("modal", "Or click here to open a modal to cut a variable"),
+      tags$br(), tags$br(),
+      actionButton("winbox", "Or click here to open a WinBox to cut a variable")
     ),
     column(
       width = 6,
@@ -87,6 +102,14 @@ server <- function(input, output, session) {
     data_r = reactive(rv$data)
   )
   observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # WinBox window mode
+  observeEvent(input$winbox, winbox_cut_variable("winbox"))
+  data_winbox_r <- cut_variable_server(
+    id = "winbox",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_winbox_r(), rv$data <- data_winbox_r())
 
   # Show result
   output$table <- renderReactable({

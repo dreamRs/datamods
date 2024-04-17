@@ -5,12 +5,15 @@ library(reactable)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
+  shinyWidgets::html_dependency_winbox(),
   tags$h2("Convert Numeric to Factor"),
   fluidRow(
     column(
       width = 6,
       cut_variable_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to cut a variable")
+      actionButton("modal", "Or click here to open a modal to cut a variable"),
+      tags$br(), tags$br(),
+      actionButton("winbox", "Or click here to open a WinBox to cut a variable")
     ),
     column(
       width = 6,
@@ -38,6 +41,14 @@ server <- function(input, output, session) {
     data_r = reactive(rv$data)
   )
   observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # WinBox window mode
+  observeEvent(input$winbox, winbox_cut_variable("winbox"))
+  data_winbox_r <- cut_variable_server(
+    id = "winbox",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_winbox_r(), rv$data <- data_winbox_r())
 
   # Show result
   output$table <- renderReactable({

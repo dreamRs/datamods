@@ -111,7 +111,16 @@ create_column_server <- function(id,
 
       ns <- session$ns
 
-      rv <- reactiveValues(data = NULL, feedback = NULL)
+      rv <- reactiveValues(
+        data = NULL,
+        feedback = alert(
+          status = "info",
+          ph("question"),
+          "Choose a name for the column to be created or modified,",
+          "then enter an expression before clicking on the button above to validate or on ",
+          ph("trash"), "to delete it."
+        )
+      )
 
       bindEvent(observe({
         data <- data_r()
@@ -200,7 +209,7 @@ list_allowed_operations <- function() {
 #' @inheritParams shiny::modalDialog
 #' @export
 #'
-#' @importFrom shiny showModal modalDialog
+#' @importFrom shiny showModal modalDialog textInput
 #' @importFrom htmltools tagList
 #'
 #' @rdname create-column
@@ -221,6 +230,35 @@ modal_create_column <- function(id,
     size = size,
     footer = footer
   ))
+}
+
+#' @inheritParams shinyWidgets::WinBox
+#' @export
+#'
+#' @importFrom shinyWidgets WinBox wbOptions wbControls
+#' @importFrom htmltools tagList
+#' @rdname create-column
+winbox_create_column <- function(id,
+                                 title = "Create a new column",
+                                 options = shinyWidgets::wbOptions(),
+                                 controls = shinyWidgets::wbControls()) {
+  ns <- NS(id)
+  WinBox(
+    title = title,
+    ui = tagList(
+      create_column_ui(id),
+      tags$div(
+        style = "display: none;",
+        textInput(inputId = ns("hidden"), label = NULL, value = genId())
+      )
+    ),
+    options = modifyList(
+      shinyWidgets::wbOptions(height = "550px", modal = TRUE),
+      options
+    ),
+    controls = controls,
+    auto_height = FALSE
+  )
 }
 
 

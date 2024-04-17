@@ -78,7 +78,7 @@ cut_variable_ui <- function(id) {
         )
       )
     ),
-    plotOutput(outputId = ns("plot"), width = "100%"),
+    plotOutput(outputId = ns("plot"), width = "100%", height = "270px"),
     datagridOutput2(outputId = ns("count")),
     actionButton(
       inputId = ns("create"),
@@ -212,6 +212,36 @@ modal_cut_variable <- function(id,
     size = size,
     footer = footer
   ))
+}
+
+
+#' @inheritParams shinyWidgets::WinBox
+#' @export
+#'
+#' @importFrom shinyWidgets WinBox wbOptions wbControls
+#' @importFrom htmltools tagList
+#' @rdname cut-variable
+winbox_cut_variable <- function(id,
+                                title = "Convert Numeric to Factor",
+                                options = shinyWidgets::wbOptions(),
+                                controls = shinyWidgets::wbControls()) {
+  ns <- NS(id)
+  WinBox(
+    title = title,
+    ui = tagList(
+      cut_variable_ui(id),
+      tags$div(
+        style = "display: none;",
+        textInput(inputId = ns("hidden"), label = NULL, value = genId())
+      )
+    ),
+    options = modifyList(
+      shinyWidgets::wbOptions(height = "750px", modal = TRUE),
+      options
+    ),
+    controls = controls,
+    auto_height = FALSE
+  )
 }
 
 

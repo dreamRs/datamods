@@ -6,6 +6,7 @@
 \alias{create_column_server}
 \alias{list_allowed_operations}
 \alias{modal_create_column}
+\alias{winbox_create_column}
 \title{Create new column}
 \usage{
 create_column_ui(id)
@@ -24,6 +25,13 @@ modal_create_column(
   easyClose = TRUE,
   size = "l",
   footer = NULL
+)
+
+winbox_create_column(
+  id,
+  title = "Create a new column",
+  options = shinyWidgets::wbOptions(),
+  controls = shinyWidgets::wbControls()
 )
 }
 \arguments{
@@ -48,6 +56,10 @@ pass \code{\link[bslib:bs_theme]{bslib::bs_theme()}} to the \code{theme} argumen
 like \code{\link[shiny:fluidPage]{fluidPage()}}).}
 
 \item{footer}{UI for footer. Use \code{NULL} for no footer.}
+
+\item{options}{List of options, see \code{\link[shinyWidgets:wbOptions]{wbOptions()}}.}
+
+\item{controls}{List of controls, see \code{\link[shinyWidgets:wbControls]{wbControls()}}.}
 }
 \value{
 A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the data.
@@ -70,12 +82,15 @@ library(reactable)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
+  shinyWidgets::html_dependency_winbox(),
   tags$h2("Create new column"),
   fluidRow(
     column(
       width = 4,
       create_column_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to create a column")
+      actionButton("modal", "Or click here to open a modal to create a column"),
+      tags$br(), tags$br(),
+      actionButton("winbox", "Or click here to open a WinBox to create a column")
     ),
     column(
       width = 8,
@@ -103,6 +118,14 @@ server <- function(input, output, session) {
     data_r = reactive(rv$data)
   )
   observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # WinBox window mode
+  observeEvent(input$winbox, winbox_create_column("winbox"))
+  data_winbox_r <- create_column_server(
+    id = "winbox",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_winbox_r(), rv$data <- data_winbox_r())
 
   # Show result
   output$table <- renderReactable({

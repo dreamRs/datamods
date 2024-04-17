@@ -5,12 +5,15 @@ library(reactable)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
+  shinyWidgets::html_dependency_winbox(),
   tags$h2("Create new column"),
   fluidRow(
     column(
       width = 4,
       create_column_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to create a column")
+      actionButton("modal", "Or click here to open a modal to create a column"),
+      tags$br(), tags$br(),
+      actionButton("winbox", "Or click here to open a WinBox to create a column")
     ),
     column(
       width = 8,
@@ -38,6 +41,14 @@ server <- function(input, output, session) {
     data_r = reactive(rv$data)
   )
   observeEvent(data_modal_r(), rv$data <- data_modal_r())
+
+  # WinBox window mode
+  observeEvent(input$winbox, winbox_create_column("winbox"))
+  data_winbox_r <- create_column_server(
+    id = "winbox",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_winbox_r(), rv$data <- data_winbox_r())
 
   # Show result
   output$table <- renderReactable({
