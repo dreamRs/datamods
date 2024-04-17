@@ -9,7 +9,7 @@ show_data(
   title = NULL,
   options = NULL,
   show_classes = TRUE,
-  type = c("popup", "modal"),
+  type = c("popup", "modal", "winbox"),
   width = "65\%"
 )
 }
@@ -18,19 +18,23 @@ show_data(
 
 \item{title}{Title to be displayed in window.}
 
-\item{options}{Arguments passed to \code{\link[reactable:reactable]{reactable::reactable()}}.}
+\item{options}{Arguments passed to \code{\link[toastui:datagrid]{toastui::datagrid()}}.}
 
 \item{show_classes}{Show variables classes under variables names in table header.}
 
-\item{type}{Display table in a pop-up or in modal window.}
+\item{type}{Display table in a pop-up with \code{\link[shinyWidgets:sweetalert]{shinyWidgets::show_alert()}},
+in modal window with \code{\link[shiny:showModal]{shiny::showModal()}} or in a WinBox window with \code{\link[shinyWidgets:WinBox]{shinyWidgets::WinBox()}}.}
 
-\item{width}{Width of the window, only used if \code{type = "popup"}.}
+\item{width}{Width of the window, only used if \code{type = "popup"} or \code{type = "winbox"}.}
 }
 \value{
 No value.
 }
 \description{
 Display a table in a window
+}
+\note{
+If you use \code{type = "winbox"}, you'll need to use \code{shinyWidgets::html_dependency_winbox()} somewhere in your UI.
 }
 \examples{
 
@@ -39,6 +43,7 @@ library(datamods)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L),
+  shinyWidgets::html_dependency_winbox(),
   actionButton(
     inputId = "show1",
     label = "Show data in popup",
@@ -53,12 +58,17 @@ ui <- fluidPage(
     inputId = "show3",
     label = "Show data without classes",
     icon = icon("eye")
+  ),
+  actionButton(
+    inputId = "show4",
+    label = "Show data in Winbox",
+    icon = icon("eye")
   )
 )
 
 server <- function(input, output, session) {
   observeEvent(input$show1, {
-    show_data(MASS::Cars93, title = "MASS::Cars93 dataset")
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "popup")
   })
   observeEvent(input$show2, {
     show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "modal")
@@ -71,6 +81,9 @@ server <- function(input, output, session) {
       options = list(pagination = 10),
       type = "modal"
     )
+  })
+  observeEvent(input$show4, {
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "winbox")
   })
 }
 

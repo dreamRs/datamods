@@ -4,9 +4,13 @@
 #' @param data a data object (either a `matrix` or a `data.frame`).
 #' @param title Title to be displayed in window.
 #' @param show_classes Show variables classes under variables names in table header.
-#' @param type Display table in a pop-up or in modal window.
-#' @param options Arguments passed to [reactable::reactable()].
-#' @param width Width of the window, only used if `type = "popup"`.
+#' @param type Display table in a pop-up with [shinyWidgets::show_alert()],
+#'  in modal window with [shiny::showModal()] or in a WinBox window with [shinyWidgets::WinBox()].
+#' @param options Arguments passed to [toastui::datagrid()].
+#' @param width Width of the window, only used if `type = "popup"` or `type = "winbox"`.
+#'
+#' @note
+#' If you use `type = "winbox"`, you'll need to use `shinyWidgets::html_dependency_winbox()` somewhere in your UI.
 #'
 #' @return No value.
 #' @export
@@ -14,14 +18,14 @@
 #' @importFrom shinyWidgets show_alert
 #' @importFrom htmltools tags tagList css
 #' @importFrom shiny showModal modalDialog
-#' @importFrom utils modifyList
+#' @importFrom utils modifyList packageVersion
 #'
 #' @example examples/show_data.R
 show_data <- function(data,
                       title = NULL,
                       options = NULL,
                       show_classes = TRUE,
-                      type = c("popup", "modal"),
+                      type = c("popup", "modal", "winbox"),
                       width = "65%") { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
@@ -45,7 +49,20 @@ show_data <- function(data,
     options$summary <- construct_col_summary(data)
   datatable <- rlang::exec(toastui::datagrid, !!!options)
   datatable <- toastui::grid_columns(datatable, className = "font-monospace")
-  if (identical(type, "popup")) {
+  if (identical(type, "winbox")) {
+    stopifnot(
+      "You need shinyWidgets >= 0.8.4" = packageVersion("shinyWidgets") >= "0.8.4"
+    )
+    shinyWidgets::WinBox(
+      title = title,
+      ui = datatable,
+      options = shinyWidgets::wbOptions(
+        height = "610px",
+        width = width,
+        modal = TRUE
+      )
+    )
+  } else if (identical(type, "popup")) {
     show_alert(
       title = NULL,
       text = tags$div(

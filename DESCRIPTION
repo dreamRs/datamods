@@ -39,7 +39,7 @@ Imports:
     rio,
     rlang,
     shiny (>= 1.5.0),
-    shinyWidgets (>= 0.7.3),
+    shinyWidgets (>= 0.8.4),
     tibble,
     toastui (>= 0.3.3),
     tools,

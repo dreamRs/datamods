@@ -4,6 +4,7 @@ library(datamods)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L),
+  shinyWidgets::html_dependency_winbox(),
   actionButton(
     inputId = "show1",
     label = "Show data in popup",
@@ -18,12 +19,17 @@ ui <- fluidPage(
     inputId = "show3",
     label = "Show data without classes",
     icon = icon("eye")
+  ),
+  actionButton(
+    inputId = "show4",
+    label = "Show data in Winbox",
+    icon = icon("eye")
   )
 )
 
 server <- function(input, output, session) {
   observeEvent(input$show1, {
-    show_data(MASS::Cars93, title = "MASS::Cars93 dataset")
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "popup")
   })
   observeEvent(input$show2, {
     show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "modal")
@@ -36,6 +42,9 @@ server <- function(input, output, session) {
       options = list(pagination = 10),
       type = "modal"
     )
+  })
+  observeEvent(input$show4, {
+    show_data(MASS::Cars93, title = "MASS::Cars93 dataset", type = "winbox")
   })
 }
 
