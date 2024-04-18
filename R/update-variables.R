@@ -216,14 +216,21 @@ update_variables_server <- function(id, data, height = NULL) {
 
       return(reactive({
         data <- updated_data$x
+        code <- list()
         if (!is.null(data) && isTruthy(updated_data$list_mutate) && length(updated_data$list_mutate) > 0) {
-          attr(data, "code_01_mutate") <- call2("mutate", !!!updated_data$list_mutate)
+          code <- c(code, list(call2("mutate", !!!updated_data$list_mutate)))
         }
         if (!is.null(data) && isTruthy(updated_data$list_rename) && length(updated_data$list_rename) > 0) {
-          attr(data, "code_02_rename") <- call2("rename", !!!updated_data$list_rename)
+          code <- c(code, list(call2("rename", !!!updated_data$list_rename)))
         }
         if (!is.null(data) && isTruthy(updated_data$list_select) && length(updated_data$list_select) > 0) {
-          attr(data, "code_03_select") <- expr(select(-any_of(c(!!!updated_data$list_select))))
+          code <- c(code, list(expr(select(-any_of(c(!!!updated_data$list_select))))))
+        }
+        if (length(code) > 0) {
+          attr(data, "code") <- Reduce(
+            f = function(x, y) expr(!!x %>% !!y),
+            x = code
+          )
         }
         return(data)
       }))
