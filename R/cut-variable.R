@@ -96,7 +96,7 @@ cut_variable_ui <- function(id) {
 #' @importFrom shiny moduleServer observeEvent reactive req bindEvent renderPlot
 #' @importFrom shinyWidgets updateVirtualSelect
 #' @importFrom toastui renderDatagrid2 datagrid grid_colorbar
-#' @importFrom rlang %||%
+#' @importFrom rlang %||% call2 set_names expr syms
 #' @importFrom classInt classIntervals
 #'
 #' @rdname cut-variable
@@ -143,6 +143,22 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
           breaks = breaks_r()$brks,
           include.lowest = input$include_lowest,
           right = input$right
+        )
+        code <- call2(
+          "mutate",
+          !!!set_names(
+            list(
+              expr(cut(
+                !!!syms(list(x = variable)),
+                !!!list(breaks = breaks_r()$brks, include.lowest = input$include_lowest, right = input$right)
+              ))
+            ),
+            paste0(variable, "_cut")
+          )
+        )
+        attr(data, "code") <- Reduce(
+          f = function(x, y) expr(!!x %>% !!y),
+          x = c(attr(data, "code"),  code)
         )
         data
       })
