@@ -307,12 +307,16 @@ try_compute_column <- function(expression,
   code <- if (!isTruthy(by)) {
     call2("mutate", !!!set_names(list(parse_expr(expression)), name))
   } else {
-    expr(
-      !!expr(group_by(!!!syms(by))) %>%
-        !!call2("mutate", !!!set_names(list(parse_expr(expression)), name))
+    call2(
+      "mutate",
+      !!!set_names(list(parse_expr(expression)), name),
+      !!!list(.by = expr(c(!!!syms(by))))
     )
   }
-  attr(rv$data, "code") <- c(attr(rv$data, "code"),  code)
+  attr(rv$data, "code") <- Reduce(
+    f = function(x, y) expr(!!x %>% !!y),
+    x = c(attr(rv$data, "code"),  code)
+  )
   alert(
     status = "success",
     ph("check"), "Column added!"
