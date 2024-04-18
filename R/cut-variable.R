@@ -25,7 +25,7 @@ cut_variable_ui <- function(id) {
         width = 3,
         virtualSelectInput(
           inputId = ns("variable"),
-          label = "Variable to cut:",
+          label = i18n("Variable to cut:"),
           choices = NULL,
           width = "100%"
         )
@@ -34,7 +34,7 @@ cut_variable_ui <- function(id) {
         width = 3,
         virtualSelectInput(
           inputId = ns("method"),
-          label = "Method:",
+          label = i18n("Method:"),
           choices = c(
             "sd",
             "equal",
@@ -57,7 +57,7 @@ cut_variable_ui <- function(id) {
         width = 3,
         numericInput(
           inputId = ns("n_breaks"),
-          label = "Number of breaks:",
+          label = i18n("Number of breaks:"),
           value = 5,
           min = 2,
           max = 12,
@@ -68,12 +68,12 @@ cut_variable_ui <- function(id) {
         width = 3,
         checkboxInput(
           inputId = ns("right"),
-          label = "Close intervals on the right",
+          label = i18n("Close intervals on the right"),
           value = TRUE
         ),
         checkboxInput(
           inputId = ns("include_lowest"),
-          label = "Include lowest value",
+          label = i18n("Include lowest value"),
           value = FALSE
         )
       )
@@ -82,7 +82,7 @@ cut_variable_ui <- function(id) {
     datagridOutput2(outputId = ns("count")),
     actionButton(
       inputId = ns("create"),
-      label = tagList(ph("scissors"), "Create factor variable"),
+      label = tagList(ph("scissors"), i18n("Create factor variable")),
       class = "btn-outline-primary float-end"
     ),
     tags$div(class = "clearfix")
