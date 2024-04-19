@@ -47,6 +47,7 @@ Imports:
     writexl
 Suggests: 
     bslib,
+    ggplot2,
     jsonlite,
     knitr,
     MASS,

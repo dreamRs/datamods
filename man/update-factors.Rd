@@ -26,7 +26,6 @@ This module contain an interface to reorder the levels of a factor variable.
 library(shiny)
 library(datamods)
 library(ggplot2)
-library(stringr)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
@@ -38,25 +37,41 @@ ui <- fluidPage(
     ),
     column(
       width = 6,
-      verbatimTextOutput("code")
+      selectInput(
+        "var",
+        label = "Variable to plot:",
+        choices = NULL
+      ),
+      plotOutput("plot"),
+      verbatimTextOutput("res")
     )
   )
 )
 
 server <- function(input, output, session) {
-  
-  rv <- reactiveValues(data = MASS::Cars93[c(1, 2, 3, 9, 10, 11, 16, 26, 27)]) 
-  
+
+  rv <- reactiveValues(data = MASS::Cars93[c(1, 2, 3, 9, 10, 11, 16, 26, 27)])
+  observe(
+    updateSelectInput(inputId = "var", choices = names(rv$data))
+  )
+
   data_inline_r <- update_factors_server(
     id = "id",
     data_r = reactive(rv$data)
   )
   observeEvent(data_inline_r(), rv$data <- data_inline_r())
-  
-  # Show result
-  output$code <- renderPrint({
+
+  # Plot results
+  output$plot <- renderPlot({
+    req(input$var, rv$data)
+    ggplot(rv$data) +
+      aes(x = !!sym(input$var)) +
+      geom_bar()
+  })
+  # Show results
+  output$res <- renderPrint({
     data <- req(rv$data)
-    data \%>\% str()
+    str(data)
   })
 }
 

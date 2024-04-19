@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @importFrom shiny NS fluidRow tagList column actionButton
-#' @importFrom shinyWidgets virtualSelectInput
+#' @importFrom shinyWidgets virtualSelectInput prettyCheckbox
 #' @importFrom toastui datagridOutput
 #' @importFrom htmltools tags
 #'
@@ -63,10 +63,21 @@ update_factors_ui <- function(id) {
       )
     ),
     datagridOutput(ns("grid")),
-    actionButton(
-      inputId = ns("create"),
-      label = tagList(ph("arrow-clockwise"), "Update factor variable"),
-      class = "btn-outline-primary float-end"
+    tags$div(
+      class = "float-end",
+      prettyCheckbox(
+        inputId = ns("new_var"),
+        label = i18n("Create a new variable"),
+        value = FALSE,
+        status = "primary",
+        outline = TRUE,
+        inline = TRUE
+      ),
+      actionButton(
+        inputId = ns("create"),
+        label = tagList(ph("arrow-clockwise"), "Update factor variable"),
+        class = "btn-outline-primary"
+      )
     ),
     tags$div(class = "clearfix")
   )
@@ -80,7 +91,6 @@ update_factors_ui <- function(id) {
 #' @importFrom shiny moduleServer observeEvent reactive reactiveValues req bindEvent isTruthy updateActionButton
 #' @importFrom shinyWidgets updateVirtualSelect
 #' @importFrom toastui renderDatagrid datagrid grid_columns grid_colorbar
-#' @importFrom forcats fct_relevel fct_inorder
 #'
 #' @rdname update-factors
 update_factors_server <- function(id, data_r = reactive(NULL)) {
@@ -145,37 +155,45 @@ update_factors_server <- function(id, data_r = reactive(NULL)) {
         rv$data_grid <- rv$data_grid[order(rv$data_grid[[2]], decreasing = decreasing), ]
       })
 
-      data_updated_r <- reactive({
-        data <- req(data_r())
-        variable <- req(input$variable)
-        grid <- req(input$grid_data)
-        # grid <- req(rv$data_grid)
-        data[[paste0(variable, "_updated")]] <- factor(
-          as.character(data[[variable]]),
-          levels(as.factor(grid[["Var1"]]))
-        )
-        data
-      })
 
       output$grid <- renderDatagrid({
         req(rv$data_grid)
-        datagrid(
+        grid <- datagrid(
           data = rv$data_grid,
           draggable = TRUE,
           sortable = FALSE,
           data_as_input = TRUE
-        ) %>%
-          grid_columns(
-            columns = c("Var1", "Freq"),
-            header = c("Levels", "Count")
-          ) %>%
-          grid_colorbar(
-            column = "Freq",
-            label_outside = TRUE,
-            label_width = "30px",
-            background = "#D8DEE9",
-            from = c(0, max(rv$data_grid$Freq) + 1)
-          )
+        )
+        grid <- grid_columns(
+          grid,
+          columns = c("Var1", "Freq"),
+          header = c("Levels", "Count")
+        )
+        grid <- grid_colorbar(
+          grid,
+          column = "Freq",
+          label_outside = TRUE,
+          label_width = "30px",
+          background = "#D8DEE9",
+          from = c(0, max(rv$data_grid$Freq) + 1)
+        )
+        grid
+      })
+
+      data_updated_r <- reactive({
+        data <- req(data_r())
+        variable <- req(input$variable)
+        grid <- req(input$grid_data)
+        name_var <- if (isTRUE(input$new_var)) {
+          paste0(variable, "_updated")
+        } else {
+          variable
+        }
+        data[[name_var]] <- factor(
+          as.character(data[[variable]]),
+          levels = grid[["Var1"]]
+        )
+        data
       })
 
       data_returned_r <- observeEvent(input$create, {
