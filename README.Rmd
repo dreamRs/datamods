@@ -132,12 +132,40 @@ Interactively filter a `data.frame`, this module also generates the code to repr
 
 ### Sample
 
-Interactively sample a `data.frame`:
+This module extracts a sample from a `data.frame`, based either on a fixed number of rows or on a percentage of total rows.
 
 ![](man/figures/datamods-sample.png)
 
 ### Edit
 
-Interactively edit a `data.frame`:
+This module makes a `data.frame` editable, allowing the user to add, modify or delete rows.
 
 ![](man/figures/datamods-edit-data.png)
+
+
+### Create column
+
+This module allow to enter an expression to create a new column in a `data.frame`.
+
+![](man/figures/create_column.png)
+
+
+
+### Cut numeric variable
+
+This module contain an interface to cut a numeric into several intervals.
+
+![](man/figures/cut_variable.png)
+
+
+
+
+
+
+### Update factor
+
+This module contain an interface to reorder the levels of a factor variable.
+
+![](man/figures/update_factor.png)
+
+

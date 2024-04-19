@@ -79,15 +79,14 @@ remotes::install_github("dreamRs/datamods")
 
 Import data from:
 
-  - **environment**: such as Global environment or from a package
-  - **file**: text files, Excel, SAS or SPSS format… anything that
-    package
-    [rio](https://github.com/gesistsa/rio#supported-file-formats) can
-    handle
-  - **copy/paste**: paste data from an other source like Excel or text
-    file
-  - **Google Sheet**: use the URL to import the Googlesheet
-  - **URL**: use a URL to import from a flat table
+- **environment**: such as Global environment or from a package
+- **file**: text files, Excel, SAS or SPSS format… anything that package
+  [rio](https://github.com/gesistsa/rio#supported-file-formats) can
+  handle
+- **copy/paste**: paste data from an other source like Excel or text
+  file
+- **Google Sheet**: use the URL to import the Googlesheet
+- **URL**: use a URL to import from a flat table
 
 Each module is available in the form `import_file_ui()` /
 `import_file_server()` and can be use independently.
@@ -103,10 +102,10 @@ This module also allow to view imported data and to update variables.
 
 Module `update_variables_ui()` / `update_variables_server()` allow to:
 
-  - **select** variables of interest in a dataset
-  - **rename** variables to be used in application after that
-  - **convert** variables to change their class, from character to
-    numeric for example
+- **select** variables of interest in a dataset
+- **rename** variables to be used in application after that
+- **convert** variables to change their class, from character to numeric
+  for example
 
 ![](man/figures/datamods-update.png)
 
@@ -127,12 +126,35 @@ to reproduce the filters.
 
 ### Sample
 
-Interactively sample a `data.frame`:
+This module extracts a sample from a `data.frame`, based either on a
+fixed number of rows or on a percentage of total rows.
 
 ![](man/figures/datamods-sample.png)
 
 ### Edit
 
-Interactively edit a `data.frame`:
+This module makes a `data.frame` editable, allowing the user to add,
+modify or delete rows.
 
 ![](man/figures/datamods-edit-data.png)
+
+### Create column
+
+This module allow to enter an expression to create a new column in a
+`data.frame`.
+
+![](man/figures/create_column.png)
+
+### Cut numeric variable
+
+This module contain an interface to cut a numeric into several
+intervals.
+
+![](man/figures/cut_variable.png)
+
+### Update factor
+
+This module contain an interface to reorder the levels of a factor
+variable.
+
+![](man/figures/update_factor.png)

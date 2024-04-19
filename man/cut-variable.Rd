@@ -56,7 +56,7 @@ like \code{\link[shiny:fluidPage]{fluidPage()}}).}
 A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the data.
 }
 \description{
-This module contain an interface to cut a numeric factor into several intervals.
+This module contain an interface to cut a numeric into several intervals.
 }
 \examples{
 

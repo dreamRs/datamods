@@ -2,7 +2,7 @@
 #' @title Create new column
 #'
 #' @description
-#' This module allow to enter an expression to create a new column in `data.frame`.
+#' This module allow to enter an expression to create a new column in a `data.frame`.
 #'
 #'
 #' @param id Module's ID.

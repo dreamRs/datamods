@@ -29,7 +29,7 @@ update_factor_ui <- function(id) {
         width = 6,
         virtualSelectInput(
           inputId = ns("variable"),
-          label = "Factor variable to reorder:",
+          label = i18n("Factor variable to reorder:"),
           choices = NULL,
           width = "100%",
           zIndex = 50
@@ -42,7 +42,7 @@ update_factor_ui <- function(id) {
           inputId = ns("sort_levels"),
           label = tagList(
             ph("sort-ascending"),
-            "Sort levels"
+            i18n("Sort levels")
           ),
           class = "btn-outline-primary mb-3",
           width = "100%"
@@ -55,7 +55,7 @@ update_factor_ui <- function(id) {
           inputId = ns("sort_occurrences"),
           label = tagList(
             ph("sort-ascending"),
-            "Sort count"
+            i18n("Sort count")
           ),
           class = "btn-outline-primary mb-3",
           width = "100%"
@@ -67,7 +67,7 @@ update_factor_ui <- function(id) {
       class = "float-end",
       prettyCheckbox(
         inputId = ns("new_var"),
-        label = i18n("Create a new variable"),
+        label = i18n("Create a new variable (otherwise replaces the one selected)"),
         value = FALSE,
         status = "primary",
         outline = TRUE,
@@ -75,7 +75,7 @@ update_factor_ui <- function(id) {
       ),
       actionButton(
         inputId = ns("create"),
-        label = tagList(ph("arrow-clockwise"), "Update factor variable"),
+        label = tagList(ph("arrow-clockwise"), i18n("Update factor variable")),
         class = "btn-outline-primary"
       )
     ),
@@ -158,6 +158,11 @@ update_factor_server <- function(id, data_r = reactive(NULL)) {
 
       output$grid <- renderDatagrid({
         req(rv$data_grid)
+        gridTheme <- getOption("datagrid.theme")
+        if (length(gridTheme) < 1) {
+          apply_grid_theme()
+        }
+        on.exit(toastui::reset_grid_theme())
         grid <- datagrid(
           data = rv$data_grid,
           draggable = TRUE,
@@ -167,7 +172,7 @@ update_factor_server <- function(id, data_r = reactive(NULL)) {
         grid <- grid_columns(
           grid,
           columns = c("Var1", "Freq"),
-          header = c("Levels", "Count")
+          header = c(i18n("Levels"), i18n("Count"))
         )
         grid <- grid_colorbar(
           grid,

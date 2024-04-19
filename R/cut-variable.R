@@ -2,7 +2,7 @@
 #' @title Module to Convert Numeric to Factor
 #'
 #' @description
-#' This module contain an interface to cut a numeric factor into several intervals.
+#' This module contain an interface to cut a numeric into several intervals.
 #'
 #'
 #' @param id Module ID.
