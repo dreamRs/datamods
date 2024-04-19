@@ -9,7 +9,8 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 6,
-      update_factors_ui("id")
+      update_factor_ui("id"),
+      actionButton("modal", "Or click here to open a modal to update factor's level")
     ),
     column(
       width = 6,
@@ -31,11 +32,23 @@ server <- function(input, output, session) {
     updateSelectInput(inputId = "var", choices = names(rv$data))
   )
 
-  data_inline_r <- update_factors_server(
+  # Inline mode
+  data_inline_r <- update_factor_server(
     id = "id",
     data_r = reactive(rv$data)
   )
   observeEvent(data_inline_r(), rv$data <- data_inline_r())
+
+  # modal window mode
+  observeEvent(input$modal, modal_update_factor("modal"))
+  data_modal_r <- update_factor_server(
+    id = "modal",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_modal_r(), {
+    shiny::removeModal()
+    rv$data <- data_modal_r()
+  })
 
   # Plot results
   output$plot <- renderPlot({

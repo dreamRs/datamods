@@ -15,10 +15,10 @@
 #' @importFrom toastui datagridOutput
 #' @importFrom htmltools tags
 #'
-#' @name update-factors
+#' @name update-factor
 #'
-#' @example examples/update_factors.R
-update_factors_ui <- function(id) {
+#' @example examples/update_factor.R
+update_factor_ui <- function(id) {
   ns <- NS(id)
   tagList(
     tags$style(
@@ -92,8 +92,8 @@ update_factors_ui <- function(id) {
 #' @importFrom shinyWidgets updateVirtualSelect
 #' @importFrom toastui renderDatagrid datagrid grid_columns grid_colorbar
 #'
-#' @rdname update-factors
-update_factors_server <- function(id, data_r = reactive(NULL)) {
+#' @rdname update-factor
+update_factor_server <- function(id, data_r = reactive(NULL)) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -110,7 +110,7 @@ update_factors_server <- function(id, data_r = reactive(NULL)) {
           choices = vars_factor,
           selected = if (isTruthy(input$variable)) input$variable else vars_factor[1]
         )
-      }), data_r())
+      }), data_r(), input$hidden)
 
       observeEvent(input$variable, {
         data <- req(data_r())
@@ -202,4 +202,32 @@ update_factors_server <- function(id, data_r = reactive(NULL)) {
       return(reactive(rv$data))
     }
   )
+}
+
+
+
+#' @inheritParams shiny::modalDialog
+#' @export
+#'
+#' @importFrom shiny showModal modalDialog textInput
+#' @importFrom htmltools tagList
+#'
+#' @rdname update-factor
+modal_update_factor <- function(id,
+                                title = "Update levels of a factor",
+                                easyClose = TRUE,
+                                size = "l",
+                                footer = NULL) {
+  ns <- NS(id)
+  showModal(modalDialog(
+    title = tagList(title, button_close_modal()),
+    update_factor_ui(id),
+    tags$div(
+      style = "display: none;",
+      textInput(inputId = ns("hidden"), label = NULL, value = genId())
+    ),
+    easyClose = easyClose,
+    size = size,
+    footer = footer
+  ))
 }
