@@ -123,6 +123,14 @@ import_file_ui <- function(id,
     uiOutput(
       outputId = ns("container_confirm_btn"),
       style = "margin-top: 20px;"
+    ),
+    tags$div(
+      style = css(display = "none"),
+      checkboxInput(
+        inputId = ns("preview_data"),
+        label = NULL,
+        value = isTRUE(preview_data)
+      )
     )
   )
 }
@@ -273,7 +281,7 @@ import_file_server <- function(id,
             imported,
             trigger_return = trigger_return,
             btn_show_data = btn_show_data,
-            extra = i18n("First five rows are shown below:")
+            extra = if (isTRUE(input$preview_data)) i18n("First five rows are shown below:")
           )
         )
         temporary_rv$status <- "success"
