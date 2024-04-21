@@ -97,6 +97,8 @@ ui <- fluidPage(
       verbatimTextOutput(outputId = "status"),
       tags$b("Name:"),
       verbatimTextOutput(outputId = "name"),
+      tags$b("Code:"),
+      verbatimTextOutput(outputId = "code"),
       tags$b("Data:"),
       verbatimTextOutput(outputId = "data")
     )
@@ -124,6 +126,9 @@ server <- function(input, output, session) {
   })
   output$name <- renderPrint({
     imported$name()
+  })
+  output$code <- renderPrint({
+    imported$code()
   })
   output$data <- renderPrint({
     imported$data()
