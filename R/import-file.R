@@ -37,60 +37,55 @@ import_file_ui <- function(id,
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    tags$div(
-      class = "datamods-file-import",
-      tags$div(
-        fileInput(
-          inputId = ns("file"),
-          label = i18n("Upload a file:"),
-          buttonLabel = i18n("Browse..."),
-          placeholder = i18n("No file selected"),
-          accept = file_extensions,
+    tagAppendAttributes(
+      fileInput(
+        inputId = ns("file"),
+        label = i18n("Upload a file:"),
+        buttonLabel = i18n("Browse..."),
+        placeholder = i18n("No file selected"),
+        accept = file_extensions,
+        width = "100%"
+      ),
+      class = "mb-0"
+    ),
+    tags$p(phosphoricons::ph("gear", title = "parameters"), i18n("Parameters")),
+    fluidRow(
+      column(
+        width = 6,
+        numericInputIcon(
+          inputId = ns("skip_rows"),
+          label = i18n("Number of rows to skip before reading data:"),
+          value = 0,
+          min = 0,
+          icon = list("n ="),
           width = "100%"
+        ),
+        tagAppendChild(
+          textInputIcon(
+            inputId = ns("na_label"),
+            label = i18n("Missing values character(s):"),
+            value = ",NA",
+            icon = list("NA"),
+            width = "100%"
+          ),
+          shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
         )
       ),
-      tags$div(
-        tags$label(
-          class = "control-label",
-          style = css(visibility = "hidden", width = "100%", marginBottom = "0.5rem"),
-          "Parameters",
-          `for` = ns("settings")
+      column(
+        width = 6,
+        textInputIcon(
+          inputId = ns("dec"),
+          label = i18n("Decimal separator:"),
+          value = ".",
+          icon = list("0.00"),
+          width = "100%"
         ),
-        dropMenu(
-          placement = "bottom-end",
-          actionButton(
-            inputId = ns("settings"),
-            label = phosphoricons::ph("gear", title = "parameters"),
-            class = "btn-block"
-          ),
-          numericInputIcon(
-            inputId = ns("skip_rows"),
-            label = i18n("Number of rows to skip before reading data:"),
-            value = 0,
-            min = 0,
-            icon = list("n =")
-          ),
-          tagAppendChild(
-            textInputIcon(
-              inputId = ns("na_label"),
-              label = i18n("Missing values character(s):"),
-              value = ",NA",
-              icon = list("NA")
-            ),
-            shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
-          ),
-          textInputIcon(
-            inputId = ns("dec"),
-            label = i18n("Decimal separator:"),
-            value = ".",
-            icon = list("0.00")
-          ),
-          textInputIcon(
-            inputId = ns("encoding"),
-            label = i18n("Encoding:"),
-            value = "UTF-8",
-            icon = phosphoricons::ph("text-aa")
-          )
+        textInputIcon(
+          inputId = ns("encoding"),
+          label = i18n("Encoding:"),
+          value = "UTF-8",
+          icon = phosphoricons::ph("text-aa"),
+          width = "100%"
         )
       )
     ),
