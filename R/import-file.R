@@ -13,10 +13,11 @@
 #'
 #' @name import-file
 #'
-#' @importFrom shiny NS fileInput tableOutput actionButton icon
+#' @importFrom shiny NS fileInput actionButton icon
 #' @importFrom htmltools tags tagAppendAttributes css tagAppendChild
 #' @importFrom shinyWidgets pickerInput numericInputIcon textInputIcon dropMenu
 #' @importFrom phosphoricons ph
+#' @importFrom toastui datagridOutput2
 #'
 #' @example examples/from-file.R
 import_file_ui <- function(id,
@@ -37,60 +38,58 @@ import_file_ui <- function(id,
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    tags$div(
-      class = "datamods-file-import",
-      tags$div(
-        fileInput(
-          inputId = ns("file"),
-          label = i18n("Upload a file:"),
-          buttonLabel = i18n("Browse..."),
-          placeholder = i18n("No file selected"),
-          accept = file_extensions,
+    tagAppendAttributes(
+      fileInput(
+        inputId = ns("file"),
+        label = i18n("Upload a file:"),
+        buttonLabel = i18n("Browse..."),
+        placeholder = i18n("No file selected"),
+        accept = file_extensions,
+        width = "100%"
+      ),
+      class = "mb-0"
+    ),
+    fluidRow(
+      column(
+        width = 6,
+        numericInputIcon(
+          inputId = ns("skip_rows"),
+          label = i18n("Rows to skip before reading data:"),
+          value = 0,
+          min = 0,
+          icon = list("n ="),
+          size = "sm",
           width = "100%"
+        ),
+        tagAppendChild(
+          textInputIcon(
+            inputId = ns("na_label"),
+            label = i18n("Missing values character(s):"),
+            value = ",NA",
+            icon = list("NA"),
+            size = "sm",
+            width = "100%"
+          ),
+          shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
         )
       ),
-      tags$div(
-        tags$label(
-          class = "control-label",
-          style = css(visibility = "hidden", width = "100%", marginBottom = "0.5rem"),
-          "Parameters",
-          `for` = ns("settings")
+      column(
+        width = 6,
+        textInputIcon(
+          inputId = ns("dec"),
+          label = i18n("Decimal separator:"),
+          value = ".",
+          icon = list("0.00"),
+          size = "sm",
+          width = "100%"
         ),
-        dropMenu(
-          placement = "bottom-end",
-          actionButton(
-            inputId = ns("settings"),
-            label = phosphoricons::ph("gear", title = "parameters"),
-            class = "btn-block"
-          ),
-          numericInputIcon(
-            inputId = ns("skip_rows"),
-            label = i18n("Number of rows to skip before reading data:"),
-            value = 0,
-            min = 0,
-            icon = list("n =")
-          ),
-          tagAppendChild(
-            textInputIcon(
-              inputId = ns("na_label"),
-              label = i18n("Missing values character(s):"),
-              value = ",NA",
-              icon = list("NA")
-            ),
-            shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
-          ),
-          textInputIcon(
-            inputId = ns("dec"),
-            label = i18n("Decimal separator:"),
-            value = ".",
-            icon = list("0.00")
-          ),
-          textInputIcon(
-            inputId = ns("encoding"),
-            label = i18n("Encoding:"),
-            value = "UTF-8",
-            icon = phosphoricons::ph("text-aa")
-          )
+        textInputIcon(
+          inputId = ns("encoding"),
+          label = i18n("Encoding:"),
+          value = "UTF-8",
+          icon = phosphoricons::ph("text-aa"),
+          size = "sm",
+          width = "100%"
         )
       )
     ),
@@ -115,10 +114,7 @@ import_file_ui <- function(id,
       )
     ),
     if (isTRUE(preview_data)) {
-      tagAppendAttributes(
-        tableOutput(outputId = ns("table")),
-        class = "datamods-table-container"
-      )
+      datagridOutput2(outputId = ns("table"))
     },
     uiOutput(
       outputId = ns("container_confirm_btn"),
@@ -152,13 +148,14 @@ import_file_ui <- function(id,
 #'
 #' @importFrom shiny moduleServer
 #' @importFrom htmltools tags tagList
-#' @importFrom shiny reactiveValues reactive observeEvent removeUI req renderTable
+#' @importFrom shiny reactiveValues reactive observeEvent removeUI req
 #' @importFrom shinyWidgets updatePickerInput
 #' @importFrom readxl excel_sheets
 #' @importFrom rio import
 #' @importFrom rlang exec fn_fmls_names is_named is_function
 #' @importFrom tools file_ext
 #' @importFrom utils head
+#' @importFrom toastui renderDatagrid2 datagrid
 #'
 #' @rdname import-file
 import_file_server <- function(id,
@@ -232,6 +229,7 @@ import_file_server <- function(id,
         )
         parameters <- parameters[which(names(parameters) %in% fn_fmls_names(read_fns[[extension]]))]
         imported <- try(rlang::exec(read_fns[[extension]], !!!parameters), silent = TRUE)
+        code <- call2(read_fns[[extension]], !!!modifyList(parameters, list(file = input$file$name)))
       } else {
         if (is_excel(input$file$datapath)) {
           req(input$sheet)
@@ -257,10 +255,13 @@ import_file_server <- function(id,
           )
         }
         imported <- try(rlang::exec(rio::import, !!!parameters), silent = TRUE)
+        code <- call2("import", !!!modifyList(parameters, list(file = input$file$name)), .ns = "rio")
       }
 
-      if (inherits(imported, "try-error"))
+      if (inherits(imported, "try-error")) {
         imported <- try(rlang::exec(rio::import, !!!parameters[1]), silent = TRUE)
+        code <- call2("import", !!!list(file = input$file$name), .ns = "rio")
+      }
 
       if (inherits(imported, "try-error") || NROW(imported) < 1) {
 
@@ -269,6 +270,7 @@ import_file_server <- function(id,
         temporary_rv$status <- "error"
         temporary_rv$data <- NULL
         temporary_rv$name <- NULL
+        temporary_rv$code <- NULL
 
       } else {
 
@@ -287,6 +289,7 @@ import_file_server <- function(id,
         temporary_rv$status <- "success"
         temporary_rv$data <- imported
         temporary_rv$name <- input$file$name
+        temporary_rv$code <- code
       }
     }, ignoreInit = TRUE)
 
@@ -294,30 +297,34 @@ import_file_server <- function(id,
       show_data(temporary_rv$data, title = i18n("Imported data"), type = show_data_in)
     })
 
-    output$table <- renderTable({
+    output$table <- renderDatagrid2({
       req(temporary_rv$data)
-      data <- head(temporary_rv$data, 5)
-      classes <- get_classes(data)
-      classes <- sprintf("<span style='font-style: italic; font-weight: normal; font-size: small;'>%s</span>", classes)
-      names(data) <- paste(names(data), classes, sep = "<br>")
-      data
-    }, striped = TRUE, bordered = TRUE, sanitize.colnames.function = identity, spacing = "xs")
+      datagrid(
+        data = head(temporary_rv$data, 5),
+        theme = "striped",
+        colwidths = "guess",
+        minBodyHeight = 250
+      )
+    })
 
     observeEvent(input$confirm, {
       imported_rv$data <- temporary_rv$data
       imported_rv$name <- temporary_rv$name
+      imported_rv$code <- temporary_rv$code
     })
 
     if (identical(trigger_return, "button")) {
       return(list(
         status = reactive(temporary_rv$status),
         name = reactive(imported_rv$name),
+        code = reactive(imported_rv$code),
         data = reactive(as_out(imported_rv$data, return_class))
       ))
     } else {
       return(list(
         status = reactive(temporary_rv$status),
         name = reactive(temporary_rv$name),
+        code = reactive(temporary_rv$code),
         data = reactive(as_out(temporary_rv$data, return_class))
       ))
     }
