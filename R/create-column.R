@@ -2,7 +2,7 @@
 #' @title Create new column
 #'
 #' @description
-#' This module allow to enter an expression to create a new column in `data.frame`.
+#' This module allow to enter an expression to create a new column in a `data.frame`.
 #'
 #'
 #' @param id Module's ID.
@@ -34,7 +34,7 @@ create_column_ui <- function(id) {
         width = 6,
         textInput(
           inputId = ns("new_column"),
-          label = "New column name:",
+          label = i18n("New column name:"),
           value = "new_column1",
           width = "100%"
         )
@@ -43,7 +43,7 @@ create_column_ui <- function(id) {
         width = 6,
         virtualSelectInput(
           inputId = ns("group_by"),
-          label = "Group calculation by:",
+          label = i18n("Group calculation by:"),
           choices = NULL,
           multiple = TRUE,
           disableSelectAll = TRUE,
@@ -54,7 +54,7 @@ create_column_ui <- function(id) {
     ),
     textAreaInput(
       inputId = ns("expression"),
-      label = "Enter an expression to define new column:",
+      label = i18n("Enter an expression to define new column:"),
       value = "",
       width = "100%",
       rows = 6
@@ -62,7 +62,7 @@ create_column_ui <- function(id) {
     tags$i(
       class = "d-block",
       ph("info"),
-      "Click on a column to add it to the expression:"
+      i18n("Click on a column name to add it to the expression:")
     ),
     uiOutput(outputId = ns("columns")),
     uiOutput(outputId = ns("feedback")),
@@ -76,7 +76,7 @@ create_column_ui <- function(id) {
       actionButton(
         inputId = ns("compute"),
         label = tagList(
-          ph("gear"), "Create column"
+          ph("gear"), i18n("Create column")
         ),
         class = "btn-outline-primary",
         width = "100%"
@@ -115,9 +115,9 @@ create_column_server <- function(id,
       info_alert <- alert(
         status = "info",
         ph("question"),
-        "Choose a name for the column to be created or modified,",
-        "then enter an expression before clicking on the button above to validate or on ",
-        ph("trash"), "to delete it."
+        i18n("Choose a name for the column to be created or modified,"),
+        i18n("then enter an expression before clicking on the button above to validate or on "),
+        ph("trash"), i18n("to delete it.")
       )
 
       rv <- reactiveValues(
@@ -163,7 +163,7 @@ create_column_server <- function(id,
         if (input$new_column == "") {
           rv$feedback <- alert(
             status = "warning",
-            ph("warning"), "New column name cannot be empty"
+            ph("warning"), i18n("New column name cannot be empty")
           )
         }
       })
@@ -287,7 +287,7 @@ try_compute_column <- function(expression,
   }
   funs <- unlist(c(extract_calls(parsed), lapply(parsed, extract_calls)), recursive = TRUE)
   if (!are_allowed_operations(funs, allowed_operations)) {
-    return(alert_error("Some operations are not allowed"))
+    return(alert_error(i18n("Some operations are not allowed")))
   }
   if (!isTruthy(by)) {
     result <- try(
@@ -315,15 +315,19 @@ try_compute_column <- function(expression,
   code <- if (!isTruthy(by)) {
     call2("mutate", !!!set_names(list(parse_expr(expression)), name))
   } else {
-    expr(
-      !!expr(group_by(!!!syms(by))) %>%
-        !!call2("mutate", !!!set_names(list(parse_expr(expression)), name))
+    call2(
+      "mutate",
+      !!!set_names(list(parse_expr(expression)), name),
+      !!!list(.by = expr(c(!!!syms(by))))
     )
   }
-  attr(rv$data, "code") <- c(attr(rv$data, "code"),  code)
+  attr(rv$data, "code") <- Reduce(
+    f = function(x, y) expr(!!x %>% !!y),
+    x = c(attr(rv$data, "code"),  code)
+  )
   alert(
     status = "success",
-    ph("check"), "Column added!"
+    ph("check"), i18n("Column added!")
   )
 }
 
@@ -403,7 +407,7 @@ make_choices_with_infos <- function(data) {
           icon, nm
         )),
         value = nm,
-        description = paste("Unique values:", data.table::uniqueN(values))
+        description = paste(i18n("Unique values:"), data.table::uniqueN(values))
       )
     }
   )

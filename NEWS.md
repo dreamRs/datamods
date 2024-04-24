@@ -1,4 +1,9 @@
-# datamods 1.4.6
+# datamods 1.5.1
+
+* New module `update_factor_ui()` / `update_factor_server()` to reorder levels of a factor.
+
+
+# datamods 1.5.0
 
 * New module `create_column_ui()` / `create_column_server()` to add new column based on an expression to a `data.frame`.
 * New module `cut_variable_ui()` / `cut_variable_server()` to cut a numeric factor into several interval.
