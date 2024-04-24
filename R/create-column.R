@@ -28,6 +28,7 @@
 create_column_ui <- function(id) {
   ns <- NS(id)
   tagList(
+    html_dependency_datamods(),
     fluidRow(
       column(
         width = 6,
@@ -64,6 +65,7 @@ create_column_ui <- function(id) {
       "Click on a column to add it to the expression:"
     ),
     uiOutput(outputId = ns("columns")),
+    uiOutput(outputId = ns("feedback")),
     tags$div(
       style = css(
         display = "grid",
@@ -87,8 +89,7 @@ create_column_ui <- function(id) {
         class = "btn-outline-danger",
         width = "100%"
       )
-    ),
-    uiOutput(outputId = ns("feedback"))
+    )
   )
 }
 
@@ -140,7 +141,14 @@ create_column_server <- function(id,
 
       output$columns <- renderUI({
         data <- req(rv$data)
-        lapply(names(data), btn_column, inputId = ns("add_column"))
+        col_type <- getFromNamespace("col_type", "esquisse")
+        mapply(
+          label = names(data),
+          type = col_type(data),
+          FUN = btn_column,
+          MoreArgs = list(inputId = ns("add_column")),
+          SIMPLIFY = FALSE
+        )
       })
 
       observeEvent(input$add_column, {
@@ -342,16 +350,24 @@ alert_error <- function(text) {
 }
 
 
-btn_column <- function(label, inputId) {
+btn_column <- function(label, type, inputId) {
+  icon <- switch (
+    type,
+    discrete = "text-aa",
+    time = "calendar",
+    continuous = "hash",
+    NULL
+  )
   tags$button(
     type = "button",
-    class = "btn btn-primary",
+    class = paste0("btn btn-column-", type),
     style = css(
       "--bs-btn-padding-y" = ".25rem",
       "--bs-btn-padding-x" = ".5rem",
       "--bs-btn-font-size" = ".75rem",
       "margin-bottom" = "5px"
     ),
+    if (!is.null(icon)) ph(icon, weight = "regular"),
     label,
     onclick = sprintf(
       "Shiny.setInputValue('%s', '%s', {priority: 'event'})",
