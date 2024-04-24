@@ -402,12 +402,17 @@ make_choices_with_infos <- function(data) {
       } else {
         NULL
       }
+      description <- if (is.atomic(values)) {
+        paste(i18n("Unique values:"), data.table::uniqueN(values))
+      } else {
+        ""
+      }
       list(
         label = htmltools::doRenderTags(tagList(
           icon, nm
         )),
         value = nm,
-        description = paste(i18n("Unique values:"), data.table::uniqueN(values))
+        description = description
       )
     }
   )
