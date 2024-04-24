@@ -1,4 +1,3 @@
-
 #' Function to extract labels 
 #'
 #' @param folder file directory 
@@ -30,3 +29,28 @@ extract_labels <- function(folder = "R") {
 }
 
 
+
+#' Update all csvs that are in inst/i18n
+#'
+#' @return all csvs updated
+#' @export
+#'
+#' @examples update_csv()
+#' new_fr_csv <- fread("inst/i18n/fr.csv")
+update_csv <- function() {
+  # results of label extractions
+  labels <- c(extract_labels(folder = "R"), extract_labels(folder = "examples"))
+  
+  # rewriting csv files with the extracted labels and the old ones
+  files <- setdiff(list.files(file.path("../datamods", "inst", "i18n")), "extract_labels.R") 
+  for (i in seq_along(files)) {
+    path <- file.path("inst", "i18n", files[i])
+    old_csv <- read_csv(file = path)
+    join <- full_join(
+      x = old_csv,
+      y = data.frame(label = labels),
+      by = c("label")
+    )
+    write.csv(join, file = path, row.names = FALSE)
+  }
+}
