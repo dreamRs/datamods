@@ -1,5 +1,4 @@
 
-
 #' Function to extract labels 
 #'
 #' @param folder file directory 
@@ -16,7 +15,7 @@ extract_labels <- function(folder = "R") {
       read_file <- readLines(file.path(folder, file))
       extraction <- str_extract_all(
         string = str_subset(read_file, "i18n"),
-        pattern = "(?<=i18n..).+(?=\")"
+        pattern = 'i18n\\("[[:graph:][:space:]-["\\)]]*"\\)'
       ) %>% 
         unlist()
       extraction
@@ -27,7 +26,7 @@ extract_labels <- function(folder = "R") {
     extraction <- list_extractions[[i]]
     extract_labels <- c(extract_labels, extraction)
   }
-  unique(extract_labels)
+  str_remove_all(unique(extract_labels), paste(c("i18n", "\"", "\\)", "\\("), collapse = "|"))
 }
 
 
