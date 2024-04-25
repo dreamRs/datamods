@@ -19,16 +19,16 @@ if (requireNamespace("validate")) {
   )
   # Add some labels
   label(myrules) <- c(
-    "Variable Manufacturer must be character",
-    "Variable Model must be character",
-    "Manufacturer X Model are unique",
-    "Variable Price must be numeric",
-    "Variable Min.Price must be numeric",
-    "Variable Max.Price must be numeric",
-    "Variable Price must be strictly positive",
-    "Luggage.room must not contain any missing values",
-    "Cylinders must be between 4 and 8",
-    "Man.trans.avail must be 'Yes' or 'No'"
+    i18n("Variable Manufacturer must be character"),
+    i18n("Variable Model must be character"),
+    i18n("Manufacturer X Model are unique"),
+    i18n("Variable Price must be numeric"),
+    i18n("Variable Min.Price must be numeric"),
+    i18n("Variable Max.Price must be numeric"),
+    i18n("Variable Price must be strictly positive"),
+    i18n("Luggage.room must not contain any missing values"),
+    i18n("Cylinders must be between 4 and 8"),
+    i18n("Man.trans.avail must be 'Yes' or 'No'")
   )
   # you can also add a description()
 
@@ -38,15 +38,15 @@ if (requireNamespace("validate")) {
         width = 4,
         checkboxGroupInput(
           inputId = "from",
-          label = "From",
+          label = i18n("From"),
           choices = c("env", "file", "copypaste", "googlesheets", "url"),
           selected = c("file", "copypaste")
         ),
-        actionButton("launch_modal", "Launch modal window")
+        actionButton("launch_modal", i18n("Launch modal window"))
       ),
       column(
         width = 8,
-        tags$b("Imported data:"),
+        tags$b(i18n("Imported data:")),
         verbatimTextOutput(outputId = "name"),
         verbatimTextOutput(outputId = "data")
       )
@@ -60,7 +60,7 @@ if (requireNamespace("validate")) {
       import_modal(
         id = "myid",
         from = input$from,
-        title = "Import data to be used in application"
+        title = i18n("Import data to be used in application")
       )
     })
 

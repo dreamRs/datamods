@@ -6,14 +6,14 @@ library(reactable)
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
   shinyWidgets::html_dependency_winbox(),
-  tags$h2("Create new column"),
+  tags$h2(i18n("Create new column")),
   fluidRow(
     column(
       width = 4,
       create_column_ui("inline"),
-      actionButton("modal", "Or click here to open a modal to create a column"),
+      actionButton("modal", i18n("Or click here to open a modal to create a column")),
       tags$br(), tags$br(),
-      actionButton("winbox", "Or click here to open a WinBox to create a column")
+      actionButton("winbox", i18n("Or click here to open a WinBox to create a column"))
     ),
     column(
       width = 8,

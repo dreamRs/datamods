@@ -26,11 +26,11 @@ if (interactive()) {
       ),
       column(
         width = 8,
-        tags$b("Import status:"),
+        tags$b(i18n("Import status:")),
         verbatimTextOutput(outputId = "status"),
-        tags$b("Name:"),
+        tags$b(i18n("Name:")),
         verbatimTextOutput(outputId = "name"),
-        tags$b("Data:"),
+        tags$b(i18n("Data:")),
         verbatimTextOutput(outputId = "data")
       )
     )

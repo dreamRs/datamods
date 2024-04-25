@@ -24,12 +24,12 @@ one_column_numeric <- data.frame(
 )
 
 ui <- fluidPage(
-  tags$h2("Filter data.frame"),
-  actionButton("saveFilterButton","Save Filter Values"),
-  actionButton("loadFilterButton","Load Filter Values"),
+  tags$h2(i18n("Filter data.frame")),
+  actionButton("saveFilterButton", i18n("Save Filter Values")),
+  actionButton("loadFilterButton", i18n("Load Filter Values")),
   radioButtons(
     inputId = "dataset",
-    label = "Data:",
+    label = i18n("Data:"),
     choices = c(
       "iris",
       "mtcars",
@@ -53,11 +53,11 @@ ui <- fluidPage(
         total = 100, display_pct = TRUE
       ),
       reactable::reactableOutput(outputId = "table"),
-      tags$b("Code dplyr:"),
+      tags$b(i18n("Code dplyr:")),
       verbatimTextOutput(outputId = "code_dplyr"),
-      tags$b("Expression:"),
+      tags$b(i18n("Expression:")),
       verbatimTextOutput(outputId = "code"),
-      tags$b("Filtered data:"),
+      tags$b(i18n("Filtered data:")),
       verbatimTextOutput(outputId = "res_str")
     )
   )

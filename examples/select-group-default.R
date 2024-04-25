@@ -10,21 +10,21 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 10, offset = 1,
-      tags$h3("Filter data with select group module"),
+      tags$h3(i18n("Filter data with select group module")),
       shinyWidgets::panel(
         select_group_ui(
           id = "my-filters",
           params = list(
-            list(inputId = "Manufacturer", label = "Manufacturer:"),
-            list(inputId = "Type", label = "Type:"),
-            list(inputId = "AirBags", label = "AirBags:"),
-            list(inputId = "DriveTrain", label = "DriveTrain:")
+            list(inputId = "Manufacturer", label = i18n("Manufacturer:")),
+            list(inputId = "Type", label = i18n("Type:")),
+            list(inputId = "AirBags", label = i18n("AirBags:")),
+            list(inputId = "DriveTrain", label = i18n("DriveTrain:"))
           ), vs_args = list(disableSelectAll = FALSE)
         ),
         status = "primary"
       ),
       reactable::reactableOutput(outputId = "table"),
-      tags$b("Inputs values:"),
+      tags$b(i18n("Inputs values:")),
       verbatimTextOutput("inputs")
     )
   )

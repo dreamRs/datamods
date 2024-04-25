@@ -3,7 +3,7 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3("Import data with copy & paste"),
+  tags$h3(i18n("Import data with copy & paste")),
   fluidRow(
     column(
       width = 4,
@@ -11,11 +11,11 @@ ui <- fluidPage(
     ),
     column(
       width = 8,
-      tags$b("Import status:"),
+      tags$b(i18n("Import status:")),
       verbatimTextOutput(outputId = "status"),
-      tags$b("Name:"),
+      tags$b(i18n("Name:")),
       verbatimTextOutput(outputId = "name"),
-      tags$b("Data:"),
+      tags$b(i18n("Data:")),
       verbatimTextOutput(outputId = "data")
     )
   )

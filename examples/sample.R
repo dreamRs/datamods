@@ -5,7 +5,7 @@ library(reactable)
 
 ui <- fluidPage(
 
-  titlePanel("Sampling"),
+  titlePanel(i18n("Sampling")),
 
   fluidRow(
     column(
