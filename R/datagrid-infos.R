@@ -12,14 +12,14 @@ describe_col_char <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "3px 0")),
         tags$div(
-          "Unique:", length(unique(x))
+          i18n("Unique:"), length(unique(x))
         ),
         tags$div(
-          "Missing:", sum(is.na(x))
+          i18n("Missing:"), sum(is.na(x))
         ),
         tags$div(
           style = css(whiteSpace = "normal", wordBreak = "break-all"),
-          "Most Common:", gsub(
+          i18n("Most Common:"), gsub(
             pattern = "'",
             replacement = "\u07F4",
             x = names(sort(table(x), decreasing = TRUE))[1]
@@ -82,16 +82,16 @@ describe_col_num <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "3px 0")),
         tags$div(
-          "Min:", round(min(x, na.rm = TRUE), 2)
+          i18n("Min:"), round(min(x, na.rm = TRUE), 2)
         ),
         tags$div(
-          "Mean:", round(mean(x, na.rm = TRUE), 2)
+          i18n("Mean:"), round(mean(x, na.rm = TRUE), 2)
         ),
         tags$div(
-          "Max:", round(max(x, na.rm = TRUE), 2)
+          i18n("Max:"), round(max(x, na.rm = TRUE), 2)
         ),
         tags$div(
-          "Missing:", sum(is.na(x))
+          i18n("Missing:"), sum(is.na(x))
         )
       )
     }
@@ -111,13 +111,13 @@ describe_col_date <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "3px 0")),
         tags$div(
-          "Min:", min(x, na.rm = TRUE)
+          i18n("Min:"), min(x, na.rm = TRUE)
         ),
         tags$div(
-          "Max:", max(x, na.rm = TRUE)
+          i18n("Max:"), max(x, na.rm = TRUE)
         ),
         tags$div(
-          "Missing:", sum(is.na(x))
+          i18n("Missing:"), sum(is.na(x))
         ),
         tags$div(
           "\u00A0"
@@ -139,13 +139,13 @@ describe_col_datetime <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "3px 0")),
         tags$div(
-          "Min:", min(x, na.rm = TRUE)
+          i18n("Min:"), min(x, na.rm = TRUE)
         ),
         tags$div(
-          "Max:", max(x, na.rm = TRUE)
+          i18n("Max:"), max(x, na.rm = TRUE)
         ),
         tags$div(
-          "Missing:", sum(is.na(x))
+          i18n("Missing:"), sum(is.na(x))
         ),
         tags$div(
           "\u00A0"
@@ -168,10 +168,10 @@ describe_col_other <- function(x, with_summary = TRUE) {
       tagList(
         tags$hr(style = css(margin = "3px 0")),
         tags$div(
-          "Unique:", length(unique(x))
+          i18n("Unique:"), length(unique(x))
         ),
         tags$div(
-          "Missing:", sum(is.na(x))
+          i18n("Missing:"), sum(is.na(x))
         ),
         tags$div(
           "\u00A0"

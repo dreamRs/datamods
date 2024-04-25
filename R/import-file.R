@@ -70,7 +70,7 @@ import_file_ui <- function(id,
             size = "sm",
             width = "100%"
           ),
-          shiny::helpText(ph("info"), "if several use a comma (',') to separate them")
+          shiny::helpText(ph("info"), i18n("if several use a comma (',') to separate them"))
         )
       ),
       column(

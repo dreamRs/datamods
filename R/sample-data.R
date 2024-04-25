@@ -67,7 +67,7 @@ sample_ui <- function(id) {
   tagList(
     radioGroupButtons(
       inputId = ns("choice"),
-      label = "Sample data by :",
+      label = i18n("Sample data by :"),
       choices = c("number of rows", "proportion of rows"),
       justified = FALSE,
       size = "xs"
@@ -78,7 +78,7 @@ sample_ui <- function(id) {
       ns = ns,
       sliderInput(
         inputId = ns("proportion_rows"),
-        label = "Choose a percentage :",
+        label = i18n("Choose a percentage :"),
         min = 0, max = 100, value = 100,
         post = " %"
         ),
@@ -90,7 +90,7 @@ sample_ui <- function(id) {
       ns = ns,
       sliderInput(
         inputId = ns("number_rows"),
-        label = "Choose a number of rows :",
+        label = i18n("Choose a number of rows :"),
         min = 0, max = 10, value = 10
         ),
       uiOutput(outputId = ns("feedback_number_rows"))

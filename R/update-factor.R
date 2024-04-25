@@ -142,13 +142,13 @@ update_factor_server <- function(id, data_r = reactive(NULL)) {
           decreasing <- FALSE
           label <- tagList(
             ph("sort-descending"),
-            "Sort count"
+            i18n("Sort count")
           )
         } else {
           decreasing <- TRUE
           label <- tagList(
             ph("sort-ascending"),
-            "Sort count"
+            i18n("Sort count")
           )
         }
         updateActionButton(inputId = "sort_occurrences", label = as.character(label))
@@ -219,7 +219,7 @@ update_factor_server <- function(id, data_r = reactive(NULL)) {
 #'
 #' @rdname update-factor
 modal_update_factor <- function(id,
-                                title = "Update levels of a factor",
+                                title = i18n("Update levels of a factor"),
                                 easyClose = TRUE,
                                 size = "l",
                                 footer = NULL) {
