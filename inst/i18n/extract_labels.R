@@ -54,3 +54,63 @@ update_csv <- function() {
     write.csv(join, file = path, row.names = FALSE)
   }
 }
+
+
+
+#' Translate labels
+#'
+#' @param labels labels to translate
+#' @param source_language the language that you want to translate the text into
+#' @param target_language the language of the text that you want to translate
+#' @param encoding Name of encoding. See stringi::stri_enc_list() for a complete list
+#'
+#' @return a data frame with translated labels
+#' @export
+#'
+#' @examples translate_labels(labels = extract_labels(folder = "R")) 
+translate_labels <- function(labels,
+                             source_language = "en",
+                             target_language = "fr",
+                             encoding = "UTF-8") {
+  
+  translation <- polyglotr::google_translate(
+    text = labels,
+    target_language = target_language,
+    source_language = source_language
+  )
+  data.frame(
+    label = labels,
+    translation = translation %>% 
+      unlist() %>% 
+      str_conv(encoding) 
+  ) 
+}
+# Informations sur le package {polyglotr}
+# https://github.com/Tomeriko96/polyglotr/
+# install.packages("polyglotr")
+
+# Exemples 
+
+# # francais
+# translate_labels(labels = extract_labels(folder = "R"))
+# # espagnol
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "es")
+# # allemand
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "de")
+# # albanais
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "sq")
+# # polonais
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "pl")
+# # portugais
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "pt")
+# # turc
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "tr")
+# # macédonien
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "mk", encoding = ?) # revoir encoding
+# # japonais
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "ja", encoding = ?) # revoir encoding
+# # chinois
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "zh-CN", encoding = ?) # revoir encoding
+# # coréen
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "ko", encoding = ?) # revoir encoding
+
