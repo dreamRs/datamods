@@ -3,6 +3,7 @@
 #' @param folder file directory 
 #'
 #' @return an extraction of the labels contained in the directory files
+#' @importFrom stringr str_subset str_extract_all str_remove_all
 #' @export
 #'
 #' @examples extract_labels(folder = "R")
@@ -33,6 +34,9 @@ extract_labels <- function(folder = "R") {
 #' Update all csvs that are in inst/i18n
 #'
 #' @return all csvs updated
+#' @importFrom readr read_csv
+#' @importFrom utils write.csv
+#' @importFrom dplyr full_join
 #' @export
 #'
 #' @examples update_csv()
@@ -63,6 +67,9 @@ update_csv <- function() {
 #' @param source_language the language that you want to translate the text into
 #' @param target_language the language of the text that you want to translate
 #' @param encoding Name of encoding. See stringi::stri_enc_list() for a complete list
+#' 
+#' @importFrom polyglotr google_translate
+#' @importFrom stringr str_conv
 #'
 #' @return a data frame with translated labels
 #' @export
@@ -88,6 +95,10 @@ translate_labels <- function(labels,
 # Informations sur le package {polyglotr}
 # https://github.com/Tomeriko96/polyglotr/
 # install.packages("polyglotr")
+# Table avec les codes des langages disponibles
+# google_supported_languages
+# Liste des encodages
+# encodage <- data.frame(encoding = stringi::stri_enc_list())
 
 # Exemples 
 
@@ -108,9 +119,9 @@ translate_labels <- function(labels,
 # # macédonien
 # translate_labels(labels = extract_labels(folder = "R"), target_language = "mk", encoding = ?) # revoir encoding
 # # japonais
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "ja", encoding = ?) # revoir encoding
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "ja", encoding = "ISO_2022,locale=ja,version=4") 
 # # chinois
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "zh-CN", encoding = ?) # revoir encoding
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "zh-CN", encoding = "chinese") # revoir encoding : "GBK", "UTF16_BigEndian", "GB18030"
 # # coréen
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "ko", encoding = ?) # revoir encoding
+# translate_labels(labels = extract_labels(folder = "R"), target_language = "ko", encoding = "csKOI8R") # "GBK", "korean"
 
