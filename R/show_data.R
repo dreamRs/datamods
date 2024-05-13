@@ -105,22 +105,14 @@ show_data <- function(data,
   } else {
     showModal(modalDialog(
       title = tagList(
-        tags$button(
-          phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
-          class = "btn btn-link",
-          style = css(border = "0 none", position = "absolute", top = "5px", right = "5px"),
-          `data-dismiss` = "modal",
-          `data-bs-dismiss` = "modal",
-          `aria-label` = i18n("Close")
-        ),
+        button_close_modal(),
         title
       ),
       tags$div(
         style = css(minHeight = validateCssUnit(options$height)),
         toastui::renderDatagrid2(datatable)
-        # datatasble
       ),
-      size = "l",
+      size = "xl",
       footer = NULL,
       easyClose = TRUE
     ))
