@@ -16,7 +16,7 @@ extract_labels <- function(folder = "R") {
       extraction <- str_extract_all(
         string = str_subset(read_file, "i18n"),
         pattern = 'i18n\\("[[:graph:][:space:]-["\\)]]*"\\)'
-      ) %>% 
+      ) |>
         unlist()
       extraction
     }
@@ -33,28 +33,41 @@ extract_labels <- function(folder = "R") {
 
 #' Update all csvs that are in inst/i18n
 #'
+#' @param labels results of label extractions
+#' 
 #' @return all csvs updated
 #' @importFrom readr read_csv
 #' @importFrom utils write.csv
 #' @importFrom dplyr full_join
 #' @export
 #'
-#' @examples update_csv()
+#' @examples update_csv(labels = c(extract_labels(folder = "R"), extract_labels(folder = "examples")))
 #' new_fr_csv <- fread("inst/i18n/fr.csv")
-update_csv <- function() {
-  # results of label extractions
-  labels <- c(extract_labels(folder = "R"), extract_labels(folder = "examples"))
-  
+update_csv <- function(labels,
+                       translation = FALSE) {
   # rewriting csv files with the extracted labels and the old ones
-  files <- setdiff(list.files(file.path("../datamods", "inst", "i18n")), "extract_labels.R") 
+  files <- setdiff(list.files(file.path("../datamods", "inst", "i18n")), c("extract_labels.R", "maj_csv.R")) 
+  
   for (i in seq_along(files)) {
     path <- file.path("inst", "i18n", files[i])
     old_csv <- read_csv(file = path)
+    # old_csv <- fread(file = path, encoding = "UTF-8")
+    
+    if (isTRUE(translation)) {
+      new_csv <- select_translation(file = files[i], labels = labels)
+      by <- c("label", "translation")
+    } else {
+      new_csv <- data.frame(label = labels)
+      by <- c("label")
+    }
+    
     join <- full_join(
       x = old_csv,
-      y = data.frame(label = labels),
-      by = c("label")
-    )
+      y = new_csv,
+      by = by
+    ) %>% 
+      unique()
+    
     write.csv(join, file = path, row.names = FALSE)
   }
 }
@@ -87,8 +100,8 @@ translate_labels <- function(labels,
   )
   data.frame(
     label = labels,
-    translation = translation %>% 
-      unlist() %>% 
+    translation = translation |> 
+      unlist() |> 
       str_conv(encoding) 
   ) 
 }
@@ -100,28 +113,35 @@ translate_labels <- function(labels,
 # Liste des encodages
 # encodage <- data.frame(encoding = stringi::stri_enc_list())
 
-# Exemples 
-
-# # francais
-# translate_labels(labels = extract_labels(folder = "R"))
-# # espagnol
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "es")
-# # allemand
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "de")
-# # albanais
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "sq")
-# # polonais
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "pl")
-# # portugais
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "pt")
-# # turc
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "tr")
-# # macédonien
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "mk", encoding = ?) # revoir encoding
-# # japonais
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "ja", encoding = "ISO_2022,locale=ja,version=4") 
-# # chinois
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "zh-CN", encoding = "chinese") # revoir encoding : "GBK", "UTF16_BigEndian", "GB18030"
-# # coréen
-# translate_labels(labels = extract_labels(folder = "R"), target_language = "ko", encoding = "csKOI8R") # "GBK", "korean"
-
+select_translation <- function(file,
+                               labels = extract_labels(folder = "R")) { 
+  
+  file <- str_remove(file, ".csv")
+  
+  if (identical(file, "fr")) {
+    translate_labels(labels = labels) 
+  } else if (identical(file, "es")) {
+    translate_labels(labels = labels, target_language = "es")
+  } else if (identical(file, "de")) {
+    translate_labels(labels = labels, target_language = "de")
+  } else if (identical(file, "al")) {
+    translate_labels(labels = labels, target_language = "sq")
+  } else if (identical(file, "pl")) {
+    translate_labels(labels = labels, target_language = "pl")
+  } else if (identical(file, "pt")) {
+    translate_labels(labels = labels, target_language = "pt")
+  } else if (identical(file, "tr")) {
+    translate_labels(labels = labels, target_language = "tr")
+  } else if (identical(file, "mk")) {
+    translate_labels(labels = labels, target_language = "mk")  # revoir encoding
+  } else if (identical(file, "ja")) {
+    translate_labels(labels = labels, target_language = "ja", encoding = "ISO_2022,locale=ja,version=4")
+  } else if (identical(file, "cn")) {
+    translate_labels(labels = labels, target_language = "zh-CN", encoding = "chinese") # "GBK", "UTF16_BigEndian", "GB18030"
+  } else if (identical(file, "ko")) {
+    translate_labels(labels = labels, target_language = "ko", encoding = "csKOI8R") # "GBK", "korean"
+  } else {
+    NULL
+  }
+}
+# select_translation(file = "fr.csv")
