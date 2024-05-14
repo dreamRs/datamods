@@ -10,24 +10,33 @@ library(DT)
 library(ggplot2)
 library(rlang)
 
-
+try_fun <- function(fun, x, ...) {
+  tryCatch({
+    fun <- match.fun(fun)
+    fun(x, ...)
+  }, error = function(e) NA)
+}
 funs <- list(
-  "sum" = ~ sum(.x, na.rm = TRUE),
-  "mean" = ~ mean(.x, na.rm = TRUE),
-  "min" = ~ min(.x, na.rm = TRUE),
-  "max" = ~ max(.x, na.rm = TRUE)
+  "sum" = function(x) try_fun("sum", x, na.rm = TRUE),
+  "mean" = function(x) try_fun("mean", x, na.rm = TRUE),
+  "min" = function(x) try_fun("min", x, na.rm = TRUE),
+  "max" = function(x) try_fun("max", x, na.rm = TRUE)
 )
-funs <- lapply(funs, as_function)
+# funs <- lapply(funs, as_function)
 
 
 # Utils -------------------------------------------------------------------
 
-compute_by <- function(data, by, funs = NULL, on = NULL) {
+compute_by <- function(data, by, funs = NULL, on = NULL, add_count = TRUE) {
   data <- as.data.table(data)
   if (is.null(by))
     return(data)
   if (is.null(funs) | is.null(on)) {
-    return(data[, list(count = .N), by = by])
+    if (isTRUE(add_count)) {
+      return(data[, list(count = .N), by = by])
+    } else {
+      return(unique(data[, .SD, .SDcols = by]))
+    }
   }
   if (identical(length(funs), 1L)) {
     return(data[, lapply(.SD, funs[[1]]), by = by, .SDcols = on])
@@ -43,11 +52,22 @@ compute_by <- function(data, by, funs = NULL, on = NULL) {
         result[]
       }
     )
+    if (isTRUE(add_count))
+      results <- c(list(data[, list(count = .N), by = by]), results)
     Reduce(function(x, y) {
       merge(x, y, by = by)
     }, results)
   }
 }
+
+# compute_by(mpg, by = "manufacturer")
+# compute_by(mpg, by = "manufacturer", add_count = FALSE)
+# 
+# compute_by(mpg, by = "manufacturer", on = "cty")
+# compute_by(mpg, by = "manufacturer", on = "cty", add_count = FALSE)
+# 
+# compute_by(mpg, by = "manufacturer", on = "cty", funs = funs[1:2])
+# compute_by(mpg, by = "manufacturer", on = "cty", funs = funs[1:2], add_count = FALSE)
 
 
 
@@ -56,7 +76,7 @@ compute_by <- function(data, by, funs = NULL, on = NULL) {
 
 ui <- fluidPage(
   tags$h3("Summarize data", style = "text-align: center;"),
-
+  
   fluidRow(
     column(
       width = 3,
@@ -65,6 +85,11 @@ ui <- fluidPage(
         label = "Group by:",
         multiple = TRUE,
         choices = NULL
+      ),
+      checkboxInput(
+        inputId = "add_count", 
+        label = "Add count?",
+        value = TRUE
       ),
       pickerInput(
         inputId = "on",
@@ -84,9 +109,9 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  
   data_r <- reactive({mpg})
-
+  
   observeEvent(data_r(), {
     names_ <- names(data_r())
     updatePickerInput(
@@ -100,7 +125,7 @@ server <- function(input, output, session) {
       choices = names_
     )
   })
-
+  
   summarized_r <- reactive({
     data_ <- data_r()
     # data_ <- as.data.table(data_)
@@ -111,13 +136,18 @@ server <- function(input, output, session) {
     #   return(data_[, list(count = .N), by = c(input$by)])
     # }
     # data_
-    compute_by(data_, by = input$by, funs = funs, on = input$on)
+    compute_by(
+      data_, by = input$by, 
+      funs = funs, 
+      on = input$on,
+      add_count = input$add_count
+    )
   })
-
+  
   output$table <- renderTable({
     summarized_r()
   }, striped = TRUE, bordered = TRUE, width = "100%")
-
+  
 }
 
 # shinyApp(ui, server)
