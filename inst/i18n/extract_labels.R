@@ -36,13 +36,11 @@ extract_labels <- function(folder = "R") {
 #' @param labels results of label extractions
 #' 
 #' @return all csvs updated
-#' @importFrom readr read_csv
-#' @importFrom utils write.csv
-#' @importFrom dplyr full_join
+#' @importFrom data.table merge fwrite data.table fread unique
 #' @export
 #'
 #' @examples update_csv(labels = c(extract_labels(folder = "R"), extract_labels(folder = "examples")))
-#' new_fr_csv <- fread("inst/i18n/fr.csv")
+#' new_csv_fr <- fread("inst/i18n/fr.csv")
 update_csv <- function(labels,
                        translation = FALSE) {
   # rewriting csv files with the extracted labels and the old ones
@@ -50,25 +48,19 @@ update_csv <- function(labels,
   
   for (i in seq_along(files)) {
     path <- file.path("inst", "i18n", files[i])
-    old_csv <- read_csv(file = path)
-    # old_csv <- fread(file = path, encoding = "UTF-8")
-    
+    old_csv <- fread(file = path, encoding = "UTF-8")
     if (isTRUE(translation)) {
       new_csv <- select_translation(file = files[i], labels = labels)
       by <- c("label", "translation")
     } else {
-      new_csv <- data.frame(label = labels)
+      new_csv <- data.table(label = labels)
       by <- c("label")
     }
     
-    join <- full_join(
-      x = old_csv,
-      y = new_csv,
-      by = by
-    ) %>% 
-      unique()
-    
-    write.csv(join, file = path, row.names = FALSE, na = '')
+    join <- unique(
+      merge(old_csv, new_csv, by = by, all = TRUE)
+    )
+    fwrite(join, file = path, row.names = FALSE, na = '') 
   }
 }
 
@@ -83,6 +75,7 @@ update_csv <- function(labels,
 #' 
 #' @importFrom polyglotr google_translate
 #' @importFrom stringr str_conv
+#' @importFrom data.table data.table
 #'
 #' @return a data frame with translated labels
 #' @export
@@ -98,7 +91,7 @@ translate_labels <- function(labels,
     target_language = target_language,
     source_language = source_language
   )
-  data.frame(
+  data.table(
     label = labels,
     translation = translation |> 
       unlist() |> 
@@ -113,13 +106,26 @@ translate_labels <- function(labels,
 # Liste des encodages
 # encodage <- data.frame(encoding = stringi::stri_enc_list())
 
+
+
+#' Select translation
+#'
+#' @param file csv file
+#' @param labels labels to translate
+#' 
+#' @importFrom stringr str_remove
+#'
+#' @return a data frame with translated labels according to the language of the csv file
+#' @export
+#'
+#' @examples select_translation(file = "fr.csv")
 select_translation <- function(file,
                                labels = extract_labels(folder = "R")) { 
   
   file <- str_remove(file, ".csv")
   
   if (identical(file, "fr")) {
-    translate_labels(labels = labels) 
+    translate_labels(labels = labels, target_language = "fr") 
   } else if (identical(file, "es")) {
     translate_labels(labels = labels, target_language = "es")
   } else if (identical(file, "de")) {
@@ -144,4 +150,3 @@ select_translation <- function(file,
     NULL
   }
 }
-# select_translation(file = "fr.csv")

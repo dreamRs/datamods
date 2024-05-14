@@ -1,8 +1,7 @@
 
+library(data.table)
 library(stringr)
-library(readr)
 library(utils)
-library(dplyr) 
 library(polyglotr)
 
 source("inst/i18n/extract_labels.R")
