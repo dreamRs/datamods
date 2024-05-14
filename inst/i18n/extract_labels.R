@@ -68,7 +68,7 @@ update_csv <- function(labels,
     ) %>% 
       unique()
     
-    write.csv(join, file = path, row.names = FALSE)
+    write.csv(join, file = path, row.names = FALSE, na = '')
   }
 }
 
