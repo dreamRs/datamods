@@ -34,15 +34,19 @@ extract_labels <- function(folder = "R") {
 #' Update all csvs that are in inst/i18n
 #'
 #' @param labels results of label extractions
+#' @param lang the language that you want to translate the text into
+#' @param translation TRUE or FALSE if you want to translate the language
+#' @param ... other arguments passed to datamods::translate_labels
 #'
 #' @return all csvs updated
 #' @importFrom data.table merge fwrite data.table fread unique
 #' @export
 #'
-#' @examples update_csv(labels = c(extract_labels(folder = "R"), extract_labels(folder = "examples")))
+#' @examples update_csv(labels = extract_labels(folder = "R"))
 #' new_csv_fr <- fread("inst/i18n/fr.csv")
 update_csv <- function(labels,
                        lang,
+                       translation = TRUE,
                        ...) {
   old <- fread(file = sprintf("inst/i18n/%s.csv", lang), encoding = "UTF-8", fill = TRUE)
   new <- merge(
@@ -52,10 +56,14 @@ update_csv <- function(labels,
     all.x = TRUE
   )
 
-  final <- rbind(
-    new[!is.na(translation)],
-    translate_labels(labels = new[is.na(translation)]$label, target_language = lang, ...)
-  )
+  if (isTRUE(translation)) {
+    final <- rbind(
+      new[!is.na(translation)],
+      translate_labels(labels = new[is.na(translation)]$label, target_language = lang, ...)
+    )
+  } else {
+    final <- new
+  }
 
   fwrite(final, file = sprintf("inst/i18n/%s.csv", lang), row.names = FALSE, na = '')
 }
@@ -65,8 +73,8 @@ update_csv <- function(labels,
 #' Translate labels
 #'
 #' @param labels labels to translate
-#' @param source_language the language that you want to translate the text into
-#' @param target_language the language of the text that you want to translate
+#' @param source_language the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages 
+#' @param target_language the language of the text that you want to translate. See polyglotr::google_supported_languages for the Table with the codes of available languages
 #' @param encoding Name of encoding. See stringi::stri_enc_list() for a complete list
 #'
 #' @importFrom polyglotr google_translate
@@ -95,10 +103,4 @@ translate_labels <- function(labels,
     comment = "Automacally translated"
   )
 }
-# Informations sur le package {polyglotr}
-# https://github.com/Tomeriko96/polyglotr/
-# install.packages("polyglotr")
-# Table avec les codes des langages disponibles
-# google_supported_languages
-# Liste des encodages
-# encodage <- data.frame(encoding = stringi::stri_enc_list())
+
