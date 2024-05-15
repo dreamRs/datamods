@@ -407,7 +407,7 @@ import_server <- function(id,
 #' @importFrom htmltools tags css
 import_modal <- function(id,
                          from,
-                         title = "Import data",
+                         title = i18n("Import data"),
                          size = "l",
                          file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
   showModal(modalDialog(

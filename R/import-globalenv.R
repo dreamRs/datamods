@@ -335,7 +335,7 @@ get_dimensions <- function(objs) {
       if (is.data.frame(tmp)) {
         sprintf("%d obs. of  %d variables", nrow(tmp), ncol(tmp))
       } else {
-        "Not a data.frame"
+        i18n("Not a data.frame")
       }
     },
     name = objs,

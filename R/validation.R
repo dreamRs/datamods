@@ -75,9 +75,9 @@ validation_server <- function(id,
                               data,
                               n_row = NULL,
                               n_col = NULL,
-                              n_row_label = "Valid number of rows",
-                              n_col_label = "Valid number of columns",
-                              btn_label = "Dataset validation:",
+                              n_row_label = i18n("Valid number of rows"),
+                              n_col_label = i18n("Valid number of columns"),
+                              btn_label = i18n("Dataset validation:"),
                               rules = NULL,
                               bs_version = 3) {
   moduleServer(

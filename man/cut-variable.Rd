@@ -14,7 +14,7 @@ cut_variable_server(id, data_r = reactive(NULL))
 
 modal_cut_variable(
   id,
-  title = "Convert Numeric to Factor",
+  title = i18n("Convert Numeric to Factor"),
   easyClose = TRUE,
   size = "l",
   footer = NULL
@@ -22,7 +22,7 @@ modal_cut_variable(
 
 winbox_cut_variable(
   id,
-  title = "Convert Numeric to Factor",
+  title = i18n("Convert Numeric to Factor"),
   options = shinyWidgets::wbOptions(),
   controls = shinyWidgets::wbControls()
 )

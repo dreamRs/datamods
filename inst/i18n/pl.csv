@@ -1,88 +1,140 @@
-label,translation,comment
-Import a dataset from an environment,Importuj dane ze środowiska,
-Select a data.frame:,Wybierz data.frame:,
-List of data.frame...,Lista obiektów data.frame...,
-Select an environment in which to search:,"Wybierz środowisko, w którym chcesz szukać:",
-Select environment,Wybierz środowisko,
-No data selected!,Nie wybrano danych!,
-Use a data.frame from your environment or from the environment of a package.,Użyj obiektu data.frame ze swojego środowiska lub ze środowiska pakietu.,
-No data.frame here...,Brak obiektów data.frame,
-Ooops,Upsss,
-Something went wrong...,Coś poszło nie tak...,
-Data successfully imported!,Dane zaimportowano pomyślnie!,
-Data ready to be imported!,Dane gotowe do importu!,
-data has %s obs. of %s variables.,dane zawierają %s obserwacji %s zmiennych.,
-click to see data,kliknij by zobaczyć dane,
-Import data,Importuj dane,
-Import a file,Importuj plik,
-Upload a file:,Wgraj plik:,
-Browse...,Przeglądaj...,
-No file selected,Nie wybrano żadnego pliku,
-Number of rows to skip before reading data:,Liczba wierszy do pominięcia przed odczytem danych:,
-Decimal separator:,Separator dziesiętny:,
-Encoding:,Kodowanie:,
-Select sheet to import:,Wybierz arkusz:,
-No file selected:,Nie wybrano pliku:,
-You can import %s files,Możesz zaimportować %s plików,
-First five rows are shown below:,Poniżej pokazano pięć pierwszych wierszy:,
-Copy & paste data,Kopiuj i wklej dane,
-Paste data here:,Wklej dane tutaj:,
-Nothing pasted yet!,Jeszcze nic nie wklejono!,
-Please copy and paste some data in the dialog box above.,Proszę skopiować i wkleić dane do okienka powyżej.,
-Import Google Spreadsheet,Importuj z Arkuszy Google,
-You can either use:,Możesz użyć:,
-"A shareable link, in that case first sheet will be read",Linku do udostępniania (zostanie odczytany pierwszy arkusz),
-"The URL that appear in your browser, in that case the current sheet will be read",Linku z przeglądarki (zostanie odczytany aktualny arkusz),
-Enter a shareable link to a GoogleSheet:,Wprowadź link do udostępniania Arkusza Google:,
-Please paste a valid GoogleSheet link in the dialog box above.,Proszę wprowadzić popeawny link do Arkusza Google w okienku powyżej.,
-Help,Pomoc,
-Environment,Środowisko,
-External file,Plik zewnętrzny,
-Copy / Paste,Kopiuj / wklej,
-Googlesheets,Arkusze Google,
-How to import data?,Jak zaimportować dane?,
-Import,Importuj,
-View,Pokaż,
-Update,Zaktualizuj,
-Validate,Sprawdź,
-Update & select variables,Zaktualizuj i wybierz zmienne,
-Date format:,Format dat:,
-Date to use as origin to convert date/datetime:,Data do użycia jako początkowa do konwersji dat/dat i czasu,
-"Select, rename and convert variables in table above, then apply changes by clicking button below.","Wybierz, zmień nazwy i konwertuj zmienne w tabeli powyżej, a następnie zastosuj zmiany klikając poniższy przycisk.",
-Apply changes,Zastosuj zmiany,
-Data has %s observations and %s variables.,dane zawierają %s obserwacji i %s zmiennych.,
-Data successfully updated!,Dane pomyślnie zaktualizowano,
-Validation:,Sprawdzenie:,
-OK,OK,
-Failed,Nie udało się,
-Error,Błąd,
-Number of rows:,Liczba wierszy:,
-No data to display.,Brak danych do wyświetlenia.,
-Close,Zamknij.,
-Add a label to data,Dodaj etykietę do danych,
-URL,URL,
-Add a row,Dodaj wiersz,
-Required field,Pole wymagane,
-Please fill in the required fields,Proszę wypełnić wymagane pola,
-"Unable to add the row, contact the platform administrator","Brak możliwości dodania wiersza, skontaktuj się z administratorem",
-Registered,Zarejestrowano,
-Row has been saved,Wiersz został zapisany,
-Update row,Zaktualizuj wiersz,
-"Unable to modify the item, contact the platform administrator","Brak możliwości modyfikacji obiektu, skontaktuj się z administratorem",
-Item has been modified,Obiekt został zmieniony,
-Delete,Usuń,
-Do you want to delete the selected row ?,Czy na pewo chcesz usunąć ten wiersz?,
-"Unable to delete the row, contact platform administrator","Brak możliwości usunięcia wiersza, skontaktuj się z administratorem",
-The row has been deleted,Wiersz został usunięty,
-Information,Informacje,
-Row was not deleted,Wiersz nie został usunięty,
-Save,Ratować,
-Click to edit,Naciśnij by edytować,
-Click to delete,Naciśnij by usunąć,
-Cancel,Anuluj,
-No,Nie,
-Yes,Tak,
-Edit data,Edytuj dane,
-Select,Wybierz,
-"Missing values character(s):","Brakujące znaki wartości:"
-"if several use a comma (',') to separate them","jeśli kilka z nich oddziela je przecinkiem („,”)"
+"label","translation","comment"
+"% of the total","% całkowitej","Automacally translated"
+"% of the total, i.e.","% całości, tj.","Automacally translated"
+"A shareable link, in that case first sheet will be read","Linku do udostępniania (zostanie odczytany pierwszy arkusz)",""
+"Add a label to data","Dodaj etykietę do danych",""
+"Add a row","Dodaj wiersz",""
+"Apply changes","Zastosuj zmiany",""
+"Browse...","Przeglądaj...",""
+"Cancel","Anuluj",""
+"Choose a name for the column to be created or modified,","Wybierz nazwę kolumny, która ma zostać utworzona lub zmodyfikowana,","Automacally translated"
+"Choose a number of rows :","Wybierz liczbę wierszy:","Automacally translated"
+"Choose a percentage :","Wybierz procent:","Automacally translated"
+"Click on a column name to add it to the expression:","Kliknij nazwę kolumny, aby dodać ją do wyrażenia:","Automacally translated"
+"Click to delete","Naciśnij by usunąć",""
+"Click to edit","Naciśnij by edytować",""
+"Close","Zamknij.",""
+"Close intervals on the right","Zamknij odstępy po prawej stronie","Automacally translated"
+"Column added!","Dodano kolumnę!","Automacally translated"
+"Convert Numeric to Factor","Zamień liczbę na współczynnik","Automacally translated"
+"Copy & paste data","Kopiuj i wklej dane",""
+"Copy / Paste","Kopiuj / wklej",""
+"Count","Liczyć","Automacally translated"
+"Create a new column","Utwórz nową kolumnę","Automacally translated"
+"Create a new variable otherwise replaces the one selected","Utwórz nową zmienną, w przeciwnym razie zastępuje wybraną","Automacally translated"
+"Create column","Utwórz kolumnę","Automacally translated"
+"Create factor variable","Utwórz zmienną czynnikową","Automacally translated"
+"Data has %s observations and %s variables.","dane zawierają %s obserwacji i %s zmiennych.",""
+"Data ready to be imported!","Dane gotowe do importu!",""
+"Data successfully imported!","Dane zaimportowano pomyślnie!",""
+"Data successfully updated!","Dane pomyślnie zaktualizowano",""
+"Data wasn't deleted","Dane nie zostały usunięte","Automacally translated"
+"Data wasn't updated","Dane nie zostały zaktualizowane","Automacally translated"
+"Dataset validation:","Walidacja zbioru danych:","Automacally translated"
+"Date format:","Format dat:",""
+"Date to use as origin to convert date/datetime:","Data do użycia jako początkowa do konwersji dat/dat i czasu",""
+"Decimal separator:","Separator dziesiętny:",""
+"Delete","Usuń",""
+"Do you want to delete the selected row ?","Czy na pewo chcesz usunąć ten wiersz?",""
+"Encoding:","Kodowanie:",""
+"Enter URL to data:","Wpisz adres URL do danych:","Automacally translated"
+"Enter a shareable link to a GoogleSheet:","Wprowadź link do udostępniania Arkusza Google:",""
+"Enter an expression to define new column:","Wprowadź wyrażenie definiujące nową kolumnę:","Automacally translated"
+"Environment","Środowisko",""
+"Error","Błąd",""
+"External file","Plik zewnętrzny",""
+"Factor variable to reorder:","Zmienna czynnikowa do zmiany kolejności:","Automacally translated"
+"Failed","Nie udało się",""
+"First five rows are shown below:","Poniżej pokazano pięć pierwszych wierszy:",""
+"Googlesheets","Arkusze Google",""
+"Group calculation by:","Obliczenia grupowe według:","Automacally translated"
+"Help","Pomoc",""
+"How to import data?","Jak zaimportować dane?",""
+"Import","Importuj",""
+"Import Google Spreadsheet","Importuj z Arkuszy Google",""
+"Import Url","Importuj adres URL","Automacally translated"
+"Import a dataset from an environment","Importuj dane ze środowiska",""
+"Import a file","Importuj plik",""
+"Import data","Importuj dane",""
+"Imported data","Zaimportowane dane","Automacally translated"
+"Include lowest value","Uwzględnij najniższą wartość","Automacally translated"
+"Information","Informacje",""
+"Item has been modified","Obiekt został zmieniony",""
+"Levels","Poziomy","Automacally translated"
+"List of data.frame...","Lista obiektów data.frame...",""
+"Max:","Maks:","Automacally translated"
+"Mean:","Mieć na myśli:","Automacally translated"
+"Method:","Metoda:","Automacally translated"
+"Min:","Min.:","Automacally translated"
+"Missing values characters:","Brakujące znaki wartości:","Automacally translated"
+"Missing:","Zaginiony:","Automacally translated"
+"Most Common:","Najczęściej:","Automacally translated"
+"New column name cannot be empty","Nazwa nowej kolumny nie może być pusta","Automacally translated"
+"New column name:","Nowa nazwa kolumny:","Automacally translated"
+"No","Nie",""
+"No data selected!","Nie wybrano danych!",""
+"No data to display.","Brak danych do wyświetlenia.",""
+"No data.frame here...","Brak obiektów data.frame",""
+"No file selected","Nie wybrano żadnego pliku",""
+"No file selected:","Nie wybrano pliku:",""
+"Not a data.frame","Nie ramka danych","Automacally translated"
+"Nothing pasted yet!","Jeszcze nic nie wklejono!",""
+"Number of breaks:","Liczba przerw:","Automacally translated"
+"Number of rows:","Liczba wierszy:",""
+"OK","OK",""
+"Ooops","Upsss",""
+"Paste data here:","Wklej dane tutaj:",""
+"Please copy and paste some data in the dialog box above.","Proszę skopiować i wkleić dane do okienka powyżej.",""
+"Please fill in the required fields","Proszę wypełnić wymagane pola",""
+"Please paste a valid GoogleSheet link in the dialog box above.","Proszę wprowadzić popeawny link do Arkusza Google w okienku powyżej.",""
+"Please paste a valid link in the dialog box above.","Wklej prawidłowy link w powyższym oknie dialogowym.","Automacally translated"
+"Registered","Zarejestrowano",""
+"Required field","Pole wymagane",""
+"Row has been saved","Wiersz został zapisany",""
+"Row was not deleted","Wiersz nie został usunięty",""
+"Rows to skip before reading data:","Wiersze do pominięcia przed odczytaniem danych:","Automacally translated"
+"Sample data by :","Przykładowe dane według:","Automacally translated"
+"Save","Ratować",""
+"Select","Wybierz",""
+"Select a data.frame:","Wybierz data.frame:",""
+"Select an environment in which to search:","Wybierz środowisko, w którym chcesz szukać:",""
+"Select environment","Wybierz środowisko",""
+"Select sheet to import:","Wybierz arkusz:",""
+"Some operations are not allowed","Niektóre operacje są niedozwolone","Automacally translated"
+"Something went wrong...","Coś poszło nie tak...",""
+"Sort count","Liczba sortowań","Automacally translated"
+"Sort levels","Poziomy sortowania","Automacally translated"
+"The URL that appear in your browser, in that case the current sheet will be read","Linku z przeglądarki (zostanie odczytany aktualny arkusz)",""
+"The row has been deleted","Wiersz został usunięty",""
+"The row wasn't added to the data","Wiersz nie został dodany do danych","Automacally translated"
+"URL","URL",""
+"Unable to add the row, contact the platform administrator","Brak możliwości dodania wiersza, skontaktuj się z administratorem",""
+"Unable to delete the row, contact platform administrator","Brak możliwości usunięcia wiersza, skontaktuj się z administratorem",""
+"Unable to modify the item, contact the platform administrator","Brak możliwości modyfikacji obiektu, skontaktuj się z administratorem",""
+"Unique values:","Unikalne wartości:","Automacally translated"
+"Unique:","Unikalny:","Automacally translated"
+"Update","Zaktualizuj",""
+"Update & select variables","Zaktualizuj i wybierz zmienne",""
+"Update factor variable","Aktualizuj zmienną współczynnika","Automacally translated"
+"Update levels of a factor","Aktualizuj poziomy czynnika","Automacally translated"
+"Update row","Zaktualizuj wiersz",""
+"Upload a file:","Wgraj plik:",""
+"Use a data.frame from your environment or from the environment of a package.","Użyj obiektu data.frame ze swojego środowiska lub ze środowiska pakietu.",""
+"Valid number of columns","Prawidłowa liczba kolumn","Automacally translated"
+"Valid number of rows","Prawidłowa liczba wierszy","Automacally translated"
+"Validate","Sprawdź",""
+"Validation:","Sprawdzenie:",""
+"Variable to cut:","Zmienna do cięcia:","Automacally translated"
+"View","Pokaż",""
+"Warning","Ostrzeżenie","Automacally translated"
+"Yes","Tak",""
+"You can either use:","Możesz użyć:",""
+"You can import %s files","Możesz zaimportować %s plików",""
+"You can import from flat table format supported by","Możesz importować z formatu płaskiej tabeli obsługiwanego przez","Automacally translated"
+"click to see data","kliknij by zobaczyć dane",""
+"data has %s obs. of %s variables.","dane zawierają %s obserwacji %s zmiennych.",""
+"if several use a comma ',' to separate them","jeśli kilka z nich użyje przecinka „,” aby je oddzielić","Automacally translated"
+"lines, i.e.","linie, tj.","Automacally translated"
+"rows","wydziwianie","Automacally translated"
+"to delete it.","aby go usunąć.","Automacally translated"
+"then enter an expression before clicking on the button above to validate or on ","następnie wprowadź wyrażenie przed kliknięciem przycisku powyżej, aby zatwierdzić lub włączyć","Automacally translated"

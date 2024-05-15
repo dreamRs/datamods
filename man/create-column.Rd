@@ -21,7 +21,7 @@ list_allowed_operations()
 
 modal_create_column(
   id,
-  title = "Create a new column",
+  title = i18n("Create a new column"),
   easyClose = TRUE,
   size = "l",
   footer = NULL
@@ -29,7 +29,7 @@ modal_create_column(
 
 winbox_create_column(
   id,
-  title = "Create a new column",
+  title = i18n("Create a new column"),
   options = shinyWidgets::wbOptions(),
   controls = shinyWidgets::wbControls()
 )

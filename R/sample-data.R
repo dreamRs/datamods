@@ -67,7 +67,7 @@ sample_ui <- function(id) {
   tagList(
     radioGroupButtons(
       inputId = ns("choice"),
-      label = "Sample data by :",
+      label = i18n("Sample data by :"),
       choices = c("number of rows", "proportion of rows"),
       justified = FALSE,
       size = "xs"
@@ -78,7 +78,7 @@ sample_ui <- function(id) {
       ns = ns,
       sliderInput(
         inputId = ns("proportion_rows"),
-        label = "Choose a percentage :",
+        label = i18n("Choose a percentage :"),
         min = 0, max = 100, value = 100,
         post = " %"
         ),
@@ -90,7 +90,7 @@ sample_ui <- function(id) {
       ns = ns,
       sliderInput(
         inputId = ns("number_rows"),
-        label = "Choose a number of rows :",
+        label = i18n("Choose a number of rows :"),
         min = 0, max = 10, value = 10
         ),
       uiOutput(outputId = ns("feedback_number_rows"))
@@ -127,13 +127,13 @@ sample_server <- function(id, data_r = reactive(NULL)) {
       output$feedback_proportion_rows <- renderUI({
         req(data_r())
         value <- nrow(data_r()) * (input$proportion_rows/100)
-        tags$div(paste(input$proportion_rows, "% of the total, i.e.", round(value), "rows"))
+        tags$div(paste(input$proportion_rows, i18n("% of the total, i.e."), round(value), i18n("rows")))
       })
 
       output$feedback_number_rows <- renderUI({
         req(data_r())
         value <- input$number_rows / nrow(data_r()) * 100
-        tags$div(paste(input$number_rows, "lines, i.e.", round(value, 1), "% of the total"))
+        tags$div(paste(input$number_rows, i18n("lines, i.e."), round(value, 1), i18n("% of the total")))
       })
 
       sample_r <- reactive({

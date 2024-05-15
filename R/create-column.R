@@ -226,7 +226,7 @@ list_allowed_operations <- function() {
 #'
 #' @rdname create-column
 modal_create_column <- function(id,
-                                title = "Create a new column",
+                                title = i18n("Create a new column"),
                                 easyClose = TRUE,
                                 size = "l",
                                 footer = NULL) {
@@ -251,7 +251,7 @@ modal_create_column <- function(id,
 #' @importFrom htmltools tagList
 #' @rdname create-column
 winbox_create_column <- function(id,
-                                 title = "Create a new column",
+                                 title =i18n( "Create a new column"),
                                  options = shinyWidgets::wbOptions(),
                                  controls = shinyWidgets::wbControls()) {
   ns <- NS(id)

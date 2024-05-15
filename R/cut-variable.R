@@ -212,7 +212,7 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
 #'
 #' @rdname cut-variable
 modal_cut_variable <- function(id,
-                               title = "Convert Numeric to Factor",
+                               title = i18n("Convert Numeric to Factor"),
                                easyClose = TRUE,
                                size = "l",
                                footer = NULL) {
@@ -238,7 +238,7 @@ modal_cut_variable <- function(id,
 #' @importFrom htmltools tagList
 #' @rdname cut-variable
 winbox_cut_variable <- function(id,
-                                title = "Convert Numeric to Factor",
+                                title = i18n("Convert Numeric to Factor"),
                                 options = shinyWidgets::wbOptions(),
                                 controls = shinyWidgets::wbControls()) {
   ns <- NS(id)

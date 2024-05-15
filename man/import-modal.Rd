@@ -25,7 +25,7 @@ import_server(
 import_modal(
   id,
   from,
-  title = "Import data",
+  title = i18n("Import data"),
   size = "l",
   file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
     ".sav")
