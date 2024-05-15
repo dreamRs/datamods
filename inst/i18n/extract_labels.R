@@ -34,7 +34,8 @@ extract_labels <- function(folder = "R") {
 #' Update all csvs that are in inst/i18n
 #'
 #' @param labels results of label extractions
-#' @param lang the language that you want to translate the text into
+#' @param lang the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages 
+#' @param lang_csv the name of the csv file
 #' @param translation TRUE or FALSE if you want to translate the language
 #' @param ... other arguments passed to datamods::translate_labels
 #'
@@ -46,9 +47,10 @@ extract_labels <- function(folder = "R") {
 #' new_csv_fr <- fread("inst/i18n/fr.csv")
 update_csv <- function(labels,
                        lang,
+                       lang_csv,
                        translation = TRUE,
                        ...) {
-  old <- fread(file = sprintf("inst/i18n/%s.csv", lang), encoding = "UTF-8", fill = TRUE)
+  old <- fread(file = sprintf("inst/i18n/%s.csv", lang_csv), encoding = "UTF-8", fill = TRUE)
   new <- merge(
     x = data.table(label = unique(labels)),
     y = old,
@@ -64,8 +66,8 @@ update_csv <- function(labels,
   } else {
     final <- new
   }
-
-  fwrite(final, file = sprintf("inst/i18n/%s.csv", lang), row.names = FALSE, na = '')
+  
+  fwrite(final, file = sprintf("inst/i18n/%s.csv", lang_csv), row.names = FALSE, na = '')
 }
 
 
