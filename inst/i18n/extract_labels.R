@@ -46,7 +46,7 @@ update_csv <- function(labels,
                        ...) {
   old <- fread(file = sprintf("inst/i18n/%s.csv", lang), encoding = "UTF-8", fill = TRUE)
   new <- merge(
-    x = data.table(label = unique(new_labels)),
+    x = data.table(label = unique(labels)),
     y = old,
     by = "label",
     all.x = TRUE
@@ -54,10 +54,10 @@ update_csv <- function(labels,
 
   final <- rbind(
     new[!is.na(translation)],
-    translate_labels(new[is.na(translation)]$label, target_language = lang, ...)
+    translate_labels(labels = new[is.na(translation)]$label, target_language = lang, ...)
   )
 
-  final[] # ecrire csv
+  fwrite(final, file = sprintf("inst/i18n/%s.csv", lang), row.names = FALSE, na = '')
 }
 
 
@@ -102,48 +102,3 @@ translate_labels <- function(labels,
 # google_supported_languages
 # Liste des encodages
 # encodage <- data.frame(encoding = stringi::stri_enc_list())
-
-
-
-#' Select translation
-#'
-#' @param file csv file
-#' @param labels labels to translate
-#'
-#' @importFrom stringr str_remove
-#'
-#' @return a data frame with translated labels according to the language of the csv file
-#' @export
-#'
-#' @examples select_translation(file = "fr.csv")
-select_translation <- function(file,
-                               labels = extract_labels(folder = "R")) {
-
-  file <- str_remove(file, ".csv")
-
-  if (identical(file, "fr")) {
-    translate_labels(labels = labels, target_language = "fr")
-  } else if (identical(file, "es")) {
-    translate_labels(labels = labels, target_language = "es")
-  } else if (identical(file, "de")) {
-    translate_labels(labels = labels, target_language = "de")
-  } else if (identical(file, "al")) {
-    translate_labels(labels = labels, target_language = "sq")
-  } else if (identical(file, "pl")) {
-    translate_labels(labels = labels, target_language = "pl")
-  } else if (identical(file, "pt")) {
-    translate_labels(labels = labels, target_language = "pt")
-  } else if (identical(file, "tr")) {
-    translate_labels(labels = labels, target_language = "tr")
-  } else if (identical(file, "mk")) {
-    translate_labels(labels = labels, target_language = "mk")  # revoir encoding
-  } else if (identical(file, "ja")) {
-    translate_labels(labels = labels, target_language = "ja", encoding = "ISO_2022,locale=ja,version=4")
-  } else if (identical(file, "cn")) {
-    translate_labels(labels = labels, target_language = "zh-CN", encoding = "chinese") # "GBK", "UTF16_BigEndian", "GB18030"
-  } else if (identical(file, "ko")) {
-    translate_labels(labels = labels, target_language = "ko", encoding = "csKOI8R") # "GBK", "korean"
-  } else {
-    NULL
-  }
-}
