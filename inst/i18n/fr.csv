@@ -1,87 +1,140 @@
 label,translation,comment
-"Import a dataset from an environment","Importer un jeu de données depuis l'environnement global"
-"Select a data.frame:","Sélectionner un data.frame :"
-"List of data.frame...","Liste des tableau de données"
-"Select an environment in which to search:","Sélectionner un environnement dans lequel rechercher :"
-"Select environment","Sélectionner un environnement"
-"No data selected!","Pas de données sélectionnées"
-"Use a data.frame from your environment or from the environment of a package.","Utiliser un tableau de données de votre environnement ou de celui d'un paquet."
-"No data.frame here...","Pas de données ici..."
-"Ooops","Ooops"
-"Something went wrong...","Un problème est survenu..."
-"Data successfully imported!","Données importées avec succès"
-"Data ready to be imported!","Données prêtes à être importées"
-"data has %s obs. of %s variables.","les données ont %s observations et %s colonnes."
-"click to see data","cliquez pour afficher les données"
-"Import data","Importer les données"
-"Import a file","Import d'un fichier"
-"Upload a file:","Charger un fichier :"
-"Browse...","Parcourir..."
-"No file selected","Pas de fichier sélectionné"
-"Number of rows to skip before reading data:","Nombre de lignes à sauter avant de lire les données :"
-"Decimal separator:","Séparateur de décimal :"
-"Encoding:","Encodage :"
-"Select sheet to import:","Sélectionner la feuille à importer :"
-"No file selected:","Aucun fichier sélectionné"
-"You can import %s files","Vous pouvez importer des fichers %s"
-"First five rows are shown below:","Les cinq premières lignes sont affichées ci-dessous :"
-"Copy & paste data","Copier / coller des données"
-"Paste data here:","Collez vos données ici :"
-"Nothing pasted yet!","Rien n'a encore été collé !"
-"Please copy and paste some data in the dialog box above.","Veuillez copier et coller certaines données dans la boîte de dialogue ci-dessus."
-"Import Google Spreadsheet","Importer une GoogleSheet"
-"You can either use:","Vous pouvez utiliser au choix :"
-"A shareable link, in that case first sheet will be read","Un lien partageable, dans ce cas la première feuille sera lue"
-"The URL that appear in your browser, in that case the current sheet will be read","L'URL qui apparaît dans votre navigateur, dans ce cas la feuille active sera lue"
-"Enter a shareable link to a GoogleSheet:","Entrez un lien partageable vers une GoogleSheet :"
-"Please paste a valid GoogleSheet link in the dialog box above.","Veuillez coller un lien GoogleSheet valide dans la boîte de dialogue ci-dessus."
-"Help","Aide"
-"Environment","Environnement"
-"External file","Fichier"
-"Copy / Paste","Copier / Coller"
-"Googlesheets","Googlesheets"
-"How to import data?","Comment importer des données ?"
-"Import","Import"
-"View","Affichage"
-"Update","Modifier"
-"Validate","Validation"
-"Update & select variables","Modifier et sélectionner des variables"
-"Date format:","Format des dates :"
-"Date to use as origin to convert date/datetime:","Date à utiliser comme origine pour convertir des dates au format numérique :"
-"Select, rename and convert variables in table above, then apply changes by clicking button below.","Sélectionner, renommer et convertir des variables avec le tableau ci-dessus, puis cliquer sur le bouton ci-dessous pour appliquer les changements."
-"Apply changes","Appliquer les changements"
-"Data has %s observations and %s variables.","Les données ont %s observations et %s variables."
-"Data successfully updated!","Données mises à jour avec succès !"
-"Validation:","Validation :"
-"OK","OK"
-"Failed","Echec"
-"Error","Erreur"
-"Number of rows:","Nombre de lignes :"
-"No data to display.","Pas de données à afficher."
-"Close","Fermer"
-"Add a label to data","Ajouter un libellé aux données"
-"URL","URL"
-"Add a row","Ajouter"
-"Required field","Champs requis"
-"Please fill in the required fields","Merci de remplir les champs obligatoires"
-"Unable to add the row, contact the platform administrator","Impossible d'ajouter la ligne, contactez l'administrateur de la plateforme"
-"Registered","Enregistré"
-"Row has been saved","La ligne a été enregistrée"
-"Update row","Mettre à jour la ligne"
-"Unable to modify the item, contact the platform administrator","Impossible de modifier l'élément, contactez l'administrateur de la plateforme"
-"Item has been modified","L'élément a été modifié"
-"Delete","Effacer"
-"Do you want to delete the selected row ?","Voulez-vous supprimer la ligne sélectionnée ?"
-"Unable to delete the row, contact platform administrator","Impossible de supprimer la ligne, contactez l'administrateur de la plateforme"
-"The row has been deleted","La ligne a été supprimée"
-"Information","Informations"
-"Row was not deleted","La ligne n'a pas été supprimée"
-"Save","Enregistrer"
-"Click to edit","Cliquez pour modifier"
-"Click to delete","Cliquez pour supprimer"
-"Cancel","Annuler"
-"No","Non"
-"Yes","Oui"
-"Edit data","Modifier les données"
-"Select", "Sélectionner"
-"Missing values character(s):","Caractère représentant les valeurs manquantes"
+"A shareable link, in that case first sheet will be read","Un lien partageable, dans ce cas la première feuille sera lue",
+Add a label to data,Ajouter un libellé aux données,
+Add a row,Ajouter,
+Apply changes,Appliquer les changements,
+Browse...,Parcourir...,
+Cancel,Annuler,
+Click to delete,Cliquez pour supprimer,
+Click to edit,Cliquez pour modifier,
+Close,Fermer,
+Copy & paste data,Copier / coller des données,
+Copy / Paste,Copier / Coller,
+Data has %s observations and %s variables.,Les données ont %s observations et %s variables.,
+Data ready to be imported!,Données prêtes à être importées,
+Data successfully imported!,Données importées avec succès,
+Data successfully updated!,Données mises à jour avec succès !,
+Date format:,Format des dates :,
+Date to use as origin to convert date/datetime:,Date à utiliser comme origine pour convertir des dates au format numérique :,
+Decimal separator:,Séparateur de décimal :,
+Delete,Effacer,
+Do you want to delete the selected row ?,Voulez-vous supprimer la ligne sélectionnée ?,
+Encoding:,Encodage :,
+Enter a shareable link to a GoogleSheet:,Entrez un lien partageable vers une GoogleSheet :,
+Environment,Environnement,
+Error,Erreur,
+External file,Fichier,
+Failed,Echec,
+First five rows are shown below:,Les cinq premières lignes sont affichées ci-dessous :,
+Googlesheets,Googlesheets,
+Help,Aide,
+How to import data?,Comment importer des données ?,
+Import,Import,
+Import Google Spreadsheet,Importer une GoogleSheet,
+Import a dataset from an environment,Importer un jeu de données depuis l'environnement global,
+Import a file,Import d'un fichier,
+Import data,Importer les données,
+Information,Informations,
+Item has been modified,L'élément a été modifié,
+List of data.frame...,Liste des tableau de données,
+No,Non,
+No data selected!,Pas de données sélectionnées,
+No data to display.,Pas de données à afficher.,
+No data.frame here...,Pas de données ici...,
+No file selected,Pas de fichier sélectionné,
+No file selected:,Aucun fichier sélectionné,
+Nothing pasted yet!,Rien n'a encore été collé !,
+Number of rows:,Nombre de lignes :,
+OK,OK,
+Ooops,Ooops,
+Paste data here:,Collez vos données ici :,
+Please copy and paste some data in the dialog box above.,Veuillez copier et coller certaines données dans la boîte de dialogue ci-dessus.,
+Please fill in the required fields,Merci de remplir les champs obligatoires,
+Please paste a valid GoogleSheet link in the dialog box above.,Veuillez coller un lien GoogleSheet valide dans la boîte de dialogue ci-dessus.,
+Registered,Enregistré,
+Required field,Champs requis,
+Row has been saved,La ligne a été enregistrée,
+Row was not deleted,La ligne n'a pas été supprimée,
+Save,Enregistrer,
+Select,Sélectionner,
+Select a data.frame:,Sélectionner un data.frame :,
+Select an environment in which to search:,Sélectionner un environnement dans lequel rechercher :,
+Select environment,Sélectionner un environnement,
+Select sheet to import:,Sélectionner la feuille à importer :,
+Something went wrong...,Un problème est survenu...,
+"The URL that appear in your browser, in that case the current sheet will be read","L'URL qui apparaît dans votre navigateur, dans ce cas la feuille active sera lue",
+The row has been deleted,La ligne a été supprimée,
+URL,URL,
+"Unable to add the row, contact the platform administrator","Impossible d'ajouter la ligne, contactez l'administrateur de la plateforme",
+"Unable to delete the row, contact platform administrator","Impossible de supprimer la ligne, contactez l'administrateur de la plateforme",
+"Unable to modify the item, contact the platform administrator","Impossible de modifier l'élément, contactez l'administrateur de la plateforme",
+Update,Modifier,
+Update & select variables,Modifier et sélectionner des variables,
+Update row,Mettre à jour la ligne,
+Upload a file:,Charger un fichier :,
+Use a data.frame from your environment or from the environment of a package.,Utiliser un tableau de données de votre environnement ou de celui d'un paquet.,
+Validate,Validation,
+Validation:,Validation :,
+View,Affichage,
+Yes,Oui,
+You can either use:,Vous pouvez utiliser au choix :,
+You can import %s files,Vous pouvez importer des fichers %s,
+click to see data,cliquez pour afficher les données,
+data has %s obs. of %s variables.,les données ont %s observations et %s colonnes.,
+% of the total,% du total,Automacally translated
+"% of the total, i.e.","% du total, soit",Automacally translated
+"Choose a name for the column to be created or modified,","Choisissez un nom pour la colonne à créer ou à modifier,",Automacally translated
+Choose a number of rows :,Choisissez un nombre de lignes :,Automacally translated
+Choose a percentage :,Choisissez un pourcentage :,Automacally translated
+Click on a column name to add it to the expression:,Cliquez sur un nom de colonne pour l'ajouter à l'expression :,Automacally translated
+Close intervals on the right,Intervalles rapprochés à droite,Automacally translated
+Column added!,Colonne ajoutée !,Automacally translated
+Convert Numeric to Factor,Convertir un numérique en facteur,Automacally translated
+Count,Compter,Automacally translated
+Create a new column,Créer une nouvelle colonne,Automacally translated
+Create a new variable otherwise replaces the one selected,Créer une nouvelle variable sinon remplace celle sélectionnée,Automacally translated
+Create column,Créer une colonne,Automacally translated
+Create factor variable,Créer une variable de facteur,Automacally translated
+Data wasn't deleted,Les données n'ont pas été supprimées,Automacally translated
+Data wasn't updated,Les données n'ont pas été mises à jour,Automacally translated
+Dataset validation:,Validation de l'ensemble de données :,Automacally translated
+Enter URL to data:,Entrez l'URL des données :,Automacally translated
+Enter an expression to define new column:,Entrez une expression pour définir une nouvelle colonne :,Automacally translated
+Factor variable to reorder:,Variable de facteur à réorganiser :,Automacally translated
+Group calculation by:,Calcul de groupe par :,Automacally translated
+Import Url,URL d'importation,Automacally translated
+Imported data,Données importées,Automacally translated
+Include lowest value,Inclure la valeur la plus basse,Automacally translated
+Levels,Les niveaux,Automacally translated
+Max:,Maximale :,Automacally translated
+Mean:,Signifier:,Automacally translated
+Method:,Méthode:,Automacally translated
+Min:,Min :,Automacally translated
+Missing values characters:,Caractères de valeurs manquants :,Automacally translated
+Missing:,Manquant:,Automacally translated
+Most Common:,Le plus commun:,Automacally translated
+New column name cannot be empty,Le nom de la nouvelle colonne ne peut pas être vide,Automacally translated
+New column name:,Nouveau nom de colonne :,Automacally translated
+Not a data.frame,Pas un data.frame,Automacally translated
+Number of breaks:,Nombre de pauses :,Automacally translated
+Please paste a valid link in the dialog box above.,Veuillez coller un lien valide dans la boîte de dialogue ci-dessus.,Automacally translated
+Rows to skip before reading data:,Lignes à ignorer avant de lire les données :,Automacally translated
+Sample data by :,Exemple de données par :,Automacally translated
+Some operations are not allowed,Certaines opérations ne sont pas autorisées,Automacally translated
+Sort count,Nombre de tris,Automacally translated
+Sort levels,Niveaux de tri,Automacally translated
+The row wasn't added to the data,La ligne n'a pas été ajoutée aux données,Automacally translated
+Unique values:,Valeurs uniques :,Automacally translated
+Unique:,Unique:,Automacally translated
+Update factor variable,Variable de facteur de mise à jour,Automacally translated
+Update levels of a factor,Mettre à jour les niveaux d'un facteur,Automacally translated
+Valid number of columns,Nombre de colonnes valide,Automacally translated
+Valid number of rows,Nombre de lignes valide,Automacally translated
+Variable to cut:,Variable à couper :,Automacally translated
+Warning,Avertissement,Automacally translated
+You can import from flat table format supported by,Vous pouvez importer à partir du format de tableau plat pris en charge par,Automacally translated
+"if several use a comma ',' to separate them","si plusieurs utilisent une virgule ',' pour les séparer",Automacally translated
+"lines, i.e.","lignes, c'est-à-dire",Automacally translated
+rows,Lignes,Automacally translated
+then enter an expression before clicking on the button above to validate or on ,puis saisissez une expression avant de cliquer sur le bouton ci-dessus pour valider ou sur,Automacally translated
+to delete it.,pour le supprimer.,Automacally translated

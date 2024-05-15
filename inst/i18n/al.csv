@@ -1,87 +1,140 @@
 label,translation,comment
-Import a dataset from an environment,Importoni një grup të dhënash nga mjedisi
-Select a data.frame:,Zgjidhni data.frame
-List of data.frame...,Lista e tabelave të të dhënave (data.frame)
-Select an environment in which to search:,Zgjidhni një mjedis në të cilin do të kërkoni
-Select environment,Zgjidhni një mjedis
-No data selected!,Nuk ka të dhëna të zgjedhura!
-Use a data.frame from your environment or from the environment of a package.,Përdorni data.frame nga mjedisi juaj ose nga mjedisi i paketës
-No data.frame here...,Këtu nuk ka të dhëna (data.frame) ...
-Ooops,Ups
-Something went wrong...,Diçka shkoi keq...
-Data successfully imported!,Të dhënat u importuan me sukses
-Data ready to be imported!,Të dhënat që janë gati për t'u importuar
-data has %s obs. of %s variables.,Të dhënat kanë %vëzhgime dhe %variabla
-click to see data,Klikoni këtu për t’i parë të dhënat
-Import data,Importoni të dhënat
-Import a file,Importoni skedar
-Upload a file:,Bashkangjitni një dokument:
-Browse...,Shfletoni...
-No file selected,Nuk është zgjedhur asnjë dokument
-Number of rows to skip before reading data:,Numri i rreshtave për t’i kërcyer para se të lexohen të dhënat:
-Decimal separator:,Ndarësi dhjetor:
-Encoding:,Kodimi:
-Select sheet to import:,Zgjidhni një fletë për ta importuar
-No file selected:,Nuk është zgjedhur asnjë dokument:
-"You can import %s files","Mund të importoni dokumente %s"
-First five rows are shown below:,Pesë rreshtat e parë janë treguar më poshtë:
-Copy & paste data,Kopjoni dhe ngjisni të dhënat
-Paste data here:,Ngjitni të dhënat tuaja këtu:
-Nothing pasted yet!,Asgjë nuk është ngjitur deri më tani!
-Please copy and paste some data in the dialog box above.,Ju lutemi kopjoni dhe ngjisni disa të dhëna në dritaren e dialogut më poshtë
-Import Google Spreadsheet,Importoni GoogleSheet
-You can either use:,Mund ta përdorni edhe ndonjërën nga këto:
-"A shareable link, in that case first sheet will be read","Linku që mund të ndahet, në këtë rast do të lexohet fleta e parë"
-"The URL that appear in your browser, in that case the current sheet will be read","URL-ja që shfaqet në shfletuesin tuaj, në këtë rast do të lexohet fleta e parë"
-Enter a shareable link to a GoogleSheet:,Futni një link që mund të ndahet në GoogleSheet:
-Please paste a valid GoogleSheet link in the dialog box above.,Ju lutemi ngjisni një link të vlefshëm në GoogleSheet në dritaren e dialogut më poshtë.
-Help,Ndihmë
-Environment,Mjedisi
-External file,Skedari i jashtëm
-Copy / Paste,Kopjoni / ngjisni
-Googlesheets,Googlesheets
-How to import data?,Si të importoni të dhëna?
-Import,Importo
-View,Shiko
-Update,Azhurno
-Validate,Verifiko
-Update & select variables,Azhurnoni dhe zgjidhni variablat
-Date format:,Formati i datës:
-Date to use as origin to convert date/datetime:,Data që do të përdoret për të konvertuar ndryshoren date/datetime
-"Select, rename and convert variables in table above, then apply changes by clicking button below.","Zgjidhni, riemërtoni dhe konvertoni variablat në tabelën e mësipërme, e pastaj aplikoni ndryshimet duke klikuar butonin më poshtë."
-Apply changes,Apliko ndryshimet
-Data has %s observations and %s variables.,Të dhënat kanë %s vëzhgime dhe %s variabla
-Data successfully updated!,Të dhënat janë azhurnuar me sukses!
-Validation:,Verifikimi:
-OK,Në rregull
-Failed,Dështim
-Error,Gabim
-Number of rows:,Numri i rreshtave:
-No data to display.,Nuk ka të dhëna për t’u shfaqur.
-Close,Мbyll,
-"Add a label to data","Shtoni një etiketë në të dhëna","#TODO #CHECK"
-"Add a row","Shtoni një rresht"
-"Required field","Fusha e kërkuar"
-"Please fill in the required fields","Ju lutemi plotësoni fushat e kërkuara"
-"Unable to add the row, contact the platform administrator","Rreshti nuk mund të shtohet, kontakto me administratorin e platformës"
-"Registered","I regjistruar"
-"Row has been saved","Rreshti është ruajtur"
-"Update row","Përditëso rreshtin"
-"Unable to modify the item, contact the platform administrator","Artikulli nuk mund të modifikohet, kontaktoni administratorin e platformës"
-"Item has been modified","Artikulli është modifikuar"
-"Delete","Fshije"
-"Do you want to delete the selected row ?","Dëshironi të fshini rreshtin e zgjedhur?"
-"Unable to delete the row, contact platform administrator","Rreshti nuk mund të fshihet, kontakto me administratorin e platformës"
-"The row has been deleted","Rreshti është fshirë"
-"Information","Informacion"
-"Row was not deleted","Rreshti nuk u fshi"
-"Save","Ruaj"
-"Click to edit","Klikoni për të redaktuar"
-"Click to delete","Klikoni për të fshirë"
-"Cancel","Anulo"
-"No","Nr"
-"Yes","po"
-"Edit data","Redakto të dhënat"
-"Select","Zgjidhni"
-"Missing values character(s):","Karakteret e vlerave që mungojnë:"
-"if several use a comma (',') to separate them","nëse disa përdorin presje (',') për t'i ndarë"
+"A shareable link, in that case first sheet will be read","Linku që mund të ndahet, në këtë rast do të lexohet fleta e parë",""
+Add a label to data,Shtoni një etiketë në të dhëna,#TODO #CHECK
+Add a row,Shtoni një rresht,""
+Apply changes,Apliko ndryshimet,""
+Browse...,Shfletoni...,""
+Cancel,Anulo,""
+Click to delete,Klikoni për të fshirë,""
+Click to edit,Klikoni për të redaktuar,""
+Close,Мbyll,""
+Copy & paste data,Kopjoni dhe ngjisni të dhënat,""
+Copy / Paste,Kopjoni / ngjisni,""
+Data has %s observations and %s variables.,Të dhënat kanë %s vëzhgime dhe %s variabla,""
+Data ready to be imported!,Të dhënat që janë gati për t'u importuar,""
+Data successfully imported!,Të dhënat u importuan me sukses,""
+Data successfully updated!,Të dhënat janë azhurnuar me sukses!,""
+Date format:,Formati i datës:,""
+Date to use as origin to convert date/datetime:,Data që do të përdoret për të konvertuar ndryshoren date/datetime,""
+Decimal separator:,Ndarësi dhjetor:,""
+Delete,Fshije,""
+Do you want to delete the selected row ?,Dëshironi të fshini rreshtin e zgjedhur?,""
+Encoding:,Kodimi:,""
+Enter a shareable link to a GoogleSheet:,Futni një link që mund të ndahet në GoogleSheet:,""
+Environment,Mjedisi,""
+Error,Gabim,""
+External file,Skedari i jashtëm,""
+Failed,Dështim,""
+First five rows are shown below:,Pesë rreshtat e parë janë treguar më poshtë:,""
+Googlesheets,Googlesheets,""
+Help,Ndihmë,""
+How to import data?,Si të importoni të dhëna?,""
+Import,Importo,""
+Import Google Spreadsheet,Importoni GoogleSheet,""
+Import a dataset from an environment,Importoni një grup të dhënash nga mjedisi,""
+Import a file,Importoni skedar,""
+Import data,Importoni të dhënat,""
+Information,Informacion,""
+Item has been modified,Artikulli është modifikuar,""
+List of data.frame...,Lista e tabelave të të dhënave (data.frame),""
+No,Nr,""
+No data selected!,Nuk ka të dhëna të zgjedhura!,""
+No data to display.,Nuk ka të dhëna për t’u shfaqur.,""
+No data.frame here...,Këtu nuk ka të dhëna (data.frame) ...,""
+No file selected,Nuk është zgjedhur asnjë dokument,""
+No file selected:,Nuk është zgjedhur asnjë dokument:,""
+Nothing pasted yet!,Asgjë nuk është ngjitur deri më tani!,""
+Number of rows:,Numri i rreshtave:,""
+OK,Në rregull,""
+Ooops,Ups,""
+Paste data here:,Ngjitni të dhënat tuaja këtu:,""
+Please copy and paste some data in the dialog box above.,Ju lutemi kopjoni dhe ngjisni disa të dhëna në dritaren e dialogut më poshtë,""
+Please fill in the required fields,Ju lutemi plotësoni fushat e kërkuara,""
+Please paste a valid GoogleSheet link in the dialog box above.,Ju lutemi ngjisni një link të vlefshëm në GoogleSheet në dritaren e dialogut më poshtë.,""
+Registered,I regjistruar,""
+Required field,Fusha e kërkuar,""
+Row has been saved,Rreshti është ruajtur,""
+Row was not deleted,Rreshti nuk u fshi,""
+Save,Ruaj,""
+Select,Zgjidhni,""
+Select a data.frame:,Zgjidhni data.frame,""
+Select an environment in which to search:,Zgjidhni një mjedis në të cilin do të kërkoni,""
+Select environment,Zgjidhni një mjedis,""
+Select sheet to import:,Zgjidhni një fletë për ta importuar,""
+Something went wrong...,Diçka shkoi keq...,""
+"The URL that appear in your browser, in that case the current sheet will be read","URL-ja që shfaqet në shfletuesin tuaj, në këtë rast do të lexohet fleta e parë",""
+The row has been deleted,Rreshti është fshirë,""
+"Unable to add the row, contact the platform administrator","Rreshti nuk mund të shtohet, kontakto me administratorin e platformës",""
+"Unable to delete the row, contact platform administrator","Rreshti nuk mund të fshihet, kontakto me administratorin e platformës",""
+"Unable to modify the item, contact the platform administrator","Artikulli nuk mund të modifikohet, kontaktoni administratorin e platformës",""
+Update,Azhurno,""
+Update & select variables,Azhurnoni dhe zgjidhni variablat,""
+Update row,Përditëso rreshtin,""
+Upload a file:,Bashkangjitni një dokument:,""
+Use a data.frame from your environment or from the environment of a package.,Përdorni data.frame nga mjedisi juaj ose nga mjedisi i paketës,""
+Validate,Verifiko,""
+Validation:,Verifikimi:,""
+View,Shiko,""
+Yes,po,""
+You can either use:,Mund ta përdorni edhe ndonjërën nga këto:,""
+You can import %s files,Mund të importoni dokumente %s,""
+click to see data,Klikoni këtu për t’i parë të dhënat,""
+data has %s obs. of %s variables.,Të dhënat kanë %vëzhgime dhe %variabla,""
+% of the total,% e totalit,Automacally translated
+"% of the total, i.e.","% e totalit, d.m.th.",Automacally translated
+"Choose a name for the column to be created or modified,","Zgjidhni një emër për kolonën që do të krijohet ose modifikohet,",Automacally translated
+Choose a number of rows :,Zgjidhni një numër rreshtash:,Automacally translated
+Choose a percentage :,Zgjidhni një përqindje:,Automacally translated
+Click on a column name to add it to the expression:,Klikoni në emrin e një kolone për ta shtuar atë në shprehjen:,Automacally translated
+Close intervals on the right,Mbyllni intervalet në të djathtë,Automacally translated
+Column added!,Kolona u shtua!,Automacally translated
+Convert Numeric to Factor,Konvertoni numerik në faktor,Automacally translated
+Count,Numëroni,Automacally translated
+Create a new column,Krijo një kolonë të re,Automacally translated
+Create a new variable otherwise replaces the one selected,Krijoni një variabël të ri përndryshe zëvendëson atë të zgjedhur,Automacally translated
+Create column,Krijo kolonë,Automacally translated
+Create factor variable,Krijo variabël faktor,Automacally translated
+Data wasn't deleted,Të dhënat nuk u fshinë,Automacally translated
+Data wasn't updated,Të dhënat nuk u përditësuan,Automacally translated
+Dataset validation:,Vërtetimi i grupit të të dhënave:,Automacally translated
+Enter URL to data:,Futni URL-në e të dhënave:,Automacally translated
+Enter an expression to define new column:,Futni një shprehje për të përcaktuar kolonën e re:,Automacally translated
+Factor variable to reorder:,Ndryshorja e faktorit për të rirenditur:,Automacally translated
+Group calculation by:,Llogaritja e grupit sipas:,Automacally translated
+Import Url,Importo Url,Automacally translated
+Imported data,Të dhëna të importuara,Automacally translated
+Include lowest value,Përfshi vlerën më të ulët,Automacally translated
+Levels,Nivelet,Automacally translated
+Max:,Maksimumi:,Automacally translated
+Mean:,Mesatarja:,Automacally translated
+Method:,Metoda:,Automacally translated
+Min:,Min.:,Automacally translated
+Missing values characters:,Karakteret e vlerave që mungojnë:,Automacally translated
+Missing:,Mungon:,Automacally translated
+Most Common:,Më e zakonshme:,Automacally translated
+New column name cannot be empty,Emri i kolonës së re nuk mund të jetë bosh,Automacally translated
+New column name:,Emri i kolonës së re:,Automacally translated
+Not a data.frame,Jo një të dhëna.kornizë,Automacally translated
+Number of breaks:,Numri i pushimeve:,Automacally translated
+Please paste a valid link in the dialog box above.,Ju lutemi ngjitni një lidhje të vlefshme në kutinë e dialogut të mësipërm.,Automacally translated
+Rows to skip before reading data:,Rreshtat për t'u kapërcyer përpara se të lexohen të dhënat:,Automacally translated
+Sample data by :,Mostra e të dhënave sipas:,Automacally translated
+Some operations are not allowed,Disa operacione nuk lejohen,Automacally translated
+Sort count,Rendit numërimin,Automacally translated
+Sort levels,Renditni nivelet,Automacally translated
+The row wasn't added to the data,Rreshti nuk u shtua te të dhënat,Automacally translated
+URL,URL,Automacally translated
+Unique values:,Vlerat unike:,Automacally translated
+Unique:,Unike:,Automacally translated
+Update factor variable,Përditëso variablin e faktorit,Automacally translated
+Update levels of a factor,Përditëso nivelet e një faktori,Automacally translated
+Valid number of columns,Numri i vlefshëm i kolonave,Automacally translated
+Valid number of rows,Numri i vlefshëm i rreshtave,Automacally translated
+Variable to cut:,Ndryshore për prerje:,Automacally translated
+Warning,Paralajmërim,Automacally translated
+You can import from flat table format supported by,Mund të importoni nga formati i tabelës së sheshtë i mbështetur nga,Automacally translated
+"if several use a comma ',' to separate them","nëse disa përdorin presje ',' për t'i ndarë",Automacally translated
+"lines, i.e.","vijat, d.m.th.",Automacally translated
+rows,rreshtave,Automacally translated
+then enter an expression before clicking on the button above to validate or on ,pastaj futni një shprehje përpara se të klikoni në butonin e mësipërm për të vërtetuar ose aktivizuar,Automacally translated
+to delete it.,për ta fshirë.,Automacally translated

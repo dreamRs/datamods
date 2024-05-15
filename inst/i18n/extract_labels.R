@@ -15,7 +15,7 @@ extract_labels <- function(folder = "R") {
       read_file <- readLines(file.path(folder, file))
       extraction <- str_extract_all(
         string = str_subset(read_file, "i18n"),
-        pattern = 'i18n\\("[[:graph:][:space:]-["\\)]]*"\\)'
+        pattern = 'i18n\\(".*?"\\)'
       ) |>
         unlist()
       extraction
@@ -34,7 +34,7 @@ extract_labels <- function(folder = "R") {
 #' Update all csvs that are in inst/i18n
 #'
 #' @param labels results of label extractions
-#' @param lang the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages 
+#' @param lang the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages
 #' @param lang_csv the name of the csv file
 #' @param translation TRUE or FALSE if you want to translate the language
 #' @param ... other arguments passed to datamods::translate_labels
@@ -61,12 +61,13 @@ update_csv <- function(labels,
   if (isTRUE(translation)) {
     final <- rbind(
       new[!is.na(translation)],
-      translate_labels(labels = new[is.na(translation)]$label, target_language = lang, ...)
+      translate_labels(labels = new[is.na(translation)]$label, target_language = lang, ...),
+      fill = TRUE
     )
   } else {
     final <- new
   }
-  
+
   fwrite(final, file = sprintf("inst/i18n/%s.csv", lang_csv), row.names = FALSE, na = '')
 }
 
@@ -75,7 +76,7 @@ update_csv <- function(labels,
 #' Translate labels
 #'
 #' @param labels labels to translate
-#' @param source_language the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages 
+#' @param source_language the language that you want to translate the text into. See polyglotr::google_supported_languages for the Table with the codes of available languages
 #' @param target_language the language of the text that you want to translate. See polyglotr::google_supported_languages for the Table with the codes of available languages
 #' @param encoding Name of encoding. See stringi::stri_enc_list() for a complete list
 #'
