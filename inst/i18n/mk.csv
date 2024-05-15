@@ -1,140 +1,140 @@
-label,translation,comment
+"label","translation","comment"
+"% of the total","% од вкупниот број","Automacally translated"
+"% of the total, i.e.","% од вкупниот број, т.е.","Automacally translated"
 "A shareable link, in that case first sheet will be read","Врска којашто може да се сподели, во овој случај првата страна ќе биде прочитана",""
-Add a label to data,Додадете етикета на податоците,#TODO #CHECK
-Add a row,Додадете ред,""
-Apply changes,Применете ги промените,""
-Browse...,Пребарувајте...,""
-Cancel,Откажи,""
-Click to delete,Кликнете за да избришете,""
-Click to edit,Кликнете за уредување,""
-Close,Затвори,""
-Copy & paste data,Копирајте и залепете податоци,""
-Copy / Paste,Копирај / залепи,""
-Data has %s observations and %s variables.,Податоците имаат %s опсервации и %s варијабли.,""
-Data ready to be imported!,Податоци коишто се спремни за да бидат увезени,""
-Data successfully imported!,Успешно увезени податоци,""
-Data successfully updated!,Податоците се успешно ажурирани!,""
-Date format:,Формат на датум:,""
-Date to use as origin to convert date/datetime:,Датум што треба да се користи за конвертирање на date/datetime променлива,""
-Decimal separator:,Децимален раздвојник:,""
-Delete,Избриши,""
-Do you want to delete the selected row ?,Дали сакате да го избришете избраниот ред?,""
-Encoding:,Енкодинг:,""
-Enter a shareable link to a GoogleSheet:,Внесете врска којшто може да се сподели во GoogleSheet:,""
-Environment,Околина,""
-Error,Грешка,""
-External file,Надворешна датотека,""
-Failed,Неуспех,""
-First five rows are shown below:,Првите пет реда се прикажани подолу:,""
-Googlesheets,Googlesheets,""
-Help,Помош,""
-How to import data?,Како да се увезат податоците?,""
-Import,Увези,""
-Import Google Spreadsheet,Увезете GoogleSheet,""
-Import a dataset from an environment,Увезете податочен сет од околината,""
-Import a file,Внесете документ,""
-Import data,Внесете податоци,""
-Information,Информации,""
-Item has been modified,Ставката е изменета,""
-List of data.frame...,Список на табели со податоци,""
-No,бр,""
-No data selected!,Нема ниту еден избран податок,""
-No data to display.,Нема податоци за приказ.,""
-No data.frame here...,Тука нема податоци...,""
-No file selected,Ниту еден документ не е избран,""
-No file selected:,Ниту еден документ не е избран,""
-Nothing pasted yet!,Ништо до сега не е залепено!,""
-Number of rows:,Број на редови:,""
-OK,Во ред,""
-Ooops,Упс,""
-Paste data here:,Залепете ги вашите податоци тука:,""
-Please copy and paste some data in the dialog box above.,Ве молиме копирајте и залепете некои податоци во прозорчето за дијалог подолу,""
-Please fill in the required fields,Ве молиме пополнете ги бараните полиња,""
-Please paste a valid GoogleSheet link in the dialog box above.,Ве молиме залепете валидна врска до GoogleSheet во прозорчето подолу.,""
-Registered,Регистриран,""
-Required field,задолжително поле,""
-Row has been saved,Редот е зачуван,""
-Row was not deleted,Редот не беше избришан,""
-Save,Зачувај,""
-Select,изберете,""
-Select a data.frame:,Изберете data.frame,""
-Select an environment in which to search:,Изберете околина за пребарување,""
-Select environment,Изберете околина,""
-Select sheet to import:,Изберете лист за да увезете,""
-Something went wrong...,Тука нема податоци...,""
+"Add a label to data","Додадете етикета на податоците","#TODO #CHECK"
+"Add a row","Додадете ред",""
+"Apply changes","Применете ги промените",""
+"Browse...","Пребарувајте...",""
+"Cancel","Откажи",""
+"Choose a name for the column to be created or modified,","Изберете име за колоната што треба да се креира или измени,","Automacally translated"
+"Choose a number of rows :","Изберете голем број редови:","Automacally translated"
+"Choose a percentage :","Изберете процент:","Automacally translated"
+"Click on a column name to add it to the expression:","Кликнете на името на колоната за да го додадете во изразот:","Automacally translated"
+"Click to delete","Кликнете за да избришете",""
+"Click to edit","Кликнете за уредување",""
+"Close","Затвори",""
+"Close intervals on the right","Затворете ги интервалите од десната страна","Automacally translated"
+"Column added!","Колона е додадена!","Automacally translated"
+"Convert Numeric to Factor","Конвертирај нумерички во фактор","Automacally translated"
+"Copy & paste data","Копирајте и залепете податоци",""
+"Copy / Paste","Копирај / залепи",""
+"Count","брои","Automacally translated"
+"Create a new column","Направете нова колона","Automacally translated"
+"Create a new variable otherwise replaces the one selected","Креирајте нова променлива инаку ја заменува избраната","Automacally translated"
+"Create column","Креирај колона","Automacally translated"
+"Create factor variable","Креирај променлива на фактор","Automacally translated"
+"Data has %s observations and %s variables.","Податоците имаат %s опсервации и %s варијабли.",""
+"Data ready to be imported!","Податоци коишто се спремни за да бидат увезени",""
+"Data successfully imported!","Успешно увезени податоци",""
+"Data successfully updated!","Податоците се успешно ажурирани!",""
+"Data wasn't deleted","Податоците не се избришани","Automacally translated"
+"Data wasn't updated","Податоците не беа ажурирани","Automacally translated"
+"Dataset validation:","Потврда на сет на податоци:","Automacally translated"
+"Date format:","Формат на датум:",""
+"Date to use as origin to convert date/datetime:","Датум што треба да се користи за конвертирање на date/datetime променлива",""
+"Decimal separator:","Децимален раздвојник:",""
+"Delete","Избриши",""
+"Do you want to delete the selected row ?","Дали сакате да го избришете избраниот ред?",""
+"Encoding:","Енкодинг:",""
+"Enter URL to data:","Внесете URL на податоците:","Automacally translated"
+"Enter a shareable link to a GoogleSheet:","Внесете врска којшто може да се сподели во GoogleSheet:",""
+"Enter an expression to define new column:","Внесете израз за да дефинирате нова колона:","Automacally translated"
+"Environment","Околина",""
+"Error","Грешка",""
+"External file","Надворешна датотека",""
+"Factor variable to reorder:","Факторска променлива за прередување:","Automacally translated"
+"Failed","Неуспех",""
+"First five rows are shown below:","Првите пет реда се прикажани подолу:",""
+"Googlesheets","Googlesheets",""
+"Group calculation by:","Групна пресметка според:","Automacally translated"
+"Help","Помош",""
+"How to import data?","Како да се увезат податоците?",""
+"Import","Увези",""
+"Import Google Spreadsheet","Увезете GoogleSheet",""
+"Import Url","Увезете УРЛ","Automacally translated"
+"Import a dataset from an environment","Увезете податочен сет од околината",""
+"Import a file","Внесете документ",""
+"Import data","Внесете податоци",""
+"Imported data","Увезени податоци","Automacally translated"
+"Include lowest value","Вклучете ја најниската вредност","Automacally translated"
+"Information","Информации",""
+"Item has been modified","Ставката е изменета",""
+"Levels","Нивоа","Automacally translated"
+"List of data.frame...","Список на табели со податоци",""
+"Max:","Макс:","Automacally translated"
+"Mean:","Средно:","Automacally translated"
+"Method:","Метод:","Automacally translated"
+"Min:","Мин:","Automacally translated"
+"Missing values characters:","Недостасуваат знаци на вредности:","Automacally translated"
+"Missing:","Недостасува:","Automacally translated"
+"Most Common:","Најчесто:","Automacally translated"
+"New column name cannot be empty","Името на новата колона не може да биде празно","Automacally translated"
+"New column name:","Ново име на колона:","Automacally translated"
+"No","бр",""
+"No data selected!","Нема ниту еден избран податок",""
+"No data to display.","Нема податоци за приказ.",""
+"No data.frame here...","Тука нема податоци...",""
+"No file selected","Ниту еден документ не е избран",""
+"No file selected:","Ниту еден документ не е избран",""
+"Not a data.frame","Не е податок.рамка","Automacally translated"
+"Nothing pasted yet!","Ништо до сега не е залепено!",""
+"Number of breaks:","Број на паузи:","Automacally translated"
+"Number of rows:","Број на редови:",""
+"OK","Во ред",""
+"Ooops","Упс",""
+"Paste data here:","Залепете ги вашите податоци тука:",""
+"Please copy and paste some data in the dialog box above.","Ве молиме копирајте и залепете некои податоци во прозорчето за дијалог подолу",""
+"Please fill in the required fields","Ве молиме пополнете ги бараните полиња",""
+"Please paste a valid GoogleSheet link in the dialog box above.","Ве молиме залепете валидна врска до GoogleSheet во прозорчето подолу.",""
+"Please paste a valid link in the dialog box above.","Ве молиме залепете валидна врска во полето за дијалог погоре.","Automacally translated"
+"Registered","Регистриран",""
+"Required field","задолжително поле",""
+"Row has been saved","Редот е зачуван",""
+"Row was not deleted","Редот не беше избришан",""
+"Rows to skip before reading data:","Редови што треба да се прескокнат пред да се прочитаат податоците:","Automacally translated"
+"Sample data by :","Примерок на податоци од:","Automacally translated"
+"Save","Зачувај",""
+"Select","изберете",""
+"Select a data.frame:","Изберете data.frame",""
+"Select an environment in which to search:","Изберете околина за пребарување",""
+"Select environment","Изберете околина",""
+"Select sheet to import:","Изберете лист за да увезете",""
+"Some operations are not allowed","Некои операции не се дозволени","Automacally translated"
+"Something went wrong...","Тука нема податоци...",""
+"Sort count","Броење сортирање","Automacally translated"
+"Sort levels","Подреди нивоа","Automacally translated"
 "The URL that appear in your browser, in that case the current sheet will be read","URL коешто се појавува во вашиот пребарарувач, во овој случај првата страна ќе биде прочитана",""
-The row has been deleted,Редот е избришан,""
+"The row has been deleted","Редот е избришан",""
+"The row wasn't added to the data","Редот не беше додаден на податоците","Automacally translated"
+"URL","URL","Automacally translated"
 "Unable to add the row, contact the platform administrator","Не може да се додаде редот, контактирајте со администраторот на платформата",""
 "Unable to delete the row, contact platform administrator","Не може да се избрише редот, контактирајте со администраторот на платформата",""
 "Unable to modify the item, contact the platform administrator","Не може да се измени ставката, контактирајте со администраторот на платформата",""
-Update,Ажурирај,""
-Update & select variables,Ажурирај и одбери променливи,""
-Update row,Ажурирајте го редот,""
-Upload a file:,Прикачете документ,""
-Use a data.frame from your environment or from the environment of a package.,Користете data.frame од твојата околина или од пакет,""
-Validate,Провери,""
-Validation:,Проверка: ,""
-View,Прегледај,""
-Yes,Да,""
-You can either use:,Можете да користите нешто од ова:,""
-You can import %s files,Можете да увезувате документи %s,""
-click to see data,Притиснете тука за да прикачите податоци,""
-data has %s obs. of %s variables.,Податоците имаат % обсерваци и % променливи,""
-% of the total,% од вкупниот број,Automacally translated
-"% of the total, i.e.","% од вкупниот број, т.е.",Automacally translated
-"Choose a name for the column to be created or modified,","Изберете име за колоната што треба да се креира или измени,",Automacally translated
-Choose a number of rows :,Изберете голем број редови:,Automacally translated
-Choose a percentage :,Изберете процент:,Automacally translated
-Click on a column name to add it to the expression:,Кликнете на името на колоната за да го додадете во изразот:,Automacally translated
-Close intervals on the right,Затворете ги интервалите од десната страна,Automacally translated
-Column added!,Колона е додадена!,Automacally translated
-Convert Numeric to Factor,Конвертирај нумерички во фактор,Automacally translated
-Count,брои,Automacally translated
-Create a new column,Направете нова колона,Automacally translated
-Create a new variable otherwise replaces the one selected,Креирајте нова променлива инаку ја заменува избраната,Automacally translated
-Create column,Креирај колона,Automacally translated
-Create factor variable,Креирај променлива на фактор,Automacally translated
-Data wasn't deleted,Податоците не се избришани,Automacally translated
-Data wasn't updated,Податоците не беа ажурирани,Automacally translated
-Dataset validation:,Потврда на сет на податоци:,Automacally translated
-Enter URL to data:,Внесете URL на податоците:,Automacally translated
-Enter an expression to define new column:,Внесете израз за да дефинирате нова колона:,Automacally translated
-Factor variable to reorder:,Факторска променлива за прередување:,Automacally translated
-Group calculation by:,Групна пресметка според:,Automacally translated
-Import Url,Увезете УРЛ,Automacally translated
-Imported data,Увезени податоци,Automacally translated
-Include lowest value,Вклучете ја најниската вредност,Automacally translated
-Levels,Нивоа,Automacally translated
-Max:,Макс:,Automacally translated
-Mean:,Средно:,Automacally translated
-Method:,Метод:,Automacally translated
-Min:,Мин:,Automacally translated
-Missing values characters:,Недостасуваат знаци на вредности:,Automacally translated
-Missing:,Недостасува:,Automacally translated
-Most Common:,Најчесто:,Automacally translated
-New column name cannot be empty,Името на новата колона не може да биде празно,Automacally translated
-New column name:,Ново име на колона:,Automacally translated
-Not a data.frame,Не е податок.рамка,Automacally translated
-Number of breaks:,Број на паузи:,Automacally translated
-Please paste a valid link in the dialog box above.,Ве молиме залепете валидна врска во полето за дијалог погоре.,Automacally translated
-Rows to skip before reading data:,Редови што треба да се прескокнат пред да се прочитаат податоците:,Automacally translated
-Sample data by :,Примерок на податоци од:,Automacally translated
-Some operations are not allowed,Некои операции не се дозволени,Automacally translated
-Sort count,Броење сортирање,Automacally translated
-Sort levels,Подреди нивоа,Automacally translated
-The row wasn't added to the data,Редот не беше додаден на податоците,Automacally translated
-URL,URL,Automacally translated
-Unique values:,Единствени вредности:,Automacally translated
-Unique:,Уникатно:,Automacally translated
-Update factor variable,Ажурирајте ја променливата на факторот,Automacally translated
-Update levels of a factor,Ажурирајте ги нивоата на фактор,Automacally translated
-Valid number of columns,Валиден број на колони,Automacally translated
-Valid number of rows,Валиден број на редови,Automacally translated
-Variable to cut:,Променлива за сечење:,Automacally translated
-Warning,Предупредување,Automacally translated
-You can import from flat table format supported by,Можете да увезете од формат на рамна табела поддржан од,Automacally translated
-"if several use a comma ',' to separate them","ако неколку користат запирка ',' за да ги разделат",Automacally translated
-"lines, i.e.","линии, т.е.",Automacally translated
-rows,редови,Automacally translated
-then enter an expression before clicking on the button above to validate or on ,потоа внесете израз пред да кликнете на копчето погоре за да потврдите или да го вклучите,Automacally translated
-to delete it.,да го избришете.,Automacally translated
+"Unique values:","Единствени вредности:","Automacally translated"
+"Unique:","Уникатно:","Automacally translated"
+"Update","Ажурирај",""
+"Update & select variables","Ажурирај и одбери променливи",""
+"Update factor variable","Ажурирајте ја променливата на факторот","Automacally translated"
+"Update levels of a factor","Ажурирајте ги нивоата на фактор","Automacally translated"
+"Update row","Ажурирајте го редот",""
+"Upload a file:","Прикачете документ",""
+"Use a data.frame from your environment or from the environment of a package.","Користете data.frame од твојата околина или од пакет",""
+"Valid number of columns","Валиден број на колони","Automacally translated"
+"Valid number of rows","Валиден број на редови","Automacally translated"
+"Validate","Провери",""
+"Validation:","Проверка:",""
+"Variable to cut:","Променлива за сечење:","Automacally translated"
+"View","Прегледај",""
+"Warning","Предупредување","Automacally translated"
+"Yes","Да",""
+"You can either use:","Можете да користите нешто од ова:",""
+"You can import %s files","Можете да увезувате документи %s",""
+"You can import from flat table format supported by","Можете да увезете од формат на рамна табела поддржан од","Automacally translated"
+"click to see data","Притиснете тука за да прикачите податоци",""
+"data has %s obs. of %s variables.","Податоците имаат % обсерваци и % променливи",""
+"if several use a comma ',' to separate them","ако неколку користат запирка ',' за да ги разделат","Automacally translated"
+"lines, i.e.","линии, т.е.","Automacally translated"
+"rows","редови","Automacally translated"
+"to delete it.","да го избришете.","Automacally translated"
+"then enter an expression before clicking on the button above to validate or on ","потоа внесете израз пред да кликнете на копчето погоре за да потврдите или да го вклучите","Automacally translated"

@@ -9,7 +9,7 @@
 #' @examples extract_labels(folder = "R")
 extract_labels <- function(folder = "R") {
   files <- list.files(folder)
-  list_extractions <- sapply(
+  list_extractions <- lapply(
     X = files,
     FUN = function(file) {
       read_file <- readLines(file.path(folder, file))
@@ -21,11 +21,7 @@ extract_labels <- function(folder = "R") {
       extraction
     }
   )
-  extract_labels <- character(0)
-  for (i in seq_along(list_extractions)) {
-    extraction <- list_extractions[[i]]
-    extract_labels <- c(extract_labels, extraction)
-  }
+  extract_labels <- unlist(list_extractions, recursive = TRUE)
   str_remove_all(unique(extract_labels), paste(c("i18n", "\"", "\\)", "\\("), collapse = "|"))
 }
 
@@ -68,7 +64,7 @@ update_csv <- function(labels,
     final <- new
   }
 
-  fwrite(final, file = sprintf("inst/i18n/%s.csv", lang_csv), row.names = FALSE, na = '')
+  fwrite(final, file = sprintf("inst/i18n/%s.csv", lang_csv), row.names = FALSE, na = '', quote = TRUE)
 }
 
 
