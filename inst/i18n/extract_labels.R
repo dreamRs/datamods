@@ -1,6 +1,6 @@
-#' Function to extract labels 
+#' Function to extract labels
 #'
-#' @param folder file directory 
+#' @param folder file directory
 #'
 #' @return an extraction of the labels contained in the directory files
 #' @importFrom stringr str_subset str_extract_all str_remove_all
@@ -8,7 +8,7 @@
 #'
 #' @examples extract_labels(folder = "R")
 extract_labels <- function(folder = "R") {
-  files <- list.files( file.path("../datamods", folder))
+  files <- list.files(folder)
   list_extractions <- sapply(
     X = files,
     FUN = function(file) {
@@ -34,7 +34,7 @@ extract_labels <- function(folder = "R") {
 #' Update all csvs that are in inst/i18n
 #'
 #' @param labels results of label extractions
-#' 
+#'
 #' @return all csvs updated
 #' @importFrom data.table merge fwrite data.table fread unique
 #' @export
@@ -42,26 +42,22 @@ extract_labels <- function(folder = "R") {
 #' @examples update_csv(labels = c(extract_labels(folder = "R"), extract_labels(folder = "examples")))
 #' new_csv_fr <- fread("inst/i18n/fr.csv")
 update_csv <- function(labels,
-                       translation = FALSE) {
-  # rewriting csv files with the extracted labels and the old ones
-  files <- setdiff(list.files(file.path("../datamods", "inst", "i18n")), c("extract_labels.R", "maj_csv.R")) 
-  
-  for (i in seq_along(files)) {
-    path <- file.path("inst", "i18n", files[i])
-    old_csv <- fread(file = path, encoding = "UTF-8")
-    if (isTRUE(translation)) {
-      new_csv <- select_translation(file = files[i], labels = labels)
-      by <- c("label", "translation")
-    } else {
-      new_csv <- data.table(label = labels)
-      by <- c("label")
-    }
-    
-    join <- unique(
-      merge(old_csv, new_csv, by = by, all = TRUE)
-    )
-    fwrite(join, file = path, row.names = FALSE, na = '') 
-  }
+                       lang,
+                       ...) {
+  old <- fread(file = sprintf("inst/i18n/%s.csv", lang), encoding = "UTF-8", fill = TRUE)
+  new <- merge(
+    x = data.table(label = unique(new_labels)),
+    y = old,
+    by = "label",
+    all.x = TRUE
+  )
+
+  final <- rbind(
+    new[!is.na(translation)],
+    translate_labels(new[is.na(translation)]$label, target_language = lang, ...)
+  )
+
+  final[] # ecrire csv
 }
 
 
@@ -72,7 +68,7 @@ update_csv <- function(labels,
 #' @param source_language the language that you want to translate the text into
 #' @param target_language the language of the text that you want to translate
 #' @param encoding Name of encoding. See stringi::stri_enc_list() for a complete list
-#' 
+#'
 #' @importFrom polyglotr google_translate
 #' @importFrom stringr str_conv
 #' @importFrom data.table data.table
@@ -80,12 +76,12 @@ update_csv <- function(labels,
 #' @return a data frame with translated labels
 #' @export
 #'
-#' @examples translate_labels(labels = extract_labels(folder = "R")) 
+#' @examples translate_labels(labels = extract_labels(folder = "R"))
 translate_labels <- function(labels,
                              source_language = "en",
                              target_language = "fr",
                              encoding = "UTF-8") {
-  
+
   translation <- polyglotr::google_translate(
     text = labels,
     target_language = target_language,
@@ -93,10 +89,11 @@ translate_labels <- function(labels,
   )
   data.table(
     label = labels,
-    translation = translation |> 
-      unlist() |> 
-      str_conv(encoding) 
-  ) 
+    translation = translation |>
+      unlist() |>
+      str_conv(encoding),
+    comment = "Automacally translated"
+  )
 }
 # Informations sur le package {polyglotr}
 # https://github.com/Tomeriko96/polyglotr/
@@ -112,7 +109,7 @@ translate_labels <- function(labels,
 #'
 #' @param file csv file
 #' @param labels labels to translate
-#' 
+#'
 #' @importFrom stringr str_remove
 #'
 #' @return a data frame with translated labels according to the language of the csv file
@@ -120,12 +117,12 @@ translate_labels <- function(labels,
 #'
 #' @examples select_translation(file = "fr.csv")
 select_translation <- function(file,
-                               labels = extract_labels(folder = "R")) { 
-  
+                               labels = extract_labels(folder = "R")) {
+
   file <- str_remove(file, ".csv")
-  
+
   if (identical(file, "fr")) {
-    translate_labels(labels = labels, target_language = "fr") 
+    translate_labels(labels = labels, target_language = "fr")
   } else if (identical(file, "es")) {
     translate_labels(labels = labels, target_language = "es")
   } else if (identical(file, "de")) {

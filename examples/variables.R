@@ -15,7 +15,7 @@ testdata <- data.frame(
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
-  tags$h3(i18n("Select, rename and convert variables")),
+  tags$h3("Select, rename and convert variables"),
   fluidRow(
     column(
       width = 6,
@@ -24,10 +24,10 @@ ui <- fluidPage(
     ),
     column(
       width = 6,
-      tags$b(i18n("original data:")),
+      tags$b("original data:"),
       verbatimTextOutput("original"),
       verbatimTextOutput("original_str"),
-      tags$b(i18n("Modified data:")),
+      tags$b("Modified data:"),
       verbatimTextOutput("modified"),
       verbatimTextOutput("modified_str")
     )

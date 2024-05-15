@@ -15,38 +15,38 @@ if (requireNamespace("validate")) {
   )
   # Add some labels
   label(myrules) <- c(
-    i18n("Variable Manufacturer must be character"),
-    i18n("Variable Price must be numeric"),
-    i18n("Variable Price must be strictly positive"),
-    i18n("Luggage.room must not contain any missing values"),
-    i18n("Cylinders must be between 4 and 8"),
-    i18n("Man.trans.avail must be 'Yes' or 'No'")
+    "Variable Manufacturer must be character",
+    "Variable Price must be numeric",
+    "Variable Price must be strictly positive",
+    "Luggage.room must not contain any missing values",
+    "Cylinders must be between 4 and 8",
+    "Man.trans.avail must be 'Yes' or 'No'"
   )
   # you can also add a description()
 
   ui <- fluidPage(
-    tags$h2(i18n("Validation")),
+    tags$h2("Validation"),
     fluidRow(
       column(
         width = 4,
         radioButtons(
           inputId = "dataset",
-          label = i18n("Choose dataset:"),
+          label = "Choose dataset:",
           choices = c("mtcars", "MASS::Cars93")
         ),
-        tags$p(i18n("Dropdown example:")),
+        tags$p("Dropdown example:"),
         validation_ui("validation1"),
 
         tags$br(),
 
-        tags$p(i18n("Inline example:")),
+        tags$p("Inline example:"),
         validation_ui("validation2", display = "inline")
       ),
       column(
         width = 8,
-        tags$b(i18n("Status:")),
+        tags$b("Status:"),
         verbatimTextOutput("status"),
-        tags$b(i18n("Details:")),
+        tags$b("Details:"),
         verbatimTextOutput("details")
       )
     )

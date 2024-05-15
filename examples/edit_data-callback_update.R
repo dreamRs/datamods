@@ -24,7 +24,7 @@ server <- function(input, output, session) {
       if (!row$Month %in% month.name)
         return(FALSE)
       if (row$Values > 20) {
-        shinybusy::notify_warning(i18n("Value must be equal or inferior to 20"))
+        shinybusy::notify_warning("Value must be equal or inferior to 20")
         return(FALSE)
       }
       # else update data

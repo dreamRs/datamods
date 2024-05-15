@@ -17,7 +17,7 @@ label,translation,comment
 "Import a file","Import d'un fichier"
 "Upload a file:","Charger un fichier :"
 "Browse...","Parcourir..."
-"No file selected","Pas de fichier délectionné"
+"No file selected","Pas de fichier sélectionné"
 "Number of rows to skip before reading data:","Nombre de lignes à sauter avant de lire les données :"
 "Decimal separator:","Séparateur de décimal :"
 "Encoding:","Encodage :"

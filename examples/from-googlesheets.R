@@ -3,7 +3,7 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
-  tags$h3(i18n("Import data from Googlesheets")),
+  tags$h3("Import data from Googlesheets"),
   fluidRow(
     column(
       width = 4,
@@ -11,11 +11,11 @@ ui <- fluidPage(
     ),
     column(
       width = 8,
-      tags$b(i18n("Import status:")),
+      tags$b("Import status:"),
       verbatimTextOutput(outputId = "status"),
-      tags$b(i18n("Name:")),
+      tags$b("Name:"),
       verbatimTextOutput(outputId = "name"),
-      tags$b(i18n("Data:")),
+      tags$b("Data:"),
       verbatimTextOutput(outputId = "data")
     )
   )

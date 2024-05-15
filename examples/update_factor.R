@@ -5,18 +5,18 @@ library(ggplot2)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
-  tags$h2(i18n("Reorder the Levels of a Factor")),
+  tags$h2("Reorder the Levels of a Factor"),
   fluidRow(
     column(
       width = 6,
       update_factor_ui("id"),
-      actionButton("modal", i18n("Or click here to open a modal to update factor's level"))
+      actionButton("modal", "Or click here to open a modal to update factor's level")
     ),
     column(
       width = 6,
       selectInput(
         "var",
-        label = i18n("Variable to plot:"),
+        label = "Variable to plot:",
         choices = NULL
       ),
       plotOutput("plot"),

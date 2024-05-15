@@ -3,7 +3,7 @@ library(datamods)
 
 
 ui <- fluidPage(
-  tags$h2(i18n("Filter data.frame")),
+  tags$h2("Filter data.frame"),
   fluidRow(
     column(
       width = 3,
@@ -12,11 +12,11 @@ ui <- fluidPage(
     column(
       width = 9,
       reactable::reactableOutput(outputId = "table"),
-      tags$b(i18n("Code dplyr:")),
+      tags$b("Code dplyr:"),
       verbatimTextOutput(outputId = "code_dplyr"),
-      tags$b(i18n("Expression:")),
+      tags$b("Expression:"),
       verbatimTextOutput(outputId = "code"),
-      tags$b(i18n("Filtered data:")),
+      tags$b("Filtered data:"),
       verbatimTextOutput(outputId = "res_str")
     )
   )
