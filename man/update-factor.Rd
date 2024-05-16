@@ -54,12 +54,15 @@ library(ggplot2)
 
 ui <- fluidPage(
   theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
+  shinyWidgets::html_dependency_winbox(),
   tags$h2("Reorder the Levels of a Factor"),
   fluidRow(
     column(
       width = 6,
       update_factor_ui("id"),
-      actionButton("modal", "Or click here to open a modal to update factor's level")
+      actionButton("modal", "Or click here to open a modal to update factor's level"),
+      tags$br(), tags$br(),
+      actionButton("winbox", "Or click here to open a WinBox to create a column")
     ),
     column(
       width = 6,
@@ -98,6 +101,14 @@ server <- function(input, output, session) {
     shiny::removeModal()
     rv$data <- data_modal_r()
   })
+
+  # winbox mode
+  observeEvent(input$winbox, winbox_update_factor("winbox"))
+  data_winbox_r <- update_factor_server(
+    id = "winbox",
+    data_r = reactive(rv$data)
+  )
+  observeEvent(data_winbox_r(), rv$data <- data_winbox_r())
 
   # Plot results
   output$plot <- renderPlot({

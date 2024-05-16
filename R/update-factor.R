@@ -42,7 +42,7 @@ update_factor_ui <- function(id) {
           inputId = ns("sort_levels"),
           label = tagList(
             ph("sort-ascending"),
-            i18n("Sort levels")
+            i18n("Sort by levels")
           ),
           class = "btn-outline-primary mb-3",
           width = "100%"
@@ -55,7 +55,7 @@ update_factor_ui <- function(id) {
           inputId = ns("sort_occurrences"),
           label = tagList(
             ph("sort-ascending"),
-            i18n("Sort count")
+            i18n("Sort by count")
           ),
           class = "btn-outline-primary mb-3",
           width = "100%"
@@ -236,3 +236,35 @@ modal_update_factor <- function(id,
     footer = footer
   ))
 }
+
+
+#' @inheritParams shinyWidgets::WinBox
+#' @export
+#'
+#' @importFrom shinyWidgets WinBox wbOptions wbControls
+#' @importFrom htmltools tagList
+#' @rdname create-column
+winbox_update_factor <- function(id,
+                                 title = i18n("Update levels of a factor"),
+                                 options = shinyWidgets::wbOptions(),
+                                 controls = shinyWidgets::wbControls()) {
+  ns <- NS(id)
+  WinBox(
+    title = title,
+    ui = tagList(
+      update_factor_ui(id),
+      tags$div(
+        style = "display: none;",
+        textInput(inputId = ns("hidden"), label = NULL, value = genId())
+      )
+    ),
+    options = modifyList(
+      shinyWidgets::wbOptions(height = "615px", modal = TRUE),
+      options
+    ),
+    controls = controls,
+    auto_height = FALSE
+  )
+}
+
+

@@ -1,6 +1,7 @@
 # datamods 1.5.1
 
 * New module `update_factor_ui()` / `update_factor_server()` to reorder levels of a factor.
+* i18n: Updated translations files with new labels, which are automatically translated, if you see incorrect translations, please open an issue or PR : https://github.com/dreamRs/datamods
 
 
 # datamods 1.5.0
