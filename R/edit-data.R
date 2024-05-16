@@ -186,6 +186,8 @@ edit_data_server <- function(id,
       # Table ---
       output$table <- renderReactable({
         data <- req(data_init_r())
+        if (is.reactive(reactable_options))
+          reactable_options <- reactable_options()
         table_display(
           data = data,
           colnames = data_rv$colnames,
