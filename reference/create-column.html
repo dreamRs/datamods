@@ -50,7 +50,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Create new column</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dreamRs/datamods/blob/HEAD/R/create-column.R" class="external-link"><code>R/create-column.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dreamRs/datamods/blob/HEAD/R/create-column.R" class="external-link"><code>R/create-column.R</code></a>, <a href="https://github.com/dreamRs/datamods/blob/HEAD/R/update-factor.R" class="external-link"><code>R/update-factor.R</code></a></small>
       <div class="d-none name"><code>create-column.Rd</code></div>
     </div>
 
@@ -81,6 +81,13 @@
 <span><span class="fu">winbox_create_column</span><span class="op">(</span></span>
 <span>  <span class="va">id</span>,</span>
 <span>  title <span class="op">=</span> <span class="fu"><a href="i18n.html">i18n</a></span><span class="op">(</span><span class="st">"Create a new column"</span><span class="op">)</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/wbOptions.html" class="external-link">wbOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  controls <span class="op">=</span> <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/wbControls.html" class="external-link">wbControls</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">winbox_update_factor</span><span class="op">(</span></span>
+<span>  <span class="va">id</span>,</span>
+<span>  title <span class="op">=</span> <span class="fu"><a href="i18n.html">i18n</a></span><span class="op">(</span><span class="st">"Update levels of a factor"</span><span class="op">)</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/wbOptions.html" class="external-link">wbOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  controls <span class="op">=</span> <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/wbControls.html" class="external-link">wbControls</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
