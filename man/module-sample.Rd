@@ -26,29 +26,26 @@ Allow to take a sample of \code{data.frame} for a given number or proportion of 
 }
 \examples{
 library(shiny)
+library(datamods)
 library(reactable)
 
-##### ui.R #####
 
 ui <- fluidPage(
 
-  titlePanel("Sampling"),
+  tags$h2("Sampling"),
 
   fluidRow(
     column(
-      width = 4,
+      width = 3,
       sample_ui("myID")
     ),
     column(
-      width = 8,
+      width = 9,
       reactableOutput("table")
     )
   )
 )
 
-
-
-##### server.R #####
 
 server <- function(input, output, session) {
 
