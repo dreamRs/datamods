@@ -99,7 +99,7 @@ translate_labels <- function(labels,
     translation = translation |>
       unlist() |>
       str_conv(encoding),
-    comment = "Automacally translated"
+    comment = "Automatically translated"
   )
 }
 
