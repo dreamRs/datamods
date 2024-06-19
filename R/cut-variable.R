@@ -10,7 +10,7 @@
 #' @return A [shiny::reactive()] function returning the data.
 #' @export
 #'
-#' @importFrom shiny NS fluidRow column numericInput checkboxInput checkboxInput plotOutput
+#' @importFrom shiny NS fluidRow column numericInput checkboxInput checkboxInput plotOutput uiOutput
 #' @importFrom shinyWidgets virtualSelectInput
 #' @importFrom toastui datagridOutput2
 #'
@@ -36,6 +36,7 @@ cut_variable_ui <- function(id) {
           inputId = ns("method"),
           label = i18n("Method:"),
           choices = c(
+            "fixed",
             "sd",
             "equal",
             "pretty",
@@ -78,6 +79,11 @@ cut_variable_ui <- function(id) {
         )
       )
     ),
+    conditionalPanel(
+      condition = "input.method == 'fixed'",
+      ns = ns,
+      uiOutput(outputId = ns("slider_fixed"))
+    ),
     plotOutput(outputId = ns("plot"), width = "100%", height = "270px"),
     datagridOutput2(outputId = ns("count")),
     actionButton(
@@ -94,7 +100,7 @@ cut_variable_ui <- function(id) {
 #' @export
 #'
 #' @importFrom shiny moduleServer observeEvent reactive req bindEvent renderPlot
-#' @importFrom shinyWidgets updateVirtualSelect
+#' @importFrom shinyWidgets updateVirtualSelect noUiSliderInput
 #' @importFrom toastui renderDatagrid2 datagrid grid_colorbar
 #' @importFrom rlang %||% call2 set_names expr syms
 #' @importFrom classInt classIntervals
@@ -119,12 +125,45 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
         )
       }), data_r(), input$hidden)
 
+      output$slider_fixed <- renderUI({
+        data <- req(data_r())
+        variable <- req(input$variable)
+        req(hasName(data, variable))
+        noUiSliderInput(
+          inputId = session$ns("fixed_brks"),
+          label = i18n("Fixed breaks:"),
+          min = floor(min(data[[variable]], na.rm = TRUE)),
+          max = ceiling(max(data[[variable]], na.rm = TRUE)),
+          value = classInt::classIntervals(
+            var = data[[variable]],
+            n = input$n_breaks,
+            style = "quantile"
+          )$brks,
+          color = get_primary_color(),
+          width = "100%"
+        )
+      })
+
       breaks_r <- reactive({
         data <- req(data_r())
         variable <- req(input$variable)
         req(hasName(data, variable))
         req(input$n_breaks, input$method)
-        classInt::classIntervals(data[[variable]], n = input$n_breaks, style = input$method)
+        if (input$method == "fixed") {
+          req(input$fixed_brks)
+          classInt::classIntervals(
+            var = data[[variable]],
+            n = input$n_breaks,
+            style = "fixed",
+            fixedBreaks = input$fixed_brks
+          )
+        } else {
+          classInt::classIntervals(
+            var = data[[variable]],
+            n = input$n_breaks,
+            style = input$method
+          )
+        }
       })
 
       output$plot <- renderPlot({
@@ -167,7 +206,8 @@ cut_variable_server <- function(id, data_r = reactive(NULL)) {
         variable <- req(input$variable)
         count_data <- as.data.frame(
           table(
-            breaks = data[[paste0(variable, "_cut")]]
+            breaks = data[[paste0(variable, "_cut")]],
+            useNA = "ifany"
           ),
           responseName = "count"
         )
