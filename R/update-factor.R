@@ -180,6 +180,7 @@ update_factor_server <- function(id, data_r = reactive(NULL)) {
           label_outside = TRUE,
           label_width = "30px",
           background = "#D8DEE9",
+          bar_bg = get_primary_color(),
           from = c(0, max(rv$data_grid$Freq) + 1)
         )
         grid

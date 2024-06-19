@@ -211,3 +211,13 @@ button_close_modal <- function() {
 }
 
 
+#' @importFrom bslib bs_current_theme is_bs_theme bs_get_variables
+get_primary_color <- function() {
+  theme <- bslib::bs_current_theme()
+  if (!bslib::is_bs_theme(theme)) {
+    return("#112466")
+  }
+  primary <- bslib::bs_get_variables(theme, "primary")
+  unname(primary)
+}
+

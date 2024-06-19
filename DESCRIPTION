@@ -30,6 +30,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
+    bslib,
     classInt,
     data.table,
     htmltools,
@@ -46,7 +47,6 @@ Imports:
     shinybusy,
     writexl
 Suggests: 
-    bslib,
     ggplot2,
     jsonlite,
     knitr,
