@@ -1,90 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://dreamrs.github.io/datamods/404.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/articles/datamods.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/articles/i18n.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/index.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/create-column.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/cut-variable.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/demo_edit.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/edit-data.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/filter-data.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/get_data_packages.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/i18n.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-copypaste.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-file.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-globalenv.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-googlesheets.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-modal.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/import-url.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/list_pkg_data.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/module-sample.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/select-group.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/show_data.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/update-factor.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/update-variables.html</loc>
-  </url>
-  <url>
-    <loc>https://dreamrs.github.io/datamods/reference/validation.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://dreamrs.github.io/datamods/404.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/LICENSE.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/articles/datamods.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/articles/i18n.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/articles/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/authors.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/news/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/create-column.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/cut-variable.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/demo_edit.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/edit-data.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/filter-data.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/get_data_packages.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/i18n.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-copypaste.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-file.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-globalenv.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-googlesheets.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-modal.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/import-url.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/index.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/list_pkg_data.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/module-sample.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/select-group.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/show_data.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/update-factor.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/update-variables.html</loc></url>
+<url><loc>https://dreamrs.github.io/datamods/reference/validation.html</loc></url>
 </urlset>
+
