@@ -1,6 +1,6 @@
 # datamods 1.5.2
 
-* `import_file_ui`: back to old parameters layout inside a dropdown button and new argument to swith to inline layout. 
+* `import_file_ui`: back to old parameters layout inside a dropdown button and new argument to switch to inline layout. 
 
 
 # datamods 1.5.1
