@@ -1,6 +1,6 @@
 Package: datamods
 Title: Modules to Import and Manipulate Data in 'Shiny'
-Version: 1.5.1.9000
+Version: 1.5.1.9100
 Authors@R: 
     c(person(given = "Victor",
              family = "Perrier",
@@ -28,7 +28,7 @@ URL: https://github.com/dreamRs/datamods, https://dreamrs.github.io/datamods/
 BugReports: https://github.com/dreamRs/datamods/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     bslib,
     classInt,

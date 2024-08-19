@@ -4,13 +4,16 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  # theme = bslib::bs_theme(version = 5L),
+  # theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
   tags$h3("Import data from a file"),
   fluidRow(
     column(
       width = 4,
       import_file_ui(
         id = "myid",
-        file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json")
+        file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json"),
+        layout_params = "inline" # or "dropdown"s
       )
     ),
     column(

@@ -11,7 +11,8 @@ import_file_ui(
   title = TRUE,
   preview_data = TRUE,
   file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat",
-    ".sav")
+    ".sav"),
+  layout_params = c("dropdown", "inline")
 )
 
 import_file_server(
@@ -33,6 +34,8 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \item{preview_data}{Show or not a preview of the data under the file input.}
 
 \item{file_extensions}{File extensions accepted by \code{\link[shiny:fileInput]{shiny::fileInput()}}, can also be MIME type.}
+
+\item{layout_params}{How to display import parameters : in a dropdown button or inline below file input.}
 
 \item{btn_show_data}{Display or not a button to display data in a modal window if import is successful.}
 
@@ -82,13 +85,16 @@ library(shiny)
 library(datamods)
 
 ui <- fluidPage(
+  # theme = bslib::bs_theme(version = 5L),
+  # theme = bslib::bs_theme(version = 5L, preset = "bootstrap"),
   tags$h3("Import data from a file"),
   fluidRow(
     column(
       width = 4,
       import_file_ui(
         id = "myid",
-        file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json")
+        file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json"),
+        layout_params = "inline" # or "dropdown"s
       )
     ),
     column(

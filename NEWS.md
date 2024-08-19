@@ -1,3 +1,8 @@
+# datamods 1.5.2
+
+* `import_file_ui`: back to old parameters layout inside a dropdown button and new argument to swith to inline layout. 
+
+
 # datamods 1.5.1
 
 * New module `update_factor_ui()` / `update_factor_server()` to reorder levels of a factor.

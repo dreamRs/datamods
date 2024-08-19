@@ -6,6 +6,7 @@
 #' @inheritParams import-globalenv
 #' @param preview_data Show or not a preview of the data under the file input.
 #' @param file_extensions File extensions accepted by [shiny::fileInput()], can also be MIME type.
+#' @param layout_params How to display import parameters : in a dropdown button or inline below file input.
 #'
 #' @template module-import
 #'
@@ -23,9 +24,14 @@
 import_file_ui <- function(id,
                            title = TRUE,
                            preview_data = TRUE,
-                           file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav")) {
+                           file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".rds", ".fst", ".sas7bdat", ".sav"),
+                           layout_params = c("dropdown", "inline")) {
 
   ns <- NS(id)
+
+  if (!is.null(layout_params)) {
+    layout_params <- match.arg(layout_params)
+  }
 
   if (isTRUE(title)) {
     title <- tags$h4(
@@ -34,65 +40,97 @@ import_file_ui <- function(id,
     )
   }
 
+
+  params_ui <- fluidRow(
+    column(
+      width = 6,
+      numericInputIcon(
+        inputId = ns("skip_rows"),
+        label = i18n("Rows to skip before reading data:"),
+        value = 0,
+        min = 0,
+        icon = list("n ="),
+        size = "sm",
+        width = "100%"
+      ),
+      tagAppendChild(
+        textInputIcon(
+          inputId = ns("na_label"),
+          label = i18n("Missing values character(s):"),
+          value = ",NA",
+          icon = list("NA"),
+          size = "sm",
+          width = "100%"
+        ),
+        shiny::helpText(ph("info"), i18n("if several use a comma (',') to separate them"))
+      )
+    ),
+    column(
+      width = 6,
+      textInputIcon(
+        inputId = ns("dec"),
+        label = i18n("Decimal separator:"),
+        value = ".",
+        icon = list("0.00"),
+        size = "sm",
+        width = "100%"
+      ),
+      textInputIcon(
+        inputId = ns("encoding"),
+        label = i18n("Encoding:"),
+        value = "UTF-8",
+        icon = phosphoricons::ph("text-aa"),
+        size = "sm",
+        width = "100%"
+      )
+    )
+  )
+
+  file_ui <- tagAppendAttributes(
+    fileInput(
+      inputId = ns("file"),
+      label = i18n("Upload a file:"),
+      buttonLabel = i18n("Browse..."),
+      placeholder = i18n("No file selected"),
+      accept = file_extensions,
+      width = "100%"
+    ),
+    class = "mb-0"
+  )
+  if (identical(layout_params, "dropdown")) {
+    file_ui <- tags$div(
+      style = css(
+        display = "grid",
+        gridTemplateColumns = "1fr 50px",
+        gridColumnGap = "10px"
+      ),
+      file_ui,
+      tags$div(
+        class = "shiny-input-container",
+        tags$label(
+          class = "control-label",
+          `for` = ns("dropdown_params"),
+          "...",
+          style = css(visibility = "hidden")
+        ),
+        shinyWidgets::dropMenu(
+          actionButton(
+            inputId = ns("dropdown_params"),
+            label = ph("gear", title = "Parameters"),
+            width = "50px",
+            class = "px-1"
+          ),
+          params_ui
+        )
+      )
+    )
+  }
   tags$div(
     class = "datamods-import",
     html_dependency_datamods(),
     title,
-    tagAppendAttributes(
-      fileInput(
-        inputId = ns("file"),
-        label = i18n("Upload a file:"),
-        buttonLabel = i18n("Browse..."),
-        placeholder = i18n("No file selected"),
-        accept = file_extensions,
-        width = "100%"
-      ),
-      class = "mb-0"
-    ),
-    fluidRow(
-      column(
-        width = 6,
-        numericInputIcon(
-          inputId = ns("skip_rows"),
-          label = i18n("Rows to skip before reading data:"),
-          value = 0,
-          min = 0,
-          icon = list("n ="),
-          size = "sm",
-          width = "100%"
-        ),
-        tagAppendChild(
-          textInputIcon(
-            inputId = ns("na_label"),
-            label = i18n("Missing values character(s):"),
-            value = ",NA",
-            icon = list("NA"),
-            size = "sm",
-            width = "100%"
-          ),
-          shiny::helpText(ph("info"), i18n("if several use a comma (',') to separate them"))
-        )
-      ),
-      column(
-        width = 6,
-        textInputIcon(
-          inputId = ns("dec"),
-          label = i18n("Decimal separator:"),
-          value = ".",
-          icon = list("0.00"),
-          size = "sm",
-          width = "100%"
-        ),
-        textInputIcon(
-          inputId = ns("encoding"),
-          label = i18n("Encoding:"),
-          value = "UTF-8",
-          icon = phosphoricons::ph("text-aa"),
-          size = "sm",
-          width = "100%"
-        )
-      )
-    ),
+    file_ui,
+    if (identical(layout_params, "inline")) params_ui,
     tags$div(
       class = "hidden",
       id = ns("sheet-container"),
@@ -216,7 +254,7 @@ import_file_server <- function(id,
       input$na_label
     ), {
       req(input$file)
-      req(input$skip_rows)
+      # req(input$skip_rows)
       extension <- tools::file_ext(input$file$datapath)
       if (isTRUE(extension %in% names(read_fns))) {
         parameters <- list(
