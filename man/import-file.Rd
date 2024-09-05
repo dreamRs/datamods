@@ -94,7 +94,7 @@ ui <- fluidPage(
       import_file_ui(
         id = "myid",
         file_extensions = c(".csv", ".txt", ".xls", ".xlsx", ".json"),
-        layout_params = "inline" # or "dropdown"s
+        layout_params = "inline" # or "dropdown"
       )
     ),
     column(
