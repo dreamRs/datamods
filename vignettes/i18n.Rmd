@@ -22,7 +22,7 @@ library(datamods)
 When using {datamods} modules, a simple way to modify labels display is provided for using a different language or simply use other labels.
 There are 4 different ways to use new labels:
 
-```{r}
+```r
 # Using a supported language
 set_i18n("fr")
 
@@ -116,7 +116,7 @@ If you want another language to be supported, you can submit a Pull Request to a
 
 You can change labels with a named `list`, where names correspond to the labels and values to the translation to use:
 
-```{r}
+```r
 options("datamods.i18n" = list(
   "Import a dataset from an environment" = "Importer un jeu de données depuis l'environnement global",
   "Select a data.frame:" = "Sélectionner un data.frame :",
@@ -129,7 +129,7 @@ options("datamods.i18n" = list(
 
 You can change labels with a `data.frame` with two columns `label` (the original label) and `translation` (the new label to display):
 
-```{r}
+```r
 set_i18n(data.frame(
   label = c("Import a dataset from an environment", "Select a data.frame:", ...),
   translation = c("Importer un jeu de données depuis l'environnement global", "Sélectionner un data.frame :", ...)
@@ -141,7 +141,7 @@ set_i18n(data.frame(
 
 Use a CSV file with same structure than `data.frame` above:
 
-```{r}
+```r
 set_i18n("path/to/file.csv")
 ```
 

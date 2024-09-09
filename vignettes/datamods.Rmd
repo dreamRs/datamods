@@ -36,7 +36,7 @@ The {datamods} package contains modules to work with data in Shiny application, 
 Imports data from the user's global environment or a package environment to retrieve included in it. 
 It searches for data sets in the global environment and lets the user choose the data to use.
 
-```{r}
+```r
 # UI
 import_globalenv_ui("myid")
 
@@ -52,7 +52,7 @@ imported <- import_globalenv_server("myid")
 Imports data from an external file. The file can be of any format, csv, xlsx, tsv etc.. Import is performed by package [rio](https://github.com/gesistsa/rio).
 In case of Excel files, it gives an option to choose the sheet. 
 
-```{r}
+```r
 # UI
 import_file_ui("myid")
 
@@ -67,7 +67,7 @@ imported <- import_file_server("myid")
 
 Imports data via copy/paste. Simply copy and paste data from any source.
 
-```{r}
+```r
 # UI
 import_copypaste_ui("myid")
 
@@ -82,7 +82,7 @@ imported <- import_copypaste_server("myid")
 
 Imports data from a Googlesheet. Use the shareable link to read data.
 
-```{r}
+```r
 # UI
 import_googlesheets_ui("myid")
 
@@ -96,7 +96,7 @@ imported <- import_googlesheets_server("myid")
 
 Imports data from a URL. Only flat data in any format supported by [package rio](https://CRAN.R-project.org/package=rio/vignettes/rio.html#Supported_file_formats).
 
-```{r}
+```r
 # UI
 import_url_ui("myid")
 
@@ -109,7 +109,7 @@ imported <- import_url_server("myid")
 
 All modules are used in the same way in a Shiny application, here is an example:
 
-```{r}
+```r
 library(shiny)
 library(datamods)
 
@@ -161,7 +161,7 @@ All modules can be launched at once in a modal window:
 
 Launch the modal server-side with:
 
-```{r}
+```r
 observeEvent(input$launch_modal, {
   import_modal(
     id = "myid",
@@ -191,7 +191,7 @@ Return value of the module is a `reactive` function with the update data.
 
 When importing data into an application it can be useful to check that data respect some expectations: number of rows/columns, existence of a variable, ... This module allow to validate rules defined with package [validate](https://github.com/data-cleaning/validate).
 
-```{r}
+```r
 # UI
 validation_ui("validation", display = "inline")
 
@@ -240,7 +240,7 @@ The return value server-side is a list with the following items:
 
 Interactively filter a `data.frame` and generate code to reproduce filters applied:
 
-```{r}
+```r
 # UI
 filter_data_ui("filtering", max_height = "500px")
 
@@ -272,7 +272,7 @@ The return value server-side is a list with the following items:
 
 Interactively sample a `data.frame` to keep only part of the data, depending on the number or proportion of rows to keep.
 
-```{r}
+```r
 # UI
 sample_ui("myID")
 
@@ -293,7 +293,7 @@ Interactively edit a `data.frame`, this module also allow to :
 * **exporting data** (csv and Excel)
 
 
-```{r}
+```r
 # UI
 edit_data_ui(id = "id")
 
