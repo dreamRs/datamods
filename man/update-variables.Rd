@@ -8,7 +8,13 @@
 \usage{
 update_variables_ui(id, title = TRUE)
 
-update_variables_server(id, data, height = NULL)
+update_variables_server(
+  id,
+  data,
+  height = NULL,
+  return_data_on_init = FALSE,
+  try_silent = FALSE
+)
 }
 \arguments{
 \item{id}{Module's ID}
@@ -19,9 +25,13 @@ use \code{NULL} for no title or a \code{shiny.tag} for a custom one.}
 \item{data}{a \code{data.frame} or a \code{reactive} function returning a \code{data.frame}.}
 
 \item{height}{Height for the table.}
+
+\item{return_data_on_init}{Return initial data when module is called.}
+
+\item{try_silent}{logical: should the report of error messages be suppressed?}
 }
 \value{
-A \code{reactive} function returning the updated data.
+A \code{\link[shiny:reactive]{shiny::reactive()}} function returning the updated data.
 }
 \description{
 Select, rename and convert variables
@@ -67,7 +77,8 @@ server <- function(input, output, session) {
 
   updated_data <- update_variables_server(
     id = "vars",
-    data = reactive(testdata)
+    data = reactive(testdata),
+    return_data_on_init = FALSE
   )
 
   output$original <- renderPrint({

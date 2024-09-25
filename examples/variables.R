@@ -38,7 +38,8 @@ server <- function(input, output, session) {
 
   updated_data <- update_variables_server(
     id = "vars",
-    data = reactive(testdata)
+    data = reactive(testdata),
+    return_data_on_init = FALSE
   )
 
   output$original <- renderPrint({

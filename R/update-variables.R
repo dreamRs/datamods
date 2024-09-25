@@ -2,10 +2,10 @@
 #' Select, rename and convert variables
 #'
 #' @param id Module id. See [shiny::moduleServer()].
-#' @param title Module's title, if \code{TRUE} use the default title,
-#'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
+#' @param title Module's title, if `TRUE` use the default title,
+#'  use \code{NULL} for no title or a `shiny.tag` for a custom one.
 #'
-#' @return A \code{reactive} function returning the updated data.
+#' @return A [shiny::reactive()] function returning the updated data.
 #' @export
 #'
 #' @name update-variables
@@ -93,20 +93,25 @@ update_variables_ui <- function(id, title = TRUE) {
 #' @param id Module's ID
 #' @param data a \code{data.frame} or a \code{reactive} function returning a \code{data.frame}.
 #' @param height Height for the table.
+#' @param return_data_on_init Return initial data when module is called.
+#' @param try_silent logical: should the report of error messages be suppressed?
 #'
 #' @rdname update-variables
 #'
 #' @importFrom shiny moduleServer reactiveValues reactive renderUI reactiveValuesToList validate need reactiveVal
 #' @importFrom rlang call2 expr
 #' @importFrom data.table setorderv
-update_variables_server <- function(id, data, height = NULL) {
+update_variables_server <- function(id,
+                                    data,
+                                    height = NULL,
+                                    return_data_on_init = FALSE,
+                                    try_silent = FALSE) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
 
       ns <- session$ns
       updated_data <- reactiveValues(x = NULL)
-      rv_ignit <- reactiveVal(0)
 
       data_r <- reactive({
         if (is.reactive(data)) {
@@ -127,7 +132,11 @@ update_variables_server <- function(id, data, height = NULL) {
           shiny::need(data(), i18n("No data to display."))
         )
         data <- data_r()
-        updated_data$x <- NULL
+        if (isTRUE(return_data_on_init)) {
+          updated_data$x <- data
+        } else {
+          updated_data$x <- NULL
+        }
         summary_vars(data)
       })
 
@@ -142,76 +151,72 @@ update_variables_server <- function(id, data, height = NULL) {
         )
       })
 
-      observeEvent(input$table_data, {
-        ignit <- rv_ignit()
-        if (ignit > 0) {
-          updated_data$list_rename <- NULL
-          updated_data$list_select <- NULL
-          updated_data$list_mutate <- NULL
-          data <- data_r()
-          new_selections <- input$row_selected
-          if (length(new_selections) < 1)
-            new_selections <- seq_along(data)
+      observeEvent(input$validate, {
+        updated_data$list_rename <- NULL
+        updated_data$list_select <- NULL
+        updated_data$list_mutate <- NULL
+        data <- data_r()
+        new_selections <- input$row_selected
+        if (length(new_selections) < 1)
+          new_selections <- seq_along(data)
 
-          data_inputs <- as.data.table(input$table_data)
-          setorderv(data_inputs, "rowKey")
+        data_inputs <- as.data.table(input$table_data)
+        setorderv(data_inputs, "rowKey")
 
-          old_names <- data_inputs$name
-          new_names <- data_inputs$name_toset
-          new_names[new_names == "Enter new name"] <- NA
-          new_names[is.na(new_names)] <- old_names[is.na(new_names)]
-          new_names[new_names == ""] <- old_names[new_names == ""]
+        old_names <- data_inputs$name
+        new_names <- data_inputs$name_toset
+        new_names[new_names == "Enter new name"] <- NA
+        new_names[is.na(new_names)] <- old_names[is.na(new_names)]
+        new_names[new_names == ""] <- old_names[new_names == ""]
 
 
-          new_classes <- data_inputs$class_toset
-          new_classes[new_classes == "Select new class"] <- NA
+        new_classes <- data_inputs$class_toset
+        new_classes[new_classes == "Select new class"] <- NA
 
-          data_sv <- variables_r()
-          vars_to_change <- get_vars_to_convert(data_sv, setNames(as.list(new_classes), old_names))
+        data_sv <- variables_r()
+        vars_to_change <- get_vars_to_convert(data_sv, setNames(as.list(new_classes), old_names))
 
-          res_update <- try({
-            # convert
-            if (nrow(vars_to_change) > 0) {
-              data <- convert_to(
-                data = data,
-                variable = vars_to_change$name,
-                new_class = vars_to_change$class_to_set,
-                origin = input$origin,
-                format = input$format,
-                dec = input$dec
-              )
-            }
-            list_mutate <- attr(data, "code_03_convert")
-
-            # rename
-            list_rename <- setNames(
-              as.list(old_names),
-              unlist(new_names, use.names = FALSE)
+        res_update <- try({
+          # convert
+          if (nrow(vars_to_change) > 0) {
+            data <- convert_to(
+              data = data,
+              variable = vars_to_change$name,
+              new_class = vars_to_change$class_to_set,
+              origin = input$origin,
+              format = input$format,
+              dec = input$dec
             )
-            list_rename <- list_rename[names(list_rename) != unlist(list_rename, use.names = FALSE)]
-            names(data) <- unlist(new_names, use.names = FALSE)
-
-            # select
-            list_select <- setdiff(names(data), names(data)[new_selections])
-            data <- data[, new_selections, drop = FALSE]
-
-          }, silent = FALSE)
-
-          if (inherits(res_update, "try-error")) {
-            insert_error(selector = "update")
-          } else {
-            insert_alert(
-              selector = ns("update"),
-              status = "success",
-              tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
-            )
-            updated_data$x <- data
-            updated_data$list_rename <- list_rename
-            updated_data$list_select <- list_select
-            updated_data$list_mutate <- list_mutate
           }
+          list_mutate <- attr(data, "code_03_convert")
+
+          # rename
+          list_rename <- setNames(
+            as.list(old_names),
+            unlist(new_names, use.names = FALSE)
+          )
+          list_rename <- list_rename[names(list_rename) != unlist(list_rename, use.names = FALSE)]
+          names(data) <- unlist(new_names, use.names = FALSE)
+
+          # select
+          list_select <- setdiff(names(data), names(data)[new_selections])
+          data <- data[, new_selections, drop = FALSE]
+
+        }, silent = try_silent)
+
+        if (inherits(res_update, "try-error")) {
+          insert_error(selector = "update")
+        } else {
+          insert_alert(
+            selector = ns("update"),
+            status = "success",
+            tags$b(phosphoricons::ph("check"), i18n("Data successfully updated!"))
+          )
+          updated_data$x <- data
+          updated_data$list_rename <- list_rename
+          updated_data$list_select <- list_select
+          updated_data$list_mutate <- list_mutate
         }
-        rv_ignit(1)
       }, ignoreNULL = TRUE, ignoreInit = TRUE)
 
       return(reactive({
@@ -401,7 +406,8 @@ update_variables_datagrid <- function(data, height = NULL, selectionId = NULL, b
   grid <- grid_editor_opts(
     grid = grid,
     editingEvent = "click",
-    actionButtonId = buttonId
+    actionButtonId = NULL,
+    session = NULL
   )
   grid <- grid_selection_row(
     grid = grid,
@@ -590,11 +596,3 @@ get_vars_to_convert <- function(vars, classes_input) {
   classes_df <- classes_df[!is.na(class_to_set)]
   classes_df[class != class_to_set]
 }
-
-
-
-
-
-
-
-
