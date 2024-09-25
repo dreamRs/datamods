@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">datamods</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.2.9100</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@ global environment and lets the user choose the data to use.</p>
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-globalenv.html">import_globalenv_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-env.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-env.png" style="width:100%"></p>
 </div>
 <div class="section level3">
 <h3 id="from-file">From file<a class="anchor" aria-label="anchor" href="#from-file"></a>
@@ -110,7 +110,7 @@ it gives an option to choose the sheet.</p>
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-file.html">import_file_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-file.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-file.png" style="width:100%"></p>
 </div>
 <div class="section level3">
 <h3 id="from-clipboard">From clipboard<a class="anchor" aria-label="anchor" href="#from-clipboard"></a>
@@ -123,7 +123,7 @@ source.</p>
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-copypaste.html">import_copypaste_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-paste.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-paste.png" style="width:100%"></p>
 </div>
 <div class="section level3">
 <h3 id="from-googlesheet">From Googlesheet<a class="anchor" aria-label="anchor" href="#from-googlesheet"></a>
@@ -136,7 +136,7 @@ data.</p>
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">imported</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import-googlesheets.html">import_googlesheets_server</a></span><span class="op">(</span><span class="st">"myid"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-googlesheet.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-googlesheet.png" style="width:100%"></p>
 </div>
 <div class="section level3">
 <h3 id="from-url">From URL<a class="anchor" aria-label="anchor" href="#from-url"></a>
@@ -208,7 +208,7 @@ the imported <code>data.frame</code>.</li>
 <h3 id="modal-window">Modal Window<a class="anchor" aria-label="anchor" href="#modal-window"></a>
 </h3>
 <p>All modules can be launched at once in a modal window:</p>
-<p><img src="figures/datamods-modal-2.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-modal-2.png" style="width:100%"></p>
 <p>Launch the modal server-side with:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">launch_modal</span>, <span class="op">{</span></span>
@@ -225,7 +225,7 @@ the imported <code>data.frame</code>.</li>
 </h2>
 <p>This module allow to dynamically select, rename and convert variables
 of a dataset.</p>
-<p><img src="figures/datamods-update-2.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-update-2.png" style="width:100%"></p>
 <p>Some options for converting to date and numeric are available in a
 dropdown menu.</p>
 <p>Return value of the module is a <code>reactive</code> function with
@@ -270,7 +270,7 @@ package <a href="https://github.com/data-cleaning/validate" class="external-link
 <span>  <span class="st">"Man.trans.avail must be 'Yes' or 'No'"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># you can also add a description()</span></span></code></pre></div>
-<p><img src="figures/datamods-validation-2.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-validation-2.png" style="width:100%"></p>
 <p>Validation results can be displayed in a dropdown menu (above left)
 or inline where the module is called.</p>
 <p>The return value server-side is a list with the following items:</p>
@@ -304,7 +304,7 @@ reproduce filters applied:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can select variables for which to create a filter and choose
 widgets used to create the UI filter.</p>
-<p><img src="figures/datamods-filter-2.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-filter-2.png" style="width:100%"></p>
 <p>The return value server-side is a list with the following items:</p>
 <ul>
 <li>
@@ -329,7 +329,7 @@ the data, depending on the number or proportion of rows to keep.</p>
 <span></span>
 <span><span class="co"># Server</span></span>
 <span><span class="va">result_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/module-sample.html">sample_server</a></span><span class="op">(</span><span class="st">"myID"</span>, <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-sample.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-sample.png" style="width:100%"></p>
 </div>
 <div class="section level2">
 <h2 id="edit">Edit<a class="anchor" aria-label="anchor" href="#edit"></a>
@@ -363,7 +363,7 @@ to :</p>
 <span>    var_edit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span>, <span class="st">"credit_card_provider"</span>, <span class="st">"credit_card_security_code"</span><span class="op">)</span>,</span>
 <span>    var_mandatory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"job"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="figures/datamods-edit-data.png" style="width:100%"></p>
+<p><img src="figures%2Fdatamods-edit-data.png" style="width:100%"></p>
 <p>This module returns the edited table with the user modifications. See
 ?demo_edit to see the data created for this data edit example.</p>
 </div>
@@ -378,7 +378,7 @@ to :</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
