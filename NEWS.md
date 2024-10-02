@@ -1,3 +1,8 @@
+# datamods 1.5.3
+
+* `update_variables_server`: change of data update management after clicking on the validate button, fixed a problem when input data are the same as output data.
+
+
 # datamods 1.5.2
 
 * `import_file_ui`: back to old parameters layout inside a dropdown button and new argument to switch to inline layout. 
