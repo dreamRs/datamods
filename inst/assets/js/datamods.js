@@ -30,7 +30,7 @@ Shiny.addCustomMessageHandler("datamods-showUI", function(data) {
     $(sel).addClass("show-inline");
     $(sel).removeClass("hidden");
   } else {
-    $(sel).addClass("show");
+    $(sel).addClass("show-block");
     $(sel).removeClass("hidden");
   }
 });
@@ -44,7 +44,7 @@ Shiny.addCustomMessageHandler("datamods-hideUI", function(data) {
     $(sel).removeClass("show-inline");
   } else {
     $(sel).addClass("hidden");
-    $(sel).removeClass("show");
+    $(sel).removeClass("show-block");
   }
 });
 
