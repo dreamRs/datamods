@@ -1,3 +1,8 @@
+# datamods 1.5.4
+
+* Rename CSS class `show` to `show-block` (used internally)
+
+
 # datamods 1.5.3
 
 * `update_variables_server`: change of data update management after clicking on the validate button, fixed a problem when input data are the same as output data.

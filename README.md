@@ -12,6 +12,8 @@
 status](https://www.r-pkg.org/badges/version/datamods)](https://CRAN.R-project.org/package=datamods)
 [![cranlogs](https://cranlogs.r-pkg.org/badges/datamods)](https://cran.r-project.org/package=datamods)
 [![R-CMD-check](https://github.com/dreamRs/datamods/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dreamRs/datamods/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/dreamRs/datamods/graph/badge.svg)](https://app.codecov.io/gh/dreamRs/datamods)
 <!-- badges: end -->
 
 ### Overview
