@@ -49,26 +49,33 @@ server <- function(input, output, session) {
         date_obtained = colDef(name = "Date obtained", format = colFormat(date = TRUE)),
         contactless_card = colDef(
           name = "Contactless Card",
-          cell = function(value) {
-            # Render as an X mark or check mark
-            if (value == FALSE) "\u274c No" else "\u2714\ufe0f Yes"
-          }),
+          cell = htmlwidgets::JS(
+            "function(cellInfo) {
+              return cellInfo.value ? '\u2714\ufe0f Yes' : '\u274c No';
+            }"
+          )
+        ),
         credit_card_provider = colDef(
           name = "Credit card provider",
-          style = function(value) {
-            if (value == "Mastercard") {
-              color <- "#e06631"
-            } else if (value == "VISA 16 digit") {
-              color <- "#0c13cf"
-            } else if (value == "American Express") {
-              color <- "#4d8be8"
-            } else if (value == "JCB 16 digit") {
-              color <- "#23c45e"
-            } else {
-              color <- "#777"
-            }
-            list(color = color, fontWeight = "bold")
-          }
+          style = htmlwidgets::JS(
+            "function(rowInfo) {
+              console.log(rowInfo);
+              var value = rowInfo.values['credit_card_provider'];
+              var color;
+              if (value == 'Mastercard') {
+                color = '#e06631';
+              } else if (value == 'VISA 16 digit') {
+                color = '#0c13cf';
+              } else if (value == 'American Express') {
+                color = '#4d8be8';
+              } else if (value == 'JCB 16 digit') {
+                color = '#23c45e';
+              } else {
+                color = '#777'
+              }
+              return {color: color, fontWeight: 'bold'}
+            }"
+          )
         )
       ),
       bordered = TRUE,
