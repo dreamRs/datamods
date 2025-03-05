@@ -26,6 +26,7 @@
 #' @importFrom shinyWidgets virtualSelectInput
 #'
 #' @example examples/select-group-default.R
+#' @example examples/select-group-selected.R
 select_group_ui <- function(id,
                             params,
                             label = NULL,
@@ -43,7 +44,7 @@ select_group_ui <- function(id,
         btn_reset_label
       ),
       icon = NULL,
-      style = "float: right;"
+      style = "text-align: right;"
     )
   }
   label_tag <- if (!is.null(label))
@@ -108,13 +109,15 @@ select_group_ui <- function(id,
 #' @param vars_r character, columns to use to create filters,
 #'  must correspond to variables listed in `params`. Can be a
 #'  [shiny::reactive()] function, but values must be included in the initial ones (in `params`).
+#' @param selected_r [shiny::reactive()] function returning a named list with selected values to set.
 #'
 #' @export
 #'
 #' @rdname select-group
 #' @importFrom shiny observeEvent observe reactiveValues reactive is.reactive isolate isTruthy
 #' @importFrom shinyWidgets updateVirtualSelect
-select_group_server <- function(id, data_r, vars_r) {
+#' @importFrom rlang %||%
+select_group_server <- function(id, data_r, vars_r, selected_r = reactive(list())) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -147,6 +150,9 @@ select_group_server <- function(id, data_r, vars_r) {
       })
 
       observe({
+        selected <- selected_r()
+        if (!is.list(selected))
+          selected <- list()
         lapply(
           X = rv$vars,
           FUN = function(x) {
@@ -155,7 +161,7 @@ select_group_server <- function(id, data_r, vars_r) {
               session = session,
               inputId = x,
               choices = vals,
-              selected = isolate(input[[x]])
+              selected = selected[[x]] %||% isolate(input[[x]])
             )
           }
         )

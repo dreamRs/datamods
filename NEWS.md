@@ -1,6 +1,7 @@
 # datamods 1.5.4
 
-* Rename CSS class `show` to `show-block` (used internally)
+* Rename CSS class `show` to `show-block` (used internally).
+* `select_group_server()`: added argument `selected_r =` to set selected values.
 
 
 # datamods 1.5.3

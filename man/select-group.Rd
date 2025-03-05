@@ -15,7 +15,7 @@ select_group_ui(
   vs_args = list()
 )
 
-select_group_server(id, data_r, vars_r)
+select_group_server(id, data_r, vars_r, selected_r = reactive(list()))
 }
 \arguments{
 \item{id}{Module's id.}
@@ -43,6 +43,8 @@ function returning a \code{data.frame} (do not use parentheses).}
 \item{vars_r}{character, columns to use to create filters,
 must correspond to variables listed in \code{params}. Can be a
 \code{\link[shiny:reactive]{shiny::reactive()}} function, but values must be included in the initial ones (in \code{params}).}
+
+\item{selected_r}{\code{\link[shiny:reactive]{shiny::reactive()}} function returning a named list with selected values to set.}
 }
 \value{
 A \code{\link[shiny:reactive]{shiny::reactive()}} function containing data filtered with an attribute \code{inputs} containing a named list of selected inputs.
@@ -96,6 +98,47 @@ server <- function(input, output, session) {
 
   output$inputs <- renderPrint({
     attr(res_mod(), "inputs")
+  })
+}
+
+if (interactive())
+  shinyApp(ui, server)
+
+
+# Selected value --------------------------------------------------------------------
+
+library(shiny)
+library(datamods)
+
+ui <- fluidPage(
+  select_group_ui(
+    id = "my-filters",
+    params = list(
+      list(inputId = "Manufacturer", label = "Manufacturer:"),
+      list(inputId = "Type", label = "Type:")
+    ),
+    vs_args = list(
+      disableSelectAll = FALSE
+    )
+  ),
+  actionButton("set_sel", "Set Manufacturer=Acura"),
+  verbatimTextOutput("res")
+)
+
+server <- function(input, output, session) {
+  # We use a reactiveValue so that it can be updated
+  rv <- reactiveValues(selected = list(Manufacturer = "Audi")) # for init
+  res_r <- select_group_server(
+    id = "my-filters",
+    data = reactive(MASS::Cars93),
+    vars = reactive(c("Manufacturer", "Type")),
+    selected_r = reactive(rv$selected)
+  )
+  output$res <- renderPrint({
+    res_r()
+  })
+  observeEvent(input$set_sel, {
+    rv$selected <- list(Manufacturer = "Acura")
   })
 }
 
