@@ -1,4 +1,3 @@
-
 #' @title Select Group Input Module
 #'
 #' @description Group of mutually dependent select menus for filtering `data.frame`'s columns (like in Excel).
@@ -27,13 +26,14 @@
 #'
 #' @example examples/select-group-default.R
 #' @example examples/select-group-selected.R
-select_group_ui <- function(id,
-                            params,
-                            label = NULL,
-                            btn_reset_label = "Reset filters",
-                            inline = TRUE,
-                            vs_args = list()) {
-
+select_group_ui <- function(
+  id,
+  params,
+  label = NULL,
+  btn_reset_label = "Reset filters",
+  inline = TRUE,
+  vs_args = list()
+) {
   ns <- NS(id)
 
   button_reset <- if (!is.null(btn_reset_label)) {
@@ -47,8 +47,7 @@ select_group_ui <- function(id,
       style = "text-align: right;"
     )
   }
-  label_tag <- if (!is.null(label))
-    tags$b(label, class = "select-group-label")
+  label_tag <- if (!is.null(label)) tags$b(label, class = "select-group-label")
 
   sel_tag <- lapply(
     X = seq_along(params),
@@ -60,19 +59,16 @@ select_group_ui <- function(id,
           inputId = ns(input$inputId),
           label = input$label,
           placeholder = input$placeholder,
-          choices = NULL,
-          selected = NULL,
+          choices = input$selected,
+          selected = input$selected,
           multiple = ifelse(is.null(input$multiple), TRUE, input$multiple),
           width = "100%"
         ),
         keep.null = TRUE
       )
-      if (is.null(vs_args$showValueAsTags))
-        vs_args$showValueAsTags <- TRUE
-      if (is.null(vs_args$zIndex))
-        vs_args$zIndex <- 10
-      if (is.null(vs_args$disableSelectAll))
-        vs_args$disableSelectAll <- TRUE
+      if (is.null(vs_args$showValueAsTags)) vs_args$showValueAsTags <- TRUE
+      if (is.null(vs_args$zIndex)) vs_args$zIndex <- 10
+      if (is.null(vs_args$disableSelectAll)) vs_args$disableSelectAll <- TRUE
       tags$div(
         class = "select-group-item",
         id = ns(paste0("container-", input$inputId)),
@@ -103,7 +99,6 @@ select_group_ui <- function(id,
 }
 
 
-
 #' @param data_r Either a [data.frame()] or a [shiny::reactive()]
 #'  function returning a `data.frame` (do not use parentheses).
 #' @param vars_r character, columns to use to create filters,
@@ -121,11 +116,9 @@ select_group_server <- function(id, data_r, vars_r, selected_r = reactive(list()
   moduleServer(
     id = id,
     module = function(input, output, session) {
-
       # Namespace
       ns <- session$ns
       hideUI(selector = paste0("#", ns("reset_all")))
-
 
       # data <- as.data.frame(data)
       rv <- reactiveValues(data = NULL, vars = NULL)
@@ -151,8 +144,7 @@ select_group_server <- function(id, data_r, vars_r, selected_r = reactive(list()
 
       observe({
         selected <- selected_r()
-        if (!is.list(selected))
-          selected <- list()
+        if (!is.list(selected)) selected <- list()
         lapply(
           X = rv$vars,
           FUN = function(x) {
@@ -181,54 +173,54 @@ select_group_server <- function(id, data_r, vars_r, selected_r = reactive(list()
         )
       })
 
-
       observe({
         vars <- rv$vars
         lapply(
           X = vars,
           FUN = function(x) {
-
             ovars <- vars[vars != x]
 
-            observeEvent(input[[x]], {
+            observeEvent(
+              input[[x]],
+              {
+                data <- rv$data
 
-              data <- rv$data
+                indicator <- lapply(
+                  X = vars,
+                  FUN = function(x) {
+                    data[[x]] %inT% input[[x]]
+                  }
+                )
+                indicator <- Reduce(f = `&`, x = indicator)
+                data <- data[indicator, ]
 
-              indicator <- lapply(
-                X = vars,
-                FUN = function(x) {
-                  data[[x]] %inT% input[[x]]
+                if (all(indicator)) {
+                  hideUI(selector = paste0("#", ns("reset_all")))
+                } else {
+                  showUI(selector = paste0("#", ns("reset_all")))
                 }
-              )
-              indicator <- Reduce(f = `&`, x = indicator)
-              data <- data[indicator, ]
 
-              if (all(indicator)) {
-                hideUI(selector = paste0("#", ns("reset_all")))
-              } else {
-                showUI(selector = paste0("#", ns("reset_all")))
-              }
+                for (i in ovars) {
+                  if (!isTruthy(input[[i]])) {
+                    shinyWidgets::updateVirtualSelect(
+                      session = session,
+                      inputId = i,
+                      choices = sort(unique(data[[i]]))
+                    )
+                  }
+                }
 
-              for (i in ovars) {
-                if (!isTruthy(input[[i]])) {
+                if (!isTruthy(input[[x]])) {
                   shinyWidgets::updateVirtualSelect(
                     session = session,
-                    inputId = i,
-                    choices = sort(unique(data[[i]]))
+                    inputId = x,
+                    choices = sort(unique(data[[x]]))
                   )
                 }
-              }
-
-              if (!isTruthy(input[[x]])) {
-                shinyWidgets::updateVirtualSelect(
-                  session = session,
-                  inputId = x,
-                  choices = sort(unique(data[[x]]))
-                )
-              }
-
-            }, ignoreNULL = FALSE, ignoreInit = TRUE)
-
+              },
+              ignoreNULL = FALSE,
+              ignoreInit = TRUE
+            )
           }
         )
       })
@@ -250,12 +242,6 @@ select_group_server <- function(id, data_r, vars_r, selected_r = reactive(list()
         )
         return(data)
       }))
-
     }
   )
 }
-
-
-
-
-
