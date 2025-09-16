@@ -18,7 +18,7 @@ import_file_ui(
 import_file_server(
   id,
   btn_show_data = TRUE,
-  show_data_in = c("popup", "modal"),
+  show_data_in = "winbox",
   trigger_return = c("button", "change"),
   return_class = c("data.frame", "data.table", "tbl_df", "raw"),
   reset = reactive(NULL),

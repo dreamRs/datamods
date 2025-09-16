@@ -11,7 +11,8 @@ show_data(
   show_classes = TRUE,
   type = c("popup", "modal", "winbox"),
   width = "65\%",
-  ...
+  ...,
+  session = shiny::getDefaultReactiveDomain()
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ in modal window with \code{\link[shiny:showModal]{shiny::showModal()}} or in a W
 \item{width}{Width of the window, only used if \code{type = "popup"} or \code{type = "winbox"}.}
 
 \item{...}{Additional options, such as \code{wbOptions = wbOptions()} or \code{wbControls = wbControls()}.}
+
+\item{session}{The \code{session} object passed to function given to
+\code{shinyServer}.}
 }
 \value{
 No value.

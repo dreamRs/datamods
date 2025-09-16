@@ -9,6 +9,7 @@
 #' @param options Arguments passed to [toastui::datagrid()].
 #' @param width Width of the window, only used if `type = "popup"` or `type = "winbox"`.
 #' @param ... Additional options, such as `wbOptions = wbOptions()` or `wbControls = wbControls()`.
+#' @inheritParams shiny::showModal
 #'
 #' @note
 #' If you use `type = "winbox"`, you'll need to use `shinyWidgets::html_dependency_winbox()` somewhere in your UI.
@@ -28,7 +29,8 @@ show_data <- function(data,
                       show_classes = TRUE,
                       type = c("popup", "modal", "winbox"),
                       width = "65%",
-                      ...) { # nocov start
+                      ...,
+                      session = shiny::getDefaultReactiveDomain()) { # nocov start
   type <- match.arg(type)
   data <- as.data.frame(data)
   args <- list(...)
@@ -51,10 +53,9 @@ show_data <- function(data,
     options$summary <- construct_col_summary(data)
   datatable <- rlang::exec(toastui::datagrid, !!!options)
   datatable <- toastui::grid_columns(datatable, className = "font-monospace")
+  if (is.null(session))
+    return(datatable)
   if (identical(type, "winbox")) {
-    stopifnot(
-      "You need shinyWidgets >= 0.8.4" = packageVersion("shinyWidgets") >= "0.8.4"
-    )
     wb_options <- if (is.null(args$wbOptions)) {
       shinyWidgets::wbOptions(
         height = "600px",
@@ -81,7 +82,8 @@ show_data <- function(data,
       ui = datatable,
       options = wb_options,
       controls = wb_controls,
-      padding = "0 5px"
+      padding = "0 5px",
+      session = session
     )
   } else if (identical(type, "popup")) {
     show_alert(
@@ -100,7 +102,8 @@ show_data <- function(data,
       showCloseButton = TRUE,
       btn_labels = NA,
       html = TRUE,
-      width = width
+      width = width,
+      session = session
     )
   } else {
     showModal(modalDialog(
@@ -115,7 +118,7 @@ show_data <- function(data,
       size = "xl",
       footer = NULL,
       easyClose = TRUE
-    ))
+    ), session = session)
   }
 } # nocov end
 
