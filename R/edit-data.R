@@ -54,6 +54,7 @@ edit_data_ui <- function(id) {
 #' @param file_name_export `character` that allows you to choose the export name of the downloaded file.
 #' @param var_edit vector of `character` which allows to choose the names of the editable columns.
 #' @param var_mandatory vector of `character` which allows to choose obligatory fields to fill.
+#' @param var_multiline vector of `character` specifying column names that should use multi-line text inputs (textAreaInput) instead of single-line text inputs (textInput). Useful for longer text fields like descriptions, comments, or articles where multiple lines of text are expected. Only meaningful for character variables.
 #' @param var_labels named list, where names are colnames and values are labels to be used in edit modal.
 #' @param add_default_values Default values to use for input control when adding new data, e.g. `list(my_var_text = "Default text to display")`.
 #' @param n_column Number of column in the edit modal window, must be a number that divide 12 since it use Bootstrap grid system with [shiny::column()].
@@ -97,6 +98,7 @@ edit_data_server <- function(id,
                              file_name_export = "data",
                              var_edit = NULL,
                              var_mandatory = NULL,
+                             var_multiline = NULL,
                              var_labels = NULL,
                              add_default_values = list(),
                              n_column = 1,
@@ -124,7 +126,13 @@ edit_data_server <- function(id,
 
       ns <- session$ns
 
-      data_rv <- reactiveValues(data = NULL, colnames = NULL, mandatory = NULL, edit = NULL)
+      data_rv <- reactiveValues(
+        data = NULL,
+        colnames = NULL,
+        mandatory = NULL,
+        multiline = NULL,
+        edit = NULL
+      )
 
       # Data data_r() with added columns ".datamods_edit_update" et ".datamods_edit_delete" ---
       data_init_r <- eventReactive(data_r(), {
@@ -132,6 +140,8 @@ edit_data_server <- function(id,
         data <- data_r()
         if (is.reactive(var_mandatory))
           var_mandatory <- var_mandatory()
+        if (is.reactive(var_multiline))
+          var_multiline <- var_multiline()
         if (is.reactive(var_labels))
           var_labels <- var_labels()
         if (is.null(var_labels))
@@ -142,12 +152,17 @@ edit_data_server <- function(id,
           var_edit <- names(data)
         data <- as.data.table(data)
         data_rv$colnames <- copy(colnames(data))
+        if (!is.null(var_multiline)) {
+          var_multiline <- intersect(var_multiline, var_edit)
+          var_multiline <- var_multiline[sapply(data[, var_multiline, with = FALSE], is.character)]
+        }
         if (ncol(data) > 0) {
           setnames(data, paste0("col_", seq_along(data)))
           data_rv$internal_colnames <- copy(colnames(data))
         }
         data_rv$mandatory <- data_rv$internal_colnames[data_rv$colnames %in% var_mandatory]
         data_rv$edit <- data_rv$internal_colnames[data_rv$colnames %in% var_edit]
+        data_rv$multiline <- data_rv$internal_colnames[data_rv$colnames %in% var_multiline]
         data_rv$labels <- get_variables_labels(var_labels, data_rv$colnames, data_rv$internal_colnames)
 
         data[, .datamods_id := seq_len(.N)]
@@ -227,6 +242,7 @@ edit_data_server <- function(id,
           data = data_rv$data,
           var_edit = data_rv$edit,
           var_mandatory = data_rv$mandatory,
+          var_multiline = data_rv$multiline,
           var_labels = data_rv$labels,
           modal_size = modal_size,
           modal_easy_close = modal_easy_close,
@@ -313,6 +329,7 @@ edit_data_server <- function(id,
           data = data,
           var_edit = data_rv$edit,
           var_mandatory = data_rv$mandatory,
+          var_multiline = data_rv$multiline,
           var_labels = data_rv$labels,
           modal_size = modal_size,
           modal_easy_close = modal_easy_close,

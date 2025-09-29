@@ -29,6 +29,7 @@ edit_modal <- function(default = list(),
                        data,
                        var_edit = NULL,
                        var_mandatory = NULL,
+                       var_multiline = NULL,
                        var_labels = colnames(data),
                        modal_size = "m",
                        modal_easy_close = FALSE,
@@ -59,6 +60,7 @@ edit_modal <- function(default = list(),
       default = default,
       data = data,
       var_mandatory = var_mandatory,
+      var_multiline = var_multiline,
       var_labels = var_labels,
       n_column = n_column,
       session = session
@@ -96,6 +98,7 @@ edit_modal <- function(default = list(),
 edit_input_form <- function(default = list(),
                             data,
                             var_mandatory = NULL,
+                            var_multiline = NULL,
                             var_labels = colnames(data),
                             n_column = 1,
                             session = getDefaultReactiveDomain()) {
@@ -154,6 +157,18 @@ edit_input_form <- function(default = list(),
           )
         )
         do.call(virtualSelectInput, opts)
+      } else if (variable_id %in% var_multiline) {
+        opts <- getOption("datamods.edit.input.textarea", list())
+        opts <- modifyList(
+          x = opts,
+          val = list(
+            inputId = ns(variable_id),
+            label = label,
+            value = default[[variable_id]] %||% "",
+            width = "100%"
+          )
+        )
+        do.call(textAreaInput, opts)
       } else if (inherits(variable, "character")) {
         opts <- getOption("datamods.edit.input.character", list())
         opts <- modifyList(
